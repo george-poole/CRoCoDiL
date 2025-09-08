@@ -1,0 +1,377 @@
+from typing import Callable
+
+from dolfinx.fem import Function, Constant
+from ufl import (dx, dS, Form, CellDiameter, FacetNormal,
+                 as_matrix, Dx, div, sin, cos, 
+                 jump, avg, det, transpose, TestFunctions, TrialFunctions, 
+                 inv, as_vector, dot, conditional, gt, as_vector, conditional)
+from ufl.geometry import CellDiameter
+from ufl.core.expr import Expr
+
+from lucifex.solver import BoundaryConditions
+from lucifex.fdm import (DT, AB1, FiniteDifference, FunctionSeries, ConstantSeries, Series, 
+                        finite_difference_discretize,
+                        testfunction, trialfunction, inner, grad)
+from lucifex.utils import is_tensor, extract_integrand
+
+from .stabilization import supg_diffusivity, supg_reaction, supg_velocity, supg_tau
+
+
+def darcy_streamfunction(
+    psi: FunctionSeries,
+    rho: Expr | Function,
+    k: Expr | Function | Constant | float,
+    mu: Expr | Function | Constant | float,
+    beta: Constant | float,
+) -> tuple[Form, Form]:
+    """
+    `∇·(μKᵀ·∇ψ / det(K)) = cosβ ∂ρ/∂x - sinβ ∂ρ/∂y`
+
+    for tensor-valued `K` or
+
+    `∇·(μ·∇ψ / K) = cosβ ∂ρ/∂x - sinβ ∂ρ/∂y`
+
+    for scalar-valued `K`.
+    """
+    v = testfunction(psi)
+    psi = trialfunction(psi)
+    if is_tensor(k):
+        F_lhs = -(mu / det(k)) * inner(grad(v), transpose(k) * grad(psi)) * dx 
+    else:
+        F_lhs = -(mu / k) * inner(grad(v), grad(psi)) * dx
+    F_rhs = -inner(v, cos(beta) * Dx(rho, 0) - sin(beta) * Dx(rho, 1)) * dx
+    return F_lhs, F_rhs
+
+
+def streamfunction_velocity(psi: Function) -> Expr:
+    """
+    `𝐮 = ((0, 1), (-1, 0))·∇ψ`
+    """
+    return as_matrix([[0, 1], [-1, 0]]) * grad(psi)
+
+
+def darcy_incompressible(
+    u_p: FunctionSeries,
+    rho,
+    k,
+    mu,
+    beta: Constant | float,
+    p_bcs: BoundaryConditions | None = None,
+) -> list[Form]:
+    """
+    `∇⋅𝐮 = -ε(1 - η)Da R(s,c)` \\
+    `𝐮 = -(K/μ)⋅(∇p + ρĝ)`
+    
+    `F(𝐮,p;𝐯,q) = ∫ q(∇·𝐮) dx + ∫ q ε(1 - η)Da R(s,c) dx` \\
+    `+ ∫ 𝐯·(μ K⁻¹⋅𝐮) dx - ∫ p(∇·𝐯) dx - ∫ 𝐯·ρĝ dx + ∫ p(𝐯·n) ds`
+
+    NOTE use `pc_factor_mat_solver_type='mumps'`
+    """
+    v, q = TestFunctions(u_p.function_space)
+    u, p = TrialFunctions(u_p.function_space)
+    n = FacetNormal(u_p.function_space.mesh)
+    g = as_vector([sin(beta), -cos(beta)])
+    
+    if is_tensor(k):
+        F_velocity = inner(v, mu * inv(k) * u) * dx
+    else:
+        F_velocity = inner(v, mu * u / k) * dx
+    F_pressure = -p * div(v) * dx
+    F_buoyancy = -inner(v, g) * rho * dx
+    F_div = q * div(u) * dx
+
+    forms = [F_velocity, F_pressure, F_buoyancy, F_div]
+
+    if p_bcs is not None:
+        ds, p_natural = p_bcs.boundary_data(u_p.function_space, 'natural')
+        F_bcs = sum([inner(v, n) * pD * ds(i) for pD, i in p_natural])
+        forms.append(F_bcs)
+
+    return forms
+
+
+def darcy_compressible(
+    u_p: FunctionSeries,
+    rho,
+    k,
+    mu,
+    beta: Constant | float,
+    c: Function,
+    s: Function,
+    reaction: Callable,
+    epsilon: Constant,
+    eta: Constant,
+    Da: Constant,
+    p_bcs: BoundaryConditions | None = None,
+) -> list[Form]:
+    forms = darcy_incompressible(u_p, rho, k, mu, beta, p_bcs)
+    q = TestFunctions(u_p.function_space)[1]
+    F_reac = q * epsilon * (1 - eta) * Da * reaction(s, c) * dx
+    forms.append(F_reac)
+    return forms
+
+
+def advection_diffusion_cg(
+    c: FunctionSeries,
+    dt: Constant,
+    phi: Series | Function | Expr,
+    u: FunctionSeries,
+    Ra: Constant,
+    d: Series | Function | Expr,
+    D_adv: FiniteDifference | tuple[FiniteDifference, FiniteDifference],
+    D_diff: FiniteDifference,
+    D_phi: FiniteDifference = AB1,
+    supg: str | None = None,
+    c_neumann: BoundaryConditions | None = None,
+    expand: bool = False,
+) -> list[Form]:
+    """
+    `ϕ∂c/∂t + 𝐮·∇c = 1/Ra ∇·(D·∇c)`
+    """
+    v = testfunction(c)
+
+    if isinstance(phi, Series):
+        phi = D_phi(phi)
+    if isinstance(d, Series):
+        d = D_phi(d)
+
+    dcdt = DT(c, dt)
+    F_dcdt = v * dcdt * dx
+
+    match D_adv:
+        case D_adv_u, D_adv_c:
+            adv = (1/phi) * inner(D_adv_u[False](u), grad(D_adv_c(c)))
+        case D_adv:
+            adv = (1/phi) * D_adv(inner(u, grad(c)))
+    F_adv = v * adv * dx
+
+    diff = -(1/Ra) * (1/phi) * div(d * grad(D_diff(c)))
+    if expand:
+        assert not is_tensor(d)
+        diff_expand = (
+            -(1/Ra) * (d / phi) * div(grad(D_diff(c))), 
+            -(1/Ra) * (1/phi) * inner(grad(d), grad(D_diff(c))), 
+        )
+        F_diff = (1/Ra) * inner(grad(v), grad(D_diff(c))) * dx + v * diff_expand[1] * dx
+    else:
+        F_diff = (1/Ra) * inner(grad(v / phi), d * grad(D_diff(c))) * dx
+
+    forms = [F_dcdt, F_adv, F_diff]
+
+    if supg is not None:
+        u_eff = supg_velocity(phi, u, Ra, D_adv, D_diff)
+        d_eff = supg_diffusivity(Ra, D_diff)
+        tau = supg_tau(supg, c.function_space.mesh, u_eff, d_eff)        
+        res = dcdt + adv + diff
+        F_res = tau * inner(grad(v), u_eff) * res * dx
+        forms.append(F_res)
+
+    if c_neumann is not None:
+        n = FacetNormal(c.function_space.mesh)
+        ds, neumann_data = c_neumann.boundary_data(c.function_space, 'neumann')
+        F_neumann = sum([(1 / Ra) * v * inner(d * cN, n) * ds(i) for i, cN in neumann_data])
+        forms.append(F_neumann)
+
+    return forms
+
+
+# FIXME # TODO tensor valued d
+def advection_diffusion_dg(
+    c: FunctionSeries,
+    dt: Constant,
+    phi: Function | Expr | Series,
+    u: FunctionSeries,
+    Ra: Constant,
+    d: Function | Expr | Series, 
+    alpha: float,
+    gamma: float,
+    D_adv: tuple[FiniteDifference, FiniteDifference],
+    D_diff: FiniteDifference,
+    D_phi: FiniteDifference = AB1,
+    c_bcs: BoundaryConditions | None = None,
+) -> list[Form]:
+    if c_bcs is None:
+        c_bcs = BoundaryConditions()
+    ds, c_dirichlet, c_neumann = c_bcs.boundary_data(c.function_space, 'dirichlet', 'neumann')
+
+    if isinstance(phi, Series):
+        phi = D_phi(phi)
+    if isinstance(d, Series):
+        d = D_phi(d)
+
+    v = c.testfunction
+    h = CellDiameter(c.function_space.mesh)
+    n = FacetNormal(c.function_space.mesh)
+
+    F_dcdt = v * DT(c, dt) * dx
+
+    D_adv_u, D_adv_c = D_adv
+    u_ = (1/phi) * (D_adv_u(u) - (1/Ra) * grad(phi))
+    c_adv = D_adv_c(c)
+    outflow = conditional(gt(dot(u_, n), 0), 1, 0)
+
+    F_adv_dx = -inner(grad(v), u_ * c_adv) * dx
+    F_adv_dS = 2 * inner(jump(v, n), avg(outflow * u_ * c_adv)) * dS
+    F_adv_ds = inner(v, outflow * inner(u_, n) * c_adv) * ds 
+    F_adv_ds += sum([inner(v, (1 - outflow) * inner(u_, n) * cD) * ds(i) for cD, i in c_dirichlet])
+    #### alternatice c.f. wells, burkardt
+    # un = 0.5 * (inner(u, n) + abs(inner(u, n)))
+    # un = outflow * inner(u, n)
+    # F_adv_dS = inner(jump(v), un('+') * c('+') - un('-') * c('-')) * dS
+    # F_adv_dS = inner(jump(v), jump(un * c)) * dS
+    # F_adv_ds = v * (un * c + ud * cD) * ds(i)   # NOTE this applies DiricletBC on inflow only?
+    ####
+    F_adv = F_adv_dx + F_adv_dS + F_adv_ds
+
+    c_diff = D_diff(c)
+    # + ∫ ∇v⋅∇c dx
+    F_diff_dx = inner(grad(v), grad(c_diff)) * dx
+    # - ∫ [vn]⋅{∇c} dS
+    F_diff_dS = -inner(jump(v, n), avg(grad(c_diff))) * dS
+    # - ∫ [vn]⋅{∇c} dS
+    F_diff_dS += -inner(avg(grad(v)), jump(c_diff, n)) * dS
+    # + ∫ (α / h)[vn]⋅[cn] dS
+    F_diff_dS += (alpha / avg(h)) * inner(jump(v, n), jump(c_diff, n)) * dS # TODO h('+') or avg(h) ?
+    # ...
+    F_diff_ds = sum([-(inner(grad(v), (c_diff - cD) * n) + inner(v * n, grad(c_diff))) * ds(i) for cD, i in c_dirichlet])
+    F_diff_ds += sum([(gamma / h) * v * (c_diff - cD) * ds(i) for cD, i in c_dirichlet])
+    F_diff_ds += sum([-v * cN * ds(i) for cN, i in c_neumann])
+    F_diff = (1/Ra) * (F_diff_dx + F_diff_dS + F_diff_ds)
+
+    return [F_dcdt, F_adv, F_diff]
+
+
+def advection_diffusion_reaction_cg(
+    c: FunctionSeries,
+    dt: Constant,
+    phi: Function | Expr | Series,
+    u: FunctionSeries,
+    Ra: Constant,
+    d: Function | Expr | Series, 
+    Da: Constant,
+    r: Function | Expr | Series | tuple[Callable, tuple],
+    D_adv: FiniteDifference | tuple[FiniteDifference, FiniteDifference],
+    D_diff: FiniteDifference,
+    D_reac: FiniteDifference | tuple[FiniteDifference, ...],
+    D_phi: FiniteDifference = AB1,
+    supg: str | None = None,
+    c_neumann: BoundaryConditions | None = None,
+    expand: bool = False,
+) -> list[Form]:
+    """
+    `ϕ∂c/∂t + 𝐮·∇c = 1/Ra ∇·(D·∇c) + Da R`
+    """
+    if not Da:
+        return advection_diffusion_cg(c, dt, phi, u, Ra, d, D_adv, D_diff, D_phi, supg, c_neumann, expand)
+    else:
+        forms = advection_diffusion_cg(c, dt, phi, u, Ra, d, D_adv, D_diff, D_phi, None, c_neumann, expand)
+
+    if isinstance(phi, Series):
+        phi = D_phi(phi)
+
+    v = testfunction(c)
+    r = finite_difference_discretize(r, D_reac, c)
+    reac = -Da * r / phi 
+    F_reac = v * reac * dx
+
+    forms.append(F_reac)
+
+    if supg is not None:
+        u_eff = supg_velocity(phi, u, Ra, D_adv, D_diff)
+        d_eff = supg_diffusivity(Ra, D_diff)
+        r_eff = supg_reaction(dt, phi, Da, D_reac)
+        tau = supg_tau(supg, c.function_space.mesh, u_eff, d_eff, r_eff)   
+        dcdt, adv, diff = (extract_integrand(f) for f in forms[:3])
+        res = dcdt + adv + diff + reac
+        F_res = tau * inner(grad(v), u_eff) * res * dx
+        forms.append(F_res)
+
+    return forms
+
+
+def advection_diffusion_reaction_dg(
+    c: FunctionSeries,
+    dt: Constant,
+    phi: Function | Expr | Series,
+    u,
+    Ra: Constant,
+    d,
+    Da: Constant,
+    r,
+    alpha: float,
+    gamma: float,
+    D_adv: tuple[FiniteDifference, FiniteDifference],
+    D_diff: FiniteDifference,
+    D_reac: FiniteDifference | tuple[FiniteDifference, FiniteDifference],
+    D_phi: FiniteDifference = AB1,
+    c_bcs: BoundaryConditions | None = None,
+) -> list[Form]:
+    
+    forms = advection_diffusion_dg(c, dt, phi, u, Ra, d, D_adv, D_diff, D_phi, alpha, gamma, c_bcs)
+
+    if not Da:
+        return forms
+    
+    if isinstance(phi, Series):
+        phi = D_phi(phi)
+
+    r = finite_difference_discretize(r, D_reac, c)
+    v = c.testfunction
+    F_reac = -v * Da * (r / phi) * dx
+    forms.append(F_reac)
+
+    return forms
+
+
+def evolution(
+    s: FunctionSeries,
+    dt: Constant,
+    varphi: Function | Constant | float,
+    epsilon: Constant,
+    Da: Constant,
+    r: Function | Expr | Series | tuple[Callable, tuple],
+    D_reac: FiniteDifference | tuple[FiniteDifference, ...],
+) -> tuple[Form, Form]:
+    """
+    `𝜑 ∂s/∂t = -ε Da R(s, c)`
+    """
+    v = testfunction(s)
+
+    F_dsdt = v * DT(s, dt) * dx
+    r = finite_difference_discretize(r, D_reac, s)
+    F_reac = v * (epsilon * Da / varphi) * r * dx
+
+    return F_dsdt, F_reac
+
+
+def evolution_expression(
+    s: FunctionSeries,
+    dt: Constant | ConstantSeries,
+    varphi: Function | Constant | float,
+    epsilon: Constant,
+    Da: Constant,
+    r: Series | Expr | Function,
+    D_reac: FiniteDifference | tuple[FiniteDifference, ...],
+) -> Expr:
+    """
+    `𝜑 ∂s/∂t = -ε Da R`
+
+    rearranged after finite difference discretization into the algebraic expression
+
+    `s¹ = s⁰ - Δt ε Da 𝒟(R) / 𝜑`.
+
+    under the assumption that 𝒟(R) is explicit in `s`.
+    """
+    if isinstance(dt, ConstantSeries):
+        dt = dt[0]
+        
+    DiscretizationError =  RuntimeError('Expression requires reaction term to be explicit in saturation')
+    if isinstance(D_reac, FiniteDifference):
+        if D_reac.is_implicit:
+            raise DiscretizationError
+    else:
+        if D_reac[0].is_implicit:
+            raise DiscretizationError
+
+    r = finite_difference_discretize(r, D_reac, s)
+    return s[0] - dt * (epsilon * Da / varphi) * r
