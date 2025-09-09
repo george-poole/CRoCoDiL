@@ -1,4 +1,4 @@
-DIR_NAME='convection_reaction/'
+DIR_NAME='./data/'
 DEST="${DIR_NAME}/backup"
 
 rsync -a $DIR_NAME $DEST \
