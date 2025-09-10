@@ -2,7 +2,7 @@ from typing import Callable
 
 from dolfinx.fem import Function, Constant
 from ufl import (dx, dS, Form, CellDiameter, FacetNormal,
-                 as_matrix, Dx, div, sin, cos, 
+                 as_matrix, Dx, div, sin, cos, TrialFunction, TestFunction,
                  jump, avg, det, transpose, TestFunctions, TrialFunctions, 
                  inv, as_vector, dot, conditional, gt, as_vector, conditional)
 from ufl.geometry import CellDiameter
@@ -10,8 +10,8 @@ from ufl.core.expr import Expr
 
 from lucifex.solver import BoundaryConditions
 from lucifex.fdm import (DT, AB1, FiniteDifference, FunctionSeries, ConstantSeries, Series, 
-                        finite_difference_discretize,
-                        testfunction, trialfunction, inner, grad)
+                        finite_difference_discretize)
+from lucifex.fdm.ufl_operators import inner, grad
 from lucifex.utils import is_tensor, extract_integrand
 
 from .stabilization import supg_diffusivity, supg_reaction, supg_velocity, supg_tau
@@ -33,12 +33,12 @@ def darcy_streamfunction(
 
     for scalar-valued `K`.
     """
-    v = testfunction(psi)
-    psi = trialfunction(psi)
+    v = TestFunction(psi.function_space)
+    psi_trial = TrialFunction(psi.function_space)
     if is_tensor(k):
-        F_lhs = -(mu / det(k)) * inner(grad(v), transpose(k) * grad(psi)) * dx 
+        F_lhs = -(mu / det(k)) * inner(grad(v), transpose(k) * grad(psi_trial)) * dx 
     else:
-        F_lhs = -(mu / k) * inner(grad(v), grad(psi)) * dx
+        F_lhs = -(mu / k) * inner(grad(v), grad(psi_trial)) * dx
     F_rhs = -inner(v, cos(beta) * Dx(rho, 0) - sin(beta) * Dx(rho, 1)) * dx
     return F_lhs, F_rhs
 
@@ -84,7 +84,7 @@ def darcy_incompressible(
 
     if p_bcs is not None:
         ds, p_natural = p_bcs.boundary_data(u_p.function_space, 'natural')
-        F_bcs = sum([inner(v, n) * pD * ds(i) for pD, i in p_natural])
+        F_bcs = sum([inner(v, n) * pN * ds(i) for pN, i in p_natural])
         forms.append(F_bcs)
 
     return forms
@@ -122,13 +122,13 @@ def advection_diffusion_cg(
     D_diff: FiniteDifference,
     D_phi: FiniteDifference = AB1,
     supg: str | None = None,
-    c_neumann: BoundaryConditions | None = None,
+    bcs: BoundaryConditions | None = None,
     expand: bool = False,
 ) -> list[Form]:
     """
     `ϕ∂c/∂t + 𝐮·∇c = 1/Ra ∇·(D·∇c)`
     """
-    v = testfunction(c)
+    v = TestFunction(c.function_space)
 
     if isinstance(phi, Series):
         phi = D_phi(phi)
@@ -166,10 +166,9 @@ def advection_diffusion_cg(
         F_res = tau * inner(grad(v), u_eff) * res * dx
         forms.append(F_res)
 
-    if c_neumann is not None:
-        n = FacetNormal(c.function_space.mesh)
-        ds, neumann_data = c_neumann.boundary_data(c.function_space, 'neumann')
-        F_neumann = sum([(1 / Ra) * v * inner(d * cN, n) * ds(i) for i, cN in neumann_data])
+    if bcs is not None:
+        ds, c_neumann = bcs.boundary_data(c.function_space, 'neumann')
+        F_neumann = sum([(1 / Ra) * v * cN * ds(i) for i, cN in c_neumann])
         forms.append(F_neumann)
 
     return forms
@@ -188,18 +187,18 @@ def advection_diffusion_dg(
     D_adv: tuple[FiniteDifference, FiniteDifference],
     D_diff: FiniteDifference,
     D_phi: FiniteDifference = AB1,
-    c_bcs: BoundaryConditions | None = None,
+    bcs: BoundaryConditions | None = None,
 ) -> list[Form]:
-    if c_bcs is None:
-        c_bcs = BoundaryConditions()
-    ds, c_dirichlet, c_neumann = c_bcs.boundary_data(c.function_space, 'dirichlet', 'neumann')
+    if bcs is None:
+        bcs = BoundaryConditions()
+    ds, c_dirichlet, c_neumann = bcs.boundary_data(c.function_space, 'dirichlet', 'neumann')
 
     if isinstance(phi, Series):
         phi = D_phi(phi)
     if isinstance(d, Series):
         d = D_phi(d)
 
-    v = c.testfunction
+    v = TestFunction(c.function_space)
     h = CellDiameter(c.function_space.mesh)
     n = FacetNormal(c.function_space.mesh)
 
@@ -255,21 +254,21 @@ def advection_diffusion_reaction_cg(
     D_reac: FiniteDifference | tuple[FiniteDifference, ...],
     D_phi: FiniteDifference = AB1,
     supg: str | None = None,
-    c_neumann: BoundaryConditions | None = None,
+    bcs: BoundaryConditions | None = None,
     expand: bool = False,
 ) -> list[Form]:
     """
     `ϕ∂c/∂t + 𝐮·∇c = 1/Ra ∇·(D·∇c) + Da R`
     """
     if not Da:
-        return advection_diffusion_cg(c, dt, phi, u, Ra, d, D_adv, D_diff, D_phi, supg, c_neumann, expand)
+        return advection_diffusion_cg(c, dt, phi, u, Ra, d, D_adv, D_diff, D_phi, supg, bcs, expand)
     else:
-        forms = advection_diffusion_cg(c, dt, phi, u, Ra, d, D_adv, D_diff, D_phi, None, c_neumann, expand)
+        forms = advection_diffusion_cg(c, dt, phi, u, Ra, d, D_adv, D_diff, D_phi, None, bcs, expand)
 
     if isinstance(phi, Series):
         phi = D_phi(phi)
 
-    v = testfunction(c)
+    v = TestFunction(c.function_space)
     r = finite_difference_discretize(r, D_reac, c)
     reac = -Da * r / phi 
     F_reac = v * reac * dx
@@ -304,10 +303,10 @@ def advection_diffusion_reaction_dg(
     D_diff: FiniteDifference,
     D_reac: FiniteDifference | tuple[FiniteDifference, FiniteDifference],
     D_phi: FiniteDifference = AB1,
-    c_bcs: BoundaryConditions | None = None,
+    bcs: BoundaryConditions | None = None,
 ) -> list[Form]:
     
-    forms = advection_diffusion_dg(c, dt, phi, u, Ra, d, D_adv, D_diff, D_phi, alpha, gamma, c_bcs)
+    forms = advection_diffusion_dg(c, dt, phi, u, Ra, d, D_adv, D_diff, D_phi, alpha, gamma, bcs)
 
     if not Da:
         return forms
@@ -316,7 +315,7 @@ def advection_diffusion_reaction_dg(
         phi = D_phi(phi)
 
     r = finite_difference_discretize(r, D_reac, c)
-    v = c.testfunction
+    v = TestFunction(c.function_space)
     F_reac = -v * Da * (r / phi) * dx
     forms.append(F_reac)
 
@@ -335,7 +334,7 @@ def evolution(
     """
     `𝜑 ∂s/∂t = -ε Da R(s, c)`
     """
-    v = testfunction(s)
+    v = TestFunction(s.function_space)
 
     F_dsdt = v * DT(s, dt) * dx
     r = finite_difference_discretize(r, D_reac, s)

@@ -13,7 +13,8 @@ from lucifex.viz import (
 from lucifex.io.post import co_postprocess
 from lucifex.utils import StrSlice, as_index
 
-from .plot import TeX, plot_horizontal_average
+from .plot import plot_horizontal_average
+from .utils import TeX
 
 
 @co_postprocess

@@ -9,12 +9,7 @@
 *.mp4
 *.pdf
 *.pickle
-
-# private
-_*.ipynb
-_*.py
-_*.sh
-*_/
+*PARAMETERS.txt
 
 # interactive
 .ipynb_checkpoints
@@ -29,7 +24,9 @@ ipython_config.py
 *.o
 *.so
 *.py[cdox]
-__pycache__/
+*__pycache__/
+*__jit__/
+*__ffcx__/
 
 # distribution
 bin/

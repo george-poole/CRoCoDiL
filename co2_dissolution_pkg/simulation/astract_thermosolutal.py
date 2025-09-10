@@ -9,13 +9,13 @@ from lucifex.mesh import MeshBoundary
 from lucifex.fdm import (
     FunctionSeries, ConstantSeries, FiniteDifference, AB1, Series, 
     ExprSeries, finite_difference_order,
-    cflk_timestep, cfl_timestep, kinetic_timestep,
+    cflr_timestep, cfl_timestep, reactive_timestep,
 )
 from lucifex.solver import (
     BoundaryConditions, OptionsPETSc, eval_solver, 
     dx_solver, ds_solver,
 )
-from lucifex.utils import extremum
+from lucifex.utils import CellType, extremum
 from lucifex.sim import Simulation
 
 from ..formulae.secondary import flux, mass_dissolved, mass_capillary_trapped
@@ -119,8 +119,9 @@ def thermosolutal_convection_dissolution(
         psi = FunctionSeries((Omega, 'P', psi_deg), 'psi')
         u = FunctionSeries((Omega, "P", psi_deg - 1, 2), "u", order)
     else:
+        u_fam = 'BDMCF' if Omega.topology.cell_name() == CellType.QUADRILATERAL else 'BDM'
         u_deg = 1
-        up = FunctionSeries((Omega, [('BDM', u_deg), ('DP', u_deg - 1)]), "up", order)
+        up = FunctionSeries((Omega, [(u_fam, u_deg), ('DP', u_deg - 1)]), "up", order)
         u = up.sub(0, "u")
 
     # transport fields
@@ -188,12 +189,12 @@ def thermosolutal_convection_dissolution(
 
     # timestep solver
     if DA:
-        cflk_r = Da * r[0]
+        cflr_r = Da * r[0]
     else:
-        cflk_r = 0.0
+        cflr_r = 0.0
     solvers.append(
-        eval_solver(dt, cflk_timestep)(
-            u[0], cflk_r, cfl_h, cfl_courant, k_courant, dt_max, dt_min,
+        eval_solver(dt, cflr_timestep)(
+            u[0], cflr_r, cfl_h, cfl_courant, k_courant, dt_max, dt_min,
         ) 
     )
 
@@ -231,7 +232,7 @@ def thermosolutal_convection_dissolution(
         )
         if DA:
             solvers.append(
-                eval_solver(ConstantSeries(Omega, "dtK"), kinetic_timestep)(cflk_r)
+                eval_solver(ConstantSeries(Omega, "dtK"), reactive_timestep)(cflr_r)
             )
         if RA:
             solvers.append(

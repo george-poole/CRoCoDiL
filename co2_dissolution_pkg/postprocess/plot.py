@@ -7,48 +7,14 @@ from matplotlib.figure import Figure
 from matplotlib.cm import ScalarMappable
 from matplotlib.animation import FuncAnimation
 from lucifex.fdm import FunctionSeries, ConstantSeries, GridSeries, NumericSeries
-from lucifex.viz import (plot_line, plot_colormap, plot_twins, 
+from lucifex.viz import (plot_line, plot_colormap, plot_twin_lines, 
                          plot_contours, animate_colormap, create_mosaic_figure)
 from lucifex.io.post import postprocess
 from lucifex.utils import StrSlice, as_index, as_indices
 
-from .compute import compute_horizontal_average
 from ..formulae.contour import contour_peak_trajectories, filter_trajectories, contour_coordinates
-
-
-class TeX:
-    X = 'x'
-    """
-    x-coordinate
-    """
-    Y = 'y'
-    """
-    y-coordinate
-    """
-    T = 't'
-    """
-    time
-    """
-    MIN_X = staticmethod(lambda u: f'\\min_{{\mathbf{{x}}}}({u})')
-    """
-    `minₓ(u)`
-    """
-    MAX_X = staticmethod(lambda u: f'\\max_{{\mathbf{{x}}}}({u})')
-    """
-    `maxₓ(u)`
-    """
-    ABS_MIN_X = staticmethod(lambda u: f'\\min_{{\mathbf{{x}}}}|\mathbf{{{u}}}|')
-    """
-    `minₓ|𝐮|`
-    """
-    ABS_MAX_X = staticmethod(lambda u: f'\\max_{{\mathbf{{x}}}}|\mathbf{{{u}}}|')
-    """
-    `maxₓ|𝐮|`
-    """
-    BRAKET = lambda a: f'\langle {a}\\rangle'
-    """
-    `⟨u⟩`
-    """
+from .compute import compute_horizontal_average
+from .utils import TeX
 
 
 @postprocess
@@ -219,7 +185,7 @@ def plot_twinned_timeseries(
     if twins:
         assert len(u) == 2
         assert len(labels) == 2
-        fig_ax = plot_twins(
+        fig_ax = plot_twin_lines(
             (u[0].time_series, u[1].time_series), (u[0].series, u[1].series), labels,  x_label=TeX.T)
         fig_axs.append(fig_ax)
 

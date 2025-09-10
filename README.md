@@ -1,10 +1,10 @@
 # Convective CO<sub>2</sub> Dissolution Package
 
-### Installation
+### Installation (macOS)
 
-See `https://github.com/george-poole/LUCiFEx` to install `lucifex`
+See `https://github.com/george-poole/LUCiFEx` to install the `lucifex` package.
 
-`git clone <URL>`
+`git clone https://github.com/george-poole/CO2Dissolution.git`
 
 ### Running Simulations from the Command Line
 
@@ -25,12 +25,12 @@ for 3 simultaneous simulations with $(Ra, N_x)\in\{(250, 100), (500, 150), (750,
 
 See also `nohup`, `htop`, `bg`, `disown`, `jobs`, `kill` and `caffeinate` (MacOS) for process management.
 
-`<COMMAND>` (Ctrl + Z) then `bg` move process to background <br>
-`<COMMAND> &` begin process in background <br>
+`<COMMAND>` (Ctrl + Z) then `bg` to move process to background <br>
+`<COMMAND> &` to begin process in background <br>
 
 `nohup <COMMAND> & disown`
 
-`caffeinate -i <COMMAND>`
+`caffeinate -d -i -s -t <SECONDS> <COMMAND>`
 
 ### Running Simulations in iPython notebooks
 
