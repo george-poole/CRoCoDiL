@@ -50,7 +50,7 @@ def contour_coordinates(
             raise ValueError(f'`alpha` must be in interval [0, 1], not {alpha}.')     
         fmin = np.min(f)
         fmax = np.max(f)
-        alpha = alpha * fmin + (1 - alpha) * fmax
+        alpha = (1 - alpha) * fmin + alpha * fmax
 
     contours = measure.find_contours(f, alpha)
 

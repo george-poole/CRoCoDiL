@@ -4,7 +4,8 @@ from ufl import (as_vector, conditional, as_vector, sqrt, conditional, lt, tanh)
 from ufl.geometry import CellDiameter, MinCellEdgeLength, Circumradius
 from ufl.core.expr import Expr
 
-from lucifex.fdm import (DT, FiniteDifference, inner, grad)
+from lucifex.fdm import DT, FiniteDifference
+from lucifex.fdm.ufl_operators import inner, grad
 
 
 def supg_velocity(

@@ -18,8 +18,8 @@ from lucifex.solver import (
 from lucifex.utils import CellType, extremum
 from lucifex.sim import Simulation
 
-from ..formulae.secondary import flux, mass_dissolved, mass_capillary_trapped
-from ..formulae.solvers import (
+from ..math.secondary import flux, mass_dissolved, mass_capillary_trapped
+from ..math.solvers import (
     streamfunction_solvers, advection_diffusion_solver,
     advection_diffusion_reaction_solver, evolution_solver,
     darcy_solver, streamfunction_method, continuous)
@@ -30,7 +30,7 @@ Theta: TypeAlias = FunctionSeries
 S: TypeAlias = FunctionSeries
 Phi: TypeAlias = FunctionSeries
 U: TypeAlias = FunctionSeries
-def thermosolutal_convection_dissolution(
+def abstract_simulation(
     # domain
     Omega: Mesh,
     dOmega: MeshBoundary,

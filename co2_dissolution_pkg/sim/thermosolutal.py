@@ -3,17 +3,17 @@ from types import EllipsisType
 from lucifex.fdm import FiniteDifference, CN, AB
 from lucifex.utils import CellType, Perturbation, cubic_noise
 from lucifex.solver import OptionsPETSc, OptionsJIT
-from lucifex.sim import create_simulation
+from lucifex.sim import configure_simulation
 
 
 from .domain import create_rectangle_domain
-from .astract_thermosolutal import thermosolutal_convection_dissolution
+from .abstract import abstract_simulation
 
-@create_simulation(
+@configure_simulation(
     jit=OptionsJIT("./__jit__/"),
     dir_base="./data",
 )
-def thermosolutal_convective_dissolution_2d(
+def thermosolutal_2d(
     # mesh
     Lx: float = 2.0,
     Ly: float = 1.0,
@@ -78,7 +78,7 @@ def thermosolutal_convective_dissolution_2d(
     if c_limits is Ellipsis:
         c_limits = (0, 1 + delta)
 
-    return thermosolutal_convection_dissolution(
+    return abstract_simulation(
         # domain
         Omega=Omega, 
         dOmeg=dOmega, 

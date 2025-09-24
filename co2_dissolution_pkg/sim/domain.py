@@ -25,8 +25,3 @@ def create_rectangle_domain(
     )
 
     return mesh, boundary
-
-
-def create_anticline_domain(
-) -> tuple[Mesh, MeshBoundary]:
-    ...

@@ -1,17 +1,17 @@
 from types import EllipsisType
 
-from lucifex.fdm import ConstantSeries, FiniteDifference, CN, AB
+from lucifex.fdm import ConstantSeries, FiniteDifference, CN, AB2
 from lucifex.utils import CellType, Perturbation, cubic_noise
 from lucifex.solver import BoundaryConditions, OptionsPETSc, OptionsJIT, dS_solver
-from lucifex.sim import create_simulation
+from lucifex.sim import configure_simulation
 
-from ..formulae.secondary import flux
+from ..math.secondary import flux
 
 from .domain import create_rectangle_domain
-from .astract_thermosolutal import thermosolutal_convection_dissolution
+from .abstract import abstract_simulation
 
 
-@create_simulation(
+@configure_simulation(
     jit=OptionsJIT("./__jit__/"),
 )
 def rayleigh_darcy_2d(
@@ -32,7 +32,7 @@ def rayleigh_darcy_2d(
     cfl_h: str | float = "hmin",
     cfl_courant: float = 0.75,
     # time discretization
-    D_adv: FiniteDifference | tuple[FiniteDifference, FiniteDifference] = (AB(2), CN),
+    D_adv: FiniteDifference | tuple[FiniteDifference, FiniteDifference] = (AB2, CN),
     D_diff: FiniteDifference = CN,
     # stabilization
     theta_stabilization: str | tuple[str, float] | tuple[float, float] = None,
@@ -53,7 +53,7 @@ def rayleigh_darcy_2d(
         ("dirichlet", dOmega['upper'], 0.0),
         ('neumann', dOmega['left', 'right'], 0.0)
     )
-    # c₀ = 1 - y + N(x, y)
+    # θ₀ = 1 - y + N(x, y)
     theta_ics = Perturbation(
         lambda x: 1 - x[1],
         cubic_noise(['neumann', 'dirichlet'], [Lx, Ly], theta_freq, theta_seed),
@@ -63,7 +63,7 @@ def rayleigh_darcy_2d(
     
     density = lambda theta: -theta
 
-    simulation = thermosolutal_convection_dissolution(
+    simulation = abstract_simulation(
         # domain
         Omega=Omega, 
         dOmega=dOmega, 
@@ -93,9 +93,9 @@ def rayleigh_darcy_2d(
     )
 
     theta, u, g = simulation['theta', 'u', 'g']
-    fGamma = ConstantSeries(Omega, "fVert", shape=(2, ))
+    j = ConstantSeries(Omega, "j", shape=(2, ))
     simulation.solvers.append(
-        dS_solver(fGamma, flux, lambda x: x[1] - Ly / 2, facet_side="+")(
+        dS_solver(j, flux, lambda x: x[1] - Ly / 2, facet_side="+")(
             theta[0], u[0], g[0], Rb,
         )
     )

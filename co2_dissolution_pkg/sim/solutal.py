@@ -5,20 +5,20 @@ import numpy as np
 from lucifex.fdm import ConstantSeries, FiniteDifference, CN, AB
 from lucifex.utils import CellType, Perturbation, cubic_noise
 from lucifex.solver import OptionsPETSc, OptionsJIT, dS_solver
-from lucifex.sim import create_simulation
+from lucifex.sim import configure_simulation
 
-from ..formulae.constitutive import permeability_cross_bedded
-from ..formulae.secondary import flux
-from ..formulae.utils import heaviside
+from ..math.constitutive import permeability_cross_bedded
+from ..math.secondary import flux
+from ..math.utils import heaviside
 
 from .domain import create_rectangle_domain
-from .astract_thermosolutal import thermosolutal_convection_dissolution
+from .abstract import abstract_simulation
 
 
-@create_simulation(
+@configure_simulation(
     jit=OptionsJIT("./__jit__/"),
 )
-def solutal_convective_dissolution_2d(
+def solutal_2d(
     # mesh
     Lx: float = 2.0,
     Ly: float = 1.0,
@@ -75,7 +75,7 @@ def solutal_convective_dissolution_2d(
     density = lambda c: c
     reaction = lambda s, c: s * (1 - c)
 
-    simulation = thermosolutal_convection_dissolution(
+    simulation = abstract_simulation(
         # domain
         Omega=Omega, 
         dOmega=dOmega, 
@@ -124,10 +124,10 @@ def solutal_convective_dissolution_2d(
     return simulation
 
 
-@create_simulation(
+@configure_simulation(
     jit=OptionsJIT("./__jit__/"),
 )
-def solutal_convective_dissolution_inclined(
+def solutal_inclined_2d(
     # mesh
     Lx: float = 5.0,
     Ly: float = 1.0,
@@ -188,7 +188,7 @@ def solutal_convective_dissolution_inclined(
     density = lambda c: c
     reaction = lambda s, c: s * (1 - c)
 
-    return thermosolutal_convection_dissolution(
+    return abstract_simulation(
         # domain
         Omega=Omega, 
         dOmega=dOmega, 

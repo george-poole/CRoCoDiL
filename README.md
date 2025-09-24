@@ -1,141 +1,200 @@
-# Convective CO<sub>2</sub> Dissolution Package
+# CO<sub>2</sub> Dissolution Package
 
-### Installation (macOS)
+## Installation (macOS)
 
 See `https://github.com/george-poole/LUCiFEx` to install the `lucifex` package.
 
 `git clone https://github.com/george-poole/CO2Dissolution.git`
 
-### Running Simulations from the Command Line
+## Governing equations
 
-In the terminal, <br>
-`python simulate.py --help` to list all argument names and default values
+This package solves a non-dimensionalized system of PDEs describing flow in a porous medium coupled to the advection-diffusion-reaction of dissolved CO<sub>2</sub>, advection-diffusion of heat and and dissolution of capillary-trapped CO<sub>2</sub>. For $(\textbf{x}, t)\in\Omega\times[0, \infty)$, the governing equations are
 
-To run a single simulation <br>
-e.g. `python python simulate .py --write_step 1 --n_stop 10 --Ra 420 `<br>
-for a simulation with $Ra=420$ integrating 10 steps and writing data at every step
-
-To run multiple simulations in parallel, use GNU `parallel`.
-
-e.g. `parallel -j 2 "python simulate.py --Ra {1} --Da {2}" ::: 200.0 400.0 ::: 5.0 10.0` <br>
-for 2 simultaneous simulations with $(Ra, Da)\in\{(200, 5), (200, 10), (400, 5), (400, 10)\}$
-
-e.g. `parallel -j 3 --link "python simulate.py --Ra {1} --Nx {2}" ::: 250 500 750 ::: 100, 150, 200` <br>
-for 3 simultaneous simulations with $(Ra, N_x)\in\{(250, 100), (500, 150), (750, 200)\}$
-
-See also `nohup`, `htop`, `bg`, `disown`, `jobs`, `kill` and `caffeinate` (MacOS) for process management.
-
-`<COMMAND>` (Ctrl + Z) then `bg` to move process to background <br>
-`<COMMAND> &` to begin process in background <br>
-
-`nohup <COMMAND> & disown`
-
-`caffeinate -d -i -s -t <SECONDS> <COMMAND>`
-
-### Running Simulations in iPython notebooks
-
-In a `.ipynb` notebook, for example
-```python
-from lucifex.sim import integrate
-from simulate import carbon_dissolution
-
-simulation = carbon_dissolution(store_step=1)(Ra=420)
-integrate(simulation, *args, **kwargs)
-```
-
-Timeseries data is available for postprocessing once `integrate` has finished running.
-```python
-from lucifex.viz import plot_line
-umax = simulation['umax']
-fig, ax = plot_line((umax.time_series, umax.value_series))
-```
-
-### Exporting Results
-
-To copy a simulation directory containing data and figures <br>
-`rsync -r <SOURCE> <DESTINATION>`
-
-or to include the cumbersome data files <br>
-`rsync -r --exclude "*.h5" --exclude "*.xdmf" <SOURCE> <DESTINATION>`
-
-
-### Postprocessing Interactively
-
-`...`
-
-### Postprocessing Non-Interactively
-
-`...`
-
-## Governing Equations
-
-
-See `formulae.py` for full details of the finite element (in space) and finite difference (in time) discretizations. 
-
-This package solves the non-dimensionalized system of PDEs describing flow in a porous medium
-
-$$\begin{equation}
-\tag{$1$}
-\begin{matrix}
-\nabla\cdot\textbf{u} = 0 \\
-\textbf{u} = -\frac{\mathsf{K}}{\mu}\cdot(\nabla p + \rho\,\textbf{e}_g)
-\end{matrix}\iff\nabla\cdot\bigg(\frac{\mu\mathsf{K}^{\mathsf{T}}\cdot\nabla\psi}{\det\mathsf{K}}\bigg) = \cos\beta\frac{\partial\rho}{\partial x}-\sin\beta\frac{\partial\rho}{\partial y}~~~,
-\end{equation}$$
-
-coupled to the advection-diffusion-reaction of dissolved CO<sub>2</sub> coupled to 
-$$\begin{equation}
-\tag{$2$}
-\phi\frac{\partial c}{\partial t} + \textbf{u}\cdot\nabla c = \frac{1}{Ra}\nabla\cdot(\mathsf{D}\cdot\nabla c) + Da\,R~~~,
-\end{equation}
+$$
+\begin{align}
+\phi\frac{\partial\theta}{\partial t} + \textbf{u}\cdot\nabla\theta &= \frac{1}{Rb}\nabla\cdot(\mathsf{G}\cdot\nabla\theta)~~~,\\
+\phi\frac{\partial c}{\partial t} + \textbf{u}\cdot\nabla c &= \frac{1}{Ra}\nabla\cdot(\mathsf{D}\cdot\nabla c) + Da\,R~~~, \\
+\nabla\cdot\textbf{u} &= 0 \\
+\textbf{u} &= -\frac{\mathsf{K}}{\mu}\cdot(\nabla p + \rho\,\textbf{e}_g) \\
+\varphi\frac{\partial s}{\partial t}&=-\varepsilon Da\,R
+\end{align}
 $$
 
-advection-diffusion of heat
-$$\begin{equation}
-\tag{$2$}
-\phi\frac{\partial\theta}{\partial t} + \textbf{u}\cdot\nabla\theta = \frac{1}{Rb}\nabla\cdot(\mathsf{G}\cdot\nabla\theta)~~~,
-\end{equation}
+with constitutive relations for the inert rock formation's porosity $\varphi(\textbf{x})$, permeability $K(\phi)$, solutal dispersion $\mathsf{D}(\phi, \textbf{u})$, thermal dispersion $\mathsf{G}(\phi, \textbf{u})$, fluid density $\mu(c, \theta)$, fluid viscosity $\rho(c, \theta)$ and reaction rate $R(s, c, \theta)$. The porous medium's effective porosity is $\phi = \varphi(1 - s)$ for a saturation $s$ of capillary-trapped CO<sub>2</sub>. 
+
+On $\partial\Omega$ a combination of Dirichlet $(\text{D})$ and Neumann $(\text{N})$ boundary conditions apply for $\theta$ and $c$, or essential $(\text{E})$ and natural $(\text{N})$ boundary conditions for $\textbf{u}$ and $p$.
+
+$$
+\begin{align}
+\theta &= \theta_{\text{D}}\quad\text{for~}\textbf{x}\in\partial\Omega_{\text{D},\theta} \\
+\textbf{n}\cdot(\mathsf{G}\cdot\nabla\theta) &= \theta_{\text{N}}\quad\text{for~}\textbf{x}\in\partial\Omega_{\text{N},\theta}=\partial\Omega/\partial\Omega_{\text{D},\theta} \\
+c &= c_{\text{D}}\quad\text{for~}\textbf{x}\in\partial\Omega_{\text{D},c}\\
+\textbf{n}\cdot(\mathsf{D}\cdot\nabla c) &= c_{\text{N}}\quad\text{for~}\textbf{x}\in\partial\Omega_{\text{N},c}=\partial\Omega/\partial\Omega_{\text{D},c} \\
+\textbf{n}\cdot\textbf{u} &= u_{\text{E}}\quad\text{for~}\textbf{x}\in\partial\Omega_{\text{E}} \\
+p &= p_{\text{N}}\quad\text{for~}\textbf{x}\in\partial\Omega_{\text{N}}=\partial\Omega/\partial\Omega_{\text{E}}
+\end{align}
 $$
 
-and dissolution of capillary-trapped CO<sub>2</sub>
-$$\begin{equation}
-\tag{$3$}
-\varphi\frac{\partial s}{\partial t}=-\varepsilon Da\,R
-\end{equation}$$
+Initial conditions are 
 
-in an abitrary domain $\Omega$ with prescribed relations for the inert rock porosity $\varphi(\textbf{x})$, permeability $K(\phi)$, solutal dispersion $\mathsf{D}(\phi, \textbf{u})$, thermal dispersion $\mathsf{G}(\phi, \textbf{u})$, fluid density $\mu(c, \theta)$, fluid viscosity $\rho(c, \theta)$ and reaction rate $R(s, c, \theta)$, and furthermore subject to arbitrary initial conditions for $s, c, \theta$ and boundary conditions on $\partial\Omega$ for $c, \theta$ and either $\textbf{u}, p$ or $\psi$. The effective porosity in the medium is $\phi = \varphi(1 - s)$ for a saturation $s$ of capillary-trapped CO<sub>2</sub>. The unit vector pointing in the direction of gravity is $\textbf{e}_g=(\sin\beta, -\cos\beta)$ for a domain inclined at an angle $\beta$ to the horizontal.
+$$
+\begin{align}
+\theta(\textbf{x}, t=0) &= \theta_0(\textbf{x}) \\
+c(\textbf{x}, t=0) &= c_0(\textbf{x}) \\
+s(\textbf{x}, t=0) &= s_0(\textbf{x})
+\end{align}
+$$
 
-Default settings are for an isotropic, homogeneous, horizontal porous medium with isoviscous fluid such that
+The streamfunction formulation in 2D
 
+$$
+\begin{align}
+\textbf{u} &= 
+\begin{pmatrix}
+-\frac{\partial\psi}{\partial y} \\
+\frac{\partial\psi}{\partial x}
+\end{pmatrix} \\
+\nabla\cdot\bigg(\frac{\mu\mathsf{K}^{\mathsf{T}}\cdot\nabla\psi}{\det\mathsf{K}}\bigg) &= \cos\beta\frac{\partial\rho}{\partial x}-\sin\beta\frac{\partial\rho}{\partial y}
+\end{align}
+$$
+
+is an alternative to equations $(3)$ and $(4)$, given that the unit vector pointing in the direction of gravity is $\textbf{e}_g=-\sin\beta\textbf{e}_x -\cos\beta\textbf{e}_y$ for a domain inclined at an angle $\beta$ to the horizontal.
+
+Unless otherwise specified, constitutive relations, boundary conditions and initial conditions assume their defaults
+
+* gravity unit vector $\textbf{e}_g=-\textbf{e}_y$ in 2D or $\textbf{e}_g=-\textbf{e}_z$ in 3D
 * rock porosity $\varphi=1$
 * permeability $K(\phi)=\phi^2$
 * solutal dispersion $D(\phi)=\phi$
 * solutal dispersion $G(\phi)=\phi$
-* fluid viscosity $\mu=1$ 
-* inclination angle $\beta=0$
+* fluid density $\rho=c-\theta$
+* fluid viscosity $\mu=1$
+* no-flux temperature boundary condition $\textbf{n}\cdot(\mathsf{G}\cdot\nabla\theta)=0$ for $\textbf{x}\in\partial\Omega$
+* no-flux concentration boundary condition $\textbf{n}\cdot(\mathsf{D}\cdot\nabla c)=0$ for $\textbf{x}\in\partial\Omega$
+* no-flux velocity boundary condition $\textbf{n}\cdot\textbf{u}=0$ for $\textbf{x}\in\partial\Omega$
+
+to model an impermeable horizontal domain containing an isotropic, homogeneous porous medium and isoviscous fluid with a linear density.
 
 Solutal or thermal convection can be 'turned off' by setting the solutal Rayleigh number $Ra$ or thermal Rayleigh number $Rb$ to zero. Likewise the reaction and/or dissolution can be 'turned off' by setting the Damkohler number $Da$ and/or density ratio $\varepsilon$ to zero.
 
-### 2D Solutal Case
+Specific choices of constitutive relations, boundary conditions and initial conditions may be user-defined to create novel models. Classic models such as Rayleigh-Taylor or Rayleigh-Benard convection can also be recovered from appropriate choices.
+
+See `co2_dissolution_pkg.math` module for full details of the finite element formulations.
+
+### Novel Models
+
+#### Solutal Convection-Reaction
 
 * rectangular domain $\Omega=[0, L_x] \times [0, L_y]$
 * fluid density $\rho(c)=c$ 
 * reaction rate $r(s,c)=s(1-c)$
-* no-flux boundary condition for the flow $\textbf{n}\cdot\textbf{u}=0\Leftrightarrow\psi=0$ on $\partial\Omega$ <br>
-* no-flux boundary condition for the solute $\textbf{n}\cdot\nabla c=0$ on $\partial\Omega$
 * initial saturation $s(x,y,t=0)=s_r\text{H}(y-h_0)$
 * initial concentration with noise $c(x,y,t=0)=c_r\text{H}(y-h_0) + \mathcal{N}(x,y)$
-* physical parameter space $(Ra, Da, \varepsilon, h_0, s_r, c_r)$
+* parameterised by $(Ra, Da, \varepsilon, h_0, s_r, c_r)$
 
-### 2D Thermosolutal Case
+#### Thermosolutal Convection-Reaction
 
 * rectangular domain $\Omega=[0, L_x] \times [0, L_y]$
 * fluid density $\rho(c, \theta)=c - \gamma\theta$ 
 * reaction rate $r(s,c, \theta)=s(1+\delta\theta-c)$
-* no-flux boundary condition for the flow $\textbf{n}\cdot\textbf{u}=0\Leftrightarrow\psi=0$ on $\partial\Omega$ <br>
-* no-flux boundary condition for the solute $\textbf{n}\cdot\nabla c=0$ on $\partial\Omega$
-* lateral no-flux boundary conditions for the heat $\frac{\partial\theta}{\partial y}=0$ on $x=0$ and $x=L_x$
-* fixed temperature boundary conditions for the heat $\theta=1$ on $y=0$ and $\theta=0$ on $y=L_y$
+* temperature boundary conditions $$\begin{align*}
+\textbf{n}\cdot\nabla\theta&=0\quad\text{on~} x=0,L_x \\
+\theta&=1\quad\text{on~} y=0 \\
+\theta&=0\quad\text{on~} y=L_y
+\end{align*}$$
 * initial saturation $s(x,y,t=0)=s_r$
 * initial concentration $c(x,y,t=0)=c_0(y)$
 * initial temperature with noise $\theta(x,y,t=0)=1 - y + \mathcal{N}(x, y)$
-* physical parameter space $(Ra, Rb, Da, \varepsilon, \gamma, \delta, s_r)$
+* parameterised by $(Ra, Rb, Da, \varepsilon, \gamma, \delta, s_r)$
+
+### Classic Models
+
+#### Rayleigh-Taylor Convection
+
+* rectangular domain $\Omega=[0, L_x] \times [0, L_y]$
+* fluid density $\rho(\theta)=-\theta$ 
+* initial temperature $\theta(x,y,t=0)=\text{H}(h_0 - y)$
+* parameterised by $(Rb, h_0)$
+
+#### Rayleigh-Benard Convection
+
+* rectangular domain $\Omega=[0, L_x] \times [0, L_y]$
+* fluid density $\rho(\theta)=-\theta$ 
+* temperature boundary conditions $$\begin{align*}
+\textbf{n}\cdot\nabla\theta&=0\quad\text{on~} x=0,L_x \\
+\theta&=1\quad\text{on~} y=0 \\
+\theta&=0\quad\text{on~} y=L_y
+\end{align*}$$
+* initial temperature with noise $\theta(x,y,t=0)=1 - y + \mathcal{N}(x, y)$
+* parameterised by $Rb$
+
+## Simulations
+
+### Creating a custom simulation
+
+To define a simulation for a model within the framework of governing equations $(1)$-$(5)$,
+
+```python
+# file `custom_simulation.py` 
+from lucifex.sim import configure_simulation, integrate_from_cli
+from co2_dissolution_pkg.sim import abstract_simulation
+
+@configure_simulation(
+    write_step=...,
+    # optional arguments to configure I/O
+)
+def custom_simulation(*args, **kwargs):
+    # code specifying choices of constitutive relations, 
+    # boundary conditions and initial conditions
+    return abstract_simulation(*args, **kwargs)
+
+if __name__ == "__main__":
+    integrate_from_cli(custom_simulation)
+```
+
+Examples of simulations can be found in the module `co2_dissolution_pkg.sim`. 
+
+### Running simulations
+
+#### From the command line
+
+In the terminal, <br>
+`python custom_simulation.py --help` to list all argument names and default values.
+
+To run a simulation with the argument `X` set to $X=X_0$ 
+<br>
+`python custom_custom_simulation.py --X X0`<br>
+
+To run multiple simulations in parallel, the command line utility GNU `parallel` is recommended.
+
+To run `N_PROC` simultaneous processes with the arguments `X` and `Y` taking values $(X, Y)\in\{(X_0, Y_0), (X_0, Y_1), (X_1, Y_0), (X_1, Y_1)\}$
+<br>
+`parallel -j N_PROC "python custom_simulation.py --X {1} --Y {2}" ::: X0 X1 ::: Y0 Y1` <br>
+
+To run `N_PROC` simultaneous processes with the arguments `X` and `Y` taking values $(X, Y)\in\{(X_0, Y_0), (X_1, Y_1), (X_2, Y_2)\}$
+<br>
+`parallel -j N_PROC --link "python custom_simulation.py --X {1} --Y {2}" ::: X0 X1 X2 ::: Y0 Y1 Y2` <br>
+
+Further command line utilities:
+* `caffeinate` e.g. `caffeinate -d -i -s -t <SECONDS> <COMMAND>` to prevent sleeping
+* `nohup` e.g. `nohup <COMMAND> & disown` to run without interruption
+* `htop` and `kill` for process mangement
+* (Ctrl + Z) followed by `bg` to move process to background <br>
+
+Timeseries data will be written to disk in accordance with the `write_step` argument given at the command line, or if unspecified with its value configured in the decorator function `configure_simulation`. 
+
+Postprocessing can the be carried out in a separate script or notebook by making use of the `lucifex.io` and `lucifex.viz` modules.
+
+#### In an iPython notebook
+
+For example,
+```python
+# file `custom_simulation.ipynb`
+from lucifex.sim import integrate
+from custom_simulation import custom_simulation
+
+simulation = custom_simulation(store_step=...)(*args, **kwargs)
+integrate(simulation, n_stop=..., t_stop=...)
+```
+
+Provided that `store_step` is not `None`, timeseries data is kept in memory by the simulation object once the `integrate` routine has finished. A quantity stored under the name `'q'` can be accessed as `simulation['q']` for postprocessing in the iPython notebook.

@@ -7,7 +7,7 @@ from typing_extensions import Self
 import numpy as np
 from scipy.integrate import solve_ivp
 
-from .secondary import mass_capillary_trapped, mass_dissolved
+from ..secondary import mass_capillary_trapped, mass_dissolved
 
 
 P = TypeVar('P')
@@ -80,25 +80,6 @@ class ModelParams:
     epsilon: float
     L: float
 
-
-class DiffusiveModel(Model):
-    """
-    Valid in the limit `Da -> ∞` and `ε -> 0` at times `t < 1/Da`
-    """
-    def __init__(self, t, y, Ra, Da, Sr, epsilon):
-        super.__init__()
-
-    @staticmethod
-    def concentration_upper(t, Da, Sr):
-        if not isinstance(t, np.ndarray):
-            t = np.array(t)
-        return 1 - np.exp(-Da * Sr * t / (1 - Sr))
-    
-
-class DaInftyDiffusiveModel:
-
-    ...
-    
 
 @dataclass
 class FluxModelParams(ModelParams):

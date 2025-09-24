@@ -3,17 +3,17 @@ from types import EllipsisType
 from lucifex.fdm import ConstantSeries, FiniteDifference, CN, AB
 from lucifex.utils import CellType, Perturbation, cubic_noise
 from lucifex.solver import BoundaryConditions, OptionsPETSc, OptionsJIT, dS_solver
-from lucifex.sim import create_simulation
+from lucifex.sim import configure_simulation
 
-from ..formulae.secondary import flux
-from ..formulae.utils import heaviside
+from ..math.secondary import flux
+from ..math.utils import heaviside
 
 from .domain import create_rectangle_domain
-from .astract_thermosolutal import thermosolutal_convection_dissolution
+from .abstract import abstract_simulation
 
 
 # FIXME FIXME FIXME
-@create_simulation(
+@configure_simulation(
     jit=OptionsJIT("./__jit__/"),
     dir_base="./data",
 )
@@ -62,7 +62,7 @@ def rayleigh_taylor_2d(
     
     density = lambda c: c
 
-    simulation = thermosolutal_convection_dissolution(
+    simulation = abstract_simulation(
         # domain
         Omega=Omega, 
         dOmega=dOmega, 

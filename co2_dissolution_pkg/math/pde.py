@@ -4,7 +4,7 @@ from dolfinx.fem import Function, Constant
 from ufl import (dx, dS, Form, CellDiameter, FacetNormal,
                  as_matrix, Dx, div, sin, cos, TrialFunction, TestFunction,
                  jump, avg, det, transpose, TestFunctions, TrialFunctions, 
-                 inv, as_vector, dot, conditional, gt, as_vector, conditional)
+                 inv, as_vector, dot, conditional, gt, as_vector)
 from ufl.geometry import CellDiameter
 from ufl.core.expr import Expr
 
@@ -84,7 +84,7 @@ def darcy_incompressible(
 
     if p_bcs is not None:
         ds, p_natural = p_bcs.boundary_data(u_p.function_space, 'natural')
-        F_bcs = sum([inner(v, n) * pN * ds(i) for pN, i in p_natural])
+        F_bcs = sum([inner(v, n) * pN * ds(i) for i, pN in p_natural])
         forms.append(F_bcs)
 
     return forms
@@ -140,9 +140,15 @@ def advection_diffusion_cg(
 
     match D_adv:
         case D_adv_u, D_adv_c:
-            adv = (1/phi) * inner(D_adv_u[False](u), grad(D_adv_c(c)))
+            adv = (1 / phi) * inner(D_adv_u[False](u), grad(D_adv_c(c)))
         case D_adv:
-            adv = (1/phi) * D_adv(inner(u, grad(c)))
+            adv = (1 / phi) * D_adv(inner(u, grad(c)))
+    # NOTE equivalent to 
+    # adv = (1 / phi) * finite_difference_discretize(
+    #     (lambda u, c: inner(u, grad(c)), (u, c)),
+    #     D_adv,
+    #     c,
+    # )
     F_adv = v * adv * dx
 
     diff = -(1/Ra) * (1/phi) * div(d * grad(D_diff(c)))
@@ -168,7 +174,7 @@ def advection_diffusion_cg(
 
     if bcs is not None:
         ds, c_neumann = bcs.boundary_data(c.function_space, 'neumann')
-        F_neumann = sum([(1 / Ra) * v * cN * ds(i) for i, cN in c_neumann])
+        F_neumann = sum([-(1 / Ra) * v * cN * ds(i) for i, cN in c_neumann])
         forms.append(F_neumann)
 
     return forms
@@ -205,14 +211,14 @@ def advection_diffusion_dg(
     F_dcdt = v * DT(c, dt) * dx
 
     D_adv_u, D_adv_c = D_adv
-    u_ = (1/phi) * (D_adv_u(u) - (1/Ra) * grad(phi))
-    c_adv = D_adv_c(c)
-    outflow = conditional(gt(dot(u_, n), 0), 1, 0)
+    uEff = (1/phi) * (D_adv_u(u) - (1/Ra) * grad(phi))
+    cAdv = D_adv_c(c)
+    outflow = conditional(gt(dot(uEff, n), 0), 1, 0)
 
-    F_adv_dx = -inner(grad(v), u_ * c_adv) * dx
-    F_adv_dS = 2 * inner(jump(v, n), avg(outflow * u_ * c_adv)) * dS
-    F_adv_ds = inner(v, outflow * inner(u_, n) * c_adv) * ds 
-    F_adv_ds += sum([inner(v, (1 - outflow) * inner(u_, n) * cD) * ds(i) for cD, i in c_dirichlet])
+    F_adv_dx = -inner(grad(v), uEff * cAdv) * dx
+    F_adv_dS = 2 * inner(jump(v, n), avg(outflow * uEff * cAdv)) * dS
+    F_adv_ds = inner(v, outflow * inner(uEff, n) * cAdv) * ds 
+    F_adv_ds += sum([inner(v, (1 - outflow) * inner(uEff, n) * cD) * ds(i) for cD, i in c_dirichlet])
     #### alternatice c.f. wells, burkardt
     # un = 0.5 * (inner(u, n) + abs(inner(u, n)))
     # un = outflow * inner(u, n)
@@ -222,18 +228,18 @@ def advection_diffusion_dg(
     ####
     F_adv = F_adv_dx + F_adv_dS + F_adv_ds
 
-    c_diff = D_diff(c)
+    cDiff = D_diff(c)
     # + ∫ ∇v⋅∇c dx
-    F_diff_dx = inner(grad(v), grad(c_diff)) * dx
+    F_diff_dx = inner(grad(v), grad(cDiff)) * dx
     # - ∫ [vn]⋅{∇c} dS
-    F_diff_dS = -inner(jump(v, n), avg(grad(c_diff))) * dS
+    F_diff_dS = -inner(jump(v, n), avg(grad(cDiff))) * dS
     # - ∫ [vn]⋅{∇c} dS
-    F_diff_dS += -inner(avg(grad(v)), jump(c_diff, n)) * dS
+    F_diff_dS += -inner(avg(grad(v)), jump(cDiff, n)) * dS
     # + ∫ (α / h)[vn]⋅[cn] dS
-    F_diff_dS += (alpha / avg(h)) * inner(jump(v, n), jump(c_diff, n)) * dS # TODO h('+') or avg(h) ?
+    F_diff_dS += (alpha / avg(h)) * inner(jump(v, n), jump(cDiff, n)) * dS # TODO h('+') or avg(h) ?
     # ...
-    F_diff_ds = sum([-(inner(grad(v), (c_diff - cD) * n) + inner(v * n, grad(c_diff))) * ds(i) for cD, i in c_dirichlet])
-    F_diff_ds += sum([(gamma / h) * v * (c_diff - cD) * ds(i) for cD, i in c_dirichlet])
+    F_diff_ds = sum([-(inner(grad(v), (cDiff - cD) * n) + inner(v * n, grad(cDiff))) * ds(i) for cD, i in c_dirichlet])
+    F_diff_ds += sum([(gamma / h) * v * (cDiff - cD) * ds(i) for cD, i in c_dirichlet])
     F_diff_ds += sum([-v * cN * ds(i) for cN, i in c_neumann])
     F_diff = (1/Ra) * (F_diff_dx + F_diff_dS + F_diff_ds)
 

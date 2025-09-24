@@ -7,7 +7,7 @@ from dolfinx.fem import Function, Constant
 from ufl import FacetNormal
 from ufl.core.expr import Expr
 
-from lucifex.fdm import inner, grad
+from lucifex.fdm.ufl_operators import inner, grad
 
 
 def mass_capillary_trapped(
