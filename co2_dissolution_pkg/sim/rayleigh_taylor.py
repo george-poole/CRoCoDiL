@@ -7,9 +7,7 @@ from lucifex.sim import configure_simulation
 
 from ..math.secondary import flux
 from ..math.utils import heaviside
-
-from .domain import create_rectangle_domain
-from .abstract import abstract_simulation
+from .factory import create_simulation, create_rectangle_domain
 
 
 # FIXME FIXME FIXME
@@ -62,7 +60,7 @@ def rayleigh_taylor_2d(
     
     density = lambda c: c
 
-    simulation = abstract_simulation(
+    simulation = create_simulation(
         # domain
         Omega=Omega, 
         dOmega=dOmega, 

@@ -7,8 +7,7 @@ from lucifex.sim import configure_simulation
 
 from ..math.secondary import flux
 
-from .domain import create_rectangle_domain
-from .abstract import abstract_simulation
+from .factory import create_simulation, create_rectangle_domain
 
 
 @configure_simulation(
@@ -63,7 +62,7 @@ def rayleigh_benard_2d(
     
     density = lambda theta: -theta
 
-    simulation = abstract_simulation(
+    simulation = create_simulation(
         # domain
         Omega=Omega, 
         dOmega=dOmega, 

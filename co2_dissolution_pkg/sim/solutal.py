@@ -11,9 +11,7 @@ from lucifex.sim import configure_simulation
 from ..math.constitutive import permeability_cross_bedded
 from ..math.secondary import flux
 from ..math.utils import heaviside
-
-from .domain import create_rectangle_domain
-from .abstract import abstract_simulation
+from .factory import create_simulation, create_rectangle_domain
 
 
 @configure_simulation(
@@ -69,14 +67,14 @@ def solutal_2d(
     s_ics = heaviside(lambda x: x[1] - h0, sr, eps=heaviside_eps) 
     c_ics = SpatialPerturbation(
         heaviside(lambda x: x[1] - h0, cr, eps=heaviside_eps),
-        cubic_noise(['neumann', 'neumann'], [Lx, Ly], c_freq, c_seed, (0, 1)),
+        cubic_noise(['neumann', 'neumann'], [Lx, Ly], c_freq, c_seed),
         [Lx, Ly],
         c_eps,
         )   
     density = lambda c: c
     reaction = lambda s, c: s * (1 - c)
 
-    simulation = abstract_simulation(
+    simulation = create_simulation(
         # domain
         Omega=Omega, 
         dOmega=dOmega, 
@@ -185,7 +183,7 @@ def solutal_inclined_2d(
     s_ics = heaviside(lambda x: x[0] - h0, sr, eps=H_eps) 
     c_ics = SpatialPerturbation(
         heaviside(lambda x: x[0] - h0, cr, eps=H_eps),
-        cubic_noise(['neumann', 'neumann'], [Lx, Ly], c_freq, c_seed, (0, 1)),
+        cubic_noise(['neumann', 'neumann'], [Lx, Ly], c_freq, c_seed),
         [Lx, Ly],
         c_eps,
         )   
@@ -194,7 +192,7 @@ def solutal_inclined_2d(
     density = lambda c: c
     reaction = lambda s, c: s * (1 - c)
 
-    return abstract_simulation(
+    return create_simulation(
         # domain
         Omega=Omega, 
         dOmega=dOmega, 

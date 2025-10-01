@@ -1,4 +1,4 @@
-from .abstract import abstract_simulation
+from .factory import create_simulation
 from .solutal import solutal_2d, solutal_inclined_2d
 from .thermosolutal import thermosolutal_2d
 from .rayleigh_benard import rayleigh_benard_2d

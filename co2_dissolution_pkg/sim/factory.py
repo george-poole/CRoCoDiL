@@ -6,7 +6,7 @@ from ufl.core.expr import Expr
 from dolfinx.mesh import Mesh
 
 from lucifex.fem import LUCiFExFunction as Function, LUCiFExConstant as Constant
-from lucifex.mesh import MeshBoundary
+from lucifex.mesh import rectangle_mesh, mesh_boundary, MeshBoundary
 from lucifex.fdm import (
     FunctionSeries, ConstantSeries, FiniteDifference, AB1, Series, 
     ExprSeries, finite_difference_order,
@@ -26,12 +26,12 @@ from ..math.solvers import (
     darcy_solver, streamfunction_method, continuous)
 
 
+Phi: TypeAlias = FunctionSeries
 C: TypeAlias = FunctionSeries
 Theta: TypeAlias = FunctionSeries
 S: TypeAlias = FunctionSeries
-Phi: TypeAlias = FunctionSeries
 U: TypeAlias = FunctionSeries
-def abstract_simulation(
+def create_simulation(
     # domain
     Omega: Mesh,
     dOmega: MeshBoundary,
@@ -80,7 +80,7 @@ def abstract_simulation(
     | tuple[FiniteDifference, FiniteDifference]
     | tuple[FiniteDifference, FiniteDifference, FiniteDifference] = AB1,
     # stabilization
-    c_stabilization: str | tuple[float, float] = None,
+    c_stabilization: str | tuple[float, float] | None = None,
     c_limits: tuple[float, float] | EllipsisType | None = None,
     theta_stabilization: str | tuple[float, float] = None,
     theta_limits: tuple[float, float] | EllipsisType | None = None,
@@ -97,14 +97,14 @@ def abstract_simulation(
     namespace_extras: Iterable = (),
 ) -> Simulation:    
     """
-    Default constitutive relations are uniform rock porosity `𝜑 = 1`, 
-    isotropic quadratic permeability `K(ϕ)=ϕ²`, isotropic linear solutal
-    dispersion `D(ϕ)=ϕ`, isotropic linear thermal dispersion `G(ϕ)=ϕ`, 
-    uniform viscosity `μ = 1`.
+    Default boundary conditions are no flux of fluid, solute and heat everywhere on `∂Ω`. 
 
     Default gravity unit vector is `e₉ = -eʸ` in 2D or `e₉ = -eᶻ` in 3D.
     
-    Default boundary conditions are no flux of fluid, solute and heat everywhere on `∂Ω`. 
+    Default constitutive relations are uniform rock porosity `𝜑 = 1`, 
+    isotropic quadratic permeability `K(ϕ) = ϕ²`, isotropic linear solutal
+    dispersion `D(ϕ) = ϕ`, isotropic linear thermal dispersion `G(ϕ) = ϕ`, 
+    uniform viscosity `μ = 1`.
 
     In general: rock porosity is a spatial function `𝜑(𝐱)`; permeability `K(ϕ)` is a 
     function of porosity; solutal and thermal dispersions are functions `D(ϕ, 𝐮)`, `G(ϕ, 𝐮)` of porosity
@@ -282,4 +282,28 @@ def abstract_simulation(
     namespace.extend(namespace_extras)
     
     return Simulation(solvers, t, dt, namespace)
+
+
+def create_rectangle_domain(
+    Lx: float,
+    Ly: float,
+    Nx: int,
+    Ny: int,
+    cell: str,
+    name: str = 'LxLy',
+    clockwise_names: tuple[str, str, str, str] = ('upper', 'right', 'lower', 'left'),
+) -> tuple[Mesh, MeshBoundary]:
+    
+    mesh = rectangle_mesh(Lx, Ly, Nx, Ny, name, cell)
+    boundary = mesh_boundary(
+        mesh,
+        {
+            clockwise_names[0]: lambda x: x[1] - Ly,
+            clockwise_names[1]: lambda x: x[0] - Lx,
+            clockwise_names[2]: lambda x: x[1],
+            clockwise_names[3]: lambda x: x[0],
+        },
+    )
+
+    return mesh, boundary
 

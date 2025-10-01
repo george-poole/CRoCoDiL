@@ -5,9 +5,7 @@ from lucifex.utils import CellType, SpatialPerturbation, cubic_noise
 from lucifex.solver import OptionsPETSc, OptionsJIT
 from lucifex.sim import configure_simulation
 
-
-from .domain import create_rectangle_domain
-from .abstract import abstract_simulation
+from .factory import create_simulation, create_rectangle_domain
 
 @configure_simulation(
     jit=OptionsJIT("./__jit__/"),
@@ -78,7 +76,7 @@ def thermosolutal_2d(
     if c_limits is Ellipsis:
         c_limits = (0, 1 + delta)
 
-    return abstract_simulation(
+    return create_simulation(
         # domain
         Omega=Omega, 
         dOmeg=dOmega, 
