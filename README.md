@@ -4,7 +4,7 @@
 
 See `https://github.com/george-poole/LUCiFEx` to install the `lucifex` package.
 
-`git clone https://github.com/george-poole/CO2Dissolution.git`
+`git clone https://github.com/george-poole/CO2DissolutionPackage.git`
 
 ## Governing equations
 
@@ -12,8 +12,8 @@ This package solves a non-dimensionalized system of PDEs describing flow in a po
 
 $$
 \begin{align}
-\phi\frac{\partial\theta}{\partial t} + \textbf{u}\cdot\nabla\theta &= \frac{1}{Rb}\nabla\cdot(\mathsf{G}\cdot\nabla\theta)~~~,\\
-\phi\frac{\partial c}{\partial t} + \textbf{u}\cdot\nabla c &= \frac{1}{Ra}\nabla\cdot(\mathsf{D}\cdot\nabla c) + Da\,R~~~, \\
+\phi\frac{\partial\theta}{\partial t} + \textbf{u}\cdot\nabla\theta &= \frac{1}{Rb}\nabla\cdot(\mathsf{G}\cdot\nabla\theta)\\
+\phi\frac{\partial c}{\partial t} + \textbf{u}\cdot\nabla c &= \frac{1}{Ra}\nabla\cdot(\mathsf{D}\cdot\nabla c) + Da\,R \\
 \nabla\cdot\textbf{u} &= 0 \\
 \textbf{u} &= -\frac{\mathsf{K}}{\mu}\cdot(\nabla p + \rho\,\textbf{e}_g) \\
 \varphi\frac{\partial s}{\partial t}&=-\varepsilon Da\,R
@@ -60,14 +60,16 @@ $$
 
 is an alternative to equations $(3)$ and $(4)$, given that the unit vector pointing in the direction of gravity is $\textbf{e}_g=-\sin\beta\textbf{e}_x -\cos\beta\textbf{e}_y$ for a domain inclined at an angle $\beta$ to the horizontal.
 
-Unless otherwise specified, constitutive relations, boundary conditions and initial conditions assume their defaults
+Refer to the `co2_dissolution_pkg.math` module for full details of the finite element elements formulations with finite differences in time.
+
+Unless otherwise specified, constitutive relations and boundary conditions assume the following defaults
 
 * gravity unit vector $\textbf{e}_g=-\textbf{e}_y$ in 2D or $\textbf{e}_g=-\textbf{e}_z$ in 3D
 * rock porosity $\varphi=1$
 * permeability $K(\phi)=\phi^2$
 * solutal dispersion $D(\phi)=\phi$
 * solutal dispersion $G(\phi)=\phi$
-* fluid density $\rho=c-\theta$
+* fluid density $\rho(c,\theta)=c-\theta$
 * fluid viscosity $\mu=1$
 * no-flux temperature boundary condition $\textbf{n}\cdot(\mathsf{G}\cdot\nabla\theta)=0$ for $\textbf{x}\in\partial\Omega$
 * no-flux concentration boundary condition $\textbf{n}\cdot(\mathsf{D}\cdot\nabla c)=0$ for $\textbf{x}\in\partial\Omega$
@@ -75,11 +77,9 @@ Unless otherwise specified, constitutive relations, boundary conditions and init
 
 to model an impermeable horizontal domain containing an isotropic, homogeneous porous medium and isoviscous fluid with a linear density.
 
-Solutal or thermal convection can be 'turned off' by setting the solutal Rayleigh number $Ra$ or thermal Rayleigh number $Rb$ to zero. Likewise the reaction and/or dissolution can be 'turned off' by setting the Damkohler number $Da$ and/or density ratio $\varepsilon$ to zero.
+Solutal or thermal convection can be 'switched off' by setting the solutal Rayleigh number $Ra$ or thermal Rayleigh number $Rb$ to `None`. Likewise setting the Damkohler number $Da$ to `None` (or zero) switches off the reaction, and setting the density ratio $\varepsilon$ `None` (or zero) prevents any evolution of the saturation $s$.
 
 Specific choices of constitutive relations, boundary conditions and initial conditions may be user-defined to create novel models. Classic models such as Rayleigh-Taylor or Rayleigh-Benard convection can also be recovered from appropriate choices.
-
-See `co2_dissolution_pkg.math` module for full details of the finite element formulations.
 
 ### Novel Models
 

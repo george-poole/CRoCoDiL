@@ -1,7 +1,8 @@
-from typing import Callable, TypeAlias
+from typing import Callable, Iterable, TypeAlias
 from types import EllipsisType
 
 import numpy as np
+from ufl.core.expr import Expr
 from dolfinx.mesh import Mesh
 
 from lucifex.fem import LUCiFExFunction as Function, LUCiFExConstant as Constant
@@ -34,12 +35,14 @@ def abstract_simulation(
     # domain
     Omega: Mesh,
     dOmega: MeshBoundary,
+    egx: Expr | Function | Constant | float | None = None,
+    egy: Expr | Function | Constant | float | None = None,
+    egz: Expr | Function | Constant | float | None = None,
     # physical 
-    Ra: float = 0,
-    Rb: float = 0,
-    Da: float = 0,
-    epsilon: float = 0,
-    beta: float = 0,
+    Ra: float | None = None,
+    Rb: float | None = None,
+    Da: float | None = None,
+    epsilon: float | None = None,
     # initial conditions
     c_ics = None,
     theta_ics = None,
@@ -88,13 +91,18 @@ def abstract_simulation(
     theta_petsc: OptionsPETSc | None = None,
     s_petsc: OptionsPETSc | EllipsisType | None = ...,
     # optional solvers
-    secondary: bool = False,      
+    secondary: bool = False,    
+    # solvers
+    secondary_extras: Iterable = (),
+    namespace_extras: Iterable = (),
 ) -> Simulation:    
     """
     Default constitutive relations are uniform rock porosity `𝜑 = 1`, 
     isotropic quadratic permeability `K(ϕ)=ϕ²`, isotropic linear solutal
     dispersion `D(ϕ)=ϕ`, isotropic linear thermal dispersion `G(ϕ)=ϕ`, 
-    uniform viscosity `μ = 1`. \\
+    uniform viscosity `μ = 1`.
+
+    Default gravity unit vector is `e₉ = -eʸ` in 2D or `e₉ = -eᶻ` in 3D.
     
     Default boundary conditions are no flux of fluid, solute and heat everywhere on `∂Ω`. 
 
@@ -106,6 +114,13 @@ def abstract_simulation(
 
     `ϕ = 𝜑(1 - s)` is the effective porosity.
     """
+    if all(i is None for i in (egx, egy, egz)):
+        if Omega.geometry.dim == 2:
+            egy = -1
+        if Omega.geometry.dim == 3:
+            egx = 0
+            egy = 0
+            egz = -1
 
     RA, DA, EPS, RB = (bool(_) for _ in (Ra, Da, epsilon, Rb))
     PSI = streamfunction_method(flow_petsc)
@@ -144,7 +159,6 @@ def abstract_simulation(
         s = Function((Omega, 'P', 1), 's', s_ics)
 
     # constitutive relations
-    beta = Constant(Omega, beta * np.pi / 180, 'beta')
     varphi = Function((Omega, 'P', 1), varphi, 'varphi')
     phi = ExprSeries(varphi * (1 - s), 'phi')
     k = ExprSeries(permeability(phi), 'k')
@@ -172,19 +186,19 @@ def abstract_simulation(
         else viscosity(theta),
         'mu',
     )
-    namespace.extend((beta, varphi, phi, k, rho, mu))
+    namespace.extend((varphi, phi, k, rho, mu))
 
     # flow solvers
     if PSI:
         psi_bcs = BoundaryConditions(("dirichlet", dOmega.union, 0.0)) if flow_bcs is Ellipsis else flow_bcs
         solvers.extend(
-            streamfunction_solvers(psi, u, rho[0], k[0], mu[0], beta, psi_bcs, flow_petsc)
+            streamfunction_solvers(psi, u, rho[0], k[0], mu[0], egx, egy, psi_bcs, flow_petsc)
         )
     else:
         u_bcs = BoundaryConditions(('essential', dOmega.union, (0.0, 0.0), 0)) if flow_bcs is Ellipsis else flow_bcs[0]
         p_bcs = None if flow_bcs is Ellipsis else flow_bcs[1]
         solvers.append(
-            darcy_solver(up, rho[0], k[0], mu[0], beta, u_bcs, p_bcs)
+            darcy_solver(up, rho[0], k[0], mu[0], egx, egy, egz, u_bcs, p_bcs)
         )
 
     # timestep solver
@@ -263,6 +277,9 @@ def abstract_simulation(
                     dOmega.union,
                 )(c[0], u[0], g[0], Rb)
             )
+
+    solvers.extend(secondary_extras)
+    namespace.extend(namespace_extras)
     
     return Simulation(solvers, t, dt, namespace)
 

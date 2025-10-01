@@ -1,7 +1,7 @@
 from types import EllipsisType
 
 from lucifex.fdm import FiniteDifference, CN, AB
-from lucifex.utils import CellType, Perturbation, cubic_noise
+from lucifex.utils import CellType, SpatialPerturbation, cubic_noise
 from lucifex.solver import OptionsPETSc, OptionsJIT
 from lucifex.sim import configure_simulation
 
@@ -27,7 +27,7 @@ def thermosolutal_2d(
     epsilon: float = 1e-2,
     # initial saturation
     sr = 0.1,
-    # temperature perturbation
+    # temperature SpatialPerturbation
     theta_eps: float = 1e-6,
     theta_freq: tuple[int, int] = (8, 8),
     theta_seed: tuple[int, int] = (1234, 5678),
@@ -64,7 +64,7 @@ def thermosolutal_2d(
     Omega, dOmega = create_rectangle_domain(Lx, Ly, Nx, Ny, cell)
 
     c_ics = lambda x: x[1]
-    theta_ics = Perturbation(
+    theta_ics = SpatialPerturbation(
         lambda x: 1 - x[1],
         cubic_noise(['neumann', 'dirichlet'], [Lx, Ly], theta_freq, theta_seed),
         theta_eps,

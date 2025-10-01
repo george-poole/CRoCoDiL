@@ -79,13 +79,13 @@ def density_power_law(
 
 def viscosity_power_law(
     c: Function,
-    beta: float,
+    b: float,
     n: float,
 ) -> Expr:
     """
     `μ(c) = 1 + βcⁿ`
     """
-    return 1 + beta * c ** n
+    return 1 + b * c ** n
 
 
 def reaction_power_law(

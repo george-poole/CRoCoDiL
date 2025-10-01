@@ -13,7 +13,7 @@ def create_rectangle_domain(
     clockwise_names: tuple[str, str, str, str] = ('upper', 'right', 'lower', 'left'),
 ) -> tuple[Mesh, MeshBoundary]:
     
-    mesh = rectangle_mesh(Lx, Ly, Nx, Ny, cell, name=name)
+    mesh = rectangle_mesh(Lx, Ly, Nx, Ny, name, cell)
     boundary = mesh_boundary(
         mesh,
         {

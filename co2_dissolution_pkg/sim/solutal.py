@@ -2,8 +2,9 @@ from types import EllipsisType
 
 import numpy as np
 
+from lucifex.fem import LUCiFExConstant as Constant
 from lucifex.fdm import ConstantSeries, FiniteDifference, CN, AB
-from lucifex.utils import CellType, Perturbation, cubic_noise
+from lucifex.utils import CellType, SpatialPerturbation, cubic_noise
 from lucifex.solver import OptionsPETSc, OptionsJIT, dS_solver
 from lucifex.sim import configure_simulation
 
@@ -66,7 +67,7 @@ def solutal_2d(
     """
     Omega, dOmega = create_rectangle_domain(Lx, Ly, Nx, Ny, cell)
     s_ics = heaviside(lambda x: x[1] - h0, sr, eps=heaviside_eps) 
-    c_ics = Perturbation(
+    c_ics = SpatialPerturbation(
         heaviside(lambda x: x[1] - h0, cr, eps=heaviside_eps),
         cubic_noise(['neumann', 'neumann'], [Lx, Ly], c_freq, c_seed, (0, 1)),
         [Lx, Ly],
@@ -134,11 +135,11 @@ def solutal_inclined_2d(
     Nx: int = 100,
     Ny: int = 100,
     cell: str = CellType.QUADRILATERAL,
+    beta: float = 45.0,
     # physical
     Ra: float = 1e3,
     Da: float = 1e2,
     epsilon: float = 1e-2,
-    beta: float = 45.0,
     # permeability constitutive relation
     kappa: float = 0.1,
     vartheta: float = 45.0,
@@ -147,7 +148,7 @@ def solutal_inclined_2d(
     sr: float = 0.2,
     h0: float | tuple[float, float, float] = 4.0,
     H_eps: float | None = None,
-    # concentration perturbation
+    # concentration SpatialPerturbation
     c_eps: float = 1e-6,
     c_freq: tuple[int, int] = (8, 8),
     c_seed: tuple[int, int] = (1234, 5678),
@@ -176,8 +177,13 @@ def solutal_inclined_2d(
     `c(x,y,t=0) = cr · H(x - h₀) + N(x, y)`
     """
     Omega, dOmega = create_rectangle_domain(Lx, Ly, Nx, Ny, cell)
+    beta_rad = beta * np.pi / 180
+    beta = Constant(Omega, beta_rad, name='beta')
+    egx = Constant(Omega, -np.sin(beta_rad))
+    egy = Constant(Omega, -np.cos(beta_rad))
+
     s_ics = heaviside(lambda x: x[0] - h0, sr, eps=H_eps) 
-    c_ics = Perturbation(
+    c_ics = SpatialPerturbation(
         heaviside(lambda x: x[0] - h0, cr, eps=H_eps),
         cubic_noise(['neumann', 'neumann'], [Lx, Ly], c_freq, c_seed, (0, 1)),
         [Lx, Ly],
@@ -192,11 +198,12 @@ def solutal_inclined_2d(
         # domain
         Omega=Omega, 
         dOmega=dOmega, 
+        egx=egx,
+        egy=egy,
         # physical
         Ra=Ra,
         Da=Da,
         epsilon=epsilon,
-        beta=beta,
         # initial conditions
         s_ics=s_ics, 
         c_ics=c_ics, 
@@ -223,6 +230,7 @@ def solutal_inclined_2d(
         s_petsc=s_petsc,
         # optional solvers
         secondary=secondary,
+        namespace_extras=[beta],
     )
 
 

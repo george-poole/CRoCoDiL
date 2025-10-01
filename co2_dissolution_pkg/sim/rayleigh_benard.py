@@ -1,7 +1,7 @@
 from types import EllipsisType
 
 from lucifex.fdm import ConstantSeries, FiniteDifference, CN, AB2
-from lucifex.utils import CellType, Perturbation, cubic_noise
+from lucifex.utils import CellType, SpatialPerturbation, cubic_noise
 from lucifex.solver import BoundaryConditions, OptionsPETSc, OptionsJIT, dS_solver
 from lucifex.sim import configure_simulation
 
@@ -14,7 +14,7 @@ from .abstract import abstract_simulation
 @configure_simulation(
     jit=OptionsJIT("./__jit__/"),
 )
-def rayleigh_darcy_2d(
+def rayleigh_benard_2d(
     # mesh
     Lx: float = 4.0,
     Ly: float = 1.0,
@@ -23,7 +23,7 @@ def rayleigh_darcy_2d(
     cell: str = CellType.QUADRILATERAL,
     # physical
     Rb: float = 1e3,
-    # temperature perturbation
+    # temperature SpatialPerturbation
     theta_eps: float = 1e-6,
     theta_freq: tuple[int, int] = (8, 8),
     theta_seed: tuple[int, int] = (1234, 5678),
@@ -54,7 +54,7 @@ def rayleigh_darcy_2d(
         ('neumann', dOmega['left', 'right'], 0.0)
     )
     # θ₀ = 1 - y + N(x, y)
-    theta_ics = Perturbation(
+    theta_ics = SpatialPerturbation(
         lambda x: 1 - x[1],
         cubic_noise(['neumann', 'dirichlet'], [Lx, Ly], theta_freq, theta_seed),
         theta_eps,

@@ -17,14 +17,15 @@ def streamfunction_solvers(
     rho,
     k,
     mu,
-    beta,
+    egx,
+    egy,
     psi_bcs = None,
     petsc: tuple = (None, ...),
 ) -> tuple[BoundaryValueProblem, ProjectionProblem | InterpolationProblem]:
     psi_petsc, u_petsc = petsc
     psi_petsc = OptionsPETSc("gmres", "none") if psi_petsc is None else psi_petsc
     psi_solver = bvp_solver(darcy_streamfunction, psi_bcs, petsc=psi_petsc)(
-        psi, rho, k, mu, beta,
+        psi, rho, k, mu, egx, egy,
     ) 
     if u_petsc is Ellipsis:
         u_solver = interpolation_solver(u, streamfunction_velocity)(psi[0])  # FIXME u_bcs
@@ -40,14 +41,16 @@ def darcy_solver(
     rho,
     k,
     mu,
-    beta,
+    egx,
+    egy,
+    egz,
     u_bcs,
     p_bcs,
     petsc: OptionsPETSc | None = None,
 ):
-    petsc = OptionsPETSc("gmres", "none") if petsc is None else petsc
+    petsc = OptionsPETSc("gmres", "lu") if petsc is None else petsc
     petsc['pc_factor_mat_solver_type'] = 'mumps'
-    return bvp_solver(darcy_incompressible, u_bcs, petsc=petsc)(up, rho, k, mu, beta, p_bcs)
+    return bvp_solver(darcy_incompressible, u_bcs, petsc=petsc)(up, rho, k, mu, egx, egy, egz, p_bcs)
 
 
 def streamfunction_method(

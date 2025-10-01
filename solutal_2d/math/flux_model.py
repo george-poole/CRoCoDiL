@@ -7,7 +7,96 @@ from typing_extensions import Self
 import numpy as np
 from scipy.integrate import solve_ivp
 
-from ..secondary import mass_capillary_trapped, mass_dissolved
+
+class ExprFluxModel:
+    
+    @staticmethod
+    def ode_rhs(
+        y,
+        Da,
+        Sr, 
+        Cr,
+        h0,
+        epsilon,
+        lmbda,
+        n,
+    ):
+        """
+        `dc⁺(t) / dt = ...`
+
+        `dc⁻(t) / dt = ...`
+        
+        `dS⁺(t) / dt = ...`
+        
+        """
+        c_plus, c_minus, s_plus = y
+        f = ExprFluxModel.f(c_plus, c_minus, lmbda, n)
+        h = ExprFluxModel.h(c_plus, c_minus, s_plus, Sr, Cr, h0, epsilon)
+        dc_plus = -f/(1 - h) + Da * s_plus * (1 - c_plus) / (1 - s_plus)
+        dc_minus = f/h
+        ds_plus = -epsilon * Da * s_plus *(1 - c_plus)
+        return [dc_plus, dc_minus, ds_plus]
+    
+    @staticmethod
+    def f(
+        c_plus,
+        c_minus,
+        lmbda, 
+        n,
+    ):
+        """
+        `f = λ(c⁺ - c⁻)ⁿ`
+        """
+        return lmbda * (c_plus - c_minus) **n
+    
+    @staticmethod
+    def h(
+        cls,
+        c_plus,
+        c_minus,
+        s_plus,
+        Sr,
+        Cr,
+        h0,
+        epsilon,
+    ):
+        """
+        `h = ... / ...
+        """ 
+        m_per_L = cls.mass_total(Cr, 0, Sr, h0, epsilon, L=1)
+        numerator = m_per_L - s_plus / epsilon - (1 - s_plus) * c_plus
+        denom = c_minus - s_plus/epsilon - (1 - s_plus) * c_plus
+        return numerator / denom
+    
+    @staticmethod
+    def mD():
+        ...
+
+    @staticmethod
+    def mC():
+        ...
+
+
+@dataclass
+class FluxModel:
+    t: Iterable[float]
+    y: Iterable[float]
+    Da: float
+    h0: float
+    sr: float
+    cr: float
+
+    @property
+    def c_plus():
+        ...
+
+
+
+
+
+
+
+
 
 
 P = TypeVar('P')
@@ -91,6 +180,7 @@ class FluxModelParams(ModelParams):
     ode_method: str
 
 
+@dataclass
 class FluxModel(Model[FluxModelParams]):
 
     def __init__(
@@ -130,25 +220,6 @@ class FluxModel(Model[FluxModelParams]):
         return self.height(
             self.c_plus, self.c_minus, self.s_plus, 
             self.parameters.Sr, self.parameters.Cr, self.parameters.h0, self.parameters.epsilon)
-    
-    @classmethod
-    def height(
-        cls,
-        c_plus,
-        c_minus,
-        s_plus,
-        Sr,
-        Cr,
-        h0,
-        epsilon,
-    ):
-        """
-        `h(c⁺, c⁻, S⁺)` expression
-        """ 
-        m_per_L = cls.mass_total(Cr, 0, Sr, h0, epsilon, L=1)
-        numerator = m_per_L - s_plus / epsilon - (1 - s_plus) * c_plus
-        denom = c_minus - s_plus/epsilon - (1 - s_plus) * c_plus
-        return numerator / denom
     
     @property
     def mD(self):
@@ -215,48 +286,6 @@ class FluxModel(Model[FluxModelParams]):
     @property
     def f(self):
         return self.flux(self.c_plus, self.c_minus, self.parameters.lmbda, self.parameters.n)
-
-    @classmethod
-    def flux(
-        cls,
-        c_plus,
-        c_minus,
-        lmbda, 
-        n,
-    ):
-        """
-        `F = λ(c⁺ - c⁻)ⁿ` expression
-        """
-        return lmbda * (c_plus - c_minus) **n
-
-    @classmethod
-    def ode_system(
-        cls,
-        t, 
-        y,
-        Da,
-        Sr, 
-        Cr,
-        h0,
-        epsilon,
-        lmbda,
-        n,
-    ):
-        """
-        `dc⁺(t) / dt = ...`
-
-        `dc⁻(t) / dt = ...`
-        
-        `dS⁺(t) / dt = ...`
-        
-        """
-        c_plus, c_minus, s_plus = y
-        f = cls.flux(c_plus, c_minus, lmbda, n)
-        h = cls.height(c_plus, c_minus, s_plus, Sr, Cr, h0, epsilon)
-        dc_plus = -f/(1 - h) + Da * s_plus * (1 - c_plus) / (1 - s_plus)
-        dc_minus = f/h
-        ds_plus = -epsilon * Da * s_plus *(1 - c_plus)
-        return [dc_plus, dc_minus, ds_plus]
     
     @classmethod
     def ode_solve(

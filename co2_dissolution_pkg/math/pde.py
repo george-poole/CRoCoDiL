@@ -10,7 +10,7 @@ from ufl.core.expr import Expr
 
 from lucifex.solver import BoundaryConditions
 from lucifex.fdm import (DT, AB1, FiniteDifference, FunctionSeries, ConstantSeries, Series, 
-                        finite_difference_discretize)
+                        finite_difference_argwise)
 from lucifex.fdm.ufl_operators import inner, grad
 from lucifex.utils import is_tensor, extract_integrand
 
@@ -22,14 +22,15 @@ def darcy_streamfunction(
     rho: Expr | Function,
     k: Expr | Function | Constant | float,
     mu: Expr | Function | Constant | float,
-    beta: Constant | float,
-) -> tuple[Form, Form]:
+    egx: Expr | Function | Constant | float | None = None,
+    egy: Expr | Function | Constant | float | None = None,
+) -> list[Form]:
     """
-    `∇·(μKᵀ·∇ψ / det(K)) = cosβ ∂ρ/∂x - sinβ ∂ρ/∂y`
+    `∇·(μKᵀ·∇ψ / det(K)) = ∂(ρ·e₉ʸ)/∂x - ∂(ρ·e₉ˣ)/∂y`
 
     for tensor-valued `K` or
 
-    `∇·(μ·∇ψ / K) = cosβ ∂ρ/∂x - sinβ ∂ρ/∂y`
+    `∇·(μ·∇ψ / K) = ∂(ρ·e₉ʸ)/∂x - ∂(ρ·e₉ˣ)/∂y`
 
     for scalar-valued `K`.
     """
@@ -39,8 +40,14 @@ def darcy_streamfunction(
         F_lhs = -(mu / det(k)) * inner(grad(v), transpose(k) * grad(psi_trial)) * dx 
     else:
         F_lhs = -(mu / k) * inner(grad(v), grad(psi_trial)) * dx
-    F_rhs = -inner(v, cos(beta) * Dx(rho, 0) - sin(beta) * Dx(rho, 1)) * dx
-    return F_lhs, F_rhs
+    forms = [F_lhs]
+    if egx is not None:
+        F_egx = v * Dx(egx * rho, 1) * dx
+        forms.append(F_egx)
+    if egy is not None:
+        F_egy = -v * Dx(egy * rho, 0) * dx
+        forms.append(F_egy)
+    return forms
 
 
 def streamfunction_velocity(psi: Function) -> Expr:
@@ -55,23 +62,29 @@ def darcy_incompressible(
     rho,
     k,
     mu,
-    beta: Constant | float,
+    egx: Expr | Function | Constant | float,
+    egy: Expr | Function | Constant | float,
+    egz: Expr | Function | Constant | float | None = None,
     p_bcs: BoundaryConditions | None = None,
 ) -> list[Form]:
     """
-    `∇⋅𝐮 = -ε(1 - η)Da R(s,c)` \\
+    `∇⋅𝐮 = 0` \\
     `𝐮 = -(K/μ)⋅(∇p + ρĝ)`
     
-    `F(𝐮,p;𝐯,q) = ∫ q(∇·𝐮) dx + ∫ q ε(1 - η)Da R(s,c) dx` \\
+    `F(𝐮,p;𝐯,q) = ∫ q(∇·𝐮) dx ` \\
     `+ ∫ 𝐯·(μ K⁻¹⋅𝐮) dx - ∫ p(∇·𝐯) dx - ∫ 𝐯·ρĝ dx + ∫ p(𝐯·n) ds`
-
-    NOTE use `pc_factor_mat_solver_type='mumps'`
     """
     v, q = TestFunctions(u_p.function_space)
     u, p = TrialFunctions(u_p.function_space)
     n = FacetNormal(u_p.function_space.mesh)
-    g = as_vector([sin(beta), -cos(beta)])
-    
+
+    dim = u_p.function_space.mesh.geometry.dim
+    if dim == 2:
+        g = as_vector([egx, egy])
+    if dim == 3:
+        assert egz is not None
+        g = as_vector([egx, egy, egz])
+
     if is_tensor(k):
         F_velocity = inner(v, mu * inv(k) * u) * dx
     else:
@@ -95,16 +108,22 @@ def darcy_compressible(
     rho,
     k,
     mu,
-    beta: Constant | float,
     c: Function,
     s: Function,
     reaction: Callable,
     epsilon: Constant,
     eta: Constant,
     Da: Constant,
+    egx: Expr | Function | Constant | float,
+    egy: Expr | Function | Constant | float,
+    egz: Expr | Function | Constant | float | None = None,
     p_bcs: BoundaryConditions | None = None,
 ) -> list[Form]:
-    forms = darcy_incompressible(u_p, rho, k, mu, beta, p_bcs)
+    """
+    `∇⋅𝐮 = -ε(1 - η)Da R(s,c)` \\
+    `𝐮 = -(K/μ)⋅(∇p + ρĝ)`
+    """
+    forms = darcy_incompressible(u_p, rho, k, mu, egx, egy, egz, p_bcs)
     q = TestFunctions(u_p.function_space)[1]
     F_reac = q * epsilon * (1 - eta) * Da * reaction(s, c) * dx
     forms.append(F_reac)
@@ -144,9 +163,9 @@ def advection_diffusion_cg(
         case D_adv:
             adv = (1 / phi) * D_adv(inner(u, grad(c)))
     # NOTE equivalent to 
-    # adv = (1 / phi) * finite_difference_discretize(
-    #     (lambda u, c: inner(u, grad(c)), (u, c)),
+    # adv = (1 / phi) * finite_difference_argwise(
     #     D_adv,
+    #     (lambda u, c: inner(u, grad(c)), (u, c)),
     #     c,
     # )
     F_adv = v * adv * dx
@@ -275,7 +294,7 @@ def advection_diffusion_reaction_cg(
         phi = D_phi(phi)
 
     v = TestFunction(c.function_space)
-    r = finite_difference_discretize(r, D_reac, c)
+    r = finite_difference_argwise(D_reac, r, c)
     reac = -Da * r / phi 
     F_reac = v * reac * dx
 
@@ -320,7 +339,7 @@ def advection_diffusion_reaction_dg(
     if isinstance(phi, Series):
         phi = D_phi(phi)
 
-    r = finite_difference_discretize(r, D_reac, c)
+    r = finite_difference_argwise(D_reac, r, c)
     v = TestFunction(c.function_space)
     F_reac = -v * Da * (r / phi) * dx
     forms.append(F_reac)
@@ -343,7 +362,7 @@ def evolution(
     v = TestFunction(s.function_space)
 
     F_dsdt = v * DT(s, dt) * dx
-    r = finite_difference_discretize(r, D_reac, s)
+    r = finite_difference_argwise(D_reac, r, s)
     F_reac = v * (epsilon * Da / varphi) * r * dx
 
     return F_dsdt, F_reac
@@ -378,5 +397,5 @@ def evolution_expression(
         if D_reac[0].is_implicit:
             raise DiscretizationError
 
-    r = finite_difference_discretize(r, D_reac, s)
+    r = finite_difference_argwise(D_reac, r, s)
     return s[0] - dt * (epsilon * Da / varphi) * r

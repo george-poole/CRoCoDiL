@@ -1,7 +1,7 @@
 from types import EllipsisType
 
 from lucifex.fdm import ConstantSeries, FiniteDifference, CN, AB
-from lucifex.utils import CellType, Perturbation, cubic_noise
+from lucifex.utils import CellType, SpatialPerturbation, cubic_noise
 from lucifex.solver import BoundaryConditions, OptionsPETSc, OptionsJIT, dS_solver
 from lucifex.sim import configure_simulation
 
@@ -53,7 +53,7 @@ def rayleigh_taylor_2d(
     `c₀(x,y) = cr · H(y - h₀) + N(x, y)`
     """
     Omega, dOmega = create_rectangle_domain(Lx, Ly, Nx, Ny, cell)
-    c_ics = Perturbation(
+    c_ics = SpatialPerturbation(
         heaviside(lambda x: x[1] - h0, cr, eps=H_eps),
         cubic_noise(['dirichlet', 'dirichlet'], [Lx, Ly], c_freq, c_seed),
         c_eps,
