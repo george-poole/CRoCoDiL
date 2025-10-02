@@ -25,8 +25,8 @@ ipython_config.py
 *.so
 *.py[cdox]
 *__pycache__/
-*__jit__/
-*__ffcx__/
+# *__jit__/
+# *__ffcx__/
 
 # distribution
 bin/

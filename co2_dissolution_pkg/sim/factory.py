@@ -35,6 +35,7 @@ def create_simulation(
     # domain
     Omega: Mesh,
     dOmega: MeshBoundary,
+    # gravity
     egx: Expr | Function | Constant | float | None = None,
     egy: Expr | Function | Constant | float | None = None,
     egz: Expr | Function | Constant | float | None = None,
@@ -52,7 +53,7 @@ def create_simulation(
     c_bcs: BoundaryConditions | EllipsisType | None = None,
     theta_bcs: BoundaryConditions | EllipsisType | None = None,
     # constitutive relations
-    varphi: Callable[[np.ndarray], np.ndarray] | float = 1,
+    rock_porosity: Callable[[np.ndarray], np.ndarray] | float = 1,
     permeability: Callable[[Phi], Series] = lambda phi: phi**2,
     dispersion_solutal: Callable[[Phi, U], Series] = lambda phi, _: phi,
     dispersion_thermal: Callable[[Phi, U], Series] = lambda phi, _: phi,
@@ -159,7 +160,7 @@ def create_simulation(
         s = Function((Omega, 'P', 1), 's', s_ics)
 
     # constitutive relations
-    varphi = Function((Omega, 'P', 1), varphi, 'varphi')
+    varphi = Function((Omega, 'P', 1), rock_porosity, 'varphi')
     phi = ExprSeries(varphi * (1 - s), 'phi')
     k = ExprSeries(permeability(phi), 'k')
     if RA:

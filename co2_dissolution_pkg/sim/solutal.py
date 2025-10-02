@@ -188,7 +188,9 @@ def solutal_inclined_2d(
         c_eps,
         )   
 
-    permeability = lambda phi: permeability_cross_bedded(phi, kappa, vartheta * np.pi / 180, 2)
+    vartheta_rad = vartheta * np.pi / 180
+    vartheta = Constant(Omega, vartheta_rad, name='vartheta')
+    permeability = lambda phi: permeability_cross_bedded(phi**2, kappa, vartheta)
     density = lambda c: c
     reaction = lambda s, c: s * (1 - c)
 
@@ -228,7 +230,7 @@ def solutal_inclined_2d(
         s_petsc=s_petsc,
         # optional solvers
         secondary=secondary,
-        namespace_extras=[beta],
+        namespace_extras=[beta, vartheta],
     )
 
 

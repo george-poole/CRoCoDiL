@@ -97,11 +97,8 @@ Specific choices of constitutive relations, boundary conditions and initial cond
 * rectangular domain $\Omega=[0, L_x] \times [0, L_y]$
 * fluid density $\rho(c, \theta)=c - \gamma\theta$ 
 * reaction rate $r(s,c, \theta)=s(1+\delta\theta-c)$
-* temperature boundary conditions $$\begin{align*}
-\textbf{n}\cdot\nabla\theta&=0\quad\text{on~} x=0,L_x \\
-\theta&=1\quad\text{on~} y=0 \\
-\theta&=0\quad\text{on~} y=L_y
-\end{align*}$$
+* temperature Neumann boundary conditions $\textbf{n}\cdot\nabla\theta\vert_{x=0,y}=\textbf{n}\cdot\nabla\theta\vert_{x=L_x,y}=0$
+* temperature Dirichlet boundary conditions $\theta(x,y=0)=1$, $\theta(x, y=L_y)=1$
 * initial saturation $s(x,y,t=0)=s_r$
 * initial concentration $c(x,y,t=0)=c_0(y)$
 * initial temperature with noise $\theta(x,y,t=0)=1 - y + \mathcal{N}(x, y)$
@@ -120,11 +117,8 @@ Specific choices of constitutive relations, boundary conditions and initial cond
 
 * rectangular domain $\Omega=[0, L_x] \times [0, L_y]$
 * fluid density $\rho(\theta)=-\theta$ 
-* temperature boundary conditions $$\begin{align*}
-\textbf{n}\cdot\nabla\theta&=0\quad\text{on~} x=0,L_x \\
-\theta&=1\quad\text{on~} y=0 \\
-\theta&=0\quad\text{on~} y=L_y
-\end{align*}$$
+* temperature Neumann boundary conditions $\textbf{n}\cdot\nabla\theta\vert_{x=0,y}=\textbf{n}\cdot\nabla\theta\vert_{x=L_x,y}=0$
+* temperature Dirichlet boundary conditions $\theta(x,y=0)=1$, $\theta(x, y=L_y)=1$
 * initial temperature with noise $\theta(x,y,t=0)=1 - y + \mathcal{N}(x, y)$
 * parameterised by $Rb$
 
