@@ -8,7 +8,7 @@ from lucifex.fdm import FunctionSeries, ExprSeries
 def effective_porosity(
     varphi: Function | Constant | float,
     s: Function | FunctionSeries,
-) -> Function | FunctionSeries:
+) -> Expr | ExprSeries:
     """
     `ϕ(𝐱,t) = 𝜑(𝐱)(1 - S(𝐱,t))`
     """
@@ -21,10 +21,12 @@ def permeability_cross_bedded(
     vartheta,
 ):
     """
-    `𝖪(ϕ) = K(ϕ) (
+    `
+    𝖪(ϕ) = K(ϕ) (
         (cos²ϑ + κsin²ϑ , (1 - κ)cosϑsinϑ), 
         ((1 - κ)cosϑsinϑ , κcos²ϑ + sin²ϑ), 
-    )`
+    )
+    `
     """
     cs = cos(vartheta)
     sn = sin(vartheta)  

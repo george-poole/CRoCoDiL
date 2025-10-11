@@ -12,9 +12,9 @@ from lucifex.viz import (plot_line, plot_colormap, plot_twin_lines,
 from lucifex.io.post import postprocess
 from lucifex.utils import StrSlice, as_index, as_indices
 
-from ..math.contour import contour_peak_trajectories, filter_trajectories, contour_coordinates
+from .contour import contour_peak_trajectories, filter_trajectories, contour_coordinates
 from .compute import compute_horizontal_average
-from .utils import TeX
+from .tex import TeX
 
 
 @postprocess

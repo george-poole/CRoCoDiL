@@ -5,11 +5,11 @@ from lucifex.fdm import FunctionSeries, ConstantSeries, NumericSeries, GridSerie
 from lucifex.utils import as_index, as_indices
 from lucifex.io.post import postprocess
 
-from ..math.contour import (
+from .contour import (
     contour_coordinates, 
     contour_peak_dimensions, contour_peaks,filter_trajectories,
     contour_arclength, contour_peak_mean_velocity, contour_peak_trajectories)
-from ..math.utils import spatial_average, grid_vertical_partition
+from ..pde.utils import spatial_average, grid_vertical_partition
 
 when_lt = lambda s, t, val: np.array(t)[np.where(np.array(s) <= val)[0]]
 when_gt = lambda s, t, val: np.array(t)[np.where(np.array(s) >= val)[0]]

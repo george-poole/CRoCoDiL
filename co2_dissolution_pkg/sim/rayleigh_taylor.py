@@ -5,9 +5,9 @@ from lucifex.utils import CellType, SpatialPerturbation, cubic_noise
 from lucifex.solver import BoundaryConditions, OptionsPETSc, OptionsJIT, dS_solver
 from lucifex.sim import configure_simulation
 
-from ..math.secondary import flux
-from ..math.utils import heaviside
-from .factory import create_simulation, create_rectangle_domain
+from ..pde.secondary import flux
+from ..pde.utils import heaviside
+from .create import create_simulation, create_rectangle_domain
 
 
 # FIXME FIXME FIXME

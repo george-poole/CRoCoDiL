@@ -5,9 +5,8 @@ from lucifex.utils import CellType, SpatialPerturbation, cubic_noise
 from lucifex.solver import BoundaryConditions, OptionsPETSc, OptionsJIT, dS_solver
 from lucifex.sim import configure_simulation
 
-from ..math.secondary import flux
-
-from .factory import create_simulation, create_rectangle_domain
+from ..pde.secondary import flux
+from .create import create_simulation, create_rectangle_domain
 
 
 @configure_simulation(
@@ -54,7 +53,7 @@ def rayleigh_benard_2d(
     )
     # θ₀ = 1 - y + N(x, y)
     theta_ics = SpatialPerturbation(
-        lambda x: 1 - x[1],
+        lambda x: 1 - x[1] / Ly,
         cubic_noise(['neumann', 'dirichlet'], [Lx, Ly], theta_freq, theta_seed),
         theta_eps,
         [Lx, Ly],

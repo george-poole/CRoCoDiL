@@ -8,16 +8,16 @@ from lucifex.utils import CellType, SpatialPerturbation, cubic_noise
 from lucifex.solver import OptionsPETSc, OptionsJIT, dS_solver
 from lucifex.sim import configure_simulation
 
-from ..math.constitutive import permeability_cross_bedded
-from ..math.secondary import flux
-from ..math.utils import heaviside
-from .factory import create_simulation, create_rectangle_domain
+from ..pde.constitutive import permeability_cross_bedded
+from ..pde.secondary import flux
+from ..pde.utils import heaviside
+from .create import create_simulation, create_rectangle_domain
 
 
 @configure_simulation(
     jit=OptionsJIT("./__jit__/"),
 )
-def solutal_2d(
+def solutal_dissolution_2d(
     # mesh
     Lx: float = 2.0,
     Ly: float = 1.0,

@@ -7,6 +7,8 @@ from ufl.core.expr import Expr
 from lucifex.fdm import DT, FiniteDifference
 from lucifex.fdm.ufl_operators import inner, grad
 
+from .utils import ImplicitDiscretizationError
+
 
 def supg_velocity(
     phi: Expr | Function | Constant,
@@ -15,17 +17,14 @@ def supg_velocity(
     D_adv: FiniteDifference | tuple[FiniteDifference, FiniteDifference],
     D_diff: FiniteDifference,
 ):
-    DiscretizationError = RuntimeError(
-        'SUPG stabilization requires advection term to be implicit in concentration',
-    )
     match D_adv:
         case D_adv_u, D_adv_c:
             if D_adv_c.is_explicit:
-                raise DiscretizationError
+                raise ImplicitDiscretizationError(D_adv_c, 'Advection term must be implicit w.r.t. concentration')
             u_coeff = D_adv_u(u) * D_adv_c.explicit_coeff
         case D_adv:
             if D_adv.is_explicit:
-                raise DiscretizationError
+                raise ImplicitDiscretizationError(D_adv, 'Advection term must be implicit w.r.t. concentration')
             u_coeff = u[1] * D_adv.explicit_coeff
 
     u_eff = (1/phi) * u_coeff \
@@ -53,7 +52,7 @@ def supg_reaction(
     # s = r_args[0]
     # match D_reac:
     #     case D_reac_s, D_reac_c:
-    #         r_coeff = r(D_reac_s[False](s), 0) * D_reac_c.explicit_coeff 
+    #         r_coeff = r(D_reac_s(s, False), 0) * D_reac_c.explicit_coeff 
     #     case D_reac:
     #         r_coeff = r_func(s[1], 0) * D_reac.explicit_coeff 
 

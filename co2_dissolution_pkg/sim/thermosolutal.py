@@ -1,17 +1,18 @@
 from types import EllipsisType
 
+from lucifex.fem import LUCiFExConstant as Constant
 from lucifex.fdm import FiniteDifference, CN, AB
 from lucifex.utils import CellType, SpatialPerturbation, cubic_noise
 from lucifex.solver import OptionsPETSc, OptionsJIT
 from lucifex.sim import configure_simulation
 
-from .factory import create_simulation, create_rectangle_domain
+from .create import create_simulation, create_rectangle_domain
 
 @configure_simulation(
     jit=OptionsJIT("./__jit__/"),
     dir_base="./data",
 )
-def thermosolutal_2d(
+def thermosolutal_dissolution_2d(
     # mesh
     Lx: float = 2.0,
     Ly: float = 1.0,
@@ -63,13 +64,14 @@ def thermosolutal_2d(
 
     c_ics = lambda x: x[1]
     theta_ics = SpatialPerturbation(
-        lambda x: 1 - x[1],
+        lambda x: 1 - x[1] / Ly,
         cubic_noise(['neumann', 'dirichlet'], [Lx, Ly], theta_freq, theta_seed),
         theta_eps,
         [Lx, Ly],
     )   
     s_ics = sr
 
+    gamma = Constant(Omega, gamma)
     density = lambda c, theta: c - gamma * theta
     reaction = lambda s, c, theta: s * (1 + delta * theta - c)
 
@@ -116,4 +118,5 @@ def thermosolutal_2d(
         s_petsc=s_petsc,
         # optional solvers
         secondary=secondary,
+        namespace_extras=[gamma],
     )

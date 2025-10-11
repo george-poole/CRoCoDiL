@@ -19,11 +19,10 @@ from lucifex.solver import (
 from lucifex.utils import CellType, extremum
 from lucifex.sim import Simulation
 
-from ..math.secondary import flux, mass_dissolved, mass_capillary_trapped
-from ..math.solvers import (
-    streamfunction_solvers, advection_diffusion_solver,
-    advection_diffusion_reaction_solver, evolution_solver,
-    darcy_solver, streamfunction_method, continuous)
+from ..pde.secondary import flux, mass_dissolved, mass_capillary_trapped
+from ..pde.transport import advection_diffusion_solver, advection_diffusion_reaction_solver, use_cts
+from ..pde.flow import streamfunction_solvers, darcy_solver, use_streamf
+from ..pde.evolution import evolution_solver
 
 
 Phi: TypeAlias = FunctionSeries
@@ -124,12 +123,12 @@ def create_simulation(
             egz = -1
 
     RA, DA, EPS, RB = (bool(_) for _ in (Ra, Da, epsilon, Rb))
-    PSI = streamfunction_method(flow_petsc)
+    PSI = use_streamf(flow_petsc)
     order = finite_difference_order(D_adv_solutal, D_diff_solutal, D_reac_solutal, D_adv_thermal, D_diff_thermal, D_reac_evol)
     solvers = []
     namespace = []
 
-    # flow fields
+    # flow
     if PSI: 
         psi_deg = 2
         psi = FunctionSeries((Omega, 'P', psi_deg), 'psi')
@@ -140,15 +139,15 @@ def create_simulation(
         up = FunctionSeries((Omega, [(u_fam, u_deg), ('DP', u_deg - 1)]), "up", order)
         u = up.sub(0, "u")
 
-    # transport fields
+    # transport
     t = ConstantSeries(Omega, "t", order, ics=0.0)  
     dt = ConstantSeries(Omega, 'dt')
     if RA:
         Ra = Constant(Omega, Ra, 'Ra')
-        c = FunctionSeries((Omega, 'P' if continuous(c_stabilization) else 'DP', 1), 'c', order, ics=c_ics)
+        c = FunctionSeries((Omega, 'P' if use_cts(c_stabilization) else 'DP', 1), 'c', order, ics=c_ics)
     if RB:
         Rb = Constant(Omega, Rb, 'Rb')
-        theta = FunctionSeries((Omega, 'P' if continuous(theta_stabilization) else 'DP', 1), 'theta', order, ics=theta_ics)
+        theta = FunctionSeries((Omega, 'P' if use_cts(theta_stabilization) else 'DP', 1), 'theta', order, ics=theta_ics)
     if DA:
         Da = Constant(Omega, Da, 'Da')
     if EPS:
@@ -189,11 +188,11 @@ def create_simulation(
     )
     namespace.extend((varphi, phi, k, rho, mu))
 
-    # flow solvers
+    # flow
     if PSI:
         psi_bcs = BoundaryConditions(("dirichlet", dOmega.union, 0.0)) if flow_bcs is Ellipsis else flow_bcs
         solvers.extend(
-            streamfunction_solvers(psi, u, rho[0], k[0], mu[0], egx, egy, psi_bcs, flow_petsc)
+            streamfunction_solvers(psi, u, k[0], mu[0], rho[0], egx, egy, psi_bcs, flow_petsc)
         )
     else:
         u_bcs = BoundaryConditions(('essential', dOmega.union, (0.0, 0.0), 0)) if flow_bcs is Ellipsis else flow_bcs[0]
@@ -307,4 +306,3 @@ def create_rectangle_domain(
     )
 
     return mesh, boundary
-
