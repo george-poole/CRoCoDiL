@@ -12,8 +12,8 @@ This package solves a non-dimensionalized system of PDEs describing flow in a po
 
 $$
 \begin{align}
-\phi\frac{\partial\theta}{\partial t} + \textbf{u}\cdot\nabla\theta &= \frac{1}{Rb}\nabla\cdot(\mathsf{G}\cdot\nabla\theta)\\
 \phi\frac{\partial c}{\partial t} + \textbf{u}\cdot\nabla c &= \frac{1}{Ra}\nabla\cdot(\mathsf{D}\cdot\nabla c) + Da\,R \\
+\phi\frac{\partial\theta}{\partial t} + \textbf{u}\cdot\nabla\theta &= \frac{1}{LeRa}\nabla\cdot(\mathsf{G}\cdot\nabla\theta)\\
 \nabla\cdot\textbf{u} &= 0 \\
 \textbf{u} &= -\frac{\mathsf{K}}{\mu}\cdot(\nabla p + \rho\,\textbf{e}_g) \\
 \varphi\frac{\partial s}{\partial t}&=-\varepsilon Da\,R

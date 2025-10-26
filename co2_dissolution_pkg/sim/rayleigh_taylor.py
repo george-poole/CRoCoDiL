@@ -2,12 +2,12 @@ from types import EllipsisType
 
 from lucifex.fdm import ConstantSeries, FiniteDifference, CN, AB
 from lucifex.utils import CellType, SpatialPerturbation, cubic_noise
-from lucifex.solver import BoundaryConditions, OptionsPETSc, OptionsJIT, dS_solver
+from lucifex.solver import OptionsPETSc, OptionsJIT, dS_solver
 from lucifex.sim import configure_simulation
+from lucifex.pde.transport import flux
 
-from ..pde.secondary import flux
-from ..pde.utils import heaviside
-from .create import create_simulation, create_rectangle_domain
+from .generic import thermosolutal_convection_generic
+from .utils import heaviside, rectangle_domain
 
 
 # FIXME FIXME FIXME
@@ -15,7 +15,7 @@ from .create import create_simulation, create_rectangle_domain
     jit=OptionsJIT("./__jit__/"),
     dir_base="./data",
 )
-def rayleigh_taylor_2d(
+def rayleigh_taylor_rectangle(
     # mesh
     Lx: float = 4.0,
     Ly: float = 1.0,
@@ -50,7 +50,7 @@ def rayleigh_taylor_2d(
     """
     `c₀(x,y) = cr · H(y - h₀) + N(x, y)`
     """
-    Omega, dOmega = create_rectangle_domain(Lx, Ly, Nx, Ny, cell)
+    Omega, dOmega = rectangle_domain(Lx, Ly, Nx, Ny, cell)
     c_ics = SpatialPerturbation(
         heaviside(lambda x: x[1] - h0, cr, eps=H_eps),
         cubic_noise(['dirichlet', 'dirichlet'], [Lx, Ly], c_freq, c_seed),
@@ -60,7 +60,7 @@ def rayleigh_taylor_2d(
     
     density = lambda c: c
 
-    simulation = create_simulation(
+    simulation = thermosolutal_convection_generic(
         # domain
         Omega=Omega, 
         dOmega=dOmega, 
@@ -89,9 +89,9 @@ def rayleigh_taylor_2d(
 
     if secondary:
         theta, u, g = simulation['theta', 'u', 'g']
-        fGamma = ConstantSeries(Omega, "fVert", shape=(2, ))
+        f = ConstantSeries(Omega, "f", shape=(2, ))
         simulation.solvers.append(
-            dS_solver(fGamma, flux, lambda x: x[1] - Ly / 2, facet_side="+")(
+            dS_solver(f, flux, lambda x: x[1] - Ly / 2, facet_side="+")(
                 theta[0], u[0], g[0], Ra,
             )
         )

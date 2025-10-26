@@ -1,4 +1,4 @@
-from lucifex.fem import LUCiFExFunction as Function
+from lucifex.fem import Function
 from lucifex.utils import grid
 
 import numpy as np

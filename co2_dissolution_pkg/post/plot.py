@@ -8,7 +8,7 @@ from matplotlib.cm import ScalarMappable
 from matplotlib.animation import FuncAnimation
 from lucifex.fdm import FunctionSeries, ConstantSeries, GridSeries, NumericSeries
 from lucifex.viz import (plot_line, plot_colormap, plot_twin_lines, 
-                         plot_contours, animate_colormap, create_mosaic_figure)
+                         plot_contours, create_mosaic_figure)
 from lucifex.io.post import postprocess
 from lucifex.utils import StrSlice, as_index, as_indices
 
@@ -292,17 +292,17 @@ def plot_finger_trajectories(
     return fig, ax
 
 
-@postprocess
-def animate_colormaps(
-    u: GridSeries,
-    colorbar: bool | tuple[float, float] = True,
-    interval: int = 100,
-    u_label: str | None = None,
-    **anim_kwargs: Any,
-) -> FuncAnimation:   
-    if u_label is None:
-        u_label = u.name
-    x, y = u.axes
-    cmap_series = [(i, x, y) for i in u.series]
-    title_series = [f'{u_label}(x, y, t={t:.6f})' for t in u.time_series]
-    return animate_colormap(cmap_series, title_series, colorbar=colorbar, interval=interval, **anim_kwargs)
+# @postprocess
+# def animate_colormaps(
+#     u: GridSeries,
+#     colorbar: bool | tuple[float, float] = True,
+#     interval: int = 100,
+#     u_label: str | None = None,
+#     **anim_kwargs: Any,
+# ) -> FuncAnimation:   
+#     if u_label is None:
+#         u_label = u.name
+#     x, y = u.axes
+#     cmap_series = [(i, x, y) for i in u.series]
+#     title_series = [f'{u_label}(x, y, t={t:.6f})' for t in u.time_series]
+#     return animate_colormap(cmap_series, title_series, colorbar=colorbar, interval=interval, **anim_kwargs)

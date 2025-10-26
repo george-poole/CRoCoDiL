@@ -1,18 +1,20 @@
 from types import EllipsisType
 
-from lucifex.fem import LUCiFExConstant as Constant
+from lucifex.fem import Constant
 from lucifex.fdm import FiniteDifference, CN, AB
 from lucifex.utils import CellType, SpatialPerturbation, cubic_noise
 from lucifex.solver import OptionsPETSc, OptionsJIT
 from lucifex.sim import configure_simulation
 
-from .create import create_simulation, create_rectangle_domain
+from .generic import thermosolutal_convection_generic
+from .utils import rectangle_domain
+
 
 @configure_simulation(
     jit=OptionsJIT("./__jit__/"),
     dir_base="./data",
 )
-def thermosolutal_dissolution_2d(
+def thermosolutal_rectangle(
     # mesh
     Lx: float = 2.0,
     Ly: float = 1.0,
@@ -20,8 +22,8 @@ def thermosolutal_dissolution_2d(
     Ny: int = 100,
     cell: str = CellType.QUADRILATERAL,
     # physical
+    Le: float = 1.0,
     Ra: float = 1e3,
-    Rb: float = 1e3,
     Da: float = 1e2,
     epsilon: float = 1e-2,
     # initial saturation
@@ -60,9 +62,15 @@ def thermosolutal_dissolution_2d(
     `θ(x,y,t=0) = 1 - y + N(x,y`) \\
     `s(x,y,t=0) = sr`
     """
-    Omega, dOmega = create_rectangle_domain(Lx, Ly, Nx, Ny, cell)
+    Omega, dOmega = rectangle_domain(Lx, Ly, Nx, Ny, cell)
 
-    c_ics = lambda x: x[1]
+    Le = Constant(Omega, Le, 'Le')
+    Ra = Constant(Omega, Ra, 'Ra')
+    Da = Constant(Omega, Da, 'Da')
+    gamma = Constant(Omega, gamma, 'gamma')
+    delta = Constant(Omega, delta, 'delta')
+
+    c_ics = NotImplementedError # lambda x: x[1]
     theta_ics = SpatialPerturbation(
         lambda x: 1 - x[1] / Ly,
         cubic_noise(['neumann', 'dirichlet'], [Lx, Ly], theta_freq, theta_seed),
@@ -71,21 +79,19 @@ def thermosolutal_dissolution_2d(
     )   
     s_ics = sr
 
-    gamma = Constant(Omega, gamma)
+    dispersion_solutal = lambda phi, _: (1/Ra) * phi
+    dispersion_thermal = lambda phi, _: (1/Le * Ra) * phi
     density = lambda c, theta: c - gamma * theta
     reaction = lambda s, c, theta: s * (1 + delta * theta - c)
 
     if c_limits is Ellipsis:
         c_limits = (0, 1 + delta)
 
-    return create_simulation(
+    return thermosolutal_convection_generic(
         # domain
         Omega=Omega, 
         dOmeg=dOmega, 
         # physical
-        Ra=Ra,
-        Rb=Rb,
-        Da=Da,
         epsilon=epsilon,
         # initial conditions
         c_ics=c_ics,
@@ -94,6 +100,8 @@ def thermosolutal_dissolution_2d(
         # constitutive relations
         density=density,
         reaction=reaction,
+        dispersion_solutal=dispersion_solutal,
+        dispersion_thermal=dispersion_thermal,
         # time step
         dt_max=dt_max,
         cfl_h=cfl_h,

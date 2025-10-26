@@ -2,22 +2,22 @@ from types import EllipsisType
 
 import numpy as np
 
-from lucifex.fem import LUCiFExConstant as Constant
+from lucifex.fem import Constant, Function
 from lucifex.fdm import ConstantSeries, FiniteDifference, CN, AB
-from lucifex.utils import CellType, SpatialPerturbation, cubic_noise
-from lucifex.solver import OptionsPETSc, OptionsJIT, dS_solver
+from lucifex.utils import CellType, SpatialPerturbation, cubic_noise, as_index, mesh_axes
+from lucifex.solver import OptionsPETSc, OptionsJIT, integration
 from lucifex.sim import configure_simulation
+from lucifex.pde.constitutive import permeability_cross_bedded
+from lucifex.pde.transport import flux
 
-from ..pde.constitutive import permeability_cross_bedded
-from ..pde.secondary import flux
-from ..pde.utils import heaviside
-from .create import create_simulation, create_rectangle_domain
+from .generic import thermosolutal_convection_generic
+from .utils import heaviside, rectangle_domain
 
 
 @configure_simulation(
     jit=OptionsJIT("./__jit__/"),
 )
-def solutal_dissolution_2d(
+def solutal_rectangle(
     # mesh
     Lx: float = 2.0,
     Ly: float = 1.0,
@@ -48,6 +48,7 @@ def solutal_dissolution_2d(
     D_adv: FiniteDifference | tuple[FiniteDifference, FiniteDifference] = (AB(2), CN),
     D_diff: FiniteDifference = CN,
     D_reac: FiniteDifference | tuple[FiniteDifference, FiniteDifference] = (AB(2), CN),
+    D_reac_evol: FiniteDifference | tuple[FiniteDifference, FiniteDifference] = AB(1),
     # stabilization
     c_stabilization: str | tuple[float, float] = None,
     c_limits: EllipsisType | None = None,
@@ -63,7 +64,9 @@ def solutal_dissolution_2d(
     `s(x,y,t=0) = sr · H(y - h₀)` \\
     `c(x,y,t=0) = cr · H(y - h₀) + N(x, y)`
     """
-    Omega, dOmega = create_rectangle_domain(Lx, Ly, Nx, Ny, cell)
+    Omega, dOmega = rectangle_domain(Lx, Ly, Nx, Ny, cell)
+    Ra = Constant(Omega, Ra, 'Ra')
+    Da = Constant(Omega, Da, 'Da')
     s_ics = heaviside(lambda x: x[1] - h0, sr, eps=heaviside_eps) 
     c_ics = SpatialPerturbation(
         heaviside(lambda x: x[1] - h0, cr, eps=heaviside_eps),
@@ -72,15 +75,14 @@ def solutal_dissolution_2d(
         c_eps,
         )   
     density = lambda c: c
-    reaction = lambda s, c: s * (1 - c)
+    dispersion = lambda phi, _: (1/Ra) * phi
+    reaction = lambda s, c: Da * s * (1 - c)
 
-    simulation = create_simulation(
+    simulation = thermosolutal_convection_generic(
         # domain
         Omega=Omega, 
         dOmega=dOmega, 
         # physical
-        Ra=Ra,
-        Da=Da,
         epsilon=epsilon,
         # initial conditions
         s_ics=s_ics, 
@@ -88,6 +90,8 @@ def solutal_dissolution_2d(
         # constitutive relations
         density=density,
         reaction=reaction,
+        dispersion_solutal=dispersion,
+        dispersion_thermal=None,
         # time step
         dt_min=dt_min,
         dt_max=dt_max,
@@ -98,6 +102,7 @@ def solutal_dissolution_2d(
         D_adv_solutal=D_adv,
         D_diff_solutal=D_diff,
         D_reac_solutal=D_reac,
+        D_reac_evol=D_reac_evol,
         # stabilization
         c_stabilization=c_stabilization,
         c_limits=c_limits,
@@ -108,25 +113,63 @@ def solutal_dissolution_2d(
         s_petsc=s_petsc,
         # optional solvers
         secondary=secondary,
+        namespace_extras=[Ra, Da, ],
     )
 
     if secondary:
         c, u, d = simulation['c', 'u', 'd']
-        Gamma = (lambda x: x[1] - h0, lambda x: x[1] - h0 / 2)
-        fGamma = ConstantSeries(Omega, "f", shape=(len(Gamma), 2))
-        simulation.solvers.append(
-            dS_solver(fGamma, flux, Gamma, facet_side="+")(
-                c[0], u[0], d[0], Ra,
-            )
+        f = ConstantSeries(
+            Omega, 
+            ('f', ['fInterface', 'fPlus', 'fMinus', 'fHalf']), 
+            shape=(4, 2),
         )
+        flux_solver = integration(f, interfacial_flux)(c[0], u[0], d[0], h0)
+        simulation.solvers.append(flux_solver)
 
     return simulation
+
+
+def interfacial_flux(
+    c: Function,
+    u: Function,
+    d: Function,
+    h0: float,
+) -> np.ndarray:
+    """
+    Evaluates the fluxes
+     
+    `Fᵁ = ∫ (𝐧·𝐚)u ds`, `Fᴰ = ∫ 𝐧·(D·∇u) ds`
+
+    at heights
+    
+    `y ≃ h₀, h₀⁺, h₀⁻, h₀/2`
+    """
+    mesh = c.function_space.mesh
+    y_axis = mesh_axes(mesh)[1]
+    h0_index = as_index(y_axis, h0, less_than=True)
+    h0_approx = y_axis[h0_index]
+    h0_plus = y_axis[h0_index + 2]
+    h0_minus = y_axis[h0_index - 2]
+    h0_half = y_axis[int(0.5 * h0_index)]
+    contours = (
+        lambda x: x[1] - h0_approx, 
+        lambda x: x[1] - h0_plus, 
+        lambda x: x[1] - h0_minus, 
+        lambda x: x[1] - h0_half,
+    )
+    f = ConstantSeries(
+        mesh, 
+        ('f', ['fInterface', 'fPlus', 'fMinus', 'fHalf']), 
+        shape=(len(contours), 2),
+    )
+    flux('dS', *contours, facet_side="+")(c[0], u[0], d[0])
+    return integration(f, flux, 'dS', *contours, facet_side="+")(c[0], u[0], d[0])
 
 
 @configure_simulation(
     jit=OptionsJIT("./__jit__/"),
 )
-def solutal_inclined_2d(
+def solutal_rectangle_inclined(
     # mesh
     Lx: float = 5.0,
     Ly: float = 1.0,
@@ -174,7 +217,7 @@ def solutal_inclined_2d(
     `s(x,y,t=0) = sr · H(x - h₀)` \\
     `c(x,y,t=0) = cr · H(x - h₀) + N(x, y)`
     """
-    Omega, dOmega = create_rectangle_domain(Lx, Ly, Nx, Ny, cell)
+    Omega, dOmega = rectangle_domain(Lx, Ly, Nx, Ny, cell)
     beta_rad = beta * np.pi / 180
     beta = Constant(Omega, beta_rad, name='beta')
     egx = Constant(Omega, -np.sin(beta_rad))
@@ -194,7 +237,7 @@ def solutal_inclined_2d(
     density = lambda c: c
     reaction = lambda s, c: s * (1 - c)
 
-    return create_simulation(
+    return thermosolutal_convection_generic(
         # domain
         Omega=Omega, 
         dOmega=dOmega, 
@@ -234,7 +277,3 @@ def solutal_inclined_2d(
     )
 
 
-# f = ConstantSeries(Omega, "f", shape=(len(dOmega.union), 2))
-# f_solver = ds_solver(flux, f, dOmega.union)(
-#     c[0], u[0], d[0], Ra,
-# )

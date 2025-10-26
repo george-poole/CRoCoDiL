@@ -1,26 +1,26 @@
 from types import EllipsisType
 
+from lucifex.fem import Constant
 from lucifex.fdm import ConstantSeries, FiniteDifference, CN, AB2
 from lucifex.utils import CellType, SpatialPerturbation, cubic_noise
 from lucifex.solver import BoundaryConditions, OptionsPETSc, OptionsJIT, dS_solver
 from lucifex.sim import configure_simulation
+from lucifex.pde.transport import flux
 
-from ..pde.secondary import flux
-from .create import create_simulation, create_rectangle_domain
+from .generic import thermosolutal_convection_generic
+from .utils import rectangle_domain
 
 
 @configure_simulation(
     jit=OptionsJIT("./__jit__/"),
 )
-def rayleigh_benard_2d(
+def rayleigh_benard_rectangle(
     # mesh
-    Lx: float = 4.0,
+    Lx: float = 2.0,
     Ly: float = 1.0,
     Nx: int = 100,
     Ny: int = 100,
     cell: str = CellType.QUADRILATERAL,
-    # physical
-    Rb: float = 1e3,
     # temperature SpatialPerturbation
     theta_eps: float = 1e-6,
     theta_freq: tuple[int, int] = (8, 8),
@@ -45,7 +45,8 @@ def rayleigh_benard_2d(
     `c(x,y,t=0) = ... y ... ` \\
     `θ(x,y,t=0) = 1 - y + N(x,y`)
     """
-    Omega, dOmega = create_rectangle_domain(Lx, Ly, Nx, Ny, cell)
+    Omega, dOmega = rectangle_domain(Lx, Ly, Nx, Ny, cell)
+    Ra = Constant(Omega, Ra, 'Ra')
     theta_bcs = BoundaryConditions(
         ("dirichlet", dOmega['lower'], 1.0),
         ("dirichlet", dOmega['upper'], 0.0),
@@ -60,19 +61,20 @@ def rayleigh_benard_2d(
         )   
     
     density = lambda theta: -theta
+    dispersion = lambda phi, _: (1/Ra) * phi
 
-    simulation = create_simulation(
+    simulation = thermosolutal_convection_generic(
         # domain
         Omega=Omega, 
         dOmega=dOmega, 
-        # physical
-        Rb=Rb,
         # initial conditions
         theta_ics=theta_ics,
         # boundary conditions
         theta_bcs=theta_bcs,
         # constitutive relations
         density=density,
+        dispersion_thermal=dispersion,
+        dispersion_solutal=None,
         # time step
         dt_max=dt_max,
         cfl_h=cfl_h,
@@ -94,7 +96,7 @@ def rayleigh_benard_2d(
     j = ConstantSeries(Omega, "j", shape=(2, ))
     simulation.solvers.append(
         dS_solver(j, flux, lambda x: x[1] - Ly / 2, facet_side="+")(
-            theta[0], u[0], g[0], Rb,
+            theta[0], u[0], g[0],
         )
     )
 

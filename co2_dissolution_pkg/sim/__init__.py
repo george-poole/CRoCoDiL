@@ -1,5 +1,5 @@
-from .create import create_simulation
-from .solutal import solutal_dissolution_2d, solutal_inclined_2d
-from .thermosolutal import thermosolutal_dissolution_2d
-from .rayleigh_benard import rayleigh_benard_2d
-from .rayleigh_taylor import rayleigh_taylor_2d
+from .generic import thermosolutal_convection_generic
+from .solutal import solutal_rectangle, solutal_rectangle_inclined
+from .thermosolutal import thermosolutal_rectangle
+from .rayleigh_benard import rayleigh_benard_rectangle
+from .rayleigh_taylor import rayleigh_taylor_rectangle
