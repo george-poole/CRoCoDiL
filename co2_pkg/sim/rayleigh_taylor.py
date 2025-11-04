@@ -1,10 +1,9 @@
 from types import EllipsisType
 
-from lucifex.fdm import ConstantSeries, FiniteDifference, CN, AB
+from lucifex.fdm import FiniteDifference, FiniteDifferenceArgwise, CN, AB
 from lucifex.utils import CellType, SpatialPerturbation, cubic_noise
-from lucifex.solver import OptionsPETSc, OptionsJIT, dS_solver
+from lucifex.solver import OptionsPETSc, OptionsJIT
 from lucifex.sim import configure_simulation
-from lucifex.pde.transport import flux
 
 from .generic import thermosolutal_convection_generic
 from .utils import heaviside, rectangle_domain
@@ -36,7 +35,8 @@ def rayleigh_taylor_rectangle(
     cfl_h: str | float = "hmin",
     cfl_courant: float = 0.75,
     # time discretization
-    D_adv: FiniteDifference | tuple[FiniteDifference, FiniteDifference] = (AB(2), CN),
+    D_adv: FiniteDifference 
+    | FiniteDifferenceArgwise = (AB(2) @ CN),
     D_diff: FiniteDifference = CN,
     # stabilization
     c_stabilization: str | tuple[str, float] | tuple[float, float] = None,
@@ -86,14 +86,5 @@ def rayleigh_taylor_rectangle(
         # optional solvers
         secondary=secondary,
     )
-
-    if secondary:
-        theta, u, g = simulation['theta', 'u', 'g']
-        f = ConstantSeries(Omega, "f", shape=(2, ))
-        simulation.solvers.append(
-            dS_solver(f, flux, lambda x: x[1] - Ly / 2, facet_side="+")(
-                theta[0], u[0], g[0], Ra,
-            )
-        )
 
     return simulation

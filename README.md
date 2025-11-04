@@ -1,4 +1,4 @@
-# CO<sub>2</sub> Dissolution Package
+# LUCiFEx CO<sub>2</sub> Package
 
 ## Installation (macOS)
 

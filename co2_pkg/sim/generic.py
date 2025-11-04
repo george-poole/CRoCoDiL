@@ -10,14 +10,14 @@ from lucifex.fem import Function, Constant
 from lucifex.mesh import MeshBoundary
 from lucifex.fdm import (
     FunctionSeries, ConstantSeries, FiniteDifference, AB1, Series, 
-    ExprSeries, finite_difference_order,
+    ExprSeries, FiniteDifferenceArgwise, finite_difference_order,
     cflr_timestep, cfl_timestep, reactive_timestep,
 )
 from lucifex.solver import (
     BoundaryConditions, OptionsPETSc, bvp, ibvp, ivp, 
     interpolation, projection, evaluation, integration,
 )
-from lucifex.utils import CellType, extremum
+from lucifex.utils import CellType, extremum, div_norm
 from lucifex.sim import Simulation
 from lucifex.pde.streamfunction import streamfunction_velocity
 from lucifex.pde.darcy import darcy_streamfunction, darcy_incompressible
@@ -67,16 +67,14 @@ def thermosolutal_convection_generic(
     cfl_courant: float | None = 0.75,
     k_courant: float | None = None,
     # time discretization
-    D_adv_solutal: FiniteDifference | tuple[FiniteDifference, FiniteDifference] = AB1,
+    D_adv_solutal: FiniteDifference | FiniteDifferenceArgwise = AB1,
     D_diff_solutal: FiniteDifference = AB1,
     D_reac_solutal: FiniteDifference 
-    | tuple[FiniteDifference, FiniteDifference]
-    | tuple[FiniteDifference, FiniteDifference, FiniteDifference] = AB1,
-    D_adv_thermal: FiniteDifference | tuple[FiniteDifference, FiniteDifference] = AB1,
+    | FiniteDifferenceArgwise = AB1,
+    D_adv_thermal: FiniteDifference | FiniteDifferenceArgwise = AB1,
     D_diff_thermal: FiniteDifference = AB1,
     D_reac_evol: FiniteDifference 
-    | tuple[FiniteDifference, FiniteDifference]
-    | tuple[FiniteDifference, FiniteDifference, FiniteDifference] = AB1,
+    | FiniteDifferenceArgwise = AB1,
     # stabilization
     c_stabilization: str | tuple[float, float] | None = None,
     c_limits: tuple[float, float] | EllipsisType | None = None,
@@ -174,7 +172,7 @@ def thermosolutal_convection_generic(
     namespace.extend((epsilon, varphi, phi, k, rho, mu))
     if SOLUTAL:
         d = ExprSeries(dispersion_solutal(phi, u), 'd')
-        r = ExprSeries.from_relation(reaction, 'r')(
+        r = ExprSeries.from_args(reaction, name='r')(
             *(s, c, theta) if THERMOSOLUTAL
             else (s, c)
         )
@@ -251,7 +249,7 @@ def thermosolutal_convection_generic(
     # evolution solver
     if EVOL:
         reaction_evol = lambda *args: -epsilon * reaction(*args)
-        r_evol = ExprSeries.from_relation(reaction_evol, 'r_evol')(
+        r_evol = ExprSeries.from_args(reaction_evol, name='rEvol')(
             *(s, c, theta) if THERMOSOLUTAL
             else (s, c)
         )
@@ -270,49 +268,31 @@ def thermosolutal_convection_generic(
 
     # optional solvers
     if secondary:
-        solvers.append(
-            evaluation(ConstantSeries(Omega, "uMinMax", shape=(2,)), extremum)(u[0])
-        )
-        solvers.append(
-            evaluation(ConstantSeries(Omega, "dtCFL"), cfl_timestep)(u[0], cfl_h)
-        )
+        uMinMax = ConstantSeries(Omega, "uMinMax", shape=(2,))
+        solvers.append(evaluation(uMinMax, extremum)(u[0]))
+        uDiv = ConstantSeries(Omega, 'uDiv')
+        solvers.append(integration(uDiv, div_norm, 'dx')(u[0], 2))
+        dtCFL = ConstantSeries(Omega, "dtCFL")
+        solvers.append(evaluation(dtCFL, cfl_timestep)(u[0], cfl_h))
         if SOLUTAL:
-            solvers.append(
-                evaluation(ConstantSeries(Omega, "cMinMax", shape=(2,)), extremum)(c[0])
-            )
-            solvers.append(
-                integration(ConstantSeries(Omega, "mD"), mass_dissolved, 'dx')(c[0], s[0])
-            )
-            solvers.append(
-                integration(
-                    ConstantSeries(Omega, "fBoundary", shape=(len(dOmega.union), 2)), 
-                    flux, 
-                    'ds',
-                    dOmega.union,
-                )(c[0], u[0], d[0])
-            )
-            solvers.append(
-                evaluation(ConstantSeries(Omega, "dtK"), reactive_timestep)(r[0])
-            )
+            cMinMax = ConstantSeries(Omega, "cMinMax", shape=(2,))
+            solvers.append(evaluation(cMinMax, extremum)(c[0]))
+            mD = ConstantSeries(Omega, "mD")
+            solvers.append(integration(mD, mass_dissolved, 'dx')(c[0], s[0]))
+            fBoundary = ConstantSeries(Omega, "fBoundary", shape=(len(dOmega.union), 2))
+            solvers.append(integration(fBoundary, flux, 'ds', *dOmega.union)(c[0], u[0], d[0]))
+            dtK = ConstantSeries(Omega, "dtK")
+            solvers.append(evaluation(dtK, reactive_timestep)(r[0]))
         if EVOL:
-            solvers.append(
-                evaluation(ConstantSeries(Omega, "sMinMax", shape=(2,)), extremum)(s[0])
-            )
-            solvers.append(
-                integration(ConstantSeries(Omega, "mC"), mass_capillary_trapped, 'dx')(s[0], epsilon)
-            )
+            sMinMax = ConstantSeries(Omega, "sMinMax", shape=(2,))
+            solvers.append(evaluation(sMinMax, extremum)(s[0]))
+            mC = ConstantSeries(Omega, "mC")
+            solvers.append(integration(mC, mass_capillary_trapped, 'dx')(s[0], epsilon))
         if THERMAL:
-            solvers.append(
-                evaluation(ConstantSeries(Omega, "thetaMinMax", shape=(2,)), extremum)(c[0])
-            )
-            solvers.append(
-                integration(
-                    ConstantSeries(Omega, "jBoundary", shape=(len(dOmega.union), 2)), 
-                    flux,
-                    'ds',
-                    dOmega.union,
-                )(c[0], u[0], g[0])
-            )
+            thetaMinMax = ConstantSeries(Omega, "thetaMinMax", shape=(2,))
+            solvers.append(evaluation(thetaMinMax, extremum)(theta[0]))
+            jBoundary = ConstantSeries(Omega, "jBoundary", shape=(len(dOmega.union), 2)),
+            solvers.append(integration(jBoundary, flux, 'ds', *dOmega.union)(theta[0], u[0], g[0]))
 
     solvers.extend(secondary_extras)
     namespace.extend(namespace_extras)

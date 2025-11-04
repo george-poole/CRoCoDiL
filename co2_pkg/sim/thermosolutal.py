@@ -1,7 +1,7 @@
 from types import EllipsisType
 
 from lucifex.fem import Constant
-from lucifex.fdm import FiniteDifference, CN, AB
+from lucifex.fdm import FiniteDifference, FiniteDifferenceArgwise, CN, AB
 from lucifex.utils import CellType, SpatialPerturbation, cubic_noise
 from lucifex.solver import OptionsPETSc, OptionsJIT
 from lucifex.sim import configure_simulation
@@ -41,9 +41,11 @@ def thermosolutal_rectangle(
     cfl_courant: float = 0.75,
     k_courant: float = 0.1,
     # time discretization
-    D_adv: FiniteDifference | tuple[FiniteDifference, FiniteDifference] = (AB(2), CN),
+    D_adv: FiniteDifference
+    | FiniteDifferenceArgwise = (AB(2) @ CN),
     D_diff: FiniteDifference = CN,
-    D_reac: FiniteDifference | tuple[FiniteDifference, FiniteDifference, FiniteDifference] = (AB(2), CN, CN),
+    D_reac: FiniteDifference 
+    | FiniteDifferenceArgwise = (AB(2) @ CN @ CN),
     # stabilization
     c_stabilization: str | tuple[str, float] | tuple[float, float] = None,
     c_limits: bool | tuple[float, float] = False,

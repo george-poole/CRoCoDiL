@@ -3,7 +3,7 @@ from types import EllipsisType
 import numpy as np
 
 from lucifex.fem import Constant, Function
-from lucifex.fdm import ConstantSeries, FiniteDifference, CN, AB
+from lucifex.fdm import ConstantSeries, FiniteDifference, FiniteDifferenceArgwise, CN, AB
 from lucifex.utils import CellType, SpatialPerturbation, cubic_noise, as_index, mesh_axes
 from lucifex.solver import OptionsPETSc, OptionsJIT, integration
 from lucifex.sim import configure_simulation
@@ -11,7 +11,7 @@ from lucifex.pde.constitutive import permeability_cross_bedded
 from lucifex.pde.transport import flux
 
 from .generic import thermosolutal_convection_generic
-from .utils import heaviside, rectangle_domain
+from .utils import heaviside, rectangle_domain, ScalingType
 
 
 @configure_simulation(
@@ -19,12 +19,12 @@ from .utils import heaviside, rectangle_domain
 )
 def solutal_rectangle(
     # mesh
-    Lx: float = 2.0,
-    Ly: float = 1.0,
+    aspect: float = 2.0,
     Nx: int = 100,
     Ny: int = 100,
     cell: str = CellType.QUADRILATERAL,
     # physical
+    scaling: ScalingType = ScalingType.ADVECTIVE,
     Ra: float = 1e3,
     Da: float = 1e2,
     epsilon: float = 1e-2,
@@ -45,10 +45,13 @@ def solutal_rectangle(
     cfl_courant: float = 0.75,
     k_courant: float = 0.1,
     # time discretization
-    D_adv: FiniteDifference | tuple[FiniteDifference, FiniteDifference] = (AB(2), CN),
+    D_adv: FiniteDifference
+    | FiniteDifferenceArgwise = (AB(2) @ CN),
     D_diff: FiniteDifference = CN,
-    D_reac: FiniteDifference | tuple[FiniteDifference, FiniteDifference] = (AB(2), CN),
-    D_reac_evol: FiniteDifference | tuple[FiniteDifference, FiniteDifference] = AB(1),
+    D_reac: FiniteDifference 
+    | FiniteDifferenceArgwise = (AB(2) @ CN),
+    D_reac_evol: FiniteDifference 
+    | FiniteDifferenceArgwise = AB(1),
     # stabilization
     c_stabilization: str | tuple[float, float] = None,
     c_limits: EllipsisType | None = None,
@@ -61,9 +64,18 @@ def solutal_rectangle(
     secondary: bool = True,
 ):
     """
+    initial conditions
     `s(x,y,t=0) = sr · H(y - h₀)` \\
     `c(x,y,t=0) = cr · H(y - h₀) + N(x, y)`
+
+    boundary conditions
+    `𝐧·∇c = 0`
+    `𝐧·𝐮 = 0 ⟺ ψ = 0`
     """
+    Pe, Ki, Bu, Xl = ScalingType(scaling).mapping(Ra, Da, ['Pe', 'Ki', 'Bu', 'Xl'])
+
+    Lx = aspect * Xl
+    Ly = 1.0 * Xl
     Omega, dOmega = rectangle_domain(Lx, Ly, Nx, Ny, cell)
     Ra = Constant(Omega, Ra, 'Ra')
     Da = Constant(Omega, Da, 'Da')
@@ -74,9 +86,9 @@ def solutal_rectangle(
         [Lx, Ly],
         c_eps,
         )   
-    density = lambda c: c
-    dispersion = lambda phi, _: (1/Ra) * phi
-    reaction = lambda s, c: Da * s * (1 - c)
+    density = lambda c: Bu * c
+    dispersion = lambda phi, _: (1/Pe) * phi
+    reaction = lambda s, c: Ki * s * (1 - c)
 
     simulation = thermosolutal_convection_generic(
         # domain
@@ -134,11 +146,13 @@ def interfacial_flux(
     u: Function,
     d: Function,
     h0: float,
+    Lx: float = 1.0,
 ) -> np.ndarray:
     """
-    Evaluates the fluxes
+    Evaluates the advective and diffusive fluxes per unit length
      
-    `Fᵁ = ∫ (𝐧·𝐚)u ds`, `Fᴰ = ∫ 𝐧·(D·∇u) ds`
+    `Fᵁ = 1 / Lx ∫ (𝐧·𝐚)u ds` \\
+    `Fᴰ = 1 / Lx ∫ 𝐧·(D·∇u) ds`
 
     at heights
     
@@ -151,19 +165,14 @@ def interfacial_flux(
     h0_plus = y_axis[h0_index + 2]
     h0_minus = y_axis[h0_index - 2]
     h0_half = y_axis[int(0.5 * h0_index)]
-    contours = (
+    return (1 / Lx) * flux(
+        'dS', 
         lambda x: x[1] - h0_approx, 
         lambda x: x[1] - h0_plus, 
         lambda x: x[1] - h0_minus, 
         lambda x: x[1] - h0_half,
-    )
-    f = ConstantSeries(
-        mesh, 
-        ('f', ['fInterface', 'fPlus', 'fMinus', 'fHalf']), 
-        shape=(len(contours), 2),
-    )
-    flux('dS', *contours, facet_side="+")(c[0], u[0], d[0])
-    return integration(f, flux, 'dS', *contours, facet_side="+")(c[0], u[0], d[0])
+        facet_side="+",
+    )(c, u, d)
 
 
 @configure_simulation(
@@ -199,9 +208,11 @@ def solutal_rectangle_inclined(
     cfl_courant: float = 0.75,
     k_courant: float = 0.1,
     # time discretization
-    D_adv: FiniteDifference | tuple[FiniteDifference, FiniteDifference] = (AB(2), CN),
+    D_adv: FiniteDifference
+    | FiniteDifferenceArgwise = (AB(2) @ CN),
     D_diff: FiniteDifference = CN,
-    D_reac: FiniteDifference | tuple[FiniteDifference, FiniteDifference] = (AB(2), CN),
+    D_reac: FiniteDifference
+    | FiniteDifferenceArgwise = (AB(2) @ CN),
     # stabilization
     c_stabilization: str | tuple[str, float] | tuple[float, float] = None,
     c_limits: bool | tuple[float, float] = False,

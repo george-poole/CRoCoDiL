@@ -1,6 +1,6 @@
 [project]
-name = "co2_dissolution_pkg"
+name = "co2_pkg"
 version = "0.0.1"
 
 [tool.setuptools]
-packages = ["co2_dissolution_pkg"]
+packages = ["co2_pkg"]

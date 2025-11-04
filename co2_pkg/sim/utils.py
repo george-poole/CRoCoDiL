@@ -1,4 +1,4 @@
-from typing import Callable
+from typing import Callable, Iterable
 
 import numpy as np
 from dolfinx.mesh import Mesh
@@ -6,6 +6,76 @@ from dolfinx.fem import Function, Constant
 from ufl.core.expr import Expr
 
 from lucifex.mesh import MeshBoundary, mesh_boundary, rectangle_mesh
+from lucifex.utils import integral
+from lucifex.utils.py_utils import StrEnum
+
+
+class ScalingType(StrEnum):
+    """
+    Choice of length scale `ℒ`, velocity scale `𝒰`
+    and time scale `𝒯` in the non-dimensionalization.
+    """
+    ADVECTIVE = 'advective'
+    """
+    `ℒ` = domain size \\
+    `𝒰` = advective speed
+    """
+    DIFFUSIVE = 'diffusive'
+    """
+    `ℒ` = domain size \\
+    `𝒰` = advective speed
+    """
+    ADVECTIVE_DIFFUSIVE = 'advective_diffusive'
+    """
+    `ℒ` = diffusive length \\
+    `𝒰` = advective speed
+    """
+    REACTIVE = 'reactive'
+    """
+    `ℒ` = diffusive length \\
+    `T` = reactive time
+    """
+
+    def mapping(
+        self,
+        Ra: float,
+        Da: float,
+        keys: Iterable[str] = ('Ad', 'Pe', 'Ki', 'Bu', 'Xl'),
+    ) -> list[float | int]:
+        if self.value == ScalingType.ADVECTIVE:
+            Ad = 1
+            Pe = Ra
+            Ki = Da
+            Bu = 1
+            Xl = 1
+        elif self.value == ScalingType.ADVECTIVE_DIFFUSIVE:
+            Ad = 1
+            Pe = 1
+            Ki = Da / Ra
+            Bu = 1
+            Xl = Ra
+        elif self.value == ScalingType.DIFFUSIVE:
+            Ad = 1
+            Pe = 1
+            Ki = Ra * Da
+            Bu = Ra
+            Xl = 1
+        elif self.value == ScalingType.REACTIVE:
+            Ad = 1
+            Pe = 1
+            Ki = 1
+            Bu = np.sqrt(Ra / Da)
+            Xl = np.sqrt(Ra * Da)
+        else:
+            raise NotImplementedError(f'{self.value}')
+
+        d = dict(
+            zip(
+                ('Ad', 'Pe', 'Ki', 'Bu', 'Xl'),
+                (Ad, Pe, Ki, Bu, Xl),
+            )
+        )
+        return [d[k] for k in keys]
 
 
 def heaviside(
@@ -43,6 +113,7 @@ def heaviside(
         return lambda x: f_plus * ind(x) + f_minus
     
 
+@integral
 def mass_capillary_trapped(
     s: Function, 
     epsilon: Constant | float,
@@ -59,6 +130,7 @@ def mass_capillary_trapped(
     return s / epsilon
 
 
+@integral
 def mass_dissolved(
     c: Function, 
     s: Function,

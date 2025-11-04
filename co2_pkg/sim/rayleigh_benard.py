@@ -1,11 +1,10 @@
 from types import EllipsisType
 
 from lucifex.fem import Constant
-from lucifex.fdm import ConstantSeries, FiniteDifference, CN, AB2
+from lucifex.fdm import FiniteDifference, FiniteDifferenceArgwise, CN, AB2
 from lucifex.utils import CellType, SpatialPerturbation, cubic_noise
-from lucifex.solver import BoundaryConditions, OptionsPETSc, OptionsJIT, dS_solver
+from lucifex.solver import BoundaryConditions, OptionsPETSc, OptionsJIT
 from lucifex.sim import configure_simulation
-from lucifex.pde.transport import flux
 
 from .generic import thermosolutal_convection_generic
 from .utils import rectangle_domain
@@ -30,7 +29,7 @@ def rayleigh_benard_rectangle(
     cfl_h: str | float = "hmin",
     cfl_courant: float = 0.75,
     # time discretization
-    D_adv: FiniteDifference | tuple[FiniteDifference, FiniteDifference] = (AB2, CN),
+    D_adv: FiniteDifference | FiniteDifferenceArgwise = (AB2, CN),
     D_diff: FiniteDifference = CN,
     # stabilization
     theta_stabilization: str | tuple[str, float] | tuple[float, float] = None,
@@ -90,14 +89,6 @@ def rayleigh_benard_rectangle(
         c_petsc=c_petsc,
         # optional solvers
         secondary=secondary,
-    )
-
-    theta, u, g = simulation['theta', 'u', 'g']
-    j = ConstantSeries(Omega, "j", shape=(2, ))
-    simulation.solvers.append(
-        dS_solver(j, flux, lambda x: x[1] - Ly / 2, facet_side="+")(
-            theta[0], u[0], g[0],
-        )
     )
 
     return simulation
