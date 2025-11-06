@@ -8,31 +8,31 @@ import numpy as np
 from scipy.integrate import solve_ivp
 
 
-class ExprFluxModel:
+class FluxModelEquations:
     
     @staticmethod
     def ode_rhs(
         y,
         Da,
-        Sr, 
-        Cr,
-        h0,
         epsilon,
+        h0,
+        sr, 
+        cr,
         lmbda,
         n,
     ):
         """
-        `dc⁺(t) / dt = ...`
+        `dc⁺(t) / dt = -F(c⁺, c⁻) / (1 - h(t)) + Da R(s⁺, c⁺)` / (1 - s⁺)`
 
-        `dc⁻(t) / dt = ...`
+        `dc⁻(t) / dt = F(c⁺, c⁻) / (1 - h(t))`
         
-        `dS⁺(t) / dt = ...`
-        
+        `ds⁺(t) / dt = -εDa R(s⁺, c⁺)`
         """
         c_plus, c_minus, s_plus = y
-        f = ExprFluxModel.f(c_plus, c_minus, lmbda, n)
-        h = ExprFluxModel.h(c_plus, c_minus, s_plus, Sr, Cr, h0, epsilon)
-        dc_plus = -f/(1 - h) + Da * s_plus * (1 - c_plus) / (1 - s_plus)
+        f = FluxModelEquations.f(c_plus, c_minus, lmbda, n)
+        h = FluxModelEquations.h(c_plus, c_minus, s_plus, sr, cr, h0, epsilon)
+        r = FluxModelEquations.r(s_plus, c_plus)
+        dc_plus = -f/(1 - h) + Da * r / (1 - s_plus)
         dc_minus = f/h
         ds_plus = -epsilon * Da * s_plus *(1 - c_plus)
         return [dc_plus, dc_minus, ds_plus]
@@ -45,257 +45,101 @@ class ExprFluxModel:
         n,
     ):
         """
-        `f = λ(c⁺ - c⁻)ⁿ`
+        `F(c⁺, c⁻) = λ(c⁺ - c⁻)ⁿ`
         """
         return lmbda * (c_plus - c_minus) **n
     
     @staticmethod
+    def r(
+        s_plus,
+        c_plus,
+    ):
+        """
+        `R(s⁺, c⁺) = s⁺(1 - c⁺)`
+        """
+        return s_plus * (1 - c_plus)
+
+    @staticmethod
     def h(
-        cls,
         c_plus,
         c_minus,
         s_plus,
-        Sr,
-        Cr,
-        h0,
         epsilon,
+        sr,
+        cr,
+        h0,
     ):
         """
-        `h = ... / ...
+        horizontally-averaged interface height \\
+        `h = ... / ...`
         """ 
-        m_per_L = cls.mass_total(Cr, 0, Sr, h0, epsilon, L=1)
-        numerator = m_per_L - s_plus / epsilon - (1 - s_plus) * c_plus
+        m_per_Lx = FluxModelEquations.mT(epsilon, h0, sr, cr)
+        numerator = m_per_Lx - s_plus / epsilon - (1 - s_plus) * c_plus
         denom = c_minus - s_plus/epsilon - (1 - s_plus) * c_plus
         return numerator / denom
     
     @staticmethod
-    def mD():
-        ...
+    def mD(
+        c_plus,
+        c_minus,
+        s_plus,
+        epsilon,
+        sr,
+        cr,
+        h0,
+        Lx=1,
+    ):
+        """
+        dissolved mass \\
+        `mᴰ(c⁺, c⁻, s⁺) = ...`
+        """
+        h = FluxModelEquations.h(c_plus, c_minus, s_plus, epsilon, sr, cr, h0)
+        m_per_Lx = (1 - h) * (1 - s_plus) * c_plus + h * c_minus
+        return m_per_Lx * Lx
 
     @staticmethod
-    def mC():
-        ...
-
-
-@dataclass
-class FluxModel:
-    t: Iterable[float]
-    y: Iterable[float]
-    Da: float
-    h0: float
-    sr: float
-    cr: float
-
-    @property
-    def c_plus():
-        ...
-
-
-
-
-
-
-
-
-
-
-P = TypeVar('P')
-class Model(ABC, Generic[P]):
-
-    def __init__(self, t, parameters: P):
-        self._t = t
-        self._parameters = parameters
-
-    @property
-    def t(self):
-        """
-        `t` timeseries array
-        """
-        return self._t
-
-    @property
-    def parameters(self) -> P:
-        return self._parameters
-
-    @property
-    @abstractmethod
-    def c_plus(self): # np.ndarray
-        ...
-    
-    @property
-    @abstractmethod
-    def c_minus(self):
-        ...
-    
-    @property
-    @abstractmethod
-    def s_plus(self):
-        ...
-    
-    @property
-    @abstractmethod
-    def mC(self):
-        """
-        mᶜ(t)
-        """
-        ...
-    
-    @property
-    @abstractmethod
-    def mD(self):
-        """
-        mᴰ(t)
-        """
-        ...
-
-    @property
-    @abstractmethod
-    def f(self):
-        """
-        F(t)
-        """
-        ...
-
-
-@dataclass
-class ModelParams:
-    """
-    `Da, Sᵣ, cᵣ, h₀, ε, L`
-    """
-    Da: float
-    Sr: float
-    Cr: float
-    h0: float
-    epsilon: float
-    L: float
-
-
-@dataclass
-class FluxModelParams(ModelParams):
-    """
-    `Da, Sᵣ, cᵣ, h₀, ε, L, λ, n`
-    """
-    lmbda: float
-    n: float
-    ode_method: str
-
-
-@dataclass
-class FluxModel(Model[FluxModelParams]):
-
-    def __init__(
-        self, 
-        t: Iterable[float], 
-        Da: float, Sr: float, Cr, h0, epsilon, L, lmbda, n, 
-        method='RK45',
-    ):
-        super().__init__(t, FluxModelParams(Da, Sr, Cr, h0, epsilon, L, lmbda, n, method))
-    
-    @property
-    def c_plus(self):
-        """
-        `c⁺(t)`
-        """
-        return self.ode_solution.y[0]
-    
-    @property
-    def c_minus(self):
-        """
-        `c⁻(t)`
-        """
-        return self.solution.y[1]
-    
-    @property
-    def s_plus(self):
-        """
-        `S⁺(t)`
-        """
-        return self.solution.y[2]
-        
-    @property
-    def h(self):
-        """
-        `h(t)`
-        """
-        return self.height(
-            self.c_plus, self.c_minus, self.s_plus, 
-            self.parameters.Sr, self.parameters.Cr, self.parameters.h0, self.parameters.epsilon)
-    
-    @property
-    def mD(self):
-        return self.mass_dissolved(
-            self.c_plus, self.c_minus, self.s_plus, 
-            self.parameters.Sr, self.parameters.Cr, self.parameters.h0, self.parameters.epsilon, self.parameters.L,
-        )
-    
-    @classmethod
-    def mass_dissolved(
-        cls,
+    def mC(
         c_plus,
         c_minus,
         s_plus,
-        Sr,
-        Cr,
+        epsilon,
+        sr,
+        cr,
         h0,
-        epsilon,
-        L,
-    ) -> float | np.ndarray:
-        """
-        `mᴰ(c⁺, c⁻, S⁺)` expression
-        """
-        h = cls.height(c_plus, c_minus, s_plus, Sr, Cr, h0, epsilon)
-        return L * (1 - h) * (1 - s_plus) * c_plus + L * h * c_minus
-    
-    @property
-    def mC(self):
-        return self.mass_capillary_trapped(
-            self.c_plus, self.c_minus, self.s_plus, 
-            self.parameters.Sr, self.parameters.Cr, self.parameters.h0, self.parameters.epsilon, self.parameters.L)
-    
-    @classmethod
-    def mass_capillary_trapped(
-        cls,
-        c_plus,
-        c_minus,
-        s_plus,
-        Sr,
-        Cr,
-        h0,
-        epsilon,
-        L,
-    ) -> float | np.ndarray:
-        """
-        `mᴰ(c⁺, c⁻, S⁺)` expression
-        """
-        h = cls.height(c_plus, c_minus, s_plus, Sr, Cr, h0, epsilon)
-        return L * (1 - h) * s_plus / epsilon
-    
-    @classmethod
-    def mass_total(
-        cls,
-        c_plus,
-        c_minus,
-        s_plus,
-        h,
-        epsilon,
-        L,
+        Lx=1,
     ):
-        rhs = (1 - h) * (1 - s_plus) * c_plus + h * c_minus + (1 - h) * s_plus / epsilon
-        return L * rhs
+        """
+        capillary-trapped mass \\
+        `mᶜ(c⁺, c⁻, s⁺) = ...`
+        """
+        h = FluxModelEquations.h(c_plus, c_minus, s_plus, epsilon, sr, cr, h0)
+        m_per_Lx = (1 - h) * s_plus / epsilon 
+        return m_per_Lx * Lx
+
+    @staticmethod
+    def mT(
+        epsilon,
+        h0,
+        sr, 
+        cr,
+        Lx=1,
+    ):
+        """
+        total mass (conserved) \\
+        `mᵀ = mᴰ(cᵣ, 0, sᵣ) + mᶜ(cᵣ, 0, sᵣ)`
+        """
+        m_per_Lx  =(1 - h0) * (1- sr) * cr + (1 - h0) * sr / epsilon
+        return m_per_Lx * Lx
     
-    @property
-    def f(self):
-        return self.flux(self.c_plus, self.c_minus, self.parameters.lmbda, self.parameters.n)
-    
-    @classmethod
+
+    @staticmethod
     def ode_solve(
-        cls,
         t, 
         Da,
-        Sr,
-        Cr, 
-        h0,
         epsilon,
+        h0,
+        sr,
+        cr, 
         lmbda,
         n,
         method: str = 'RK45',
@@ -304,33 +148,115 @@ class FluxModel(Model[FluxModelParams]):
         Solves coupled ODE system for `c⁺(t), c⁻(t), S⁺(t)`
         """
 
-        ics = ([Cr, 0.0, Sr])
+        ics = ([cr, 0.0, sr])
         solution = solve_ivp(
-            cls.ode_system, 
+            FluxModelEquations.ode_rhs, 
             (t[0], t[-1]), 
-            ics, method, t, 
-            args=(Da, Sr, Cr, h0, epsilon, lmbda, n),
+            ics, 
+            method, 
+            t, 
+            args=(Da, epsilon, h0, sr, cr, lmbda, n),
         )
         if solution.success:
             return solution
         else:
             raise RuntimeError(f'{solution.message}')
-        
-    @cached_property
-    def ode_solution(self):
+    
+
+
+
+@dataclass(frozen=True)
+class FluxModel:
+    t: Iterable[float]
+    y: Iterable[float]
+    Lx: float
+    Da: float
+    epsilon: float
+    h0: float
+    sr: float
+    cr: float
+    lmbda: float
+    n: float
+
+    def __post_init__(self):
+        self._ode_solution = FluxModelEquations.ode_solve(
+            self.t,
+            self.Da,
+            self.epsilon,
+            self.h0,
+            self.sr,
+            self.cr,
+            self.lmbda,
+            self.n
+
+        )
+
+    @property
+    def c_plus(self) -> np.ndarray:
         """
-        Solution `c⁺(t), c⁻(t), S⁺(t)` to the coupled ODE
+        `c⁺(t)`
         """
-        return self.ode_solve(
-            self.t, 
-            self.parameters.Da, 
-            self.parameters.Sr, 
-            self.parameters.Cr, 
-            self.parameters.h0, 
-            self.parameters.epsilon, 
-            self.parameters.lmbda, 
-            self.parameters.n,
-            self.parameters.ode_method, 
+        return self._ode_solution.y[0]
+    
+    @property
+    def c_minus(self) -> np.ndarray:
+        """
+        `c⁻(t)`
+        """
+        return self._ode_solution.y[1]
+    
+    @property
+    def s_plus(self) -> np.ndarray:
+        """
+        `s⁺(t)`
+        """
+        return self._ode_solution.y[2]
+    
+    @property
+    def h(self) -> np.ndarray:
+        """
+        `h(t)`
+        """
+        return FluxModelEquations.h(
+            self.c_plus, 
+            self.c_minus, 
+            self.s_plus,
+            self.epsilon,
+            self.sr,
+            self.cr,
+            self.h0,
+        )
+    
+    @property
+    def mC(self) -> np.ndarray:
+        """
+        `mᶜ(t)`
+        """
+        return FluxModelEquations.mC(
+            self.c_plus,
+            self.c_minus,
+            self.s_plus,
+            self.epsilon,
+            self.sr,
+            self.cr,
+            self.h0,
+            self.Lx,
+        )
+    
+    @property
+    def mD(self) -> np.ndarray:
+        """
+        `mᴰ(t)`
+        """
+        return FluxModelEquations.mD(
+            self.c_plus,
+            self.c_minus,
+            self.s_plus,
+            self.epsilon,
+            self.sr,
+            self.cr,
+            self.h0,
+            self.Lx,
         )
 
     

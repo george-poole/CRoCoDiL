@@ -26,13 +26,12 @@ def dns_model_a(
     Ra: float = 1e3,
     Da: float = 1e2,
     epsilon: float = 1e-2,
-    # heaviside
-    h0: float = 0.9,
-    heaviside_eps: float | tuple[float, float] | None = None,
     # initial saturation
     sr: float = 0.2,
+    h0: float = 0.9,
+    heaviside_eps: float | tuple[float, float] | None = None,
     # initial concentration
-    cr: float = 0.0,
+    cr: float = 0.999,
     c_eps: float = 1e-6,
     c_freq: tuple[int, int] = (16, 16),
     c_seed: tuple[int, int] = (1234, 5678),

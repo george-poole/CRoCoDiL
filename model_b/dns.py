@@ -6,15 +6,15 @@ from lucifex.utils import CellType, SpatialPerturbation, cubic_noise
 from lucifex.solver import OptionsPETSc, OptionsJIT
 from lucifex.sim import configure_simulation
 
-from .generic import thermosolutal_convection_generic
-from .utils import rectangle_domain
+from co2_pkg.sim.generic import thermosolutal_transport_generic
+from co2_pkg.sim.utils import rectangle_domain
 
 
 @configure_simulation(
     jit=OptionsJIT("./__jit__/"),
     dir_base="./data",
 )
-def thermosolutal_rectangle(
+def dns_model_b(
     # mesh
     Lx: float = 2.0,
     Ly: float = 1.0,
@@ -89,7 +89,7 @@ def thermosolutal_rectangle(
     if c_limits is Ellipsis:
         c_limits = (0, 1 + delta)
 
-    return thermosolutal_convection_generic(
+    return thermosolutal_transport_generic(
         # domain
         Omega=Omega, 
         dOmeg=dOmega, 

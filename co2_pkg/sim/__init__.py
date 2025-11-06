@@ -1,5 +1,2 @@
-from .generic import thermosolutal_convection_generic
-from .solutal import solutal_rectangle, solutal_rectangle_inclined
-from .thermosolutal import thermosolutal_rectangle
-from .rayleigh_benard import rayleigh_benard_rectangle
-from .rayleigh_taylor import rayleigh_taylor_rectangle
+from .generic import thermosolutal_transport_generic
+from .utils import heaviside, rectangle_domain, ScalingType, mass_capillary_trapped, mass_dissolved

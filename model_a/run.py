@@ -1,18 +1,18 @@
-from lucifex.sim import Simulation, run_from_cli, np_postprocess
-from co2_pkg.sim import solutal_rectangle
+from lucifex.sim import Simulation, run_from_cli, xdmf_to_npz
+from model.dns import dns_model_a
 
 
 def posthook(
     sim: Simulation,
-    delete_h5_xdmf: bool | None = None,
+    delete_xdmf: bool | None = None,
 ) -> None:
-    if delete_h5_xdmf is None:
+    if delete_xdmf is None:
         return    
-    np_postprocess(sim, delete_h5_xdmf=delete_h5_xdmf)
+    xdmf_to_npz(sim, delete_xdmf=delete_xdmf)
 
 
 def main():
-    run_from_cli(solutal_rectangle, posthook)
+    run_from_cli(dns_model_a, posthook)
 
 
 if __name__ == "__main__":

@@ -1,0 +1,17 @@
+python run.py --write_delta 1 \
+--write_file "('FunctionSeries', 'ConstantSeries')" \
+--dir_base "'./data_debug'" \
+--dir_params "('Ra', 'Da', 'h0', 'sr', 'cr')" \
+--dir_timestamp True \
+--Nx 16 \
+--Ny 16 \
+--Ra 1000.0 \
+--Da 100.0 \
+--epsilon 0.01 \
+--h0 0.9 \
+--sr 0.2 \
+--cr 0.0 \
+--c_stabilization None \
+--c_limits "(0, 1)" \
+--n_stop 40 \
+--delete_xdmf False

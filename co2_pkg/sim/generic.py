@@ -33,7 +33,7 @@ C: TypeAlias = FunctionSeries
 Theta: TypeAlias = FunctionSeries
 S: TypeAlias = FunctionSeries
 U: TypeAlias = FunctionSeries
-def thermosolutal_convection_generic(
+def thermosolutal_transport_generic(
     # domain
     Omega: Mesh,
     dOmega: MeshBoundary,
@@ -93,6 +93,14 @@ def thermosolutal_convection_generic(
     namespace_extras: Iterable = (),
 ) -> Simulation:    
     """
+    `ϕ∂c/∂t + 𝐮·∇c =  ∇·(D(ϕ,𝐮)·∇c) + R(s,c,θ)` \\
+    `ϕ∂θ/∂t + 𝐮·∇θ = ∇·(G(ϕ,𝐮)·∇θ)`\\
+    `∇⋅𝐮 = 0` \\
+    `𝐮 = -(∇p + ρ(c,θ)e₉)` \\
+    `𝜑∂s/∂t = -εR(s,c,θ)`
+
+    `ϕ = 𝜑(1 - s)` is the effective porosity.
+    
     Default boundary conditions are no flux of fluid, solute and heat everywhere on `∂Ω`. 
 
     Default gravity unit vector is `e₉ = -eʸ` in 2D or `e₉ = -eᶻ` in 3D.
@@ -107,8 +115,6 @@ def thermosolutal_convection_generic(
     and velocity; density and viscosity are functions `μ(c, θ)`, `ρ(c, θ)` of concentration
     and temperature; reaction rate is a function `R(s, c, θ)` of saturation, concentration
     and temperature.
-
-    `ϕ = 𝜑(1 - s)` is the effective porosity.
     """
     if eg is None:
         if Omega.geometry.dim == 2:

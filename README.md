@@ -8,125 +8,169 @@ See `https://github.com/george-poole/LUCiFEx` to install the `lucifex` package.
 
 ## Governing equations
 
-This package solves a non-dimensionalized system of PDEs describing flow in a porous medium coupled to the advection-diffusion-reaction of dissolved CO<sub>2</sub>, advection-diffusion of heat and and dissolution of capillary-trapped CO<sub>2</sub>. For $(\textbf{x}, t)\in\Omega\times[0, \infty)$, the governing equations are
+This package solves a system of PDEs modelling flow in a porous medium coupled to the thermosolutal transport of dissolved CO<sub>2</sub> and porosity evolution due to the dissolution of capillary-trapped CO<sub>2</sub>.
 
+In strong form, the non-dimensionalized initial boundary value problem is
 $$
-\begin{align}
-\phi\frac{\partial c}{\partial t} + \textbf{u}\cdot\nabla c &= \frac{1}{Ra}\nabla\cdot(\mathsf{D}\cdot\nabla c) + Da\,R \\
-\phi\frac{\partial\theta}{\partial t} + \textbf{u}\cdot\nabla\theta &= \frac{1}{LeRa}\nabla\cdot(\mathsf{G}\cdot\nabla\theta)\\
-\nabla\cdot\textbf{u} &= 0 \\
-\textbf{u} &= -\frac{\mathsf{K}}{\mu}\cdot(\nabla p + \rho\,\textbf{e}_g) \\
-\varphi\frac{\partial s}{\partial t}&=-\varepsilon Da\,R
-\end{align}
-$$
-
-with constitutive relations for the inert rock formation's porosity $\varphi(\textbf{x})$, permeability $K(\phi)$, solutal dispersion $\mathsf{D}(\phi, \textbf{u})$, thermal dispersion $\mathsf{G}(\phi, \textbf{u})$, fluid density $\mu(c, \theta)$, fluid viscosity $\rho(c, \theta)$ and reaction rate $R(s, c, \theta)$. The porous medium's effective porosity is $\phi = \varphi(1 - s)$ for a saturation $s$ of capillary-trapped CO<sub>2</sub>. 
-
-On $\partial\Omega$ a combination of Dirichlet $(\text{D})$ and Neumann $(\text{N})$ boundary conditions apply for $\theta$ and $c$, or essential $(\text{E})$ and natural $(\text{N})$ boundary conditions for $\textbf{u}$ and $p$.
-
-$$
-\begin{align}
-\theta &= \theta_{\text{D}}\quad\text{for~}\textbf{x}\in\partial\Omega_{\text{D},\theta} \\
-\textbf{n}\cdot(\mathsf{G}\cdot\nabla\theta) &= \theta_{\text{N}}\quad\text{for~}\textbf{x}\in\partial\Omega_{\text{N},\theta}=\partial\Omega/\partial\Omega_{\text{D},\theta} \\
-c &= c_{\text{D}}\quad\text{for~}\textbf{x}\in\partial\Omega_{\text{D},c}\\
-\textbf{n}\cdot(\mathsf{D}\cdot\nabla c) &= c_{\text{N}}\quad\text{for~}\textbf{x}\in\partial\Omega_{\text{N},c}=\partial\Omega/\partial\Omega_{\text{D},c} \\
-\textbf{n}\cdot\textbf{u} &= u_{\text{E}}\quad\text{for~}\textbf{x}\in\partial\Omega_{\text{E}} \\
-p &= p_{\text{N}}\quad\text{for~}\textbf{x}\in\partial\Omega_{\text{N}}=\partial\Omega/\partial\Omega_{\text{E}}
-\end{align}
-$$
-
-Initial conditions are 
-
-$$
-\begin{align}
-\theta(\textbf{x}, t=0) &= \theta_0(\textbf{x}) \\
-c(\textbf{x}, t=0) &= c_0(\textbf{x}) \\
-s(\textbf{x}, t=0) &= s_0(\textbf{x})
-\end{align}
+\begin{align*}
+&\text{Find} \\
+&\text{$c(\textbf{x}, t): \Omega\times[0, \infty) \to \mathbb{R}$, } \\
+&\text{$\theta(\textbf{x}, t): \Omega\times[0, \infty) \to \mathbb{R}$, } \\
+&\text{$s(\textbf{x}, t): \Omega\times[0, \infty) \to \mathbb{R}$, } \\
+&\text{$\textbf{u}(\textbf{x}, t): \Omega\times[0, \infty) \to \mathbb{R}^d$ and $p(\textbf{x}, t): \Omega\times[0, \infty) \to \mathbb{R}$} \\
+&\text{such that} \\
+&\begin{cases}
+\phi\frac{\partial c}{\partial t} + Ad\,\textbf{u}\cdot\nabla c = \frac{1}{Pe}\nabla\cdot(\mathsf{D}(\phi, \textbf{u})\cdot\nabla c) + KiR(s, c, \theta) & \\
+\phi\frac{\partial\theta}{\partial t} + Ad\,\textbf{u}\cdot\nabla\theta = \frac{1}{LePe}\nabla\cdot(\mathsf{G}(\phi, \textbf{u})\cdot\nabla\theta) & \\
+\nabla\cdot\textbf{u} = 0 & \\
+\textbf{u}=-\frac{\mathsf{K}(\phi)}{\mu(c, \theta)}\cdot(\nabla p + Bu\,\rho(c, \theta) g\,\textbf{e}_g) \\
+\varphi(\textbf{x})\frac{\partial s}{\partial t} = -\varepsilon Ki R(s,c,\theta) & \forall(\textbf{x}, t)\in\Omega\times[0,\infty) \\
+c(\textbf{x},t=0)=c_0 & \forall\textbf{x}\in\Omega \\
+\theta(\textbf{x},t=0)=\theta_0 & \forall\textbf{x}\in\Omega \\
+s(\textbf{x},t=0)=s_0 & \forall\textbf{x}\in\Omega \\
+c=c_{\text{D}} & \forall(\textbf{x}, t)\in\partial\Omega_{\text{D}, c} \times [0,\infty] \\
+\textbf{n}\cdot(\mathsf{D}\cdot\nabla c) = c_{\text{N}} & \forall(\textbf{x}, t)\in\partial\Omega_{\text{N}, c}
+\times [0,\infty]~,~\partial\Omega_{\text{N}, c}=\partial\Omega/\partial\Omega_{\text{D}, c} \\
+\theta=\theta_{\text{D}} & \forall (\textbf{x}, t)\in\partial\Omega_{\text{D}, \theta} \times [0,\infty] \\
+\textbf{n}\cdot(\mathsf{G}\cdot\nabla \theta) = \theta_{\text{N}} & \forall(\textbf{x}, t)\in\partial\Omega_{\text{N}, \theta}
+\times [0,\infty]~,~\partial\Omega_{\text{N}, \theta}=\partial\Omega/\partial\Omega_{\text{D}, \theta} \\
+\textbf{n}\cdot\textbf{u} = u_{\text{E}} & \forall(\textbf{x}, t)\in\partial\Omega_{\text{E}} \times [0,\infty] \\
+p = p_{\text{N}} & \forall(\textbf{x}, t)\in\partial\Omega_{\text{N}}\times [0,\infty]~,~\partial\Omega_{\text{N}}=\partial\Omega/\partial\Omega_{\text{E}}
+\end{cases}~.
+\end{align*}
 $$
 
-The streamfunction formulation in 2D
+where $\phi(\textbf{x}, t)=\varphi(\textbf{x})(1 - s(\textbf{x}, t))$ is the effective porosity. Alternatively in 2D with $\partial\Omega_{\text{E}}=\partial\Omega\iff\Omega_{\text{N}}=\varnothing$, the streamfunction formulation solving for $\psi(\textbf{x}, t): \Omega\times[0,\infty]\to\mathbb{R}$ instead of $\textbf{u}$ and $p$ contains
 
 $$
-\begin{align}
-\textbf{u} &= 
-\begin{pmatrix}
--\frac{\partial\psi}{\partial y} \\
-\frac{\partial\psi}{\partial x}
-\end{pmatrix} \\
-\nabla\cdot\bigg(\frac{\mu\mathsf{K}^{\mathsf{T}}\cdot\nabla\psi}{\det\mathsf{K}}\bigg) &= \cos\beta\frac{\partial\rho}{\partial x}-\sin\beta\frac{\partial\rho}{\partial y}
-\end{align}
+\begin{cases}
+\textbf{u} = (-\frac{\partial\psi}{\partial y}, \frac{\partial\psi}{\partial x}) & \\
+\nabla\cdot\bigg(\frac{\mu\mathsf{K}^{\mathsf{T}}\cdot\nabla\psi}{\det\mathsf{K}}\bigg) &= -\frac{\partial(\rho\,\textbf{e}_g\cdot\textbf{e}_y)}{\partial x} + \frac{\partial(\rho\,\textbf{e}_g\cdot\textbf{e}_x)}{\partial y} & \forall(\textbf{x}, t)\in\Omega \times [0,\infty] \\
+\psi=\psi_{\text{D}} & \forall(\textbf{x}, t)\in\partial\Omega \times [0,\infty] \\
+\end{cases}
 $$
 
-is an alternative to equations $(3)$ and $(4)$, given that the unit vector pointing in the direction of gravity is $\textbf{e}_g=-\sin\beta\textbf{e}_x -\cos\beta\textbf{e}_y$ for a domain inclined at an angle $\beta$ to the horizontal.
+The following constitutive relations
+$$
+\begin{cases}
+\textbf{e}_g & \text{gravitational unit vector} & \text{$-\textbf{e}_y$ in 2D or $-\textbf{e}_z$ in 3D}  \\
+\varphi(\textbf{x}) & \text{inert rock formation's porosity} & 1\\
+\mathsf{D}(\phi, \textbf{u}) & \text{solutal dispersion} & \mathsf{I} \\
+\mathsf{G}(\phi, \textbf{u}) & \text{thermal dispersion} & \mathsf{I} \\
+K(\phi) & \text{permeability} & \phi^2\mathsf{I}\\
+\mu(c, \theta) & \text{fluid viscosity} & 1\\
+\rho(c, \theta) & \text{fluid density} & c-\theta\\
+R(s, c, \theta) & \text{reaction rate} & s(1-c)\theta \\
+\end{cases}
+$$
 
-Refer to the `co2_dissolution_pkg.math` module for full details of the finite element elements formulations with finite differences in time.
+are to be prescribed. Default values denoted in the rightmost column model a horizontal, isotropic, homogeneous porous medium containing an isoviscous fluid. The default boundary conditions, defined on the entire boundary, are
+$$
+\begin{cases}
+c_{\text{N}}\vert_{\partial\Omega}=0 & \text{no solutal flux} \\
+\theta_{\text{N}}\vert_{\partial\Omega}=0 & \text{no thermal flux} \\
+u_{\text{E}}\vert_{\partial\Omega}=0 \iff\psi_{\text{D}}\vert_{\partial\Omega}=0 & \text{no fluid penetration}
+\end{cases}
+$$
 
-Unless otherwise specified, constitutive relations and boundary conditions assume the following defaults
+With a length scale $\mathcal{L}$, velocity scale $\mathcal{U}$, time scale $\mathcal{T}$ and other scales denoted by $\Delta\,\cdot$ or $\cdot~_{\text{ref}}$, the dimensionless numbers appearing in the governing equations are
+$$
+\begin{align*}
+Ad&=\frac{\mathcal{U}\mathcal{T}}{\phi_{\text{ref}}\mathcal{L}} \\
+Pe&=\frac{\phi_{\text{ref}}\mathcal{L}^2}{D_{\text{ref}}\mathcal{T}} \\
+Ki&=\frac{\mathcal{T}\Delta R}{\phi_{\text{ref}}\Delta c} \\
+Bu&=\frac{K_{\text{ref}}\,g\Delta\rho}{\mu_{\text{ref}}\,\mathcal{U}} \\
+\end{align*}
+$$
 
-* gravity unit vector $\textbf{e}_g=-\textbf{e}_y$ in 2D or $\textbf{e}_g=-\textbf{e}_z$ in 3D
-* rock porosity $\varphi=1$
-* permeability $K(\phi)=\phi^2$
-* solutal dispersion $D(\phi)=\phi$
-* solutal dispersion $G(\phi)=\phi$
-* fluid density $\rho(c,\theta)=c-\theta$
-* fluid viscosity $\mu=1$
-* no-flux temperature boundary condition $\textbf{n}\cdot(\mathsf{G}\cdot\nabla\theta)=0$ for $\textbf{x}\in\partial\Omega$
-* no-flux concentration boundary condition $\textbf{n}\cdot(\mathsf{D}\cdot\nabla c)=0$ for $\textbf{x}\in\partial\Omega$
-* no-flux velocity boundary condition $\textbf{n}\cdot\textbf{u}=0$ for $\textbf{x}\in\partial\Omega$
+$Le$ is the Lewis number for the ratio of thermal to solutal diffusivity; $Ra$ is the Rayleigh number (defined with respect to the transport of $c$ and domain length scale) is
+$$Ra=\frac{\mathcal{L}_\Omega K_{\text{ref}}g\Delta\rho}{\mu_{\text{ref}}D_{\text{ref}}}=\underbrace{\frac{K_{\text{ref}}\,g\Delta\rho}{\mu_{\text{ref}}}}_{\text{convective speed}} \big/ \underbrace{\frac{D_{\text{ref}}}{\mathcal{L}_\Omega}}_{\text{diffusive speed}}$$
 
-to model an impermeable horizontal domain containing an isotropic, homogeneous porous medium and isoviscous fluid with a linear density.
+and $Da$ is the Damköhler number (defined with respect to the transport of $c$ and domain length scale) is
 
-Solutal or thermal convection can be 'switched off' by setting the solutal Rayleigh number $Ra$ or thermal Rayleigh number $Rb$ to `None`. Likewise setting the Damkohler number $Da$ to `None` (or zero) switches off the reaction, and setting the density ratio $\varepsilon$ `None` (or zero) prevents any evolution of the saturation $s$.
+$$Da=\frac{\mathcal{L}_\Omega \mu_{\text{ref}}\,\Delta R}{K_{\text{ref}}\,g\Delta\rho\Delta c} = \underbrace{\frac{\Delta R}{\Delta c}}_{\text{reaction rate}} \big/ \underbrace{\frac{K_{\text{ref}}\,g\Delta\rho}{\mathcal{L}_\Omega \mu_{\text{ref}}}}_{\text{convection rate}}$$
 
-Specific choices of constitutive relations, boundary conditions and initial conditions may be user-defined to create novel models. Classic models such as Rayleigh-Taylor or Rayleigh-Benard convection can also be recovered from appropriate choices.
+A particular choice of non-dimensionalization with $\mathcal{L}$, $\mathcal{U}$ and $\mathcal{T}$ chosen according to the details of the problem (e.g. boundary conditions, dominant transport processes) will map $\{Ad, Pe, Ki, Bu, Xl\}$ onto combinations of the Rayleigh, Damköhler and Lewis numbers.
 
-### Novel Models
+| $\mathcal{L}$ | $\mathcal{U}$ |$ \mathcal{T}$ | $\{Ad, Pe, Ki, Bu, Xl\}$ | Examples | 
+| -------- | ------- | ------- | ------- | ------- |
+| $\mathcal{L}_\Omega$  |  $K_{\text{ref}}\,g\Delta\rho/\mu_{\text{ref}}$  | $\phi_{\text{ref}}\mathcal{L}/\mathcal{U}$ | $\{1, Ra, Da, 1, 1\}$| [Hewitt et al. (2012)](https://link.aps.org/doi/10.1103/PhysRevLett.108.224503) |
+| $D_{\text{ref}}/\mathcal{U}$  |  $K_{\text{ref}}\,g\Delta\rho/\mu_{\text{ref}}$  | $\phi_{\text{ref}}\mathcal{L}/\mathcal{U}$ | $\{1, 1, Da/Ra, 1, Ra\}$| [Slim (2014)](https://www.cambridge.org/core/product/identifier/S0022112013006733/type/journal_article) | 
+| $\mathcal{L}_\Omega$  |  $D_{\text{ref}}/\mathcal{L}$  | $\phi_{\text{ref}}\mathcal{L}/\mathcal{U}$ | $\{1, 1, RaDa, Ra, 1\}$| [Ritchie \& Pritchard  (2011)](https://www.cambridge.org/core/journals/journal-of-fluid-mechanics/article/natural-convection-and-the-evolution-of-a-reactive-porous-medium/71E5FB557F61CB9125E5B4E4EE9D828F) | 
+| $\sqrt{D_{\text{ref}}\mathcal{T}/\phi_{\text{ref}}}$  |  $\phi_{\text{ref}}\mathcal{L}/\mathcal{T}$  | $\phi_{\text{ref}}\Delta c/\Delta R$  | $\{1, 1, 1, \sqrt{Ra/Da}, \sqrt{RaDa}\}$| [Kabbadj et al. (2025)](https://nlpc.ulb.be/pdf/25.Kabbadj_MATRIX.pdf) |
 
-#### Solutal Convection-Reaction
 
-* rectangular domain $\Omega=[0, L_x] \times [0, L_y]$
-* fluid density $\rho(c)=c$ 
-* reaction rate $r(s,c)=s(1-c)$
-* initial saturation $s(x,y,t=0)=s_r\text{H}(y-h_0)$
-* initial concentration with noise $c(x,y,t=0)=c_r\text{H}(y-h_0) + \mathcal{N}(x,y)$
-* parameterised by $(Ra, Da, \varepsilon, h_0, s_r, c_r)$
+The above mappings between $\{Ra, Da\}$ and $\{Ad, Pe, Ki, Bu, Xl\}$ are implemented by the enumeration class `co2_pkg.sim.ScalingType` to avoid hard-coding simulations with a fixed non-dimensionlization.
 
-#### Thermosolutal Convection-Reaction
 
-* rectangular domain $\Omega=[0, L_x] \times [0, L_y]$
-* fluid density $\rho(c, \theta)=c - \gamma\theta$ 
-* reaction rate $r(s,c, \theta)=s(1+\delta\theta-c)$
-* temperature Neumann boundary conditions $\textbf{n}\cdot\nabla\theta\vert_{x=0,y}=\textbf{n}\cdot\nabla\theta\vert_{x=L_x,y}=0$
-* temperature Dirichlet boundary conditions $\theta(x,y=0)=1$, $\theta(x, y=L_y)=1$
-* initial saturation $s(x,y,t=0)=s_r$
-* initial concentration $c(x,y,t=0)=c_0(y)$
-* initial temperature with noise $\theta(x,y,t=0)=1 - y + \mathcal{N}(x, y)$
-* parameterised by $(Ra, Rb, Da, \varepsilon, \gamma, \delta, s_r)$
+## Discretization
 
-### Classic Models
+TODO
 
-#### Rayleigh-Taylor Convection
 
-* rectangular domain $\Omega=[0, L_x] \times [0, L_y]$
-* fluid density $\rho(\theta)=-\theta$ 
-* initial temperature $\theta(x,y,t=0)=\text{H}(h_0 - y)$
-* parameterised by $(Rb, h_0)$
+## Models
 
-#### Rayleigh-Benard Convection
+User-defined choices of constitutive relations, boundary conditions and initial conditions may be prescribed to investigate novel models. Solutal and thermal transport may be 'switched off' by setting the solutal or thermal dispersion relation to `None`. Setting the density ratio parameter to `None` or $\varepsilon=0$ switches off the porosity evolution. 
 
-* rectangular domain $\Omega=[0, L_x] \times [0, L_y]$
-* fluid density $\rho(\theta)=-\theta$ 
-* temperature Neumann boundary conditions $\textbf{n}\cdot\nabla\theta\vert_{x=0,y}=\textbf{n}\cdot\nabla\theta\vert_{x=L_x,y}=0$
-* temperature Dirichlet boundary conditions $\theta(x,y=0)=1$, $\theta(x, y=L_y)=1$
-* initial temperature with noise $\theta(x,y,t=0)=1 - y + \mathcal{N}(x, y)$
-* parameterised by $Rb$
+$$
+\text{Model A~}
+\begin{cases}
+\mathcal{L}, \mathcal{U}, \mathcal{T}= \\
+\Omega=[0, L_x] \times [0, L_y] \\ 
+\rho(c)=c \\
+r(s,c)s(1-c) \\
+s_0(y)=s_r\text{H}(y-h_0) \\
+c_0(x,y)=c_r\text{H}(y-h_0) + \mathcal{N}(x,y)
+\end{cases}
+$$
+
+$$
+\text{Model B~}
+\begin{cases}
+\mathcal{L}, \mathcal{U}, \mathcal{T}= \\
+\Omega=[0, L_x] \times [0, L_y] \\ 
+\rho(c)=c - \gamma\theta \\
+r(s,c, \theta)=s(1+\delta\theta-c) \\
+s_0=s_r \\
+c_0(x,y)=f(y) + \mathcal{N}(x,y)\\
+\theta_0(x,y)=1 - y + \mathcal{N}(x, y) \\
+\theta_{\text{D}}(x,y=0)=1 \\
+\theta_{\text{D}}(x, y=L_y)=0 \\
+\theta_{\text{N}}(x=0,y)=0 \\
+\theta_{\text{N}}(x=L_x, y)=0
+\end{cases}
+$$ 
+
+Classic models such as Rayleigh-Taylor or Rayleigh-Bénard convection are also recoverable in this framework.
+
+
+$$
+\text{Rayleigh-Taylor~}
+\begin{cases}
+\mathcal{L}, \mathcal{U}, \mathcal{T}= \\
+\Omega=[0, L_x] \times [0, 1] \\ 
+\rho(\theta)=-\theta \\
+\theta_0(x,y)=\text{H}(\tfrac{1}{2} - y) \\
+\end{cases}
+$$
+
+$$
+\text{Rayleigh-Bénard~}
+\begin{cases}
+\mathcal{L}, \mathcal{U}, \mathcal{T}= \\
+\Omega=[0, L_x] \times [0, 1] \\ 
+\rho(\theta)=-\theta \\
+\theta_0(x,y)=1-y + \mathcal{N}(x,y) \\
+\theta_{\text{D}}(x,y=0)=1 \\
+\theta_{\text{D}}(x, y=1)=0 \\
+\theta_{\text{N}}(x=0,y)=0 \\
+\theta_{\text{N}}(x=L_x, y)=0
+\end{cases}
+$$
 
 ## Simulations
 
 ### Creating a custom simulation
-
-To define a simulation for a model within the framework of governing equations $(1)$-$(5)$,
 
 ```python
 # file `custom_simulation.py` 

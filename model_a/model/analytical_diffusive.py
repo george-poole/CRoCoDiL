@@ -170,7 +170,6 @@ class ExprSeparableSolution:
         return np.sqrt(np.abs(lmbda)) - coeff * nfunc(arg) / dfunc(h0 * np.sqrt(np.abs(lmbda)))
 
 
-
 @dataclass
 class SeparableSolution:
     """
