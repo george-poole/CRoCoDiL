@@ -26,15 +26,19 @@ def dns_system_a(
     Ra: float = 1e3,
     Da: float = 1e2,
     epsilon: float = 1e-2,
+    # initial front
+    h0: float = 0.9,
+    h0_eps: float | tuple[float, float] | None = None,
     # initial saturation
     sr: float = 0.2,
-    h0: float = 0.9,
-    heaviside_eps: float | tuple[float, float] | None = None,
+    s_eps: float | None = None,
+    s_freq: tuple[int, int] | None = None,
+    s_seed: tuple[int, int] | None = None,
     # initial concentration
     cr: float = 0.0,
-    c_eps: float = 1e-6,
-    c_freq: tuple[int, int] = (16, 16),
-    c_seed: tuple[int, int] = (1234, 5678),
+    c_eps: float | None = 1e-6,
+    c_freq: tuple[int, int] | None = (16, 16),
+    c_seed: tuple[int, int] | None = (1234, 5678),
     # time step
     dt_min: float = 0.0,
     dt_max: float = 0.5,
@@ -62,18 +66,16 @@ def dns_system_a(
     secondary: bool = True,
 ):
     """
-    `scaling` determines `Pe, Ki, Bu, Xl` from `Ra, Da`.
+    `ϕ∂c/∂t + 𝐮·∇c =  1/Pe ∇·(D(ϕ,𝐮)·∇c) + KiR(s,c)` \\ 
+    `∇⋅𝐮 = 0` \\
+    `𝐮 = -(∇p + Bu ρ(c)e₉)` \\
+    `𝜑∂s/∂t = -εKiR(s,c)`
 
+    `scaling` determines `Pe, Ki, Bu, Xl` from `Ra, Da`. \\
     `Ω = [0, aspect·Xl] × [0, Xl]`
 
-    `ϕ∂c/∂t + 𝐮·∇c =  1/Pe ∇·(D(ϕ,𝐮)·∇c) + KiR(s,c,θ)` \\ 
-    `ϕ∂θ/∂t + 𝐮·∇θ = 1/LePe ∇·(G(ϕ,𝐮)·∇θ)`\\
-    `∇⋅𝐮 = 0` \\
-    `𝐮 = -(∇p + Bu ρ(c,θ)e₉)` \\
-    `𝜑∂s/∂t = -εKiR(s,c,θ)`
-
-    `s₀ = sᵣ · H(y - h₀)` \\
-    `c₀ = cᵣ · H(y - h₀) + N(x, y)`
+    `s₀ = sᵣ · H(y - h₀)` plus optional noise \\
+    `c₀ = cᵣ · H(y - h₀)` plus optional noise
     """
     Pe, Ki, Bu, Xl = ScalingType(scaling).mapping(Ra, Da, ['Pe', 'Ki', 'Bu', 'Xl'])
 
@@ -82,13 +84,23 @@ def dns_system_a(
     Omega, dOmega = rectangle_domain(Lx, Ly, Nx, Ny, cell)
     Ra = Constant(Omega, Ra, 'Ra')
     Da = Constant(Omega, Da, 'Da')
-    s_ics = heaviside(lambda x: x[1] - h0, sr, eps=heaviside_eps) 
-    c_ics = SpatialPerturbation(
-        heaviside(lambda x: x[1] - h0, cr, eps=heaviside_eps),
-        cubic_noise(['neumann', 'neumann'], [Lx, Ly], c_freq, c_seed),
-        [Lx, Ly],
-        c_eps,
-        )   
+    s_ics = heaviside(lambda x: x[1] - h0, sr, eps=h0_eps) 
+    if s_eps:
+        s_ics = SpatialPerturbation(
+            s_ics,
+            cubic_noise(['neumann', 'neumann'], [Lx, Ly], s_freq, s_seed),
+            [Lx, Ly],
+            s_eps,
+        )
+
+    c_ics = heaviside(lambda x: x[1] - h0, cr, eps=h0_eps),
+    if c_eps:
+        c_ics = SpatialPerturbation(
+            c_ics,
+            cubic_noise(['neumann', 'neumann'], [Lx, Ly], c_freq, c_seed),
+            [Lx, Ly],
+            c_eps,
+            )   
     density = lambda c: Bu * c
     dispersion = lambda phi, _: (1/Pe) * phi
     reaction = lambda s, c: Ki * s * (1 - c)
@@ -138,7 +150,7 @@ def dns_system_a(
             ('f', ['fInterface', 'fPlus', 'fMinus', 'fMid']), 
             shape=(4, 2),
         )
-        flux_solver = integration(f, interfacial_flux)(c[0], u[0], d[0], h0)
+        flux_solver = integration(f, interfacial_flux)(c[0], u[0], d[0], h0, Lx)
         simulation.solvers.append(flux_solver)
 
     return simulation
@@ -149,7 +161,7 @@ def interfacial_flux(
     u: Function,
     d: Function,
     h0: float,
-    Lx: float = 1.0,
+    Lx: float,
 ) -> np.ndarray:
     """
     Evaluates the advective and diffusive fluxes per unit length
@@ -167,13 +179,13 @@ def interfacial_flux(
     h0_approx = y_axis[h0_index]
     h0_plus = y_axis[h0_index + 2]
     h0_minus = y_axis[h0_index - 2]
-    h0_half = y_axis[int(0.5 * h0_index)]
+    h0_mid = y_axis[int(0.5 * h0_index)]
     return (1 / Lx) * flux(
         'dS', 
         lambda x: x[1] - h0_approx, 
         lambda x: x[1] - h0_plus, 
         lambda x: x[1] - h0_minus, 
-        lambda x: x[1] - h0_half,
+        lambda x: x[1] - h0_mid,
         facet_side="+",
     )(c, u, d)
 

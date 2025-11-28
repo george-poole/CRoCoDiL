@@ -33,7 +33,7 @@ C: TypeAlias = FunctionSeries
 Theta: TypeAlias = FunctionSeries
 S: TypeAlias = FunctionSeries
 U: TypeAlias = FunctionSeries
-def thermosolutal_transport_generic(
+def dns_generic(
     # domain
     Omega: Mesh,
     dOmega: MeshBoundary,
@@ -82,10 +82,11 @@ def thermosolutal_transport_generic(
     theta_limits: tuple[float, float] | EllipsisType | None = None,
     s_limits: tuple[float, float] | EllipsisType | None = None,
     # linear algebra
-    flow_petsc: tuple[OptionsPETSc | None, OptionsPETSc | EllipsisType | None] | OptionsPETSc | None = (None, ...),
-    c_petsc: OptionsPETSc | None = None,
-    theta_petsc: OptionsPETSc | None = None,
-    s_petsc: OptionsPETSc | EllipsisType | None = ...,
+    flow_petsc: tuple[OptionsPETSc, OptionsPETSc | None] 
+    | OptionsPETSc = (OptionsPETSc('cg', 'gamg'), None),
+    c_petsc: OptionsPETSc = OptionsPETSc('gmres', 'ilu'),
+    theta_petsc: OptionsPETSc = OptionsPETSc('gmres', 'ilu'),
+    s_petsc: OptionsPETSc | None = None,
     # optional solvers
     secondary: bool = False,    
     # solvers
@@ -101,20 +102,25 @@ def thermosolutal_transport_generic(
 
     `ϕ = 𝜑(1 - s)` is the effective porosity.
     
-    Default boundary conditions are no flux of fluid, solute and heat everywhere on `∂Ω`. 
+    Defaults: 
+    • no-penetration and no-flux boundary conditions everywhere on `∂Ω`
+    • vertical gravity unit vector `e₉ = -eʸ` in 2D or `e₉ = -eᶻ` in 3D
+    • uniform rock porosity `𝜑 = 1`
+    • isotropic quadratic permeability `K(ϕ) = ϕ²`
+    • isotropic linear solutal dispersion `D(ϕ) = ϕ`
+    • isotropic linear thermal dispersion `G(ϕ) = ϕ`
+    • uniform viscosity `μ = 1`
 
-    Default gravity unit vector is `e₉ = -eʸ` in 2D or `e₉ = -eᶻ` in 3D.
-    
-    Default constitutive relations are uniform rock porosity `𝜑 = 1`, 
-    isotropic quadratic permeability `K(ϕ) = ϕ²`, isotropic linear solutal
-    dispersion `D(ϕ) = ϕ`, isotropic linear thermal dispersion `G(ϕ) = ϕ`, 
-    uniform viscosity `μ = 1`.
+    General constitutive relations:
+    • rock porosity `𝜑(𝐱)` as a function of space
+    • permeability `K(ϕ)` as a function of porosity
+    • solutal dispersion `D(ϕ, 𝐮)` as a function of porosity and velocity
+    • thermal dispersion `G(ϕ, 𝐮)` as a function of porosity and velocity
+    • density `ρ(c, θ)` as a function of concentration and temperature
+    • viscosity `μ(c, θ)` as a function of concentration and temperature
+    • reaction rate `R(s, c, θ)` as a function of saturation, concentration and temperature
 
-    In general: rock porosity is a spatial function `𝜑(𝐱)`; permeability `K(ϕ)` is a 
-    function of porosity; solutal and thermal dispersions are functions `D(ϕ, 𝐮)`, `G(ϕ, 𝐮)` of porosity
-    and velocity; density and viscosity are functions `μ(c, θ)`, `ρ(c, θ)` of concentration
-    and temperature; reaction rate is a function `R(s, c, θ)` of saturation, concentration
-    and temperature.
+
     """
     if eg is None:
         if Omega.geometry.dim == 2:
@@ -191,23 +197,20 @@ def thermosolutal_transport_generic(
     if STREAMF:
         psi_bcs = BoundaryConditions(("dirichlet", dOmega.union, 0.0)) if flow_bcs is Ellipsis else flow_bcs
         psi_petsc, u_petsc = flow_petsc
-        psi_petsc = OptionsPETSc("gmres", "none") if psi_petsc is None else psi_petsc
         egx, egy = eg
-        psi_solver = bvp(darcy_streamfunction, psi_bcs, petsc=psi_petsc)(
+        psi_solver = bvp(darcy_streamfunction, psi_bcs, petsc=psi_petsc, cache_matrix=not(EVOL))(
             psi, k[0], mu[0], egx * rho[0], egy * rho[0],
         ) 
-        if u_petsc is Ellipsis:
+        if u_petsc is None:
             u_solver = interpolation(u, streamfunction_velocity)(psi[0])
         else:
-            u_petsc = OptionsPETSc("gmres", "none") if u_petsc is None else u_petsc
             u_solver = projection(u, streamfunction_velocity, petsc=u_petsc)(psi[0])
         
         solvers.extend((psi_solver, u_solver))
     else:
         u_bcs = BoundaryConditions(('essential', dOmega.union, (0.0, 0.0), 0)) if flow_bcs is Ellipsis else flow_bcs[0]
         p_bcs = None if flow_bcs is Ellipsis else flow_bcs[1]
-        flow_petsc = OptionsPETSc("gmres", "lu") if flow_petsc is None else flow_petsc
-        flow_petsc['pc_factor_mat_solver_type'] = 'mumps'
+        flow_petsc = flow_petsc.replace(pc_factor_mat_solver_type='mumps')
         u_solver = bvp(darcy_incompressible, u_bcs, petsc=flow_petsc)(
             up, k[0], mu[0], rho[0] * as_vector(eg), p_bcs)
         solvers.append(u_solver)
@@ -224,7 +227,6 @@ def thermosolutal_transport_generic(
     if THERMAL:
         theta_bcs = BoundaryConditions(("neumann", dOmega.union, 0.0)) if theta_bcs is Ellipsis else theta_bcs
         theta_limits = (0, 1) if theta_limits is Ellipsis else theta_limits
-        theta_petsc = OptionsPETSc("gmres", "none") if theta_petsc is None else theta_petsc
         if CG(theta_stabilization):
             theta_solver = ibvp(advection_diffusion, bcs=theta_bcs, petsc=theta_petsc, dofs_corrector=theta_limits)(
                 c, dt, u, d, D_adv_thermal, D_diff_thermal, phi=phi, supg=theta_stabilization,
@@ -240,7 +242,6 @@ def thermosolutal_transport_generic(
     if SOLUTAL:
         c_bcs = BoundaryConditions(("neumann", dOmega.union, 0.0)) if c_bcs is Ellipsis else c_bcs
         c_limits = (0, 1) if c_limits is Ellipsis else c_limits
-        c_petsc = OptionsPETSc("gmres", "none") if c_petsc is None else c_petsc
         if CG(c_stabilization):
             c_solver = ibvp(advection_diffusion_reaction, bcs=c_bcs, petsc=c_petsc, dofs_corrector=c_limits)(
                 c, dt, u, d, r, D_adv_solutal, D_diff_solutal, D_reac_solutal, phi=phi, supg=c_stabilization,
@@ -261,12 +262,11 @@ def thermosolutal_transport_generic(
         )
         namespace.append(r_evol)
         s_limits = (0, max(s.ics.x)) if s_limits is Ellipsis else s_limits
-        if s_petsc is Ellipsis:
+        if s_petsc is None:
             s_solver = interpolation(s, evolution_expression, dofs_corrector=s_limits, future=True)(
                 s, dt, r_evol, D_reac_evol, phi=varphi,
             )
         else:
-            s_petsc = OptionsPETSc("gmres", "none") if s_petsc is None else s_petsc
             s_solver = ivp(evolution_forms, petsc=s_petsc, dofs_corrector=s_limits)(
                 s, dt, r_evol, D_reac_evol, phi=varphi
             )

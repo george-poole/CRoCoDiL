@@ -6,14 +6,14 @@ from lucifex.utils import CellType, SpatialPerturbation, cubic_noise
 from lucifex.solver import BoundaryConditions, OptionsPETSc, OptionsJIT
 from lucifex.sim import configure_simulation
 
-from .generic import thermosolutal_transport_generic
+from .generic import dns_generic
 from .utils import rectangle_domain, heaviside
 
 
 @configure_simulation(
     jit=OptionsJIT("./__jit__/"),
 )
-def rayleigh_benard_rectangle(
+def dns_rayleigh_benard_rectangle(
     # mesh
     Lx: float = 2.0,
     Ly: float = 1.0,
@@ -35,8 +35,9 @@ def rayleigh_benard_rectangle(
     theta_stabilization: str | tuple[str, float] | tuple[float, float] = None,
     theta_limits: bool | tuple[float, float] = False,
     # linear algebra
-    flow_petsc: OptionsPETSc | None | tuple[OptionsPETSc | None, OptionsPETSc | EllipsisType | None] = (None, ...),
-    c_petsc: OptionsPETSc | None = None,
+    flow_petsc: tuple[OptionsPETSc, OptionsPETSc | None] 
+    | OptionsPETSc = (OptionsPETSc('cg', 'gamg'), None),
+    c_petsc: OptionsPETSc = OptionsPETSc('gmres', 'ilu'),
     # secondary
     secondary: bool = False,
 ):
@@ -62,7 +63,7 @@ def rayleigh_benard_rectangle(
     density = lambda theta: -theta
     dispersion = lambda phi, _: (1/Ra) * phi
 
-    simulation = thermosolutal_transport_generic(
+    simulation = dns_generic(
         # domain
         Omega=Omega, 
         dOmega=dOmega, 
@@ -99,7 +100,7 @@ def rayleigh_benard_rectangle(
     jit=OptionsJIT("./__jit__/"),
     dir_base="./data",
 )
-def rayleigh_taylor_rectangle(
+def dns_rayleigh_taylor_rectangle(
     # mesh
     Lx: float = 4.0,
     Ly: float = 1.0,
@@ -127,8 +128,9 @@ def rayleigh_taylor_rectangle(
     c_stabilization: str | tuple[str, float] | tuple[float, float] = None,
     c_limits: bool | tuple[float, float] = False,
     # linear algebra
-    flow_petsc: OptionsPETSc | None | tuple[OptionsPETSc | None, OptionsPETSc | EllipsisType | None] = (None, ...),
-    c_petsc: OptionsPETSc | None = None,
+    flow_petsc: tuple[OptionsPETSc, OptionsPETSc | None] 
+    | OptionsPETSc = (OptionsPETSc('cg', 'gamg'), None),
+    c_petsc: OptionsPETSc = OptionsPETSc('gmres', 'ilu'),
     # secondary
     secondary: bool = False,
 ):
@@ -145,7 +147,7 @@ def rayleigh_taylor_rectangle(
     
     density = lambda c: c
 
-    simulation = thermosolutal_transport_generic(
+    simulation = dns_generic(
         # domain
         Omega=Omega, 
         dOmega=dOmega, 

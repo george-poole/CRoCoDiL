@@ -6,7 +6,7 @@ from lucifex.utils import CellType, SpatialPerturbation, cubic_noise
 from lucifex.solver import OptionsPETSc, OptionsJIT
 from lucifex.sim import configure_simulation
 
-from co2_pkg.sim.generic import thermosolutal_transport_generic
+from co2_pkg.sim.generic import dns_generic
 from co2_pkg.sim.utils import rectangle_domain
 
 
@@ -53,9 +53,10 @@ def dns_model_b(
     theta_limits = False,
     s_limits = None,
     # linear algebra
-    flow_petsc: OptionsPETSc | None | tuple[OptionsPETSc | None, OptionsPETSc | EllipsisType | None] = (None, ...),
-    c_petsc: OptionsPETSc | None = None,
-    s_petsc: OptionsPETSc | EllipsisType | None = ...,
+    flow_petsc: tuple[OptionsPETSc, OptionsPETSc | None] 
+    | OptionsPETSc = (OptionsPETSc('cg', 'gamg'), None),
+    c_petsc: OptionsPETSc = OptionsPETSc('gmres', 'ilu'),
+    s_petsc: OptionsPETSc | None = None,
     # secondary
     secondary: bool = False,   
 ):
@@ -89,7 +90,7 @@ def dns_model_b(
     if c_limits is Ellipsis:
         c_limits = (0, 1 + delta)
 
-    return thermosolutal_transport_generic(
+    return dns_generic(
         # domain
         Omega=Omega, 
         dOmeg=dOmega, 

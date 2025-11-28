@@ -9,7 +9,7 @@ from lucifex.solver import OptionsPETSc, OptionsJIT
 from lucifex.sim import configure_simulation
 from lucifex.pde.constitutive import permeability_cross_bedded
 
-from co2_pkg.sim.generic import thermosolutal_transport_generic
+from co2_pkg.sim.generic import dns_generic
 from co2_pkg.sim.utils import heaviside, rectangle_domain
 
 
@@ -56,9 +56,10 @@ def dns_model_c(
     c_limits: bool | tuple[float, float] = False,
     s_limits = None,
     # linear algebra
-    u_petsc: OptionsPETSc | None | tuple[OptionsPETSc | None, OptionsPETSc | EllipsisType | None] = (None, ...),
-    c_petsc: OptionsPETSc | None = None,
-    s_petsc: OptionsPETSc | EllipsisType | None = ...,
+    flow_petsc: tuple[OptionsPETSc, OptionsPETSc | None] 
+    | OptionsPETSc = (OptionsPETSc('cg', 'gamg'), None),
+    c_petsc: OptionsPETSc = OptionsPETSc('gmres', 'ilu'),
+    s_petsc: OptionsPETSc | None = None,
     # secondary
     secondary: bool = False,
 ):
@@ -86,7 +87,7 @@ def dns_model_c(
     density = lambda c: c
     reaction = lambda s, c: s * (1 - c)
 
-    return thermosolutal_transport_generic(
+    return dns_generic(
         # domain
         Omega=Omega, 
         dOmega=dOmega, 
@@ -117,7 +118,7 @@ def dns_model_c(
         c_limits=c_limits,
         s_limits=s_limits,
         # linear algebra
-        flow_petsc=u_petsc,
+        flow_petsc=flow_petsc,
         c_petsc=c_petsc,
         s_petsc=s_petsc,
         # optional solvers
