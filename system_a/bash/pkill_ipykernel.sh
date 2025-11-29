@@ -1,4 +1,4 @@
-# kills zombie Python processes left running due a bug in VSCode / Jupyter
+# kills zombie Python processes left running due to a bug in VSCode / Jupyter
 echo "Python processes before:"
 ps -ef | grep python 
 echo "Killing python processes..." 

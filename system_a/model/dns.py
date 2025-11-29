@@ -7,7 +7,7 @@ from lucifex.fdm import ConstantSeries, FiniteDifference, FiniteDifferenceArgwis
 from lucifex.utils import CellType, SpatialPerturbation, cubic_noise, as_index, mesh_axes
 from lucifex.solver import OptionsPETSc, OptionsJIT, integration
 from lucifex.sim import configure_simulation
-from lucifex.pde.transport import flux
+from lucifex.pde.advection_diffusion import flux
 
 from co2_pkg.sim import dns_generic, heaviside, rectangle_domain, ScalingType
 
@@ -43,7 +43,7 @@ def dns_system_a(
     dt_min: float = 0.0,
     dt_max: float = 0.5,
     cfl_h: str | float = "hmin",
-    cfl_courant: float = 0.75,
+    cfl_courant: float = 0.5,
     k_courant: float = 0.1,
     # time discretization
     D_adv: FiniteDifference
@@ -84,6 +84,7 @@ def dns_system_a(
     Omega, dOmega = rectangle_domain(Lx, Ly, Nx, Ny, cell)
     Ra = Constant(Omega, Ra, 'Ra')
     Da = Constant(Omega, Da, 'Da')
+
     s_ics = heaviside(lambda x: x[1] - h0, sr, eps=h0_eps) 
     if s_eps:
         s_ics = SpatialPerturbation(
@@ -100,10 +101,12 @@ def dns_system_a(
             cubic_noise(['neumann', 'neumann'], [Lx, Ly], c_freq, c_seed),
             [Lx, Ly],
             c_eps,
-            )   
+            )  
+         
     density = lambda c: Bu * c
     dispersion = lambda phi, _: (1/Pe) * phi
-    reaction = lambda s, c: Ki * s * (1 - c)
+    reaction = lambda s: -Ki * s
+    source = lambda s: Ki * s
 
     simulation = dns_generic(
         # domain
@@ -117,6 +120,7 @@ def dns_system_a(
         # constitutive relations
         density=density,
         reaction=reaction,
+        source=source,
         dispersion_solutal=dispersion,
         dispersion_thermal=None,
         # time step
@@ -188,4 +192,3 @@ def interfacial_flux(
         lambda x: x[1] - h0_mid,
         facet_side="+",
     )(c, u, d)
-

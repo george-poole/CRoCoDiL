@@ -1,10 +1,10 @@
-python run.py --write_delta 0.02 \
+python run.py --write_delta "(0.01, 1)" \
 --write_file "('FunctionSeries', 'ConstantSeries')" \
 --dir_base "'./data_reference'" \
 --dir_params "('Nx', 'Ny', 'Ra', 'Da', 'h0', 'sr', 'cr')" \
 --dir_timestamp True \
---Nx 200 \
---Ny 200 \
+--Nx 250 \
+--Ny 250 \
 --Ra 1000.0 \
 --Da 100.0 \
 --epsilon 0.01 \
@@ -14,7 +14,7 @@ python run.py --write_delta 0.02 \
 --c_stabilization None \
 --c_limits "(0, 1)" \
 --n_stop 5000 \
---t_stop 120.0 \
+--t_stop 20.0 \
 --dt_init 0.000001 \
 --n_init 20 \
 --timing True \

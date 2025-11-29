@@ -3,8 +3,8 @@ python run.py --write_delta 1 \
 --dir_base "'./data_debug'" \
 --dir_params "('Nx', 'Ny', 'Ra', 'Da', 'h0', 'sr', 'cr')" \
 --dir_timestamp True \
---Nx 200 \
---Ny 200 \
+--Nx 100 \
+--Ny 100 \
 --Ra 1000.0 \
 --Da 100.0 \
 --epsilon 0.01 \
