@@ -1,4 +1,3 @@
-
 class TeX:
     X = '$x$'
     """

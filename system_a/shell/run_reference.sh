@@ -1,0 +1,21 @@
+python run.py --write_delta 1 \
+--write_file "('FunctionSeries', 'ConstantSeries')" \
+--dir_base "'./data_reference'" \
+--dir_params "('Nx', 'Ny', 'c_stabilization', 'c_limits', 'Ra', 'Da', 'h0', 'sr', 'cr')" \
+--dir_timestamp True \
+--Nx 250 \
+--Ny 250 \
+--Ra 2000.0 \
+--Da 100.0 \
+--epsilon 0.01 \
+--h0 0.9 \
+--sr 0.1 \
+--cr 1.0 \
+--c_stabilization "'coth'" \
+--c_limits True \
+--n_stop 20 \
+--t_stop 20.0 \
+--dt_init 0.000001 \
+--n_init 10 \
+--timing True \
+--delete_xdmf False \

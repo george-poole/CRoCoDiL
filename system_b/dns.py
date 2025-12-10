@@ -6,8 +6,8 @@ from lucifex.utils import CellType, SpatialPerturbation, cubic_noise
 from lucifex.solver import OptionsPETSc, OptionsJIT
 from lucifex.sim import configure_simulation
 
-from co2_pkg.sim.generic import dns_generic
-from co2_pkg.sim.utils import rectangle_domain
+from crocodil.dns.generic import dns_generic
+from crocodil.dns.utils import rectangle_domain
 
 
 @configure_simulation(
@@ -39,7 +39,7 @@ def dns_model_b(
     dt_max: float = 0.5,
     cfl_h: str | float = "hmin",
     cfl_courant: float = 0.75,
-    k_courant: float = 0.1,
+    r_courant: float = 0.1,
     # time discretization
     D_adv: FiniteDifference
     | FiniteDifferenceArgwise = (AB(2) @ CN),
@@ -109,14 +109,14 @@ def dns_model_b(
         dt_max=dt_max,
         cfl_h=cfl_h,
         cfl_courant=cfl_courant,
-        k_courant=k_courant,
+        r_courant=r_courant,
         # time discretization
         D_adv_solutal=D_adv,
         D_diff_solutal=D_diff,
         D_reac_solutal=D_reac,
         D_adv_thermal=D_adv,
         D_diff_thermal=D_diff,
-        D_reac_evol=D_reac,
+        D_evol=D_reac,
         # stabilization
         c_stabilization=c_stabilization,
         c_limits=c_limits,

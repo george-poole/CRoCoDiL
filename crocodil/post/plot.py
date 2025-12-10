@@ -14,7 +14,7 @@ from lucifex.utils import StrSlice, as_index, as_indices
 
 from .contour import contour_peak_trajectories, filter_trajectories, contour_coordinates
 from .compute import compute_horizontal_average
-from .tex import TeX
+from .tex_utils import TeX
 
 
 @postprocess

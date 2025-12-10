@@ -9,8 +9,8 @@ from lucifex.solver import OptionsPETSc, OptionsJIT
 from lucifex.sim import configure_simulation
 from lucifex.pde.constitutive import permeability_cross_bedded
 
-from co2_pkg.sim.generic import dns_generic
-from co2_pkg.sim.utils import heaviside, rectangle_domain
+from crocodil.dns.generic import dns_generic
+from crocodil.dns.utils import heaviside, rectangle_domain
 
 
 @configure_simulation(
@@ -44,7 +44,7 @@ def dns_model_c(
     dt_max: float = 0.5,
     cfl_h: str | float = "hmin",
     cfl_courant: float = 0.75,
-    k_courant: float = 0.1,
+    r_courant: float = 0.1,
     # time discretization
     D_adv: FiniteDifference
     | FiniteDifferenceArgwise = (AB2 @ CN),
@@ -108,7 +108,7 @@ def dns_model_c(
         dt_max=dt_max,
         cfl_h=cfl_h,
         cfl_courant=cfl_courant,
-        k_courant=k_courant,
+        r_courant=r_courant,
         # time discretization
         D_adv_solutal=D_adv,
         D_diff_solutal=D_diff,

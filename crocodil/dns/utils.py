@@ -1,10 +1,11 @@
-from typing import Callable, Iterable
+from typing import Callable
+from typing_extensions import Unpack
 
 import numpy as np
 from dolfinx.mesh import Mesh
-from dolfinx.fem import Function, Constant
 from ufl.core.expr import Expr
 
+from lucifex.fem import Function, Constant
 from lucifex.mesh import MeshBoundary, mesh_boundary, rectangle_mesh
 from lucifex.utils import integral
 from lucifex.utils.py_utils import StrEnum
@@ -40,8 +41,7 @@ class ScalingType(StrEnum):
         self,
         Ra: float,
         Da: float,
-        keys: Iterable[str] = ('Ad', 'Pe', 'Ki', 'Bu', 'Xl'),
-    ) -> list[float | int]:
+    ) -> Callable[[str], int | float] | Callable[[Unpack[tuple[str, ...]]], list[int | float]]:
         if self.value == ScalingType.ADVECTIVE:
             Ad = 1
             Pe = Ra
@@ -68,15 +68,28 @@ class ScalingType(StrEnum):
             Xl = np.sqrt(Ra * Da)
         else:
             raise NotImplementedError(f'{self.value}')
+        
+        _names = ('Ad', 'Pe', 'Ki', 'Bu', 'Xl')
 
-        d = dict(
+        _mapping = dict(
             zip(
-                ('Ad', 'Pe', 'Ki', 'Bu', 'Xl'),
+                _names,
                 (Ad, Pe, Ki, Bu, Xl),
             )
         )
-        return [d[k] for k in keys]
 
+        def _inner(*args):
+            if len(args) == 1:
+                key = args[0]
+                try:
+                    return _mapping[key]
+                except KeyError:
+                    raise KeyError(f"'{key}' is not in the names {_names}")
+            else:
+                return [_mapping[i] for i in args]
+            
+        return _inner
+            
 
 def heaviside(
     fx: Callable[[np.ndarray], np.ndarray],

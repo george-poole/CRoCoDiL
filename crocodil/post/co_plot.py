@@ -14,7 +14,7 @@ from lucifex.io.post import co_postprocess
 from lucifex.utils import StrSlice, as_index
 
 from .plot import plot_horizontal_average
-from .tex import TeX
+from .tex_utils import TeX
 
 
 @co_postprocess

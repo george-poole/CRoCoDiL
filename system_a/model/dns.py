@@ -1,15 +1,14 @@
-from types import EllipsisType
-
 import numpy as np
 
 from lucifex.fem import Constant, Function
-from lucifex.fdm import ConstantSeries, FiniteDifference, FiniteDifferenceArgwise, CN, AB
+from lucifex.fdm import ConstantSeries, FiniteDifference, FiniteDifferenceArgwise, CN, AB, AM
 from lucifex.utils import CellType, SpatialPerturbation, cubic_noise, as_index, mesh_axes
 from lucifex.solver import OptionsPETSc, OptionsJIT, integration
 from lucifex.sim import configure_simulation
 from lucifex.pde.advection_diffusion import flux
+from lucifex.pde.supg import limits_corrector
 
-from co2_pkg.sim import dns_generic, heaviside, rectangle_domain, ScalingType
+from crocodil.dns import dns_generic, heaviside, rectangle_domain, ScalingType
 
 
 @configure_simulation(
@@ -31,12 +30,12 @@ def dns_system_a(
     h0_eps: float | tuple[float, float] | None = None,
     # initial saturation
     sr: float = 0.2,
-    s_eps: float | None = None,
+    s_ampl: float | None = None,
     s_freq: tuple[int, int] | None = None,
     s_seed: tuple[int, int] | None = None,
     # initial concentration
-    cr: float = 0.0,
-    c_eps: float | None = 1e-6,
+    cr: float = 1.0,
+    c_ampl: float | None = 1e-6,
     c_freq: tuple[int, int] | None = (16, 16),
     c_seed: tuple[int, int] | None = (1234, 5678),
     # time step
@@ -44,19 +43,19 @@ def dns_system_a(
     dt_max: float = 0.5,
     cfl_h: str | float = "hmin",
     cfl_courant: float = 0.5,
-    k_courant: float = 0.1,
+    r_courant: float = 0.1,
     # time discretization
     D_adv: FiniteDifference
     | FiniteDifferenceArgwise = (AB(2) @ CN),
     D_diff: FiniteDifference = CN,
     D_reac: FiniteDifference 
-    | FiniteDifferenceArgwise = (AB(2) @ CN),
-    D_reac_evol: FiniteDifference 
+    | FiniteDifferenceArgwise = (AB(2) @ AM(1)),
+    D_evol: FiniteDifference 
     | FiniteDifferenceArgwise = AB(1),
     # stabilization
     c_stabilization: str | tuple[float, float] = None,
-    c_limits: EllipsisType | None = None,
-    s_limits: EllipsisType | None = None,
+    c_limits: bool = False,
+    s_limits: bool = False,
     # linear algebra
     flow_petsc: tuple[OptionsPETSc, OptionsPETSc | None] 
     | OptionsPETSc = (OptionsPETSc('cg', 'gamg'), None),
@@ -77,33 +76,39 @@ def dns_system_a(
     `s₀ = sᵣ · H(y - h₀)` plus optional noise \\
     `c₀ = cᵣ · H(y - h₀)` plus optional noise
     """
-    Pe, Ki, Bu, Xl = ScalingType(scaling).mapping(Ra, Da, ['Pe', 'Ki', 'Bu', 'Xl'])
+    Pe, Ki, Bu, Xl = ScalingType(scaling).mapping(Ra, Da)('Pe', 'Ki', 'Bu', 'Xl')
 
     Lx = aspect * Xl
     Ly = 1.0 * Xl
     Omega, dOmega = rectangle_domain(Lx, Ly, Nx, Ny, cell)
+    
     Ra = Constant(Omega, Ra, 'Ra')
     Da = Constant(Omega, Da, 'Da')
+    Pe = Constant(Omega, Pe, 'Pe')
+    Bu = Constant(Omega, Bu, 'Bu')
+    Ki = Constant(Omega, Ki, 'Ki')
 
     s_ics = heaviside(lambda x: x[1] - h0, sr, eps=h0_eps) 
-    if s_eps:
+    if s_ampl:
         s_ics = SpatialPerturbation(
             s_ics,
             cubic_noise(['neumann', 'neumann'], [Lx, Ly], s_freq, s_seed),
             [Lx, Ly],
-            s_eps,
+            s_ampl,
+            limits_corrector(0, sr),
         )
 
     c_ics = heaviside(lambda x: x[1] - h0, cr, eps=h0_eps),
-    if c_eps:
+    if c_ampl:
         c_ics = SpatialPerturbation(
             c_ics,
             cubic_noise(['neumann', 'neumann'], [Lx, Ly], c_freq, c_seed),
             [Lx, Ly],
-            c_eps,
+            c_ampl,
+            limits_corrector(0, 1),
             )  
          
-    density = lambda c: Bu * c
+    density = lambda c: Constant(Omega, Bu) * c
     dispersion = lambda phi, _: (1/Pe) * phi
     reaction = lambda s: -Ki * s
     source = lambda s: Ki * s
@@ -128,12 +133,12 @@ def dns_system_a(
         dt_max=dt_max,
         cfl_h=cfl_h,
         cfl_courant=cfl_courant,
-        k_courant=k_courant,
+        r_courant=r_courant,
         # time discretization
         D_adv_solutal=D_adv,
         D_diff_solutal=D_diff,
         D_reac_solutal=D_reac,
-        D_reac_evol=D_reac_evol,
+        D_evol=D_evol,
         # stabilization
         c_stabilization=c_stabilization,
         c_limits=c_limits,
@@ -166,6 +171,7 @@ def interfacial_flux(
     d: Function,
     h0: float,
     Lx: float,
+    tol: float | None = 1e-6,
 ) -> np.ndarray:
     """
     Evaluates the advective and diffusive fluxes per unit length
@@ -179,10 +185,13 @@ def interfacial_flux(
     """
     mesh = c.function_space.mesh
     y_axis = mesh_axes(mesh)[1]
-    h0_index = as_index(y_axis, h0, less_than=True)
+
+    ineq = lambda aprx, trgt: aprx <= trgt and np.abs(aprx - trgt) < tol
+    ineq_msg = 'Mesh resolution must be chosen such that `h0` is aligned with cell facets.'
+    h0_index = as_index(y_axis, h0, ineq, ineq_msg)
     h0_approx = y_axis[h0_index]
-    h0_plus = y_axis[h0_index + 2]
-    h0_minus = y_axis[h0_index - 2]
+    h0_plus = y_axis[h0_index + 1]
+    h0_minus = y_axis[h0_index - 1]
     h0_mid = y_axis[int(0.5 * h0_index)]
     return (1 / Lx) * flux(
         'dS', 
