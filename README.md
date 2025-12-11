@@ -1,6 +1,6 @@
 # CRoCoDiL 🐊
 
-Welcome to the *$\,$**C**onvection-**R**eaction **o**f **C**arb**o**n **D**iodixe **i**n **L**UCiFEx $\,$* package!
+Welcome to the *&nbsp;**C**onvection-**R**eaction **o**f **C**arb**o**n **D**iodixe **i**n **L**UCiFEx&nbsp;* package!
 
 CRoCoDiL solves partial differential equations modelling flow in a porous medium coupled to the solutal and/or thermal transport of dissolved CO<sub>2</sub> and porosity evolution due to the dissolution of capillary-trapped CO<sub>2</sub>. It is based on the core package [LUCiFEx](https://github.com/george-poole/LUCiFEx), which itself is based on [FEniCSx](https://github.com/FEniCS/dolfinx). For more details on the mathematical formulation, see `doc`. User-defined choices of domain, constitutive relations, boundary conditions and initial conditions may be prescribed to investigate both novel and classic systems.
 
