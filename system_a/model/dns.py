@@ -49,9 +49,10 @@ def dns_system_a(
     | FiniteDifferenceArgwise = (AB(2) @ CN),
     D_diff: FiniteDifference = CN,
     D_reac: FiniteDifference 
-    | FiniteDifferenceArgwise = (AB(2) @ AM(1)),
+    | FiniteDifferenceArgwise = (AB(1) @ AM(1)),
+    D_src: FiniteDifference = AB(1),
     D_evol: FiniteDifference 
-    | FiniteDifferenceArgwise = AB(1),
+    | FiniteDifferenceArgwise = AB(1), # (AB(1) @ AM(1)),
     # stabilization
     c_stabilization: str | tuple[float, float] = None,
     c_limits: bool = False,
@@ -138,7 +139,8 @@ def dns_system_a(
         D_adv_solutal=D_adv,
         D_diff_solutal=D_diff,
         D_reac_solutal=D_reac,
-        D_evol=D_evol,
+        D_src_solutal=D_src,
+        D_reac_evol=D_evol,
         # stabilization
         c_stabilization=c_stabilization,
         c_limits=c_limits,

@@ -74,11 +74,10 @@ def dns_generic(
     D_diff_solutal: FiniteDifference = AB1,
     D_reac_solutal: FiniteDifference 
     | FiniteDifferenceArgwise = AB1,
-    D_src_solutal: FiniteDifference 
-    | FiniteDifferenceArgwise = AB1,
+    D_src_solutal: FiniteDifference = AB1,
     D_adv_thermal: FiniteDifference | FiniteDifferenceArgwise = AB1,
     D_diff_thermal: FiniteDifference = AB1,
-    D_evol: FiniteDifference 
+    D_reac_evol: FiniteDifference 
     | FiniteDifferenceArgwise = AB1,
     # stabilization
     c_stabilization: str | tuple[float, float] | None = None,
@@ -144,7 +143,7 @@ def dns_generic(
     namespace = []
 
     # time
-    order = finite_difference_order(D_adv_solutal, D_diff_solutal, D_reac_solutal, D_adv_thermal, D_diff_thermal, D_evol)
+    order = finite_difference_order(D_adv_solutal, D_diff_solutal, D_reac_solutal, D_adv_thermal, D_diff_thermal, D_reac_evol)
     t = ConstantSeries(Omega, "t", order, ics=0.0)  
     dt = ConstantSeries(Omega, 'dt')
 
@@ -282,11 +281,11 @@ def dns_generic(
         s_corrector = ('sCorr', limits_corrector(*s_limits)) if s_limits else None
         if s_petsc is None:
             s_solver = interpolation(s, evolution_expression, corrector=s_corrector, future=True)(
-                s, dt, rEvol, D_evol, phi=varphi,
+                s, dt, rEvol, D_reac_evol, phi=varphi,
             )
         else:
             s_solver = ivp(evolution_forms, petsc=s_petsc, corrector=s_corrector)(
-                s, dt, rEvol, D_evol, phi=varphi
+                s, dt, rEvol, D_reac_evol, phi=varphi
             )
         solvers.append(s_solver)
 
@@ -307,7 +306,7 @@ def dns_generic(
             cMinMax = ConstantSeries(Omega, "cMinMax", shape=(2,))
             solvers.append(evaluation(cMinMax, extremum)(c[0]))
             mD = ConstantSeries(Omega, "mD")
-            solvers.append(integration(mD, mass_dissolved, 'dx')(c[0], s[0]))
+            solvers.append(integration(mD, mass_dissolved, 'dx')(c[0], phi[0]))
             fBoundary = ConstantSeries(Omega, "fBoundary", shape=(len(dOmega.union), 2))
             solvers.append(integration(fBoundary, flux, 'ds', *dOmega.union)(c[0], u[0], d[0]))
         if EVOL:

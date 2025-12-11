@@ -132,13 +132,7 @@ def mass_capillary_trapped(
     epsilon: Constant | float,
 ) -> Expr:
     """
-    Mass capillary-trapped per unit per unit area (2D) or volume (3D)
-    
-    `ρᶜ = s / ε`
-
-    for the mass integral
-
-    `mᶜ = ∫ ρᶜ dx` 
+    `mᶜ = ∫ s / ε dx` 
     """
     return s / epsilon
 
@@ -146,18 +140,12 @@ def mass_capillary_trapped(
 @integral
 def mass_dissolved(
     c: Function, 
-    s: Function,
+    phi: Function,
 ) -> Expr:
     """
-    Mass dissolved per unit per unit area (2D) or volume (3D)
-
-    `ρᴰ = ∫ (1 - s)·c dx` 
-
-    for the mass integral
-
-    `mᴰ = ∫ ρᴰ dx` 
+    `mᴰ = ∫ ϕc dx` 
     """
-    return (1 - s) * c
+    return phi * c
 
 
 def rectangle_domain(

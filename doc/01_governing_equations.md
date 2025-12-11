@@ -2,10 +2,7 @@
 
 ## Dimensional governing equations
 
-effective porosity
-$$
-\phi(\textbf{x}, t)=\varphi(\textbf{x})(1-s(\textbf{x},t))
-$$
+$\textbf{x}=(x,y)\in\Omega\sub\mathbb{R}^2$ or $\textbf{x}=(x,y,z)\in\Omega\sub\mathbb{R}^3$ spanned by unit vectors $\{\textbf{e}_x, \textbf{e}_y\}$ or $\{\textbf{e}_x, \textbf{e}_y, \textbf{e}_z\}$
 
 $$
 \begin{align}
@@ -17,8 +14,7 @@ $$
 \end{align}
 $$
 
-The Boussinesq approximation has been used to neglect variations in density expect in the gravitational term and assume that $c\ll\rho_{\text{ref}}$ for some reference density $\rho_{\text{ref}}$. The porosity is assumed to be slowly-evolving and so incompressibility is also approximated.
-
+$\phi(\textbf{x}, t)=\varphi(\textbf{x})(1-s(\textbf{x},t))$ is the effective porosity. The Boussinesq approximation has been used to neglect variations in density expect in the gravitational term and assume that $c\ll\rho_{\text{ref}}$ for some reference density $\rho_{\text{ref}}$. The porosity is assumed to be slowly-evolving and so incompressibility is also approximated.
 
 ## Non-dimensionalization
 
@@ -48,12 +44,12 @@ $$
 
 A particular choice of non-dimensionalization with $\mathcal{L}$, $\mathcal{U}$ and $\mathcal{T}$ chosen according to the details of the specified system (e.g. boundary conditions, dominant transport processes) will map the abstract dimensionless numbers $\{Ad, Pe, Ki, Bu, Xl\}$ onto combinations of the physical dimensionless numbers introduced below.
 
-| $\mathcal{L}$ | $\mathcal{U}$ |$ \mathcal{T}$ | $\{Ad, Pe, Ki, Bu, Xl\}$ | Examples | Scaling Type |
+| Name | $\mathcal{L}$ | $\mathcal{U}$ |$ \mathcal{T}$ | $\{Ad, Pe, Ki, Bu, Xl\}$ | Examples |
 | -------- | ------- | ------- | ------- | ------- | ------- |
-| $\mathcal{L}_\Omega$  |  $K_{\text{ref}}\,g\Delta\rho/\mu_{\text{ref}}$  | $\phi_{\text{ref}}\mathcal{L}/\mathcal{U}$ | $\{1, Ra, Da, 1, 1\}$| [Hewitt et al. (2012)](https://link.aps.org/doi/10.1103/PhysRevLett.108.224503) | `'advective'` |
-| $D_{\text{ref}}/\mathcal{U}$  |  $K_{\text{ref}}\,g\Delta\rho/\mu_{\text{ref}}$  | $\phi_{\text{ref}}\mathcal{L}/\mathcal{U}$ | $\{1, 1, Da/Ra, 1, Ra\}$| [Slim (2014)](https://www.cambridge.org/core/product/identifier/S0022112013006733/type/journal_article) | `'advective_diffusive'` |
-| $\mathcal{L}_\Omega$  |  $D_{\text{ref}}/\mathcal{L}$  | $\phi_{\text{ref}}\mathcal{L}/\mathcal{U}$ | $\{1, 1, RaDa, Ra, 1\}$| [Ritchie \& Pritchard  (2011)](https://www.cambridge.org/core/journals/journal-of-fluid-mechanics/article/natural-convection-and-the-evolution-of-a-reactive-porous-medium/71E5FB557F61CB9125E5B4E4EE9D828F) | `'diffusive'` | 
-| $\sqrt{D_{\text{ref}}\mathcal{T}/\phi_{\text{ref}}}$  |  $\phi_{\text{ref}}\mathcal{L}/\mathcal{T}$  | $\phi_{\text{ref}}\Delta c/\Delta R$  | $\{1, 1, 1, \sqrt{Ra/Da}, \sqrt{RaDa}\}$| [Kabbadj et al. (2025)](https://nlpc.ulb.be/pdf/25.Kabbadj_MATRIX.pdf) |  `'reactive'` |
+| $\text{advective}$ | $\mathcal{L}_\Omega$  |  $K_{\text{ref}}\,g\Delta\rho/\mu_{\text{ref}}$  | $\phi_{\text{ref}}\mathcal{L}/\mathcal{U}$ | $\{1, Ra, Da, 1, 1\}$| [Hewitt et al. (2012)](https://link.aps.org/doi/10.1103/PhysRevLett.108.224503) |
+| $\text{advective-diffusive}$ | $D_{\text{ref}}/\mathcal{U}$  |  $K_{\text{ref}}\,g\Delta\rho/\mu_{\text{ref}}$  | $\phi_{\text{ref}}\mathcal{L}/\mathcal{U}$ | $\{1, 1, Da/Ra, 1, Ra\}$| [Slim (2014)](https://www.cambridge.org/core/product/identifier/S0022112013006733/type/journal_article) |
+| $\text{diffusive}$ | $\mathcal{L}_\Omega$  |  $D_{\text{ref}}/\mathcal{L}$  | $\phi_{\text{ref}}\mathcal{L}/\mathcal{U}$ | $\{1, 1, RaDa, Ra, 1\}$| [Ritchie \& Pritchard  (2011)](https://www.cambridge.org/core/journals/journal-of-fluid-mechanics/article/natural-convection-and-the-evolution-of-a-reactive-porous-medium/71E5FB557F61CB9125E5B4E4EE9D828F) |
+| $\text{reactive}$ | $\sqrt{D_{\text{ref}}\mathcal{T}/\phi_{\text{ref}}}$  |  $\phi_{\text{ref}}\mathcal{L}/\mathcal{T}$  | $\phi_{\text{ref}}\Delta c/\Delta R$  | $\{1, 1, 1, \sqrt{Ra/Da}, \sqrt{RaDa}\}$| [Kabbadj et al. (2025)](https://nlpc.ulb.be/pdf/25.Kabbadj_MATRIX.pdf) |
 
 
 #### Physical dimensionless numbers
@@ -65,7 +61,7 @@ $Da$ is the Damköhler number (defined with respect to the transport of $c$ and 
 
 $$Da=\frac{\mathcal{L}_\Omega \mu_{\text{ref}}\,\Delta R}{K_{\text{ref}}\,g\Delta\rho\Delta c} = \underbrace{\frac{\Delta R}{\Delta c}}_{\text{reaction rate}} \big/ \underbrace{\frac{K_{\text{ref}}\,g\Delta\rho}{\mathcal{L}_\Omega \mu_{\text{ref}}}}_{\text{convection rate}}$$
 
-epsilon number
+evolution number
 
 $$\varepsilon = \frac{\Delta c}{\varrho}\ll1$$
 
@@ -138,3 +134,40 @@ c=c_{\text{D}} & \forall(\textbf{x}, t)\in\partial\Omega_{\text{D}, c} \times [0
 \end{cases}~.
 \end{align*}
 $$
+
+
+## Constitutive relations
+
+The above equations are closed by the constitutive relations
+$$
+\begin{cases}
+\textbf{e}_g[~=\text{$-(\textbf{e}_z$ if $\Omega\sub\mathbb{R}^3$ else $\textbf{e}_y$)~]} & \text{gravitational unit vector} \\
+\varphi(\textbf{x})[~=1] & \text{rock porosity}\\
+\mathsf{D}(\phi, \textbf{u})[~=\mathsf{I}~] & \text{solutal dispersion} \\
+\mathsf{G}(\phi, \textbf{u})[~=\mathsf{I}~]  & \text{thermal dispersion} \\
+K(\phi)[~=\phi^2\mathsf{I}~] & \text{permeability}\\
+\mu(c, \theta)[~=1~] & \text{fluid viscosity } \\
+\rho(c, \theta)[~=c-\theta~] & \text{fluid density}\\
+R(s, c, \theta)[~=s(1-c)\theta~] & \text{reaction rate} \\
+\end{cases}
+$$
+
+which assume their default values denoted inside square brackets if not prescribed. 
+
+## Boundary conditions
+
+The partial differential equations are constrained by the boundary conditions
+
+$$
+\begin{cases}
+\partial\Omega_{\text{D},\theta}[~=\varnothing~]~,~c\vert_{\partial\Omega_{\text{D},\theta}}\equiv\theta_{\text{D}} & \text{thermal Dirichlet} \\
+\partial\Omega_{\text{N},\theta}[~=\partial\Omega~]~,~c\vert_{\partial\Omega_{\text{N},\theta}}\equiv\theta_{\text{N}}=[~0~] & \text{thermal Neumann} \\
+\partial\Omega_{\text{D},c}[~=\varnothing~]~,~c\vert_{\partial\Omega_{\text{D},c}}\equiv c_{\text{D}} & \text{solutal Dirichlet} \\
+\partial\Omega_{\text{N},c}[~=\partial\Omega~]~,~c\vert_{\partial\Omega_{\text{N},c}}\equiv c_{\text{N}}[~=0~] & \text{solutal Neumann} \\
+\partial\Omega_{\text{E}}[~=\partial\Omega~]~,~(\textbf{n}\cdot\textbf{u})\vert_{\partial\Omega_{\text{E}}} \equiv u_{\text{E}}=[~=0~] & \text{essential} \\
+\partial\Omega_{\text{N}}[~=\varnothing~]~,~p\vert_{\partial\Omega_{\text{N}}} \equiv p_{\text{N}} & \text{natural} \\
+~\psi\vert_{\partial\Omega}\equiv\psi_{\text{D}}[~=0~] & \text{streamfunction Dirichlet} 
+\end{cases}
+$$
+
+which assume their default values denoted inside square brackets if not prescribed. 

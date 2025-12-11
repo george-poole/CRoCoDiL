@@ -116,7 +116,7 @@ def dns_model_b(
         D_reac_solutal=D_reac,
         D_adv_thermal=D_adv,
         D_diff_thermal=D_diff,
-        D_evol=D_reac,
+        D_reac_evol=D_reac,
         # stabilization
         c_stabilization=c_stabilization,
         c_limits=c_limits,

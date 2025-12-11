@@ -1,6 +1,6 @@
 [project]
-name = "co2_pkg"
+name = "crocodil"
 version = "0.0.1"
 
 [tool.setuptools]
-packages = ["co2_pkg"]
+packages = ["crocodil"]
