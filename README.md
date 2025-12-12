@@ -10,7 +10,7 @@ See `https://github.com/george-poole/LUCiFEx` to first install the `lucifex` pac
 
 `git clone https://github.com/george-poole/CRoCoDiL.git`
 
-`pip install .` (or `pip install -e .` for editable mode).
+`pip install .` (or `pip install -e .` for editable mode)
 
 ## Simulations
 

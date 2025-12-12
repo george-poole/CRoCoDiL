@@ -1,12 +1,12 @@
 import numpy as np
 
-from lucifex.fem import Constant, Function
+from lucifex.fem import Constant, Function, SpatialPerturbation, cubic_noise
 from lucifex.fdm import ConstantSeries, FiniteDifference, FiniteDifferenceArgwise, CN, AB, AM
-from lucifex.utils import CellType, SpatialPerturbation, cubic_noise, as_index, mesh_axes
+from lucifex.utils import CellType, as_index, mesh_axes
 from lucifex.solver import OptionsPETSc, OptionsJIT, integration
 from lucifex.sim import configure_simulation
 from lucifex.pde.advection_diffusion import flux
-from lucifex.pde.supg import limits_corrector
+from lucifex.utils.dofs_utils import limits_corrector
 
 from crocodil.dns import dns_generic, heaviside, rectangle_domain, ScalingType
 
@@ -52,7 +52,7 @@ def dns_system_a(
     | FiniteDifferenceArgwise = (AB(1) @ AM(1)),
     D_src: FiniteDifference = AB(1),
     D_evol: FiniteDifference 
-    | FiniteDifferenceArgwise = AB(1), # (AB(1) @ AM(1)),
+    | FiniteDifferenceArgwise = (AM(1) @ AB(1)),
     # stabilization
     c_stabilization: str | tuple[float, float] = None,
     c_limits: bool = False,
@@ -128,7 +128,6 @@ def dns_system_a(
         reaction=reaction,
         source=source,
         dispersion_solutal=dispersion,
-        dispersion_thermal=None,
         # time step
         dt_min=dt_min,
         dt_max=dt_max,

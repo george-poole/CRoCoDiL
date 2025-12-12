@@ -6,7 +6,7 @@ from lucifex.utils import grid, as_index
 
 
 @overload
-def moving_average(
+def time_average(
     series: Iterable[float],
     window: int,
 ) -> list[float]:
@@ -14,27 +14,27 @@ def moving_average(
 
 
 @overload
-def moving_average(
+def time_average(
     series: Iterable[float],
     window: float,
-    time: Iterable[float],
+    time_series: Iterable[float],
 ) -> list[float]:
     ...
 
-def moving_average(
+def time_average(
     series: Iterable[float],
     window: int | float,
-    time: Iterable[float] | None = None,
+    time_series: Iterable[float] | None = None,
 ):
     ma = [series[0]]
     if isinstance(window, int):
         ma.extend([np.mean(series[max(i - window, 0): i]) for i in range(1, len(series))])
     else:
-        assert time is not None
-        assert len(series) == len(time)
+        assert time_series is not None
+        assert len(series) == len(time_series)
         for i in range(1, len(series)):
-            t_target = time[i] - window
-            lower_index = as_index(time, t_target)
+            t_target = time_series[i] - window
+            lower_index = as_index(time_series, t_target)
             if lower_index == i:
                 ma.append(series[i])
             else:

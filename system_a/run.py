@@ -1,5 +1,5 @@
 from lucifex.sim import Simulation, run_from_cli, xdmf_to_npz
-from model.dns import dns_system_a
+from models.dns import dns_system_a
 
 
 def posthook(

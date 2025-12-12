@@ -117,19 +117,29 @@ $$
 
 $$
 \begin{align*}
-&\text{Find $c^{n+1}\in V_c$ such that } \\
-&F_c(c^{n+1}, v)\equiv
-\int_\Omega\text{d}\Omega~v\frac{c^{n+1}-c^n}{\Delta t^n}  +vAd\frac{\mathcal{D}_{\textbf{u}, c}(\textbf{u}\cdot\nabla c)}{\mathcal{D}_\phi(\phi)} +\frac{1}{Pe}\nabla\bigg(\frac{v}{\mathcal{D}_\phi(\phi)}\bigg)\cdot(\mathcal{D}_{\mathsf{D}}(\mathsf{D})\cdot\nabla \mathcal{D}_c(c)) - v\,Ki\frac{\mathcal{D}_{R,c}(Rc) + \mathcal{D}_{J}(J)}{\mathcal{D}_\phi(\phi)} -\int_{\partial\Omega_{\text{N},c}}\text{d}\Gamma~\frac{1}{Pe}\frac{vc_{\text{N}}}{\mathcal{D}_\phi(\phi)} + 
-F^{\text{SUPG}}_c(c^{n+1}, v) =0 \qquad \forall v\in\hat{V}_c
+\text{Find $c^{n+1}\in V_c$ such that } \\
+F_c(c^{n+1}, v)&\equiv
+\int_\Omega\text{d}\Omega~v\frac{c^{n+1}-c^n}{\Delta t^n} \\
+&\quad +Ad \int_\Omega\text{d}\Omega~v\frac{\mathcal{D}_{\textbf{u}, c}(\textbf{u}\cdot\nabla c)}{\mathcal{D}_\phi(\phi)} \\
+&\quad +\frac{1}{Pe}\int_\Omega\text{d}\Omega~\nabla\bigg(\frac{v}{\mathcal{D}_\phi(\phi)}\bigg)\cdot(\mathcal{D}_{\mathsf{D}}(\mathsf{D})\cdot\nabla \mathcal{D}_c(c)) \\
+&\quad -Ki\int_\Omega\text{d}\Omega~v\frac{\mathcal{D}_{R,c}(Rc) \\
++ \mathcal{D}_{J}(J)}{\mathcal{D}_\phi(\phi)} \\
+&\quad -\frac{1}{Pe}\int_{\partial\Omega_{\text{N},c}}\text{d}\Gamma~\frac{vc_{\text{N}}}{\mathcal{D}_\phi(\phi)} \\
+&\quad + F^{\text{SUPG}}_c(c^{n+1}, v) \\
+& =0 \qquad \forall v\in\hat{V}_c
 \end{align*}
 $$
 
 $$
 \begin{align*}
-&\text{Find $c^{n+1}\in V_\theta$ such that } \\
-&F_\theta(\theta^{n+1}, v)\equiv
-\int_\Omega\text{d}\Omega~v\frac{\theta^{n+1}-\theta^n}{\Delta t^n}  +vAd\frac{\mathcal{D}_{\textbf{u}, \theta}(\textbf{u}\cdot\nabla \theta)}{\mathcal{D}_\phi(\phi)} +\frac{1}{LePe}\nabla\bigg(\frac{v}{\mathcal{D}_\phi(\phi)}\bigg)\cdot(\mathcal{D}_{\mathsf{G}}(\mathsf{G})\cdot\nabla \mathcal{D}_\theta(\theta)) -\int_{\partial\Omega_{\text{N}, \theta}}\text{d}\Gamma~\frac{1}{LePe}\frac{v\theta_{\text{N}}}{\mathcal{D}_\phi(\phi)} +
-F^{\text{SUPG}}_\theta(\theta^{n+1}, v) =0 \qquad \forall v\in\hat{V}_\theta
+\text{Find $c^{n+1}\in V_\theta$ such that } \\
+F_\theta(\theta^{n+1}, v)&\equiv
+\int_\Omega\text{d}\Omega~v\frac{\theta^{n+1}-\theta^n}{\Delta t^n} \\
+&\quad +Ad\int_\Omega\text{d}\Omega~v\frac{\mathcal{D}_{\textbf{u}, \theta}(\textbf{u}\cdot\nabla \theta)}{\mathcal{D}_\phi(\phi)} \\
+&\quad +\frac{1}{LePe}\int_\Omega\text{d}\Omega~\nabla\bigg(\frac{v}{\mathcal{D}_\phi(\phi)}\bigg)\cdot(\mathcal{D}_{\mathsf{G}}(\mathsf{G})\cdot\nabla \mathcal{D}_\theta(\theta)) \\
+&\quad -\frac{1}{LePe}\int_{\partial\Omega_{\text{N}, \theta}}\text{d}\Gamma~\frac{v\theta_{\text{N}}}{\mathcal{D}_\phi(\phi)} \\
+&\quad +F^{\text{SUPG}}_\theta(\theta^{n+1}, v) \\
+&=0 \qquad \forall v\in\hat{V}_\theta
 \end{align*}
 $$
 
@@ -155,7 +165,8 @@ $$
 (2|\textbf{u}_{\text{eff}}| / \ell  +  4D_{\text{eff}} / \ell^2  -  R_{\text{eff}})^{-1} & \text{Codina} \\
 ((2|\textbf{u}_{\text{eff}}| / \ell)^2  +  9(4D_{\text{eff}} / \ell^2)^2  +  R_{\text{eff}}^2)^{-1/2} & \text{Shakib} \\
 ((2 / \Delta t)^2 + (2|\textbf{u}_{\text{eff}}| / \ell)^2  +  (2D_{\text{eff}} / \ell^2)^2  +  R_{\text{eff}}^2)^{-1/2} & \text{transient} \\
-(\ell/2|\textbf{u}_{\text{eff}}|)(\text{coth}(|\textbf{u}_{\text{eff}}|\ell/2D_{\text{eff}}) - 2D_{\text{eff}}/|\textbf{u}_{\text{eff}}|\ell) & \text{coth}
+(\ell/2|\textbf{u}_{\text{eff}}|)(\text{coth}(|\textbf{u}_{\text{eff}}|\ell/2D_{\text{eff}}) - 2D_{\text{eff}}/|\textbf{u}_{\text{eff}}|\ell) & \text{coth} \\
+0 & \text{none}
 \end{cases}
 $$
 
@@ -173,6 +184,8 @@ Due to the advection term, matrix is asymmetric. generalized minimal residual me
 
 #### Disontinuous Galerkin formulation
 
+In contrast to the continuous formulation, Dirichlet boundary conditions are not strongly enforced in the definition of the discontinuous function space, but are instead weakly enforced by terms in the variational formulation with penalty parameters $\alpha_{\text{DG}}$ and $\gamma_{\text{DG}}$.
+
 $$
 V_c = \hat{V}_c = \{v\in L^2(\Omega)~:~v|_{\partial{\Omega}_{\text{D}, c}}~v|_{\mathcal{K}}\in\text{P}_k(\mathcal{K})~\forall\mathcal{K}\in\cup_{\mathcal{K}}\mathcal{K}\}
 $$
@@ -180,7 +193,45 @@ $$
 V_\theta = \hat{V}_\theta = \{v\in L^2(\Omega)~:~v|_{\partial{\Omega}_{\text{D},\theta}}~v|_{\mathcal{K}}\in\text{P}_k(\mathcal{K})~\forall\mathcal{K}\in\cup_{\mathcal{K}}\mathcal{K}\}
 $$
 
-In contrast to the continuous formulation, Dirichlet bondary conditions are not strongly enforced in the definition of the function space, but instead weakly enforced by terms in the variational formulation.
+jump and average operators
+
+$$
+\begin{align*}
+\{v\} &= \\
+\{\textbf{v}\} &= \\
+\llbracket v\rrbracket &= \\
+\llbracket \textbf{v}\rrbracket &= 
+\end{align*}
+$$
+
+$$
+\begin{align*}
+\text{Find $c^{n+1}\in V_c$ such that } \\
+F_c(c^{n+1}, v)&\equiv
+\int_\Omega\text{d}\Omega~v\frac{c^{n+1}-c^n}{\Delta t^n} \\
+&\quad -Ad \int_\Omega\text{d}\Omega~\,\nabla\left(\frac{v}{\mathcal{D}_\phi(\phi)}\right)\cdot\nabla\mathcal{D}_{\textbf{u},c}(\textbf{u}c) \\
+&\quad + Ad\int_{\mathcal{F}/\partial\Omega}\text{d}\Gamma~2\llbracket v\rrbracket\textbf{n}\cdot\begin{cases}
+\{\mathcal{D}_{\textbf{u},c}(\textbf{u}c)\} & \textbf{n}\cdot\textbf{u} > 0 \\
+0 & \text{otherwise} \\
+\end{cases} \\
+&\quad + Ad\int_{\partial\Omega}\text{d}\Gamma~\,\frac{v}{\mathcal{D}_\phi(\phi)}\begin{cases}
+0 & \textbf{n}\cdot\textbf{u} >0 \\
+c_{\text{N}}\,\textbf{n}\cdot\textbf{u} & \text{otherwise} \\
+\end{cases} \\
+&\quad +\frac{1}{Pe}\int_\Omega\text{d}\Omega~\nabla\left(\frac{v}{\mathcal{D}_\phi(\phi)}\right)\cdot\nabla(\mathcal{D}_{\mathsf{D}}(\mathsf{D})\cdot\nabla\mathcal{D}_c(c)) \\
+&\quad - \frac{1}{Pe}\int_{\mathcal{F}/\partial\Omega}\text{d}\Gamma~\left\{\mathcal{D}_{\mathsf{D}}(\mathsf{D})\cdot\nabla\left(\frac{v}{\mathcal{D}_\phi(\phi)}\right)\right\}\cdot\llbracket\mathcal{D}_c(c)\rrbracket\textbf{n}+\left\{\mathcal{D}_{\mathsf{D}}(\mathsf{D})\cdot\nabla\mathcal{D}_c(c)\right\}\cdot\llbracket \frac{v}{\mathcal{D}_\phi(\phi)}\rrbracket\textbf{n} \\
+&\quad +\frac{1}{Pe}\int_{\mathcal{F}/\partial\Omega}\text{d}\Gamma~ \frac{\alpha_{\text{DG}}}{\ell}\llbracket \frac{v}{\mathcal{D}_\phi(\phi)}\rrbracket\cdot\llbracket\mathcal{D}_c(c)\rrbracket\\
+&\quad -\frac{1}{Pe}\quad \int_{\partial\Omega_{\text{D},c}}\text{d}\Gamma~\left(\mathcal{D}_{\mathsf{D}}(\mathsf{D})\cdot\nabla\left(\frac{v}{\mathcal{D}_\phi(\phi)}\right)\right)\cdot(\mathcal{D}_c(c)-c_{\text{D}})\textbf{n}\\
+
+&\quad -\frac{1}{Pe}\quad \int_{\partial\Omega_{\text{D},c}}\text{d}\Gamma~(\mathcal{D}_{\mathsf{D}}(\mathsf{D})\cdot\nabla\mathcal{D}_c(c))\cdot\left(\frac{v}{\mathcal{D}_\phi(\phi)}\textbf{n}\right)\\
+
+&\quad +\frac{1}{Pe}\quad \int_{\partial\Omega_{\text{D},c}}\text{d}\Gamma~\frac{\gamma_{\text{DG}}}{\ell} v(c-c_{\text{D}})\\
+&\quad -\frac{1}{Pe}\quad \int_{\partial\Omega_{\text{N},c}}\text{d}\Gamma~\frac{vc_{\text{N}}}{\mathcal{D}_\phi(\phi)}\\
+&\quad -Ki\int_\Omega\text{d}\Omega~v\,\frac{\mathcal{D}_{R,c}(Rc)}{\mathcal{D}_\phi(\phi)} \\
+&=0 \qquad \forall v\in\hat{V}_c 
+\end{align*}
+$$
+
 
 ## Algorithm
 

@@ -7,7 +7,7 @@ from ufl.core.expr import Expr
 
 from lucifex.fem import Function, Constant
 from lucifex.mesh import MeshBoundary, mesh_boundary, rectangle_mesh
-from lucifex.utils import integral
+from lucifex.utils import mesh_integral
 from lucifex.utils.py_utils import StrEnum
 
 
@@ -126,7 +126,7 @@ def heaviside(
         return lambda x: f_plus * ind(x) + f_minus
     
 
-@integral
+@mesh_integral
 def mass_capillary_trapped(
     s: Function, 
     epsilon: Constant | float,
@@ -137,7 +137,7 @@ def mass_capillary_trapped(
     return s / epsilon
 
 
-@integral
+@mesh_integral
 def mass_dissolved(
     c: Function, 
     phi: Function,

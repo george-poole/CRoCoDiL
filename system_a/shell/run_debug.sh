@@ -12,7 +12,7 @@ python run.py --write_delta 1 \
 --sr 0.2 \
 --cr 0.0 \
 --c_stabilization None \
---c_limits "(0, 1)" \
+--c_limits "True" \
 --n_stop 30 \
 --timing True \
 --delete_xdmf False

@@ -1,8 +1,6 @@
-from types import EllipsisType
-
-from lucifex.fem import Constant
+from lucifex.fem import Constant, SpatialPerturbation, cubic_noise
 from lucifex.fdm import FiniteDifference, FiniteDifferenceArgwise, CN, AB2
-from lucifex.utils import CellType, SpatialPerturbation, cubic_noise
+from lucifex.utils import CellType
 from lucifex.solver import BoundaryConditions, OptionsPETSc, OptionsJIT
 from lucifex.sim import configure_simulation
 

@@ -11,10 +11,10 @@ python run.py --write_delta 1 \
 --h0 0.9 \
 --sr 0.1 \
 --cr 1.0 \
---c_stabilization "'coth'" \
+--c_stabilization None \
 --c_limits True \
---n_stop 20 \
---t_stop 20.0 \
+--n_stop 2000 \
+--t_stop 40.0 \
 --dt_init 0.000001 \
 --n_init 10 \
 --timing True \
