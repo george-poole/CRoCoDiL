@@ -1,4 +1,5 @@
-from typing import Callable, Iterable, TypeAlias
+from collections.abc import Iterable
+from typing import Callable, TypeAlias
 from types import EllipsisType
 
 import numpy as np
@@ -102,38 +103,17 @@ def dns_generic(
     c_petsc: OptionsPETSc = OptionsPETSc('gmres', 'ilu'),
     theta_petsc: OptionsPETSc = OptionsPETSc('gmres', 'ilu'),
     s_petsc: OptionsPETSc | None = None,
-    # optional on-the-fly postprocessing
-    secondary: bool = False,    
-    tertiary: Iterable[Solver] = (),
+    # optional postprocessing
+    diagnostic: bool | Iterable[Solver] = False,     
     namespace: Iterable[Function | Constant | ExprSeries | tuple[str, Expr]] = (),
 ) -> Simulation:    
     """
+    `𝜑∂s/∂t = -ε(R(s,θ)c + J(s, θ))`
+    `ϕ = 𝜑(1 - s)` \\
     `ϕ∂c/∂t + 𝐮·∇c =  ∇·(D(ϕ,𝐮)·∇c) + R(s, θ)c + J(s,θ)` \\
     `ϕ∂θ/∂t + 𝐮·∇θ = ∇·(G(ϕ,𝐮)·∇θ)`\\
     `∇⋅𝐮 = 0` \\
-    `𝐮 = -(K(ϕ)/μ(c, θ))·(∇p + ρ(c,θ)e₉)` \\
-    `𝜑∂s/∂t = -ε(R(s,θ)c + J(s, θ))`
-
-    `ϕ = 𝜑(1 - s)` is the effective porosity.
-    
-    Defaults: 
-    • no-penetration and no-flux boundary conditions everywhere on `∂Ω`
-    • vertical gravity unit vector `e₉ = -eʸ` in 2D or `e₉ = -eᶻ` in 3D
-    • uniform rock porosity `𝜑 = 1`
-    • isotropic quadratic permeability `K(ϕ) = ϕ²`
-    • isotropic linear solutal dispersion `D(ϕ) = ϕ`
-    • isotropic linear thermal dispersion `G(ϕ) = ϕ`
-    • uniform viscosity `μ = 1`
-
-    General constitutive relations:
-    • rock porosity `𝜑(𝐱)` as a function of space
-    • permeability `K(ϕ)` as a function of porosity
-    • solutal dispersion `D(ϕ, 𝐮)` as a function of porosity and velocity
-    • thermal dispersion `G(ϕ, 𝐮)` as a function of porosity and velocity
-    • density `ρ(c, θ)` as a function of concentration and temperature
-    • viscosity `μ(c, θ)` as a function of concentration and temperature
-    • reaction `R(s, θ)` as a function of saturation and temperature
-    • source `J(s, θ)` as a function of saturation and temperature
+    `𝐮 = -(K(ϕ)/μ(c, θ))·(∇p - ρ(c,θ)e₉)` \\
     """
     if eg is None:
         if Omega.geometry.dim == 2:
@@ -286,12 +266,12 @@ def dns_generic(
         c_corrector = ('cCorr', limits_corrector(*c_limits)) if c_limits else None
         if SOLUTAL_CNTS:
             c_solver = ibvp(advection_diffusion_reaction, bcs=c_bcs, petsc=c_petsc, corrector=c_corrector)(
-                c, dt, u, d, r, D_adv_solutal, D_diff_solutal, D_reac_solutal, D_src_solutal, phi=phi, j=j, supg=c_stabilization,
+                c, dt, u, d, r, j, D_adv_solutal, D_diff_solutal, D_reac_solutal, D_src_solutal, phi=phi, supg=c_stabilization,
             )
         else:
             c_alpha, c_gamma = c_stabilization
             c_solver = ibvp(advection_diffusion_reaction_dg, petsc=c_petsc, corrector=c_corrector)(
-                c, dt, u, d, r, c_alpha, c_gamma, D_adv_solutal, D_diff_solutal, D_reac_solutal, phi=phi, bcs=c_bcs,
+                c, dt, u, d, r, j, c_alpha, c_gamma, D_adv_solutal, D_diff_solutal, D_reac_solutal, phi=phi, bcs=c_bcs,
             )
         solvers.append(c_solver)
 
@@ -316,7 +296,7 @@ def dns_generic(
         solvers.append(s_solver)
 
     # optional solvers
-    if secondary:
+    if diagnostic:
         uMinMax = ConstantSeries(Omega, "uMinMax", shape=(2,))
         solvers.append(evaluation(uMinMax, extrema)(u[0]))
         norm = 2
@@ -345,7 +325,7 @@ def dns_generic(
             solvers.append(integration(mC, mass_capillary_trapped, 'dx')(s[0], epsilon))
             dtK = ConstantSeries(Omega, "dtK")
             solvers.append(evaluation(dtK, reactive_timestep)(rEff[0]))
-
-    solvers.extend(tertiary)
+        if isinstance(diagnostic, Iterable):
+            solvers.extend(diagnostic)
     
     return Simulation(solvers, t, dt, namespace)

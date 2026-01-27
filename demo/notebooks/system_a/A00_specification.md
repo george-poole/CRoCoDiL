@@ -1,5 +1,8 @@
 # Specification
 
+![Figure](./figures/domain_horizontal_t>0.png)
+<!-- <img src="./figures/domain_horizontal_t>0.png" width="400"/> -->
+
 $$
 \mathbb{S}\begin{cases}
 \Omega=[0, \mathcal{A}Xl] \times [0, Xl] & \text{rectangular domain} \\ 

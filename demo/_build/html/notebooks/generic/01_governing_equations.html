@@ -185,8 +185,8 @@
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">System A</span></p>
 <ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="../system_a/A00_specification.html">Specification</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../system_a/A01.html">x</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../system_a/A02.html">y</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../system_a/A01.html">Test 1</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../system_a/A02.html">Test 2</a></li>
 </ul>
 
     </div>
@@ -337,7 +337,6 @@ document.write(`
                 <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#dimensional-equations">Dimensional equations</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#strong-form">Strong form</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#specification">Specification</a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#non-dimensionalization">Non-dimensionalization</a><ul class="nav section-nav flex-column">
@@ -349,7 +348,7 @@ document.write(`
 </li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">Dimensional equations</a><ul class="nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#non-dimensional-equations">Non-dimensional equations</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#time-discretized-strong-form">Time-discretized strong form</a></li>
 </ul>
 </li>
@@ -399,15 +398,9 @@ c=c_{\text{D}} &amp; \forall(\textbf{x}, t)\in\partial\Omega_{\text{D}, c} \time
 \times [0,\infty]~,~\partial\Omega_{\text{N}, \theta}=\partial\Omega/\partial\Omega_{\text{D}, \theta} \\
 \textbf{n}\cdot\textbf{u} = u_{\text{E}} &amp; \forall(\textbf{x}, t)\in\partial\Omega_{\text{E}} \times [0,\infty] \\
 p = p_{\text{N}} &amp; \forall(\textbf{x}, t)\in\partial\Omega_{\text{N}}\times [0,\infty]~,~\partial\Omega_{\text{N}}=\partial\Omega/\partial\Omega_{\text{E}}
-\end{cases}~.
-\end{align*}
-\end{split}\]</div>
-</section>
-<section id="specification">
-<h3>Specification<a class="headerlink" href="#specification" title="Link to this heading">#</a></h3>
-<div class="math notranslate nohighlight">
-\[\begin{split}
-\mathbb{S}
+\end{cases} \\
+&amp;\text{given} \\
+&amp;\mathbb{S}
 \begin{cases}
 \Omega &amp; \text{domain}\\
 c_0(\textbf{x}) &amp; \text{initial concentration}\\
@@ -426,6 +419,7 @@ p_{\text{N}}(\textbf{x}, t)~,~\partial\Omega_{\text{N}} &amp; \text{pressure nat
 \mu(c, \theta) &amp; \text{viscosity}\\
 R(c,\theta, \phi) &amp; \text{solutal reaction}\\
 \end{cases}
+\end{align*}
 \end{split}\]</div>
 </section>
 </section>
@@ -492,20 +486,20 @@ R(c,\theta, \phi) &amp; \text{solutal reaction}\\
 \[\begin{split}
 \begin{align*}
 Ad&amp;=\frac{\mathcal{U}\mathcal{T}}{\phi_{\text{ref}}\mathcal{L}} \\
-Pe&amp;=\frac{\phi_{\text{ref}}\mathcal{L}^2}{D_{\text{ref}}\mathcal{T}} \\
+Di&amp;=\frac{D_{\text{ref}}\mathcal{T}}{\phi_{\text{ref}}\mathcal{L}^2} \\
 Ki&amp;=\frac{\mathcal{T}\Delta R}{\phi_{\text{ref}}\Delta c} \\
 Bu&amp;=\frac{K_{\text{ref}}\,g\Delta\rho}{\mu_{\text{ref}}\,\mathcal{U}} \\
 Xl&amp;=\frac{\mathcal{L}}{\mathcal{L}_\Omega}
 \end{align*} \\
 \end{split}\]</div>
-<p>A particular choice of non-dimensionalization with <span class="math notranslate nohighlight">\(\mathcal{L}\)</span>, <span class="math notranslate nohighlight">\(\mathcal{U}\)</span> and <span class="math notranslate nohighlight">\(\mathcal{T}\)</span> chosen according to the details of the specified system (e.g. boundary conditions, dominant transport processes) will map the abstract dimensionless numbers <span class="math notranslate nohighlight">\(\{Ad, Pe, Ki, Bu, Xl\}\)</span> onto combinations of the physical dimensionless numbers introduced below.</p>
+<p>A particular choice of non-dimensionalization with <span class="math notranslate nohighlight">\(\mathcal{L}\)</span>, <span class="math notranslate nohighlight">\(\mathcal{U}\)</span> and <span class="math notranslate nohighlight">\(\mathcal{T}\)</span> chosen according to the details of the specified system (e.g. boundary conditions, dominant transport processes) will map the abstract dimensionless numbers <span class="math notranslate nohighlight">\(\{Ad, Di, Ki, Bu, Xl\}\)</span> onto combinations of the physical dimensionless numbers introduced below.</p>
 <div class="pst-scrollable-table-container"><table class="table">
 <thead>
 <tr class="row-odd"><th class="head"><p>Name</p></th>
 <th class="head"><p><span class="math notranslate nohighlight">\(\mathcal{L}\)</span></p></th>
 <th class="head"><p><span class="math notranslate nohighlight">\(\mathcal{U}\)</span></p></th>
 <th class="head"><p><span class="math notranslate nohighlight">\( \mathcal{T}\)</span></p></th>
-<th class="head"><p><span class="math notranslate nohighlight">\(\{Ad, Pe, Ki, Bu, Xl\}\)</span></p></th>
+<th class="head"><p><span class="math notranslate nohighlight">\(\{Ad, Di, Ki, Bu, Xl\}\)</span></p></th>
 <th class="head"><p>Examples</p></th>
 </tr>
 </thead>
@@ -514,7 +508,7 @@ Xl&amp;=\frac{\mathcal{L}}{\mathcal{L}_\Omega}
 <td><p><span class="math notranslate nohighlight">\(\mathcal{L}_\Omega\)</span></p></td>
 <td><p><span class="math notranslate nohighlight">\(K_{\text{ref}}\,g\Delta\rho/\mu_{\text{ref}}\)</span></p></td>
 <td><p><span class="math notranslate nohighlight">\(\phi_{\text{ref}}\mathcal{L}/\mathcal{U}\)</span></p></td>
-<td><p><span class="math notranslate nohighlight">\(\{1, Ra, Da, 1, 1\}\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(\{1, 1/Ra, Da, 1, 1\}\)</span></p></td>
 <td><p><a class="reference external" href="https://link.aps.org/doi/10.1103/PhysRevLett.108.224503">Hewitt et al. (2012)</a></p></td>
 </tr>
 <tr class="row-odd"><td><p><span class="math notranslate nohighlight">\(\text{advective-diffusive}\)</span></p></td>
@@ -558,8 +552,8 @@ $<span class="math notranslate nohighlight">\(Ra=\frac{\mathcal{L}_\Omega K_{\te
 </section>
 </section>
 </section>
-<section id="id1">
-<h2>Dimensional equations<a class="headerlink" href="#id1" title="Link to this heading">#</a></h2>
+<section id="non-dimensional-equations">
+<h2>Non-dimensional equations<a class="headerlink" href="#non-dimensional-equations" title="Link to this heading">#</a></h2>
 <section id="time-discretized-strong-form">
 <h3>Time-discretized strong form<a class="headerlink" href="#time-discretized-strong-form" title="Link to this heading">#</a></h3>
 <div class="math notranslate nohighlight">
@@ -567,8 +561,8 @@ $<span class="math notranslate nohighlight">\(Ra=\frac{\mathcal{L}_\Omega K_{\te
 \begin{align*}
 &amp;\text{Find}~s^{n+1}, c^{n+1}, \theta^{n+1},~\textbf{u}^n,~p^n~\text{such that}~\forall n\geq0 \\
 &amp;\begin{cases}
-\phi^n\frac{c^{n+1}-c^n}{\Delta t^n} + Ad\,\mathcal{D}_{\textbf{u},c}(\textbf{u}\cdot\nabla c) = \frac{1}{Pe}\nabla\cdot\mathcal{D}_{\mathsf{D},c}(\mathsf{D}\cdot\nabla c) + Ki\mathcal{D}_{R,c}R &amp; \\
-\phi^n\frac{\theta^{n+1}-\theta^n}{\Delta t^n} + Ad\,\mathcal{D}_{\textbf{u},\theta}(\textbf{u}\cdot\nabla\theta) = \frac{1}{LePe}\nabla\cdot\mathcal{D}_{\mathsf{G},\theta}(\mathsf{G}\cdot\nabla\theta) &amp; \\
+\phi^n\frac{c^{n+1}-c^n}{\Delta t^n} + Ad\,\mathcal{D}_{\textbf{u},c}(\textbf{u}\cdot\nabla c) = Di\nabla\cdot\mathcal{D}_{\mathsf{D},c}(\mathsf{D}\cdot\nabla c) + Ki\mathcal{D}_{R,c}(R) &amp; \\
+\phi^n\frac{\theta^{n+1}-\theta^n}{\Delta t^n} + Ad\,\mathcal{D}_{\textbf{u},\theta}(\textbf{u}\cdot\nabla\theta) = \frac{Di}{Le}\nabla\cdot\mathcal{D}_{\mathsf{G},\theta}(\mathsf{G}\cdot\nabla\theta) &amp; \\
 \nabla\cdot\textbf{u}^n = 0 &amp; \\
 \textbf{u}^n=-\frac{\mathsf{K}^n}{\mu^n}\cdot(\nabla p^n + Bu\,\rho^n \,\textbf{e}_g) \\
 \varphi(\textbf{x})\frac{s^{n+1} -s^n}{\Delta t^n} = -\varepsilon Ki\mathcal{D}_{R,s}(R) &amp; \forall(\textbf{x}, t)\in\Omega\times[0,\infty) \\
@@ -722,7 +716,6 @@ which assume their default values denoted inside square brackets if not prescrib
     <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#dimensional-equations">Dimensional equations</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#strong-form">Strong form</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#specification">Specification</a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#non-dimensionalization">Non-dimensionalization</a><ul class="nav section-nav flex-column">
@@ -734,7 +727,7 @@ which assume their default values denoted inside square brackets if not prescrib
 </li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">Dimensional equations</a><ul class="nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#non-dimensional-equations">Non-dimensional equations</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#time-discretized-strong-form">Time-discretized strong form</a></li>
 </ul>
 </li>

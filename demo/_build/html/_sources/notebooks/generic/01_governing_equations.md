@@ -33,14 +33,9 @@ c=c_{\text{D}} & \forall(\textbf{x}, t)\in\partial\Omega_{\text{D}, c} \times [0
 \times [0,\infty]~,~\partial\Omega_{\text{N}, \theta}=\partial\Omega/\partial\Omega_{\text{D}, \theta} \\
 \textbf{n}\cdot\textbf{u} = u_{\text{E}} & \forall(\textbf{x}, t)\in\partial\Omega_{\text{E}} \times [0,\infty] \\
 p = p_{\text{N}} & \forall(\textbf{x}, t)\in\partial\Omega_{\text{N}}\times [0,\infty]~,~\partial\Omega_{\text{N}}=\partial\Omega/\partial\Omega_{\text{E}}
-\end{cases}~.
-\end{align*}
-$$
-
-### Specification
-
-$$
-\mathbb{S}
+\end{cases} \\
+&\text{given} \\
+&\mathbb{S}
 \begin{cases}
 \Omega & \text{domain}\\
 c_0(\textbf{x}) & \text{initial concentration}\\
@@ -59,6 +54,7 @@ p_{\text{N}}(\textbf{x}, t)~,~\partial\Omega_{\text{N}} & \text{pressure natural
 \mu(c, \theta) & \text{viscosity}\\
 R(c,\theta, \phi) & \text{solutal reaction}\\
 \end{cases}
+\end{align*}
 $$
 
 ## Non-dimensionalization
@@ -80,18 +76,18 @@ $$
 $$
 \begin{align*}
 Ad&=\frac{\mathcal{U}\mathcal{T}}{\phi_{\text{ref}}\mathcal{L}} \\
-Pe&=\frac{\phi_{\text{ref}}\mathcal{L}^2}{D_{\text{ref}}\mathcal{T}} \\
+Di&=\frac{D_{\text{ref}}\mathcal{T}}{\phi_{\text{ref}}\mathcal{L}^2} \\
 Ki&=\frac{\mathcal{T}\Delta R}{\phi_{\text{ref}}\Delta c} \\
 Bu&=\frac{K_{\text{ref}}\,g\Delta\rho}{\mu_{\text{ref}}\,\mathcal{U}} \\
 Xl&=\frac{\mathcal{L}}{\mathcal{L}_\Omega}
 \end{align*} \\
 $$
 
-A particular choice of non-dimensionalization with $\mathcal{L}$, $\mathcal{U}$ and $\mathcal{T}$ chosen according to the details of the specified system (e.g. boundary conditions, dominant transport processes) will map the abstract dimensionless numbers $\{Ad, Pe, Ki, Bu, Xl\}$ onto combinations of the physical dimensionless numbers introduced below.
+A particular choice of non-dimensionalization with $\mathcal{L}$, $\mathcal{U}$ and $\mathcal{T}$ chosen according to the details of the specified system (e.g. boundary conditions, dominant transport processes) will map the abstract dimensionless numbers $\{Ad, Di, Ki, Bu, Xl\}$ onto combinations of the physical dimensionless numbers introduced below.
 
-| Name | $\mathcal{L}$ | $\mathcal{U}$ |$ \mathcal{T}$ | $\{Ad, Pe, Ki, Bu, Xl\}$ | Examples |
+| Name | $\mathcal{L}$ | $\mathcal{U}$ |$ \mathcal{T}$ | $\{Ad, Di, Ki, Bu, Xl\}$ | Examples |
 | -------- | ------- | ------- | ------- | ------- | ------- |
-| $\text{advective}$ | $\mathcal{L}_\Omega$  |  $K_{\text{ref}}\,g\Delta\rho/\mu_{\text{ref}}$  | $\phi_{\text{ref}}\mathcal{L}/\mathcal{U}$ | $\{1, Ra, Da, 1, 1\}$| [Hewitt et al. (2012)](https://link.aps.org/doi/10.1103/PhysRevLett.108.224503) |
+| $\text{advective}$ | $\mathcal{L}_\Omega$  |  $K_{\text{ref}}\,g\Delta\rho/\mu_{\text{ref}}$  | $\phi_{\text{ref}}\mathcal{L}/\mathcal{U}$ | $\{1, 1/Ra, Da, 1, 1\}$| [Hewitt et al. (2012)](https://link.aps.org/doi/10.1103/PhysRevLett.108.224503) |
 | $\text{advective-diffusive}$ | $D_{\text{ref}}/\mathcal{U}$  |  $K_{\text{ref}}\,g\Delta\rho/\mu_{\text{ref}}$  | $\phi_{\text{ref}}\mathcal{L}/\mathcal{U}$ | $\{1, 1, Da/Ra, 1, Ra\}$| [Slim (2014)](https://www.cambridge.org/core/product/identifier/S0022112013006733/type/journal_article) |
 | $\text{diffusive}$ | $\mathcal{L}_\Omega$  |  $D_{\text{ref}}/\mathcal{L}$  | $\phi_{\text{ref}}\mathcal{L}/\mathcal{U}$ | $\{1, 1, RaDa, Ra, 1\}$| [Ritchie \& Pritchard  (2011)](https://www.cambridge.org/core/journals/journal-of-fluid-mechanics/article/natural-convection-and-the-evolution-of-a-reactive-porous-medium/71E5FB557F61CB9125E5B4E4EE9D828F) |
 | $\text{reactive}$ | $\sqrt{D_{\text{ref}}\mathcal{T}/\phi_{\text{ref}}}$  |  $\phi_{\text{ref}}\mathcal{L}/\mathcal{T}$  | $\phi_{\text{ref}}\Delta c/\Delta R$  | $\{1, 1, 1, \sqrt{Ra/Da}, \sqrt{RaDa}\}$| [Kabbadj et al. (2025)](https://nlpc.ulb.be/pdf/25.Kabbadj_MATRIX.pdf) |
@@ -115,7 +111,7 @@ Lewis number for the ratio of thermal to solutal diffusivity
 $$Le=\frac{G_{\text{ref}}}{D_{\text{ref}}}$$
 
 
-## Dimensional equations
+## Non-dimensional equations
 
 ### Time-discretized strong form
 
@@ -123,8 +119,8 @@ $$
 \begin{align*}
 &\text{Find}~s^{n+1}, c^{n+1}, \theta^{n+1},~\textbf{u}^n,~p^n~\text{such that}~\forall n\geq0 \\
 &\begin{cases}
-\phi^n\frac{c^{n+1}-c^n}{\Delta t^n} + Ad\,\mathcal{D}_{\textbf{u},c}(\textbf{u}\cdot\nabla c) = \frac{1}{Pe}\nabla\cdot\mathcal{D}_{\mathsf{D},c}(\mathsf{D}\cdot\nabla c) + Ki\mathcal{D}_{R,c}R & \\
-\phi^n\frac{\theta^{n+1}-\theta^n}{\Delta t^n} + Ad\,\mathcal{D}_{\textbf{u},\theta}(\textbf{u}\cdot\nabla\theta) = \frac{1}{LePe}\nabla\cdot\mathcal{D}_{\mathsf{G},\theta}(\mathsf{G}\cdot\nabla\theta) & \\
+\phi^n\frac{c^{n+1}-c^n}{\Delta t^n} + Ad\,\mathcal{D}_{\textbf{u},c}(\textbf{u}\cdot\nabla c) = Di\nabla\cdot\mathcal{D}_{\mathsf{D},c}(\mathsf{D}\cdot\nabla c) + Ki\mathcal{D}_{R,c}(R) & \\
+\phi^n\frac{\theta^{n+1}-\theta^n}{\Delta t^n} + Ad\,\mathcal{D}_{\textbf{u},\theta}(\textbf{u}\cdot\nabla\theta) = \frac{Di}{Le}\nabla\cdot\mathcal{D}_{\mathsf{G},\theta}(\mathsf{G}\cdot\nabla\theta) & \\
 \nabla\cdot\textbf{u}^n = 0 & \\
 \textbf{u}^n=-\frac{\mathsf{K}^n}{\mu^n}\cdot(\nabla p^n + Bu\,\rho^n \,\textbf{e}_g) \\
 \varphi(\textbf{x})\frac{s^{n+1} -s^n}{\Delta t^n} = -\varepsilon Ki\mathcal{D}_{R,s}(R) & \forall(\textbf{x}, t)\in\Omega\times[0,\infty) \\

@@ -8,7 +8,8 @@ from lucifex.sim import configure_simulation
 from lucifex.pde.advection_diffusion import flux
 from lucifex.utils.dofs_utils import limits_corrector
 
-from crocodil.dns import dns_generic, heaviside, rectangle_mesh_closure, CONVECTION_REACTION_SCALINGS
+from .generic import dns_generic
+from .utils import heaviside, rectangle_mesh_closure, CONVECTION_REACTION_SCALINGS
 
 
 @configure_simulation(
@@ -47,7 +48,8 @@ def dns_system_a(
     # time discretization
     D_adv: FiniteDifference
     | FiniteDifferenceArgwise = (AB(2) @ CN),
-    D_diff: FiniteDifference = CN,
+    D_diff: FiniteDifference
+    | FiniteDifferenceArgwise = (AB(1) @ CN),
     D_reac: FiniteDifference 
     | FiniteDifferenceArgwise = (AB(1) @ AM(1)),
     D_src: FiniteDifference = AB(1),
@@ -62,20 +64,20 @@ def dns_system_a(
     | OptionsPETSc = (OptionsPETSc('cg', 'gamg'), None),
     c_petsc: OptionsPETSc = OptionsPETSc('gmres', 'ilu'),
     s_petsc: OptionsPETSc | None = None,
-    # secondary
-    secondary: bool = True,
+    # optional postprocessing
+    diagnostic: bool = True,
 ):
     """
-    `ϕ∂c/∂t + 𝐮·∇c =  1/Pe ∇·(D(ϕ,𝐮)·∇c) + KiR(s,c)` \\ 
+    `𝜑∂s/∂t = -εKi s(1 - c)`
+    `Ω = [0, A·Xl] × [0, Xl]` \\
+    `ϕ∂c/∂t + 𝐮·∇c =  Di ∇·(ϕ∇c) + Ki s(1 - c)` \\
     `∇⋅𝐮 = 0` \\
-    `𝐮 = -(∇p + Bu ρ(c)e₉)` \\
-    `𝜑∂s/∂t = -εKiR(s,c)`
+    `𝐮 = -(∇p - Bu c e₉)` \\
 
-    `scaling` determines `Pe, Ki, Bu, Xl` from `Ra, Da`. \\
-    `Ω = [0, aspect·Xl] × [0, Xl]`
-
-    `s₀ = sᵣ · H(y - h₀)` plus optional noise \\
-    `c₀ = cᵣ · H(y - h₀)` plus optional noise
+    `s₀ = sᵣH(y - h₀) + N(𝐱)` \\
+    `c₀ = cᵣH(y - h₀) + N(𝐱)`\\
+    `𝐧⋅𝐮 = 0` on `∂Ω` \\
+    `𝐧⋅∇c = 0` on `∂Ω`
     """
     scaling_map = CONVECTION_REACTION_SCALINGS[scaling](Ra, Da)
 
@@ -83,7 +85,7 @@ def dns_system_a(
     Lx = aspect * Xl
     Ly = 1.0 * Xl
     Omega, dOmega = rectangle_mesh_closure(Lx, Ly, Nx, Ny, cell)
-    Pe, Bu, Ki = scaling_map[Omega, 'Pe', 'Bu', 'Ki']
+    Di, Bu, Ki = scaling_map[Omega, 'Di', 'Bu', 'Ki']
     Ra = Constant(Omega, Ra, 'Ra')
     Da = Constant(Omega, Da, 'Da')
 
@@ -108,7 +110,7 @@ def dns_system_a(
             )  
          
     density = lambda c: Bu * c
-    dispersion = lambda phi: (1/Pe) * phi
+    dispersion = lambda phi: Di * phi
     reaction = lambda s: -Ki * s
     source = lambda s: Ki * s
 
@@ -147,24 +149,24 @@ def dns_system_a(
         c_petsc=c_petsc,
         s_petsc=s_petsc,
         # optional solvers
-        secondary=secondary,
-        namespace=(Ra, Da),
+        diagnostic=diagnostic,
+        namespace=(Ra, Da, Di, Bu, Ki),
     )
 
-    if secondary:
+    if diagnostic:
         c, u, d = simulation['c', 'u', 'd']
         f = ConstantSeries(
             Omega, 
             ('f', ['fInterface', 'fPlus', 'fMinus', 'fMid']), 
             shape=(4, 2),
         )
-        flux_solver = integration(f, interfacial_flux)(c[0], u[0], d[0], h0, Lx)
+        flux_solver = integration(f, vertical_flux)(c[0], u[0], d[0], h0, Lx)
         simulation.solvers.append(flux_solver)
 
     return simulation
 
 
-def interfacial_flux(
+def vertical_flux(
     c: Function,
     u: Function,
     d: Function,

@@ -128,6 +128,6 @@ def dns_model_b(
         c_petsc=c_petsc,
         s_petsc=s_petsc,
         # optional solvers
-        secondary=secondary,
+        diagnostic=secondary,
         namespace=[gamma],
     )

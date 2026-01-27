@@ -4,8 +4,6 @@ Governing equations for thermosolutal convection with a solutal reaction term co
 
 ## Dimensional equations
 
-### Strong form
-
 $$
 \begin{align*}
 &\text{Find} \\
@@ -17,11 +15,11 @@ $$
 &\text{such that} \\
 &\mathbb{IBVP}
 \begin{cases}
+\varrho\varphi\frac{\partial s}{\partial t} = -R & \\
 \phi\frac{\partial c}{\partial t} + \textbf{u}\cdot\nabla c = \nabla\cdot(\mathsf{D}\cdot\nabla c) + R & \\
 \phi\frac{\partial\theta}{\partial t} + \textbf{u}\cdot\nabla\theta = \nabla\cdot(\mathsf{G}\cdot\nabla\theta)& \\
 \nabla\cdot\textbf{u} = 0 & \\
-\textbf{u}=-\frac{\mathsf{K}}{\mu}\cdot(\nabla p + \rho g\,\textbf{e}_g) & \\
-\varrho\varphi(\textbf{x})\frac{\partial s}{\partial t} = -R(s,c,\theta) & \forall(\textbf{x}, t)\in\Omega\times[0,\infty) \\
+\textbf{u}=-\frac{\mathsf{K}}{\mu}\cdot(\nabla p + \rho g\,\textbf{e}_g) & \forall(\textbf{x}, t)\in\Omega\times[0,\infty) \\
 s=s_0 & \forall(\textbf{x}, t)\in\Omega\times\{0\} \\
 c=c_0 & \forall(\textbf{x}, t)\in\Omega\times\{0\} \\
 \theta=\theta_0 & \forall(\textbf{x}, t)\in\Omega\times\{0\} \\
@@ -33,16 +31,11 @@ c=c_{\text{D}} & \forall(\textbf{x}, t)\in\partial\Omega_{\text{D}, c} \times [0
 \times [0,\infty]~,~\partial\Omega_{\text{N}, \theta}=\partial\Omega/\partial\Omega_{\text{D}, \theta} \\
 \textbf{n}\cdot\textbf{u} = u_{\text{E}} & \forall(\textbf{x}, t)\in\partial\Omega_{\text{E}} \times [0,\infty] \\
 p = p_{\text{N}} & \forall(\textbf{x}, t)\in\partial\Omega_{\text{N}}\times [0,\infty]~,~\partial\Omega_{\text{N}}=\partial\Omega/\partial\Omega_{\text{E}}
-\end{cases}~.
-\end{align*}
-$$
-
-### Specification
-
-$$
-\mathbb{S}
+\end{cases} \\
+&\text{given} \\
+&\mathbb{S}
 \begin{cases}
-\Omega & \text{domain}\\
+\Omega\subset\mathbb{R}^d & \text{domain}\\
 c_0(\textbf{x}) & \text{initial concentration}\\
 \theta_0(\textbf{x}) & \text{initial temperature}\\ 
 c_{\text{D}}(\textbf{x}, t)~,~\partial\Omega_{\text{D},c} & \text{concentration Dirichlet boundary condition} \\
@@ -59,6 +52,7 @@ p_{\text{N}}(\textbf{x}, t)~,~\partial\Omega_{\text{N}} & \text{pressure natural
 \mu(c, \theta) & \text{viscosity}\\
 R(c,\theta, \phi) & \text{solutal reaction}\\
 \end{cases}
+\end{align*}
 $$
 
 ## Non-dimensionalization
@@ -73,31 +67,27 @@ $$
 | ------- | ------- | ------- | ------- | ------- |  ------- | ------- |  
 | $\mu_{\text{ref}}$ | $\phi_{\text{ref}}$ |$K_{\text{ref}}$ | $D_{\text{ref}}$ | $G_{\text{ref}}$ | $\Delta R$ | $\Delta Q$ |
 
-### Dimensionless numbers
-
-#### Abstract dimensionless numbers
+### Abstract dimensionless numbers
 
 $$
-\begin{align*}
-Ad&=\frac{\mathcal{U}\mathcal{T}}{\phi_{\text{ref}}\mathcal{L}} \\
-Pe&=\frac{\phi_{\text{ref}}\mathcal{L}^2}{D_{\text{ref}}\mathcal{T}} \\
-Ki&=\frac{\mathcal{T}\Delta R}{\phi_{\text{ref}}\Delta c} \\
-Bu&=\frac{K_{\text{ref}}\,g\Delta\rho}{\mu_{\text{ref}}\,\mathcal{U}} \\
-Xl&=\frac{\mathcal{L}}{\mathcal{L}_\Omega}
-\end{align*} \\
+Ad=\frac{\mathcal{U}\mathcal{T}}{\phi_{\text{ref}}\mathcal{L}}~,~
+Di=\frac{D_{\text{ref}}\mathcal{T}}{\phi_{\text{ref}}\mathcal{L}^2}~,~
+Ki=\frac{\mathcal{T}\Delta R}{\phi_{\text{ref}}\Delta c}~,~
+Bu=\frac{K_{\text{ref}}\,g\Delta\rho}{\mu_{\text{ref}}\,\mathcal{U}}~,~
+Xl=\frac{\mathcal{L}}{\mathcal{L}_\Omega}
 $$
 
-A particular choice of non-dimensionalization with $\mathcal{L}$, $\mathcal{U}$ and $\mathcal{T}$ chosen according to the details of the specified system (e.g. boundary conditions, dominant transport processes) will map the abstract dimensionless numbers $\{Ad, Pe, Ki, Bu, Xl\}$ onto combinations of the physical dimensionless numbers introduced below.
+A particular choice of non-dimensionalization with $\mathcal{L}$, $\mathcal{U}$ and $\mathcal{T}$ chosen according to the details of the specified system (e.g. boundary conditions, dominant transport processes) will map the abstract dimensionless numbers $\{Ad, Di, Ki, Bu, Xl\}$ onto combinations of the physical dimensionless numbers introduced below.
 
-| Name | $\mathcal{L}$ | $\mathcal{U}$ |$ \mathcal{T}$ | $\{Ad, Pe, Ki, Bu, Xl\}$ | Examples |
+| Name | $\mathcal{L}$ | $\mathcal{U}$ |$ \mathcal{T}$ | $\{Ad, Di, Ki, Bu, Xl\}$ | Examples |
 | -------- | ------- | ------- | ------- | ------- | ------- |
-| $\text{advective}$ | $\mathcal{L}_\Omega$  |  $K_{\text{ref}}\,g\Delta\rho/\mu_{\text{ref}}$  | $\phi_{\text{ref}}\mathcal{L}/\mathcal{U}$ | $\{1, Ra, Da, 1, 1\}$| [Hewitt et al. (2012)](https://link.aps.org/doi/10.1103/PhysRevLett.108.224503) |
+| $\text{advective}$ | $\mathcal{L}_\Omega$  |  $K_{\text{ref}}\,g\Delta\rho/\mu_{\text{ref}}$  | $\phi_{\text{ref}}\mathcal{L}/\mathcal{U}$ | $\{1, 1/Ra, Da, 1, 1\}$| [Hewitt et al. (2012)](https://link.aps.org/doi/10.1103/PhysRevLett.108.224503) |
 | $\text{advective-diffusive}$ | $D_{\text{ref}}/\mathcal{U}$  |  $K_{\text{ref}}\,g\Delta\rho/\mu_{\text{ref}}$  | $\phi_{\text{ref}}\mathcal{L}/\mathcal{U}$ | $\{1, 1, Da/Ra, 1, Ra\}$| [Slim (2014)](https://www.cambridge.org/core/product/identifier/S0022112013006733/type/journal_article) |
 | $\text{diffusive}$ | $\mathcal{L}_\Omega$  |  $D_{\text{ref}}/\mathcal{L}$  | $\phi_{\text{ref}}\mathcal{L}/\mathcal{U}$ | $\{1, 1, RaDa, Ra, 1\}$| [Ritchie \& Pritchard  (2011)](https://www.cambridge.org/core/journals/journal-of-fluid-mechanics/article/natural-convection-and-the-evolution-of-a-reactive-porous-medium/71E5FB557F61CB9125E5B4E4EE9D828F) |
 | $\text{reactive}$ | $\sqrt{D_{\text{ref}}\mathcal{T}/\phi_{\text{ref}}}$  |  $\phi_{\text{ref}}\mathcal{L}/\mathcal{T}$  | $\phi_{\text{ref}}\Delta c/\Delta R$  | $\{1, 1, 1, \sqrt{Ra/Da}, \sqrt{RaDa}\}$| [Kabbadj et al. (2025)](https://nlpc.ulb.be/pdf/25.Kabbadj_MATRIX.pdf) |
 
 
-#### Physical dimensionless numbers
+### Physical dimensionless numbers
 
 Rayleigh number (defined with respect to the transport of $c$ and domain length scale)
 $$Ra=\frac{\mathcal{L}_\Omega K_{\text{ref}}g\Delta\rho}{\mu_{\text{ref}}D_{\text{ref}}}=\underbrace{\frac{K_{\text{ref}}\,g\Delta\rho}{\mu_{\text{ref}}}}_{\text{convective speed}} \big/ \underbrace{\frac{D_{\text{ref}}}{\mathcal{L}_\Omega}}_{\text{diffusive speed}}$$
@@ -115,38 +105,41 @@ Lewis number for the ratio of thermal to solutal diffusivity
 $$Le=\frac{G_{\text{ref}}}{D_{\text{ref}}}$$
 
 
-## Dimensional equations
+## Non-dimensional time-discretized  equations
 
-### Time-discretized strong form
+### Strong form
 
 $$
 \begin{align*}
 &\text{Find}~s^{n+1}, c^{n+1}, \theta^{n+1},~\textbf{u}^n,~p^n~\text{such that}~\forall n\geq0 \\
 &\begin{cases}
-\phi^n\frac{c^{n+1}-c^n}{\Delta t^n} + Ad\,\mathcal{D}_{\textbf{u},c}(\textbf{u}\cdot\nabla c) = \frac{1}{Pe}\nabla\cdot\mathcal{D}_{\mathsf{D},c}(\mathsf{D}\cdot\nabla c) + Ki\mathcal{D}_{R,c}R & \\
-\phi^n\frac{\theta^{n+1}-\theta^n}{\Delta t^n} + Ad\,\mathcal{D}_{\textbf{u},\theta}(\textbf{u}\cdot\nabla\theta) = \frac{1}{LePe}\nabla\cdot\mathcal{D}_{\mathsf{G},\theta}(\mathsf{G}\cdot\nabla\theta) & \\
+\varphi\frac{s^{n+1} -s^n}{\Delta t^n} = -\varepsilon Ki\mathcal{D}_{R,s}(R) & \\
+\phi^n\frac{c^{n+1}-c^n}{\Delta t^n} + Ad\,\mathcal{D}_{\textbf{u},c}(\textbf{u}\cdot\nabla c) = Di\nabla\cdot\mathcal{D}_{\mathsf{D},c}(\mathsf{D}\cdot\nabla c) + Ki\mathcal{D}_{R,c}(R) & \\
+\phi^n\frac{\theta^{n+1}-\theta^n}{\Delta t^n} + Ad\,\mathcal{D}_{\textbf{u},\theta}(\textbf{u}\cdot\nabla\theta) = \frac{Di}{Le}\nabla\cdot\mathcal{D}_{\mathsf{G},\theta}(\mathsf{G}\cdot\nabla\theta) & \\
 \nabla\cdot\textbf{u}^n = 0 & \\
 \textbf{u}^n=-\frac{\mathsf{K}^n}{\mu^n}\cdot(\nabla p^n + Bu\,\rho^n \,\textbf{e}_g) \\
-\varphi(\textbf{x})\frac{s^{n+1} -s^n}{\Delta t^n} = -\varepsilon Ki\mathcal{D}_{R,s}(R) & \forall(\textbf{x}, t)\in\Omega\times[0,\infty) \\
-c(\textbf{x},t=0)=c_0 & \forall\textbf{x}\in\Omega \\
-\theta(\textbf{x},t=0)=\theta_0 & \forall\textbf{x}\in\Omega \\
-s(\textbf{x},t=0)=s_0 & \forall\textbf{x}\in\Omega \\
-c=c_{\text{D}} & \forall(\textbf{x}, t)\in\partial\Omega_{\text{D}, c} \times [0,\infty] \\
-\textbf{n}\cdot(\mathsf{D}\cdot\nabla c) = c_{\text{N}} & \forall(\textbf{x}, t)\in\partial\Omega_{\text{N}, c}
-\times [0,\infty]~,~\partial\Omega_{\text{N}, c}=\partial\Omega/\partial\Omega_{\text{D}, c} \\
-\theta=\theta_{\text{D}} & \forall (\textbf{x}, t)\in\partial\Omega_{\text{D}, \theta} \times [0,\infty] \\
-\textbf{n}\cdot(\mathsf{G}\cdot\nabla \theta) = \theta_{\text{N}} & \forall(\textbf{x}, t)\in\partial\Omega_{\text{N}, \theta}
-\times [0,\infty]~,~\partial\Omega_{\text{N}, \theta}=\partial\Omega/\partial\Omega_{\text{D}, \theta} \\
-\textbf{n}\cdot\textbf{u} = u_{\text{E}} & \forall(\textbf{x}, t)\in\partial\Omega_{\text{E}} \times [0,\infty] \\
-p = p_{\text{N}} & \forall(\textbf{x}, t)\in\partial\Omega_{\text{N}}\times [0,\infty]~,~\partial\Omega_{\text{N}}=\partial\Omega/\partial\Omega_{\text{E}}
+c(\textbf{x},t=0)=c_0 &  \\
+\theta(\textbf{x},t=0)=\theta_0 &  \\
+s(\textbf{x},t=0)=s_0 & \\
+c=c_{\text{D}} &  \\
+\textbf{n}\cdot(\mathsf{D}\cdot\nabla c) = c_{\text{N}} & \\
+\theta=\theta_{\text{D}} &  \\
+\textbf{n}\cdot(\mathsf{G}\cdot\nabla \theta) = \theta_{\text{N}} & \\
+\textbf{n}\cdot\textbf{u} = u_{\text{E}} & \\
+p = p_{\text{N}} & 
 \end{cases}~.
 \end{align*}
 $$
 
+### Weak forms
 
+#### Mixed formulation
 
+...
 
+#### Streamfunction formulation
 
+...
 
 <!-- ### Streamfunction formulation
 

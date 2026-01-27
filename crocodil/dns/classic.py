@@ -5,10 +5,9 @@ from lucifex.fdm import FiniteDifference, FiniteDifferenceArgwise, CN, AB2
 from lucifex.utils import CellType
 from lucifex.solver import BoundaryConditions, OptionsPETSc, OptionsJIT
 from lucifex.sim import configure_simulation
-from lucifex.pde.scaling import AdvectionDiffusionScaling
 
 from .generic import dns_generic
-from .utils import rectangle_mesh_closure, heaviside
+from .utils import CONVECTION_REACTION_SCALINGS, rectangle_mesh_closure, heaviside
 
 
 @configure_simulation(
@@ -21,7 +20,7 @@ def dns_rayleigh_benard_2s(
     Ny: int = 100,
     cell: str = CellType.QUADRILATERAL,
     # physical
-    scaling: AdvectionDiffusionScaling = AdvectionDiffusionScaling.ADVECTIVE,
+    scaling: str = 'advective',
     Ra: float = 1e3,
     # initial conditions
     theta_eps: float = 1e-6,
@@ -48,7 +47,7 @@ def dns_rayleigh_benard_2s(
     `c(x,y,t=0) = ... y ... ` \\
     `θ(x,y,t=0) = 1 - y/Ly + N(x,y`)
     """
-    scaling_mapping = AdvectionDiffusionScaling(scaling).mapping(Ra)
+    scaling_mapping = CONVECTION_REACTION_SCALINGS[scaling].mapping(Ra)
 
     Xl = scaling_mapping('Xl')
     Lx = aspect * Xl
@@ -96,7 +95,7 @@ def dns_rayleigh_benard_2s(
         flow_petsc=flow_petsc,
         c_petsc=c_petsc,
         # optional solvers
-        secondary=secondary,
+        diagnostic=secondary,
     )
 
     return simulation
@@ -112,7 +111,7 @@ def dns_rayleigh_benard_1s(
     Ny: int = 100,
     cell: str = CellType.QUADRILATERAL,
     # physical
-    scaling: AdvectionDiffusionScaling = AdvectionDiffusionScaling.ADVECTIVE,
+    scaling: str ='advective',
     Ra: float = 1e3,
     # initial conditions
     erf_eps: float = 1e-2,
@@ -136,7 +135,7 @@ def dns_rayleigh_benard_1s(
     # secondary
     secondary: bool = False,
 ):
-    scaling_mapping = AdvectionDiffusionScaling(scaling).mapping(Ra)
+    scaling_mapping = CONVECTION_REACTION_SCALINGS[scaling].mapping(Ra)
     Xl = scaling_mapping('Xl')
     Lx = aspect * Xl
     Ly = 1.0 * Xl
@@ -184,7 +183,7 @@ def dns_rayleigh_benard_1s(
         flow_petsc=flow_petsc,
         theta_petsc=theta_petsc,
         # optional solvers
-        secondary=secondary,
+        diagnostic=secondary,
     )
 
     return simulation
@@ -200,7 +199,7 @@ def dns_rayleigh_taylor(
     Ny: int = 100,
     cell: str = CellType.QUADRILATERAL,
     # physical
-    scaling: AdvectionDiffusionScaling = AdvectionDiffusionScaling.ADVECTIVE,
+    scaling: str ='advective',
     Ra: float = 1e3,
     # initial conditions
     cr: float = 0.0,
@@ -230,7 +229,7 @@ def dns_rayleigh_taylor(
     """
     `c₀(x,y) = cr · H(y - h₀) + N(x, y)`
     """
-    scaling_mapping = AdvectionDiffusionScaling(scaling).mapping(Ra)
+    scaling_mapping = CONVECTION_REACTION_SCALINGS[scaling].mapping(Ra)
     Xl = scaling_mapping('Xl')
     Lx = aspect * Xl
     Ly = 1.0 * Xl
@@ -269,7 +268,7 @@ def dns_rayleigh_taylor(
         flow_petsc=flow_petsc,
         c_petsc=c_petsc,
         # optional solvers
-        secondary=secondary,
+        diagnostic=secondary,
     )
 
     return simulation

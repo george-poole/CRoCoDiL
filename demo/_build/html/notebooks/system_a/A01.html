@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>x &#8212; CRoCoDiL Demo</title>
+    <title>Test 1 &#8212; CRoCoDiL Demo</title>
   
   
   
@@ -60,7 +60,7 @@
     <script>DOCUMENTATION_OPTIONS.pagename = 'notebooks/system_a/A01';</script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="y" href="A02.html" />
+    <link rel="next" title="Test 2" href="A02.html" />
     <link rel="prev" title="Specification" href="A00_specification.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
@@ -183,8 +183,8 @@
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">System A</span></p>
 <ul class="current nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="A00_specification.html">Specification</a></li>
-<li class="toctree-l1 current active"><a class="current reference internal" href="#">x</a></li>
-<li class="toctree-l1"><a class="reference internal" href="A02.html">y</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Test 1</a></li>
+<li class="toctree-l1"><a class="reference internal" href="A02.html">Test 2</a></li>
 </ul>
 
     </div>
@@ -321,7 +321,7 @@ document.write(`
               
 
 <div id="jb-print-docs-body" class="onlyprint">
-    <h1>x</h1>
+    <h1>Test 1</h1>
     <!-- Table of contents -->
     <div id="print-main-content">
         <div id="jb-print-toc">
@@ -335,8 +335,115 @@ document.write(`
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section class="tex2jax_ignore mathjax_ignore" id="x">
-<h1>x<a class="headerlink" href="#x" title="Link to this heading">#</a></h1>
+  <section class="tex2jax_ignore mathjax_ignore" id="test-1">
+<h1>Test 1<a class="headerlink" href="#test-1" title="Link to this heading">#</a></h1>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">lucifex.fdm</span><span class="w"> </span><span class="kn">import</span> <span class="n">AB2</span><span class="p">,</span> <span class="n">CN</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">lucifex.sim</span><span class="w"> </span><span class="kn">import</span> <span class="n">run</span><span class="p">,</span> <span class="n">xdmf_to_npz</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">lucifex.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">grid</span><span class="p">,</span> <span class="n">spacetime_grid</span><span class="p">,</span> <span class="n">cross_section</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">lucifex.viz</span><span class="w"> </span><span class="kn">import</span> <span class="n">plot_colormap</span><span class="p">,</span> <span class="n">create_animation</span><span class="p">,</span> <span class="n">plot_line</span><span class="p">,</span> <span class="n">save_figure</span><span class="p">,</span> <span class="n">display_animation</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">crocodil.dns.system_a</span><span class="w"> </span><span class="kn">import</span> <span class="n">dns_system_a</span>
+
+<span class="n">STORE</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="n">WRITE</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="n">DIR_BASE</span> <span class="o">=</span> <span class="s1">&#39;./data&#39;</span>
+<span class="n">DIR_PARAMS</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;Nx&#39;</span><span class="p">,</span> <span class="s1">&#39;Ny&#39;</span><span class="p">)</span>
+
+<span class="n">sr</span> <span class="o">=</span> <span class="mf">0.2</span>
+<span class="n">simulation</span> <span class="o">=</span> <span class="n">dns_system_a</span><span class="p">(</span>
+    <span class="n">store_delta</span><span class="o">=</span><span class="n">STORE</span><span class="p">,</span> 
+    <span class="n">write_delta</span><span class="o">=</span><span class="n">WRITE</span><span class="p">,</span> 
+    <span class="n">dir_base</span><span class="o">=</span><span class="n">DIR_BASE</span><span class="p">,</span> 
+    <span class="n">dir_params</span><span class="o">=</span><span class="n">DIR_PARAMS</span><span class="p">,</span>
+    <span class="n">dir_timestamp</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<span class="p">)(</span>
+    <span class="n">aspect</span><span class="o">=</span><span class="mf">2.0</span><span class="p">,</span>
+    <span class="n">Nx</span><span class="o">=</span><span class="mi">64</span><span class="p">,</span>
+    <span class="n">Ny</span><span class="o">=</span><span class="mi">64</span><span class="p">,</span>
+    <span class="n">Ra</span><span class="o">=</span><span class="mf">5e2</span><span class="p">,</span>
+    <span class="n">Da</span><span class="o">=</span><span class="mf">100.0</span><span class="p">,</span>
+    <span class="n">epsilon</span><span class="o">=</span><span class="mf">1e-2</span><span class="p">,</span>
+    <span class="n">sr</span><span class="o">=</span><span class="n">sr</span><span class="p">,</span>
+    <span class="n">cr</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>
+    <span class="n">s_limits</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">sr</span><span class="p">),</span>
+    <span class="n">c_limits</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+    <span class="n">c_stabilization</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">diagnostic</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="n">n_stop</span> <span class="o">=</span> <span class="mi">20</span>
+<span class="n">dt_init</span> <span class="o">=</span> <span class="mf">1e-6</span>
+<span class="n">n_init</span> <span class="o">=</span> <span class="mi">10</span>
+<span class="n">run</span><span class="p">(</span><span class="n">simulation</span><span class="p">,</span> <span class="n">n_stop</span><span class="o">=</span><span class="n">n_stop</span><span class="p">,</span> <span class="n">dt_init</span><span class="o">=</span><span class="n">dt_init</span><span class="p">,</span> <span class="n">n_init</span><span class="o">=</span><span class="n">n_init</span><span class="p">)</span>
+<span class="k">if</span> <span class="n">WRITE</span><span class="p">:</span>
+    <span class="n">xdmf_to_npz</span><span class="p">(</span><span class="n">simulation</span><span class="p">,</span> <span class="n">delete_xdmf</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+<span class="n">c</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">psi</span> <span class="o">=</span> <span class="n">simulation</span><span class="p">[</span><span class="s1">&#39;c&#39;</span><span class="p">,</span> <span class="s1">&#39;s&#39;</span><span class="p">,</span> <span class="s1">&#39;u&#39;</span><span class="p">,</span> <span class="s1">&#39;psi&#39;</span><span class="p">]</span>
+<span class="n">cCorr</span><span class="p">,</span> <span class="n">sCorr</span> <span class="o">=</span> <span class="n">simulation</span><span class="p">[</span><span class="s1">&#39;cCorr&#39;</span><span class="p">,</span> <span class="s1">&#39;sCorr&#39;</span><span class="p">]</span>
+<span class="n">mC</span><span class="p">,</span> <span class="n">mD</span> <span class="o">=</span> <span class="n">simulation</span><span class="p">[</span><span class="s1">&#39;mC&#39;</span><span class="p">,</span> <span class="s1">&#39;mD&#39;</span><span class="p">]</span>
+<span class="n">f</span><span class="p">,</span> <span class="n">fBoundary</span> <span class="o">=</span> <span class="n">simulation</span><span class="p">[</span><span class="s1">&#39;f&#39;</span><span class="p">,</span> <span class="s1">&#39;fBoundary&#39;</span><span class="p">]</span>
+<span class="n">fInterface</span><span class="p">,</span> <span class="n">fPlus</span><span class="p">,</span> <span class="n">fMinus</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span> <span class="n">f</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span> <span class="n">f</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">sMinMax</span><span class="p">,</span> <span class="n">cMinMax</span><span class="p">,</span> <span class="n">uMinMax</span> <span class="o">=</span> <span class="n">simulation</span><span class="p">[</span><span class="s1">&#39;sMinMax&#39;</span><span class="p">,</span> <span class="s1">&#39;cMinMax&#39;</span><span class="p">,</span> <span class="s1">&#39;uMinMax&#39;</span><span class="p">]</span>
+<span class="n">cMin</span><span class="p">,</span> <span class="n">cMax</span> <span class="o">=</span> <span class="n">cMinMax</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span> <span class="n">cMinMax</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> 
+<span class="n">uMax</span> <span class="o">=</span> <span class="n">uMinMax</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">dt</span><span class="p">,</span> <span class="n">dtCFL</span><span class="p">,</span> <span class="n">dtK</span> <span class="o">=</span> <span class="n">simulation</span><span class="p">[</span><span class="s1">&#39;dt&#39;</span><span class="p">,</span> <span class="s1">&#39;dtCFL&#39;</span><span class="p">,</span> <span class="s1">&#39;dtK&#39;</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="nb">float</span><span class="p">(</span><span class="n">simulation</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;Ra&#39;</span><span class="p">,</span> <span class="s1">&#39;Da&#39;</span><span class="p">,</span> <span class="s1">&#39;Di&#39;</span><span class="p">,</span> <span class="s1">&#39;Bu&#39;</span><span class="p">,</span> <span class="s1">&#39;Ki&#39;</span><span class="p">)]</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[500.0, 100.0, 0.002, 1.0, 100.0]
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plot_colormap</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">series</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+<span class="n">plot_colormap</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">series</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+<span class="n">plot_colormap</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">series</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+<span class="n">plot_colormap</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">series</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+<span class="n">plot_colormap</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">series</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+<span class="n">plot_colormap</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">series</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(&lt;Figure size 640x480 with 2 Axes&gt;, &lt;Axes: xlabel=&#39;$x$&#39;, ylabel=&#39;$y$&#39;&gt;)
+</pre></div>
+</div>
+<img alt="../../_images/9fa3076fee81bc2d607f2aaa1df724c254d3d83c0b55a25fa739463e46c1823e.png" src="../../_images/9fa3076fee81bc2d607f2aaa1df724c254d3d83c0b55a25fa739463e46c1823e.png" />
+<img alt="../../_images/6f9cc2f24437373a418fc7810978a6d6546d07c0df20a5f582d7238b08f2f334.png" src="../../_images/6f9cc2f24437373a418fc7810978a6d6546d07c0df20a5f582d7238b08f2f334.png" />
+<img alt="../../_images/3cea7c466edf814055c8483f0a85d84cbfd442e540dcc7bdbb97966f186f4c33.png" src="../../_images/3cea7c466edf814055c8483f0a85d84cbfd442e540dcc7bdbb97966f186f4c33.png" />
+<img alt="../../_images/7f24ff776e7d1b02fd472996d0e94faf1a59cc67e7a20b7fe3ee2d49bc7c11c9.png" src="../../_images/7f24ff776e7d1b02fd472996d0e94faf1a59cc67e7a20b7fe3ee2d49bc7c11c9.png" />
+<img alt="../../_images/3cea7c466edf814055c8483f0a85d84cbfd442e540dcc7bdbb97966f186f4c33.png" src="../../_images/3cea7c466edf814055c8483f0a85d84cbfd442e540dcc7bdbb97966f186f4c33.png" />
+<img alt="../../_images/b529e960c7e4d45140f90481e42379553623daf95624e7a0adbb155da4a0ee02.png" src="../../_images/b529e960c7e4d45140f90481e42379553623daf95624e7a0adbb155da4a0ee02.png" />
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">time_slice</span> <span class="o">=</span> <span class="nb">slice</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<span class="n">titles</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s1">&#39;$c(t=</span><span class="si">{</span><span class="n">t</span><span class="si">:</span><span class="s1">.3f</span><span class="si">}</span><span class="s1">)$&#39;</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">c</span><span class="o">.</span><span class="n">time_series</span><span class="p">[</span><span class="n">time_slice</span><span class="p">]]</span>
+
+<span class="n">anim</span> <span class="o">=</span> <span class="n">create_animation</span><span class="p">(</span>
+    <span class="n">plot_colormap</span><span class="p">,</span>
+    <span class="n">colorbar</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+<span class="p">)(</span><span class="n">c</span><span class="o">.</span><span class="n">series</span><span class="p">[</span><span class="n">time_slice</span><span class="p">],</span> <span class="n">title</span><span class="o">=</span><span class="n">titles</span><span class="p">)</span>
+<span class="n">anim_path</span> <span class="o">=</span> <span class="n">save_figure</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">c</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s1">(t)&#39;</span><span class="p">,</span> <span class="n">get_path</span><span class="o">=</span><span class="kc">True</span><span class="p">)(</span><span class="n">anim</span><span class="p">)</span>
+
+<span class="n">display_animation</span><span class="p">(</span><span class="n">anim_path</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
 </section>
 
     <script type="text/x-thebe-config">
@@ -383,7 +490,7 @@ document.write(`
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">y</p>
+        <p class="prev-next-title">Test 2</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
