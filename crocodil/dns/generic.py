@@ -2,14 +2,14 @@ from typing import Callable, Iterable, TypeAlias
 from types import EllipsisType
 
 import numpy as np
-from ufl import as_vector
+from ufl import as_vector, inner, sqrt
 from ufl.core.expr import Expr
 from dolfinx.mesh import Mesh
 
 from lucifex.fem import Function, Constant, SpatialPerturbation
 from lucifex.mesh import MeshBoundary
 from lucifex.fdm import (
-    FunctionSeries, ConstantSeries, FiniteDifference, AB1, Series, 
+    FunctionSeries, ConstantSeries, FiniteDifference, FE, 
     ExprSeries, FiniteDifferenceArgwise, finite_difference_order,
     cflr_timestep, cfl_timestep, reactive_timestep,
 )
@@ -19,7 +19,6 @@ from lucifex.solver import (
     interpolation, projection, evaluation, integration,
     extrema, div_norm, L_norm,
 )
-from lucifex.utils import CellType
 from lucifex.sim import Simulation
 from lucifex.pde.streamfunction import streamfunction_velocity
 from lucifex.pde.darcy import darcy_streamfunction, darcy_incompressible
@@ -27,13 +26,15 @@ from lucifex.pde.advection_diffusion import (
     advection_diffusion_reaction, advection_diffusion, 
     advection_diffusion_reaction_dg, advection_diffusion_dg, flux,
 )
+from lucifex.utils.mesh_utils import CellType
 from lucifex.utils.dofs_utils import limits_corrector
-from lucifex.pde.evolution import evolution_forms, evolution_expression
+from lucifex.utils.py_utils import arity
+from lucifex.pde.evolution import evolution, evolution_update
 
 from .utils import mass_dissolved, mass_capillary_trapped
 
 
-Phi: TypeAlias = FunctionSeries
+Phi: TypeAlias = Expr | ExprSeries
 C: TypeAlias = FunctionSeries
 Theta: TypeAlias = FunctionSeries
 S: TypeAlias = FunctionSeries
@@ -56,15 +57,23 @@ def dns_generic(
     theta_bcs: BoundaryConditions | EllipsisType | None = None,
     # constitutive relations
     rock_porosity: Callable[[np.ndarray], np.ndarray] | float = 1,
-    permeability: Callable[[Phi], Series] = lambda phi: phi**2,
-    dispersion_solutal: Callable[[Phi, U], Series] = lambda phi, _: phi,
-    dispersion_thermal: Callable[[Phi, U], Series] = lambda phi, _: phi,
-    density: Callable[[C | Theta], Series] 
-    | Callable[[C, Theta], Series] = lambda c, theta: c - theta,
-    viscosity: Callable[[C | Theta], Series]
-    | Callable[[C, Theta], Series] = lambda *_: 1 + 0 * _[0], 
-    reaction: Callable[[S], Series] | Callable[[S, Theta], Series] | None = None,
-    source: Callable[[S], Series] | Callable[[S, Theta], Series] | None = None,
+    permeability: Callable[[Phi], Expr | ExprSeries] = lambda phi: phi**2,
+    dispersion_solutal: Callable[[Phi, U], Expr | ExprSeries]
+    | Callable[[Phi], Expr | ExprSeries] = lambda phi: phi,
+    dispersion_thermal: Callable[[Phi, U], Expr | ExprSeries]
+    | Callable[[Phi], Expr | ExprSeries] = lambda phi: phi,
+    density: Callable[[C | Theta], ExprSeries] 
+    | Callable[[C, Theta], ExprSeries] 
+    | None = lambda c, theta: c - theta,
+    viscosity: Callable[[C | Theta], ExprSeries]
+    | Callable[[C, Theta], ExprSeries] 
+    | None = None, 
+    reaction: Callable[[S], Expr | ExprSeries] 
+    | Callable[[S, Theta], ExprSeries]
+    | None = None,
+    source: Callable[[S], Expr | ExprSeries] 
+    | Callable[[S, Theta], ExprSeries] 
+    | None = None,
     # time step
     dt_min: float = 0.0,
     dt_max: float = 0.5,
@@ -72,15 +81,15 @@ def dns_generic(
     cfl_courant: float | None = 0.55,
     r_courant: float | None = None,
     # time discretization
-    D_adv_solutal: FiniteDifference | FiniteDifferenceArgwise = AB1,
-    D_diff_solutal: FiniteDifference = AB1,
+    D_adv_solutal: FiniteDifference | FiniteDifferenceArgwise = FE,
+    D_diff_solutal: FiniteDifference = FE,
     D_reac_solutal: FiniteDifference 
-    | FiniteDifferenceArgwise = AB1,
-    D_src_solutal: FiniteDifference = AB1,
-    D_adv_thermal: FiniteDifference | FiniteDifferenceArgwise = AB1,
-    D_diff_thermal: FiniteDifference = AB1,
+    | FiniteDifferenceArgwise = FE,
+    D_src_solutal: FiniteDifference = FE,
+    D_adv_thermal: FiniteDifference | FiniteDifferenceArgwise = FE,
+    D_diff_thermal: FiniteDifference = FE,
     D_reac_evol: FiniteDifference 
-    | FiniteDifferenceArgwise = AB1,
+    | FiniteDifferenceArgwise = FE,
     # stabilization
     c_stabilization: str | tuple[float, float] | None = None,
     c_limits: tuple[float, float] | bool = False,
@@ -93,17 +102,16 @@ def dns_generic(
     c_petsc: OptionsPETSc = OptionsPETSc('gmres', 'ilu'),
     theta_petsc: OptionsPETSc = OptionsPETSc('gmres', 'ilu'),
     s_petsc: OptionsPETSc | None = None,
-    # optional solvers
+    # optional on-the-fly postprocessing
     secondary: bool = False,    
-    # solvers
-    secondary_extras: Iterable[Solver] = (),
-    namespace_extras: Iterable = (),
+    tertiary: Iterable[Solver] = (),
+    namespace: Iterable[Function | Constant | ExprSeries | tuple[str, Expr]] = (),
 ) -> Simulation:    
     """
     `ϕ∂c/∂t + 𝐮·∇c =  ∇·(D(ϕ,𝐮)·∇c) + R(s, θ)c + J(s,θ)` \\
     `ϕ∂θ/∂t + 𝐮·∇θ = ∇·(G(ϕ,𝐮)·∇θ)`\\
     `∇⋅𝐮 = 0` \\
-    `𝐮 = -(∇p + ρ(c,θ)e₉)` \\
+    `𝐮 = -(K(ϕ)/μ(c, θ))·(∇p + ρ(c,θ)e₉)` \\
     `𝜑∂s/∂t = -ε(R(s,θ)c + J(s, θ))`
 
     `ϕ = 𝜑(1 - s)` is the effective porosity.
@@ -134,17 +142,23 @@ def dns_generic(
             eg = (0, 0, -1)
 
     STREAMF = isinstance(flow_petsc, tuple)
-    CNTS = lambda stbl: stbl is None or isinstance(stbl, str)
     SOLUTAL = c_ics is not None
     THERMAL = theta_ics is not None
     THERMOSOLUTAL = SOLUTAL and THERMAL
     EVOL = epsilon is not None
+    SOLUTAL_CNTS = c_stabilization is None or isinstance(c_stabilization, str)
+    THERMAL_CNTS = theta_stabilization is None or isinstance(theta_stabilization, str)
+    SOLUTAL_MECH = arity(dispersion_solutal) == 2
+    THERMAL_MECH = arity(dispersion_thermal) == 2
 
     solvers = []
-    namespace = []
+    namespace = list(namespace)
 
     # time
-    order = finite_difference_order(D_adv_solutal, D_diff_solutal, D_reac_solutal, D_adv_thermal, D_diff_thermal, D_reac_evol)
+    order = finite_difference_order(
+        D_adv_solutal, D_diff_solutal, D_reac_solutal, D_src_solutal,
+        D_adv_thermal, D_diff_thermal, D_reac_evol,
+    )
     t = ConstantSeries(Omega, "t", order, ics=0.0)  
     dt = ConstantSeries(Omega, 'dt')
 
@@ -154,67 +168,75 @@ def dns_generic(
         psi = FunctionSeries((Omega, 'P', psi_deg), 'psi')
         u = FunctionSeries((Omega, "P", psi_deg - 1, 2), "u", order)
     else:
-        u_fam = 'BDMCF' if Omega.topology.cell_name() == CellType.QUADRILATERAL else 'BDM'
+        u_fam = 'BDM' if Omega.topology.cell_name() == CellType.TRIANGLE else 'BDMCF'
         u_deg = 1
         up = FunctionSeries((Omega, [(u_fam, u_deg), ('DP', u_deg - 1)]), ('up', ['u', 'p']), order)
         u = up.sub(0)
 
     # transport
     if SOLUTAL:
-        c = FunctionSeries((Omega, 'P' if CNTS(c_stabilization) else 'DP', 1), 'c', order, ics=c_ics)
+        c = FunctionSeries((Omega, 'P' if SOLUTAL_CNTS else 'DP', 1), 'c', order, ics=c_ics)
     if THERMAL:
-        theta = FunctionSeries((Omega, 'P' if CNTS(theta_stabilization) else 'DP', 1), 'theta', order, ics=theta_ics)
+        theta = FunctionSeries((Omega, 'P' if THERMAL_CNTS else 'DP', 1), 'theta', order, ics=theta_ics)
     if EVOL:
         s = FunctionSeries((Omega, 'P', 1), 's', order, ics=s_ics)
         epsilon = Constant(Omega, epsilon, 'epsilon')
         namespace.append(epsilon)
     else:
-        s = Function((Omega, 'P', 1), 's', s_ics)
+        s = Function((Omega, 'P', 1), s_ics, 's')
 
     # constitutive
     varphi = Function((Omega, 'P', 1), rock_porosity, 'varphi')
-    phi = ExprSeries(varphi * (1 - s), 'phi')
-    k = ExprSeries(permeability(phi), 'k')
-    rho = ExprSeries(
-        density(c, theta) if THERMOSOLUTAL
-        else density(c) if SOLUTAL
-        else density(theta),
-        'rho',
-    )
-    mu = ExprSeries(
-        viscosity(c, theta) if THERMOSOLUTAL
-        else viscosity(c) if SOLUTAL
-        else viscosity(theta),
-        'mu',
-    )
-    namespace.extend((varphi, phi, k, rho, mu))
+    phi = varphi * (1 - s)
+    k = permeability(phi)   
+    rho = density(
+        *(c, theta) if THERMOSOLUTAL
+        else (c, ) if SOLUTAL
+        else (theta, )
+    ) if density else 1
+    mu = viscosity(
+        *(c, theta) if THERMOSOLUTAL
+        else (c, ) if SOLUTAL
+        else (theta, )
+    ) if viscosity else 1
+    namespace.extend((varphi, ('phi', phi), ('k', k), ('rho', rho), ('mu', mu)))
     if SOLUTAL:
-        d = ExprSeries(dispersion_solutal(phi, u), 'd')
-        r = ExprSeries.from_args(reaction, name='r')(
+        d = dispersion_solutal(
+            *(phi, u) if SOLUTAL_MECH
+            else (phi, )
+        )
+        reaction_eff = lambda c, *args: (
+            (reaction(*args) * c if reaction else 0) 
+            + (source(*args) if source else 0)
+        )
+        r = reaction(
             *(s, theta) if THERMOSOLUTAL
             else (s, )
-        )
-        j = ExprSeries.from_args(source, name='j')(
+        ) if reaction else 0
+        j = source(
             *(s, theta) if THERMOSOLUTAL
             else (s, )
-        )
-        reaction_eff = lambda c, *args: reaction(*args) * c + source(*args)
-        rEff = ExprSeries.from_args(reaction_eff, name='rEff')(
+        ) if source else 0
+        rEff = reaction_eff(
             *(c, s, theta) if THERMOSOLUTAL
             else (c, s)
         )
-        namespace.extend((d, r, j, rEff))
+        namespace.extend([('d', d), ('r', r), ('j', j), ('rEff', rEff)])
     if THERMAL:
-        g = ExprSeries(dispersion_thermal(phi, u), 'g')
-        namespace.append(g)
+        g = dispersion_thermal(
+            *(phi, u) if THERMAL_MECH
+            else (phi, )
+        )
+        namespace.append(('g', g))
 
     # flow solvers
     if STREAMF:
         psi_bcs = BoundaryConditions(("dirichlet", dOmega.union, 0.0)) if flow_bcs is Ellipsis else flow_bcs
         psi_petsc, u_petsc = flow_petsc
+        psi_cache = not(EVOL or viscosity)
         egx, egy = eg
-        psi_solver = bvp(darcy_streamfunction, psi_bcs, petsc=psi_petsc, cache_matrix=not(EVOL))(
-            psi, k[0], mu[0], egx * rho[0], egy * rho[0],
+        psi_solver = bvp(darcy_streamfunction, psi_bcs, petsc=psi_petsc, cache_matrix=psi_cache)(
+            psi, FE(k), FE(mu), egx * FE(rho), egy * FE(rho),
         ) 
         if u_petsc is None:
             u_solver = interpolation(u, streamfunction_velocity)(psi[0])
@@ -227,30 +249,33 @@ def dns_generic(
         p_bcs = None if flow_bcs is Ellipsis else flow_bcs[1]
         flow_petsc = flow_petsc.replace(pc_factor_mat_solver_type='mumps')
         u_solver = bvp(darcy_incompressible, u_bcs, petsc=flow_petsc)(
-            up, k[0], mu[0], rho[0] * as_vector(eg), p_bcs)
+            up, FE(k), FE(mu), FE(rho) * as_vector(eg), p_bcs)
         solvers.append(u_solver)
 
     # timestep solver
-    if not SOLUTAL:
-        r_courant = None
-    dt_solver = evaluation(dt, cflr_timestep)(
-        u[0], rEff[0], cfl_h, cfl_courant, r_courant, dt_max, dt_min,
-    ) 
+    if SOLUTAL:
+        dt_solver = evaluation(dt, cflr_timestep)(
+            u[0], rEff[0], cfl_h, cfl_courant, r_courant, dt_max, dt_min,
+        ) 
+    else:
+        dt_solver = evaluation(dt, cfl_timestep)(
+            u[0], cfl_h, cfl_courant, dt_max, dt_min, 
+        )
     solvers.append(dt_solver)
 
     # thermal solver
     if THERMAL:
         theta_bcs = BoundaryConditions(("neumann", dOmega.union, 0.0)) if theta_bcs is Ellipsis else theta_bcs
-        theta_limits = (0, 1) if theta_limits is Ellipsis else theta_limits
+        theta_limits = (0, 1) if c_limits is True else c_limits
         theta_corrector = ('thetaCorr', limits_corrector(*theta_limits)) if theta_limits else None
-        if CNTS(theta_stabilization):
+        if THERMAL_CNTS:
             theta_solver = ibvp(advection_diffusion, bcs=theta_bcs, petsc=theta_petsc, corrector=theta_corrector)(
-                c, dt, u, d, D_adv_thermal, D_diff_thermal, phi=phi, supg=theta_stabilization,
+                theta, dt, u, g, D_adv_thermal, D_diff_thermal, phi=phi, supg=theta_stabilization,
             )
         else:
             theta_alpha, theta_gamma = theta_stabilization
             theta_solver = ibvp(advection_diffusion_dg, petsc=theta_petsc, corrector=theta_corrector)(
-                c, dt, u, d, theta_alpha, theta_gamma, D_adv_thermal, D_diff_thermal, phi=phi, bcs=theta_bcs,
+                theta, dt, u, g, theta_alpha, theta_gamma, D_adv_thermal, D_diff_thermal, phi=phi, bcs=theta_bcs,
             )
         solvers.append(theta_solver)
 
@@ -259,7 +284,7 @@ def dns_generic(
         c_bcs = BoundaryConditions(("neumann", dOmega.union, 0.0)) if c_bcs is Ellipsis else c_bcs
         c_limits = (0, 1) if c_limits is True else c_limits
         c_corrector = ('cCorr', limits_corrector(*c_limits)) if c_limits else None
-        if CNTS(c_stabilization):
+        if SOLUTAL_CNTS:
             c_solver = ibvp(advection_diffusion_reaction, bcs=c_bcs, petsc=c_petsc, corrector=c_corrector)(
                 c, dt, u, d, r, D_adv_solutal, D_diff_solutal, D_reac_solutal, D_src_solutal, phi=phi, j=j, supg=c_stabilization,
             )
@@ -273,7 +298,7 @@ def dns_generic(
     # evolution solver
     if EVOL:
         reaction_evol = lambda c, *args: -epsilon * reaction_eff(c, *args)
-        rEvol = ExprSeries.from_args(reaction_evol, name='rEvol')(
+        rEvol = ExprSeries.from_expr_func(reaction_evol, name='rEvol')(
             *(c, s, theta) if THERMOSOLUTAL
             else (c, s)
         )
@@ -281,11 +306,11 @@ def dns_generic(
         s_limits = (np.min(s.ics.x.array), np.max(s.ics.x.array)) if s_limits is True else s_limits
         s_corrector = ('sCorr', limits_corrector(*s_limits)) if s_limits else None
         if s_petsc is None:
-            s_solver = interpolation(s, evolution_expression, corrector=s_corrector, future=True)(
+            s_solver = interpolation(s, evolution_update, corrector=s_corrector, future=True)(
                 s, dt, rEvol, D_reac_evol, phi=varphi, explicit=1,
             )
         else:
-            s_solver = ivp(evolution_forms, petsc=s_petsc, corrector=s_corrector)(
+            s_solver = ivp(evolution, petsc=s_petsc, corrector=s_corrector)(
                 s, dt, rEvol, D_reac_evol, phi=varphi
             )
         solvers.append(s_solver)
@@ -295,8 +320,8 @@ def dns_generic(
         uMinMax = ConstantSeries(Omega, "uMinMax", shape=(2,))
         solvers.append(evaluation(uMinMax, extrema)(u[0]))
         norm = 2
-        uRms = ConstantSeries(Omega, 'uRms')
-        solvers.append(integration(uRms, L_norm, 'dx', norm=norm)(u[0], norm))
+        uRMS = ConstantSeries(Omega, 'uRMS')
+        solvers.append(integration(uRMS, L_norm, 'dx', norm=norm)(sqrt(inner(u[0], u[0])), norm))
         uDiv = ConstantSeries(Omega, 'uDiv')
         solvers.append(integration(uDiv, div_norm, 'dx', norm=norm)(u[0], norm))
         dtCFL = ConstantSeries(Omega, "dtCFL")
@@ -304,15 +329,15 @@ def dns_generic(
         if THERMAL:
             thetaMinMax = ConstantSeries(Omega, "thetaMinMax", shape=(2,))
             solvers.append(evaluation(thetaMinMax, extrema)(theta[0]))
-            qBoundary = ConstantSeries(Omega, "qBoundary", shape=(len(dOmega.union), 2)),
-            solvers.append(integration(qBoundary, flux, 'ds', *dOmega.union)(theta[0], u[0], g[0]))
+            qBoundary = ConstantSeries(Omega, "qBoundary", shape=(len(dOmega.markers), 2))
+            solvers.append(integration(qBoundary, flux, 'ds', *dOmega.markers)(theta[0], u[0], FE(g)))
         if SOLUTAL:
             cMinMax = ConstantSeries(Omega, "cMinMax", shape=(2,))
             solvers.append(evaluation(cMinMax, extrema)(c[0]))
             mD = ConstantSeries(Omega, "mD")
-            solvers.append(integration(mD, mass_dissolved, 'dx')(c[0], phi[0]))
-            fBoundary = ConstantSeries(Omega, "fBoundary", shape=(len(dOmega.union), 2))
-            solvers.append(integration(fBoundary, flux, 'ds', *dOmega.union)(c[0], u[0], d[0]))
+            solvers.append(integration(mD, mass_dissolved, 'dx')(c[0], FE(phi)))
+            fBoundary = ConstantSeries(Omega, "fBoundary", shape=(len(dOmega.markers), 2))
+            solvers.append(integration(fBoundary, flux, 'ds', *dOmega.markers)(c[0], u[0], FE(d)))
         if EVOL:
             sMinMax = ConstantSeries(Omega, "sMinMax", shape=(2,))
             solvers.append(evaluation(sMinMax, extrema)(s[0]))
@@ -321,7 +346,6 @@ def dns_generic(
             dtK = ConstantSeries(Omega, "dtK")
             solvers.append(evaluation(dtK, reactive_timestep)(rEff[0]))
 
-    solvers.extend(secondary_extras)
-    namespace.extend(namespace_extras)
+    solvers.extend(tertiary)
     
     return Simulation(solvers, t, dt, namespace)

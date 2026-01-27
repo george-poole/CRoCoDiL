@@ -9,7 +9,7 @@ from matplotlib.cm import ScalarMappable
 from lucifex.fdm import ConstantSeries, NumericSeries, GridSeries, FunctionSeries
 from lucifex.viz import (
     plot_line,
-    plot_colormap, create_mosaic_figure, set_axes)
+    plot_colormap, create_multifigure, set_axes)
 from lucifex.io.post import co_postprocess
 from lucifex.utils import StrSlice, as_index
 
@@ -18,7 +18,7 @@ from .tex_utils import TeX
 
 
 @co_postprocess
-def co_plot_colormaps_mosaic(
+def co_plot_colormaps_multifigure(
     u: Iterable[GridSeries | FunctionSeries],
     t: int | float,
     colorbar: bool | tuple[float, float] = True,
@@ -34,30 +34,20 @@ def co_plot_colormaps_mosaic(
     assert len(u) % n_cols == 0
     n_rows = len(u) // n_cols
 
-    if titles is None:
-        titles = [None] * len(u)
-
-    if colorbar is True:
-        subplot_kws = {'width_ratios': np.array([(1, width_ratio)] * n_cols).flatten()}
-        n_cols = 2 * n_cols
-    else:
-        subplot_kws = {}
-
-    fig, axs = create_mosaic_figure(
+    fig, cmap_axs, cbar_axs = create_multifigure(
         n_rows,
         n_cols,
         suptitle,
+        colorbar,
         figscale,
         tex=True,
-        **subplot_kws,
+        width_ratio=width_ratio,
     )
 
-    if colorbar is True:
-        cmap_axs: list[Axes] = list(axs.flat[0::2])
-    else:
-        cmap_axs = list(axs.flat)
-    
-    for cmap_ax, ui, title in zip(cmap_axs, u, titles, strict=True):
+    if titles is None:
+        titles = [None] * len(u)
+
+    for cmap_ax, cbar_ax, ui, title in zip(cmap_axs, cbar_axs, u, titles, strict=True):
         time_index = as_index(ui.time_series, t)
         plot_colormap(fig, cmap_ax, (ui.series[time_index], *ui.axes), title=title, colorbar=False, **kwargs) 
         if isinstance(colorbar, tuple):
@@ -65,17 +55,14 @@ def co_plot_colormaps_mosaic(
             cmap.set_clim(*colorbar)
             if cmap_ax is cmap_axs[n_cols - 1]:
                 fig.colorbar(cmap, ax=cmap_ax)
-
-    if colorbar is True:
-        cbar_axs: list[Axes] = list(axs.flat[1::2])
-        for cmap_ax, cbar_ax in zip(cmap_axs, cbar_axs):
+        if colorbar is True:
             fig.colorbar(cmap_ax.collections[0], cbar_ax)
     
     return fig
 
 
 @co_postprocess
-def co_plot_horizontal_average_mosaic(
+def co_plot_horizontal_average_multifigure(
     u: Iterable[GridSeries],
     t: Iterable[range | list[int | float] | int | StrSlice],
     n_cols: int = 2,
@@ -98,7 +85,7 @@ def co_plot_horizontal_average_mosaic(
     subplot_kws = {'width_ratios': np.array([(1, width_ratio)] * n_cols).flatten()}
     n_cols = 2 * n_cols
 
-    fig, axs = create_mosaic_figure(
+    fig, axs = create_multifigure(
         n_rows,
         n_cols,
         figscale=figscale,
@@ -140,7 +127,7 @@ def co_plot_timeseries(
 
 
 @co_postprocess
-def co_plot_timeseries_mosaic(
+def co_plot_timeseries_multifigure(
     u: Iterable[NumericSeries | ConstantSeries],
     n_cols: int = 2,
     titles: Iterable[str | None] | None = None,
@@ -155,7 +142,7 @@ def co_plot_timeseries_mosaic(
     if titles is None:
         titles = [None] * len(u)
 
-    fig, axs = create_mosaic_figure(
+    fig, axs = create_multifigure(
         n_rows,
         n_cols,
         suptitle,

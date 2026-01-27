@@ -7,7 +7,7 @@ from lucifex.solver import OptionsPETSc, OptionsJIT
 from lucifex.sim import configure_simulation
 
 from crocodil.dns.generic import dns_generic
-from crocodil.dns.utils import rectangle_domain
+from crocodil.dns.utils import rectangle_mesh_closure
 
 
 @configure_simulation(
@@ -65,7 +65,7 @@ def dns_model_b(
     `θ(x,y,t=0) = 1 - y + N(x,y`) \\
     `s(x,y,t=0) = sr`
     """
-    Omega, dOmega = rectangle_domain(Lx, Ly, Nx, Ny, cell)
+    Omega, dOmega = rectangle_mesh_closure(Lx, Ly, Nx, Ny, cell)
 
     Le = Constant(Omega, Le, 'Le')
     Ra = Constant(Omega, Ra, 'Ra')
@@ -129,5 +129,5 @@ def dns_model_b(
         s_petsc=s_petsc,
         # optional solvers
         secondary=secondary,
-        namespace_extras=[gamma],
+        namespace=[gamma],
     )

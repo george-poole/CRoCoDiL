@@ -8,7 +8,7 @@ from matplotlib.cm import ScalarMappable
 from matplotlib.animation import FuncAnimation
 from lucifex.fdm import FunctionSeries, ConstantSeries, GridSeries, NumericSeries
 from lucifex.viz import (plot_line, plot_colormap, plot_twin_lines, 
-                         plot_contours, create_mosaic_figure)
+                         plot_contours, create_multifigure)
 from lucifex.io.post import postprocess
 from lucifex.utils import StrSlice, as_index, as_indices
 
@@ -62,7 +62,7 @@ def plot_colormaps(
 
 
 @postprocess
-def plot_colormaps_mosaic(
+def plot_colormaps_multifigure(
     u: GridSeries | FunctionSeries,
     t: range | list[int | float] | int | StrSlice,
     # contours: GridSeries | FunctionSeries | list[tuple[np.ndarray, np.ndarray]] | None = None,   #TODO
@@ -90,7 +90,7 @@ def plot_colormaps_mosaic(
     else:
         subplot_kws = {}
 
-    fig, axs = create_mosaic_figure(
+    fig, axs = create_multifigure(
         n_rows,
         n_cols,
         suptitle,

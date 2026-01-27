@@ -1,5 +1,4 @@
 from typing import Callable
-from typing_extensions import Unpack
 
 import numpy as np
 from dolfinx.mesh import Mesh
@@ -8,88 +7,39 @@ from ufl.core.expr import Expr
 from lucifex.fem import Function, Constant
 from lucifex.mesh import MeshBoundary, mesh_boundary, rectangle_mesh
 from lucifex.utils import mesh_integral
-from lucifex.utils.py_utils import StrEnum
+from lucifex.pde.scaling import ScalingOptions
 
 
-class ScalingType(StrEnum):
-    """
-    Choice of length scale `ℒ`, velocity scale `𝒰`
-    and time scale `𝒯` in the non-dimensionalization.
-    """
-    ADVECTIVE = 'advective'
-    """
-    `ℒ` = domain size \\
-    `𝒰` = advective speed
-    """
-    DIFFUSIVE = 'diffusive'
-    """
-    `ℒ` = domain size \\
-    `𝒰` = advective speed
-    """
-    ADVECTIVE_DIFFUSIVE = 'advective_diffusive'
-    """
-    `ℒ` = diffusive length \\
-    `𝒰` = advective speed
-    """
-    REACTIVE = 'reactive'
-    """
-    `ℒ` = diffusive length \\
-    `T` = reactive time
-    """
+CONVECTION_REACTION_SCALINGS = ScalingOptions(
+    ('Ad', 'Di', 'Ki', 'Bu', 'Xl'),
+    lambda Ra, Da=0: {
+        'advective': (1, 1/Ra, Da, 1, 1),
+        'diffusive': (1, 1, Ra * Da, Ra, 1),
+        'advective_diffusive': (1, 1, Da/Ra, 1, Ra),
+        'reactive': (1, 1, 1, np.sqrt(Ra / Da), np.sqrt(Ra * Da)),
+    }
+)
+"""
+Choice of length scale `ℒ`, velocity scale `𝒰`
+and time scale `𝒯` in the non-dimensionalization.
 
-    def mapping(
-        self,
-        Ra: float,
-        Da: float,
-    ) -> Callable[[str], int | float] | Callable[[Unpack[tuple[str, ...]]], list[int | float]]:
-        if self.value == ScalingType.ADVECTIVE:
-            Ad = 1
-            Pe = Ra
-            Ki = Da
-            Bu = 1
-            Xl = 1
-        elif self.value == ScalingType.ADVECTIVE_DIFFUSIVE:
-            Ad = 1
-            Pe = 1
-            Ki = Da / Ra
-            Bu = 1
-            Xl = Ra
-        elif self.value == ScalingType.DIFFUSIVE:
-            Ad = 1
-            Pe = 1
-            Ki = Ra * Da
-            Bu = Ra
-            Xl = 1
-        elif self.value == ScalingType.REACTIVE:
-            Ad = 1
-            Pe = 1
-            Ki = 1
-            Bu = np.sqrt(Ra / Da)
-            Xl = np.sqrt(Ra * Da)
-        else:
-            raise NotImplementedError(f'{self.value}')
-        
-        _names = ('Ad', 'Pe', 'Ki', 'Bu', 'Xl')
+`'advective'` \\
+`ℒ` = domain size \\
+`𝒰` = advective speed
 
-        _mapping = dict(
-            zip(
-                _names,
-                (Ad, Pe, Ki, Bu, Xl),
-            )
-        )
+`'diffusive'` \\
+`ℒ` = domain size \\
+`𝒰` = diffusive speed
 
-        def _inner(*args):
-            if len(args) == 1:
-                key = args[0]
-                try:
-                    return _mapping[key]
-                except KeyError:
-                    raise KeyError(f"'{key}' is not in the names {_names}")
-            else:
-                return [_mapping[i] for i in args]
-            
-        return _inner
-            
+`'advective_diffusive'` \\
+`ℒ` = diffusive length \\
+`𝒰` = advective speed
+
+`'reactive'` \\
+`ℒ` = diffusive length \\
+`𝒯` = reactive time
+"""
+
 
 def heaviside(
     fx: Callable[[np.ndarray], np.ndarray],
@@ -148,7 +98,7 @@ def mass_dissolved(
     return phi * c
 
 
-def rectangle_domain(
+def rectangle_mesh_closure(
     Lx: float,
     Ly: float,
     Nx: int,
@@ -157,6 +107,9 @@ def rectangle_domain(
     name: str = 'LxLy',
     clockwise_names: tuple[str, str, str, str] = ('upper', 'right', 'lower', 'left'),
 ) -> tuple[Mesh, MeshBoundary]:
+    """
+    `Ω ∪ ∂Ω`
+    """
     
     mesh = rectangle_mesh(Lx, Ly, Nx, Ny, cell, name)
     boundary = mesh_boundary(

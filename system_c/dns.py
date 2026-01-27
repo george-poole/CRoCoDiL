@@ -10,7 +10,7 @@ from lucifex.sim import configure_simulation
 from lucifex.pde.constitutive import permeability_cross_bedded
 
 from crocodil.dns.generic import dns_generic
-from crocodil.dns.utils import heaviside, rectangle_domain
+from crocodil.dns.utils import heaviside, rectangle_mesh_closure
 
 
 @configure_simulation(
@@ -67,7 +67,7 @@ def dns_model_c(
     `s(x,y,t=0) = sᵣ · H(x - h₀)` \\
     `c(x,y,t=0) = cᵣ · H(x - h₀) + N(x, y)`
     """
-    Omega, dOmega = rectangle_domain(Lx, Ly, Nx, Ny, cell)
+    Omega, dOmega = rectangle_mesh_closure(Lx, Ly, Nx, Ny, cell)
     beta_rad = beta * np.pi / 180
     beta = Constant(Omega, beta_rad, name='beta')
     egx = Constant(Omega, -np.sin(beta_rad))
@@ -123,7 +123,7 @@ def dns_model_c(
         s_petsc=s_petsc,
         # optional solvers
         secondary=secondary,
-        namespace_extras=[beta, vartheta],
+        namespace=[beta, vartheta],
     )
 
 

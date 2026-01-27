@@ -8,7 +8,7 @@ from lucifex.sim import configure_simulation
 from lucifex.pde.advection_diffusion import flux
 from lucifex.utils.dofs_utils import limits_corrector
 
-from crocodil.dns import dns_generic, heaviside, rectangle_domain, ScalingType
+from crocodil.dns import dns_generic, heaviside, rectangle_mesh_closure, CONVECTION_REACTION_SCALINGS
 
 
 @configure_simulation(
@@ -21,7 +21,7 @@ def dns_system_a(
     Ny: int = 100,
     cell: str = CellType.QUADRILATERAL,
     # physical
-    scaling: ScalingType = ScalingType.ADVECTIVE,
+    scaling: str = 'advective',
     Ra: float = 1e3,
     Da: float = 1e2,
     epsilon: float = 1e-2,
@@ -77,17 +77,15 @@ def dns_system_a(
     `s₀ = sᵣ · H(y - h₀)` plus optional noise \\
     `c₀ = cᵣ · H(y - h₀)` plus optional noise
     """
-    Pe, Ki, Bu, Xl = ScalingType(scaling).mapping(Ra, Da)('Pe', 'Ki', 'Bu', 'Xl')
+    scaling_map = CONVECTION_REACTION_SCALINGS[scaling](Ra, Da)
 
+    Xl = scaling_map['Xl']
     Lx = aspect * Xl
     Ly = 1.0 * Xl
-    Omega, dOmega = rectangle_domain(Lx, Ly, Nx, Ny, cell)
-    
+    Omega, dOmega = rectangle_mesh_closure(Lx, Ly, Nx, Ny, cell)
+    Pe, Bu, Ki = scaling_map[Omega, 'Pe', 'Bu', 'Ki']
     Ra = Constant(Omega, Ra, 'Ra')
     Da = Constant(Omega, Da, 'Da')
-    Pe = Constant(Omega, Pe, 'Pe')
-    Bu = Constant(Omega, Bu, 'Bu')
-    Ki = Constant(Omega, Ki, 'Ki')
 
     s_ics = heaviside(lambda x: x[1] - h0, sr, eps=h0_eps) 
     if s_ampl:
@@ -109,8 +107,8 @@ def dns_system_a(
             limits_corrector(0, 1),
             )  
          
-    density = lambda c: Constant(Omega, Bu) * c
-    dispersion = lambda phi, _: (1/Pe) * phi
+    density = lambda c: Bu * c
+    dispersion = lambda phi: (1/Pe) * phi
     reaction = lambda s: -Ki * s
     source = lambda s: Ki * s
 
@@ -150,7 +148,7 @@ def dns_system_a(
         s_petsc=s_petsc,
         # optional solvers
         secondary=secondary,
-        namespace_extras=[Ra, Da, ],
+        namespace=(Ra, Da),
     )
 
     if secondary:

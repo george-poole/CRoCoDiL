@@ -13,7 +13,7 @@ python run.py --write_delta 1 \
 --cr 1.0 \
 --c_stabilization None \
 --c_limits True \
---n_stop 2000 \
+--n_stop 4000 \
 --t_stop 40.0 \
 --dt_init 0.000001 \
 --n_init 10 \
