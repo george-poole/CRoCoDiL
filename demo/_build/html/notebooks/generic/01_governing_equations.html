@@ -1,0 +1,795 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Governing equations &#8212; CRoCoDiL Demo</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../../_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="../../_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/sphinx-book-theme.css?v=eba8b062" />
+    <link rel="stylesheet" type="text/css" href="../../_static/togglebutton.css?v=13237357" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css?v=6644e6bb" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-thebe.css?v=4fa983c6" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=95c83b7e" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+    <script src="../../_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="../../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../_static/copybutton.js?v=f281be69"></script>
+    <script src="../../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../../_static/togglebutton.js?v=4a39c7ea"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="../../_static/design-tabs.js?v=f930bc37"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script async="async" src="../../_static/sphinx-thebe.js?v=c100c467"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'notebooks/generic/01_governing_equations';</script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Diagnostic equations" href="02_diagnostic_equations.html" />
+    <link rel="prev" title="CRoCoDiL 🐊" href="../../home.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search this book..."
+         aria-label="Search this book..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../home.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">CRoCoDiL Demo</p>
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="../../home.html">
+                    CRoCoDiL 🐊
+                </a>
+            </li>
+        </ul>
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Generic system</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Governing equations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="02_diagnostic_equations.html">Diagnostic equations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="03_numerical_method.html">Numerical method</a></li>
+<li class="toctree-l1"><a class="reference internal" href="04_tutorial.html">How to create a convection-reaction system in CRoCoDiL</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">System A</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../system_a/A00_specification.html">Specification</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../system_a/A01.html">x</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../system_a/A02.html">y</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../../_sources/notebooks/generic/01_governing_equations.md" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.md</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Governing equations</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#dimensional-equations">Dimensional equations</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#strong-form">Strong form</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#specification">Specification</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#non-dimensionalization">Non-dimensionalization</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#scalings">Scalings</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#dimensionless-numbers">Dimensionless numbers</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#abstract-dimensionless-numbers">Abstract dimensionless numbers</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#physical-dimensionless-numbers">Physical dimensionless numbers</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">Dimensional equations</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#time-discretized-strong-form">Time-discretized strong form</a></li>
+</ul>
+</li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="governing-equations">
+<h1>Governing equations<a class="headerlink" href="#governing-equations" title="Link to this heading">#</a></h1>
+<p>Governing equations for thermosolutal convection with a solutal reaction term coupled to Darcy flow, working in the Boussinesq approximation neglect variations in density expect in the gravitational term and assume that <span class="math notranslate nohighlight">\(c\ll\rho_{\text{ref}}\)</span> for some reference density <span class="math notranslate nohighlight">\(\rho_{\text{ref}}\)</span>. The porosity is assumed to be slowly-evolving and so incompressibility is also approximated. <span class="math notranslate nohighlight">\(\phi(\textbf{x}, t)=\varphi(\textbf{x})(1-s(\textbf{x},t))\)</span> is the effective porosity.</p>
+<section id="dimensional-equations">
+<h2>Dimensional equations<a class="headerlink" href="#dimensional-equations" title="Link to this heading">#</a></h2>
+<section id="strong-form">
+<h3>Strong form<a class="headerlink" href="#strong-form" title="Link to this heading">#</a></h3>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{align*}
+&amp;\text{Find} \\
+&amp;s(\textbf{x}, t): \Omega\times[0, \infty) \to \mathbb{R}, \\
+&amp;c(\textbf{x}, t): \Omega\times[0, \infty) \to \mathbb{R}, \\
+&amp;\theta(\textbf{x}, t): \Omega\times[0, \infty) \to \mathbb{R}, \\
+&amp;\textbf{u}(\textbf{x}, t): \Omega\times[0, \infty) \to \mathbb{R}^d, \\
+&amp;p(\textbf{x}, t): \Omega\times[0, \infty) \to \mathbb{R} \\
+&amp;\text{such that} \\
+&amp;\mathbb{IBVP}
+\begin{cases}
+\phi\frac{\partial c}{\partial t} + \textbf{u}\cdot\nabla c = \nabla\cdot(\mathsf{D}\cdot\nabla c) + R &amp; \\
+\phi\frac{\partial\theta}{\partial t} + \textbf{u}\cdot\nabla\theta = \nabla\cdot(\mathsf{G}\cdot\nabla\theta)&amp; \\
+\nabla\cdot\textbf{u} = 0 &amp; \\
+\textbf{u}=-\frac{\mathsf{K}}{\mu}\cdot(\nabla p + \rho g\,\textbf{e}_g) &amp; \\
+\varrho\varphi(\textbf{x})\frac{\partial s}{\partial t} = -R(s,c,\theta) &amp; \forall(\textbf{x}, t)\in\Omega\times[0,\infty) \\
+s=s_0 &amp; \forall(\textbf{x}, t)\in\Omega\times\{0\} \\
+c=c_0 &amp; \forall(\textbf{x}, t)\in\Omega\times\{0\} \\
+\theta=\theta_0 &amp; \forall(\textbf{x}, t)\in\Omega\times\{0\} \\
+c=c_{\text{D}} &amp; \forall(\textbf{x}, t)\in\partial\Omega_{\text{D}, c} \times [0,\infty] \\
+\textbf{n}\cdot(\mathsf{D}\cdot\nabla c) = c_{\text{N}} &amp; \forall(\textbf{x}, t)\in\partial\Omega_{\text{N}, c}
+\times [0,\infty]~,~\partial\Omega_{\text{N}, c}=\partial\Omega/\partial\Omega_{\text{D}, c} \\
+\theta=\theta_{\text{D}} &amp; \forall (\textbf{x}, t)\in\partial\Omega_{\text{D}, \theta} \times [0,\infty] \\
+\textbf{n}\cdot(\mathsf{G}\cdot\nabla \theta) = \theta_{\text{N}} &amp; \forall(\textbf{x}, t)\in\partial\Omega_{\text{N}, \theta}
+\times [0,\infty]~,~\partial\Omega_{\text{N}, \theta}=\partial\Omega/\partial\Omega_{\text{D}, \theta} \\
+\textbf{n}\cdot\textbf{u} = u_{\text{E}} &amp; \forall(\textbf{x}, t)\in\partial\Omega_{\text{E}} \times [0,\infty] \\
+p = p_{\text{N}} &amp; \forall(\textbf{x}, t)\in\partial\Omega_{\text{N}}\times [0,\infty]~,~\partial\Omega_{\text{N}}=\partial\Omega/\partial\Omega_{\text{E}}
+\end{cases}~.
+\end{align*}
+\end{split}\]</div>
+</section>
+<section id="specification">
+<h3>Specification<a class="headerlink" href="#specification" title="Link to this heading">#</a></h3>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\mathbb{S}
+\begin{cases}
+\Omega &amp; \text{domain}\\
+c_0(\textbf{x}) &amp; \text{initial concentration}\\
+\theta_0(\textbf{x}) &amp; \text{initial temperature}\\ 
+c_{\text{D}}(\textbf{x}, t)~,~\partial\Omega_{\text{D},c} &amp; \text{concentration Dirichlet boundary condition} \\
+\theta_{\text{D}}(\textbf{x}, t)~,~\partial\Omega_{\text{D},\theta} &amp; \text{temperature Dirichlet boundary condition} \\
+c_{\text{N}}(\textbf{x}, t)~,~\partial\Omega_{\text{N},c} &amp; \text{concentration Neumann boundary condition} \\
+\theta_{\text{N}}(\textbf{x}, t)~,~\partial\Omega_{\text{N}, \theta} &amp; \text{concentration Neumann boundary condition} \\
+u_{\text{E}}(\textbf{x}, t)~,~\partial\Omega_{\text{E}} &amp; \text{normal velocity essential boundary condition} \\
+p_{\text{N}}(\textbf{x}, t)~,~\partial\Omega_{\text{N}} &amp; \text{pressure natural boundary condition} \\
+\varphi(\textbf{x}) &amp; \text{porosity}\\
+\mathsf{K}(\phi) &amp; \text{permeability}\\
+\mathsf{D}(\phi, \textbf{u}) &amp; \text{solutal dispersion}\\
+\mathsf{G}(\phi, \textbf{u}) &amp; \text{thermal dispersion}\\
+\rho(c, \theta) &amp; \text{density}\\
+\mu(c, \theta) &amp; \text{viscosity}\\
+R(c,\theta, \phi) &amp; \text{solutal reaction}\\
+\end{cases}
+\end{split}\]</div>
+</section>
+</section>
+<section id="non-dimensionalization">
+<h2>Non-dimensionalization<a class="headerlink" href="#non-dimensionalization" title="Link to this heading">#</a></h2>
+<section id="scalings">
+<h3>Scalings<a class="headerlink" href="#scalings" title="Link to this heading">#</a></h3>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Quantity</p></th>
+<th class="head"><p><span class="math notranslate nohighlight">\(\vert\textbf{x}\vert\)</span></p></th>
+<th class="head"><p><span class="math notranslate nohighlight">\(\vert\textbf{u}\vert\)</span></p></th>
+<th class="head"><p><span class="math notranslate nohighlight">\(t\)</span></p></th>
+<th class="head"><p><span class="math notranslate nohighlight">\(c\)</span></p></th>
+<th class="head"><p><span class="math notranslate nohighlight">\(\theta\)</span></p></th>
+<th class="head"><p><span class="math notranslate nohighlight">\(\rho g\)</span></p></th>
+<th class="head"><p><span class="math notranslate nohighlight">\(p\)</span></p></th>
+<th class="head"><p><span class="math notranslate nohighlight">\(\psi\)</span></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>Scaling</strong></p></td>
+<td><p><span class="math notranslate nohighlight">\(\mathcal{L}\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(\mathcal{U}\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(\mathcal{T}\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(\Delta c\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(\Delta\theta\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(g \Delta\rho\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(\mu_{\text{ref}}\,\mathcal{U}\mathcal{L}/K_{\text{ref}}\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(\mathcal{U}\mathcal{L}\)</span></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p><span class="math notranslate nohighlight">\(\mu\)</span></p></th>
+<th class="head"><p><span class="math notranslate nohighlight">\(\phi\)</span></p></th>
+<th class="head"><p><span class="math notranslate nohighlight">\(K\)</span></p></th>
+<th class="head"><p><span class="math notranslate nohighlight">\(\vert\mathsf{D}\vert\)</span></p></th>
+<th class="head"><p><span class="math notranslate nohighlight">\(\vert\mathsf{G}\vert\)</span></p></th>
+<th class="head"><p><span class="math notranslate nohighlight">\(R\)</span></p></th>
+<th class="head"><p><span class="math notranslate nohighlight">\(Q\)</span></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><span class="math notranslate nohighlight">\(\mu_{\text{ref}}\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(\phi_{\text{ref}}\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(K_{\text{ref}}\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(D_{\text{ref}}\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(G_{\text{ref}}\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(\Delta R\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(\Delta Q\)</span></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="dimensionless-numbers">
+<h3>Dimensionless numbers<a class="headerlink" href="#dimensionless-numbers" title="Link to this heading">#</a></h3>
+<section id="abstract-dimensionless-numbers">
+<h4>Abstract dimensionless numbers<a class="headerlink" href="#abstract-dimensionless-numbers" title="Link to this heading">#</a></h4>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{align*}
+Ad&amp;=\frac{\mathcal{U}\mathcal{T}}{\phi_{\text{ref}}\mathcal{L}} \\
+Pe&amp;=\frac{\phi_{\text{ref}}\mathcal{L}^2}{D_{\text{ref}}\mathcal{T}} \\
+Ki&amp;=\frac{\mathcal{T}\Delta R}{\phi_{\text{ref}}\Delta c} \\
+Bu&amp;=\frac{K_{\text{ref}}\,g\Delta\rho}{\mu_{\text{ref}}\,\mathcal{U}} \\
+Xl&amp;=\frac{\mathcal{L}}{\mathcal{L}_\Omega}
+\end{align*} \\
+\end{split}\]</div>
+<p>A particular choice of non-dimensionalization with <span class="math notranslate nohighlight">\(\mathcal{L}\)</span>, <span class="math notranslate nohighlight">\(\mathcal{U}\)</span> and <span class="math notranslate nohighlight">\(\mathcal{T}\)</span> chosen according to the details of the specified system (e.g. boundary conditions, dominant transport processes) will map the abstract dimensionless numbers <span class="math notranslate nohighlight">\(\{Ad, Pe, Ki, Bu, Xl\}\)</span> onto combinations of the physical dimensionless numbers introduced below.</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p><span class="math notranslate nohighlight">\(\mathcal{L}\)</span></p></th>
+<th class="head"><p><span class="math notranslate nohighlight">\(\mathcal{U}\)</span></p></th>
+<th class="head"><p><span class="math notranslate nohighlight">\( \mathcal{T}\)</span></p></th>
+<th class="head"><p><span class="math notranslate nohighlight">\(\{Ad, Pe, Ki, Bu, Xl\}\)</span></p></th>
+<th class="head"><p>Examples</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><span class="math notranslate nohighlight">\(\text{advective}\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(\mathcal{L}_\Omega\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(K_{\text{ref}}\,g\Delta\rho/\mu_{\text{ref}}\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(\phi_{\text{ref}}\mathcal{L}/\mathcal{U}\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(\{1, Ra, Da, 1, 1\}\)</span></p></td>
+<td><p><a class="reference external" href="https://link.aps.org/doi/10.1103/PhysRevLett.108.224503">Hewitt et al. (2012)</a></p></td>
+</tr>
+<tr class="row-odd"><td><p><span class="math notranslate nohighlight">\(\text{advective-diffusive}\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(D_{\text{ref}}/\mathcal{U}\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(K_{\text{ref}}\,g\Delta\rho/\mu_{\text{ref}}\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(\phi_{\text{ref}}\mathcal{L}/\mathcal{U}\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(\{1, 1, Da/Ra, 1, Ra\}\)</span></p></td>
+<td><p><a class="reference external" href="https://www.cambridge.org/core/product/identifier/S0022112013006733/type/journal_article">Slim (2014)</a></p></td>
+</tr>
+<tr class="row-even"><td><p><span class="math notranslate nohighlight">\(\text{diffusive}\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(\mathcal{L}_\Omega\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(D_{\text{ref}}/\mathcal{L}\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(\phi_{\text{ref}}\mathcal{L}/\mathcal{U}\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(\{1, 1, RaDa, Ra, 1\}\)</span></p></td>
+<td><p><a class="reference external" href="https://www.cambridge.org/core/journals/journal-of-fluid-mechanics/article/natural-convection-and-the-evolution-of-a-reactive-porous-medium/71E5FB557F61CB9125E5B4E4EE9D828F">Ritchie &amp; Pritchard  (2011)</a></p></td>
+</tr>
+<tr class="row-odd"><td><p><span class="math notranslate nohighlight">\(\text{reactive}\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(\sqrt{D_{\text{ref}}\mathcal{T}/\phi_{\text{ref}}}\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(\phi_{\text{ref}}\mathcal{L}/\mathcal{T}\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(\phi_{\text{ref}}\Delta c/\Delta R\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(\{1, 1, 1, \sqrt{Ra/Da}, \sqrt{RaDa}\}\)</span></p></td>
+<td><p><a class="reference external" href="https://nlpc.ulb.be/pdf/25.Kabbadj_MATRIX.pdf">Kabbadj et al. (2025)</a></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="physical-dimensionless-numbers">
+<h4>Physical dimensionless numbers<a class="headerlink" href="#physical-dimensionless-numbers" title="Link to this heading">#</a></h4>
+<p>Rayleigh number (defined with respect to the transport of <span class="math notranslate nohighlight">\(c\)</span> and domain length scale)
+$<span class="math notranslate nohighlight">\(Ra=\frac{\mathcal{L}_\Omega K_{\text{ref}}g\Delta\rho}{\mu_{\text{ref}}D_{\text{ref}}}=\underbrace{\frac{K_{\text{ref}}\,g\Delta\rho}{\mu_{\text{ref}}}}_{\text{convective speed}} \big/ \underbrace{\frac{D_{\text{ref}}}{\mathcal{L}_\Omega}}_{\text{diffusive speed}}\)</span>$</p>
+<p><span class="math notranslate nohighlight">\(Da\)</span> is the Damköhler number (defined with respect to the transport of <span class="math notranslate nohighlight">\(c\)</span> and domain length scale)</p>
+<div class="math notranslate nohighlight">
+\[Da=\frac{\mathcal{L}_\Omega \mu_{\text{ref}}\,\Delta R}{K_{\text{ref}}\,g\Delta\rho\Delta c} = \underbrace{\frac{\Delta R}{\Delta c}}_{\text{reaction rate}} \big/ \underbrace{\frac{K_{\text{ref}}\,g\Delta\rho}{\mathcal{L}_\Omega \mu_{\text{ref}}}}_{\text{convection rate}}\]</div>
+<p>evolution number</p>
+<div class="math notranslate nohighlight">
+\[\varepsilon = \frac{\Delta c}{\varrho}\ll1\]</div>
+<p>Lewis number for the ratio of thermal to solutal diffusivity</p>
+<div class="math notranslate nohighlight">
+\[Le=\frac{G_{\text{ref}}}{D_{\text{ref}}}\]</div>
+</section>
+</section>
+</section>
+<section id="id1">
+<h2>Dimensional equations<a class="headerlink" href="#id1" title="Link to this heading">#</a></h2>
+<section id="time-discretized-strong-form">
+<h3>Time-discretized strong form<a class="headerlink" href="#time-discretized-strong-form" title="Link to this heading">#</a></h3>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{align*}
+&amp;\text{Find}~s^{n+1}, c^{n+1}, \theta^{n+1},~\textbf{u}^n,~p^n~\text{such that}~\forall n\geq0 \\
+&amp;\begin{cases}
+\phi^n\frac{c^{n+1}-c^n}{\Delta t^n} + Ad\,\mathcal{D}_{\textbf{u},c}(\textbf{u}\cdot\nabla c) = \frac{1}{Pe}\nabla\cdot\mathcal{D}_{\mathsf{D},c}(\mathsf{D}\cdot\nabla c) + Ki\mathcal{D}_{R,c}R &amp; \\
+\phi^n\frac{\theta^{n+1}-\theta^n}{\Delta t^n} + Ad\,\mathcal{D}_{\textbf{u},\theta}(\textbf{u}\cdot\nabla\theta) = \frac{1}{LePe}\nabla\cdot\mathcal{D}_{\mathsf{G},\theta}(\mathsf{G}\cdot\nabla\theta) &amp; \\
+\nabla\cdot\textbf{u}^n = 0 &amp; \\
+\textbf{u}^n=-\frac{\mathsf{K}^n}{\mu^n}\cdot(\nabla p^n + Bu\,\rho^n \,\textbf{e}_g) \\
+\varphi(\textbf{x})\frac{s^{n+1} -s^n}{\Delta t^n} = -\varepsilon Ki\mathcal{D}_{R,s}(R) &amp; \forall(\textbf{x}, t)\in\Omega\times[0,\infty) \\
+c(\textbf{x},t=0)=c_0 &amp; \forall\textbf{x}\in\Omega \\
+\theta(\textbf{x},t=0)=\theta_0 &amp; \forall\textbf{x}\in\Omega \\
+s(\textbf{x},t=0)=s_0 &amp; \forall\textbf{x}\in\Omega \\
+c=c_{\text{D}} &amp; \forall(\textbf{x}, t)\in\partial\Omega_{\text{D}, c} \times [0,\infty] \\
+\textbf{n}\cdot(\mathsf{D}\cdot\nabla c) = c_{\text{N}} &amp; \forall(\textbf{x}, t)\in\partial\Omega_{\text{N}, c}
+\times [0,\infty]~,~\partial\Omega_{\text{N}, c}=\partial\Omega/\partial\Omega_{\text{D}, c} \\
+\theta=\theta_{\text{D}} &amp; \forall (\textbf{x}, t)\in\partial\Omega_{\text{D}, \theta} \times [0,\infty] \\
+\textbf{n}\cdot(\mathsf{G}\cdot\nabla \theta) = \theta_{\text{N}} &amp; \forall(\textbf{x}, t)\in\partial\Omega_{\text{N}, \theta}
+\times [0,\infty]~,~\partial\Omega_{\text{N}, \theta}=\partial\Omega/\partial\Omega_{\text{D}, \theta} \\
+\textbf{n}\cdot\textbf{u} = u_{\text{E}} &amp; \forall(\textbf{x}, t)\in\partial\Omega_{\text{E}} \times [0,\infty] \\
+p = p_{\text{N}} &amp; \forall(\textbf{x}, t)\in\partial\Omega_{\text{N}}\times [0,\infty]~,~\partial\Omega_{\text{N}}=\partial\Omega/\partial\Omega_{\text{E}}
+\end{cases}~.
+\end{align*}
+\end{split}\]</div>
+<!-- ### Streamfunction formulation
+
+In $d=2$ with $\partial\Omega_{\text{E}}=\partial\Omega\iff\Omega_{\text{N}}=\varnothing$, the streamfunction $\psi$ is solved for instead of the velocity $\textbf{u}$ and pressure $p$.
+
+$$
+\begin{align*}
+&\text{Find} \\
+&\text{$c(\textbf{x}, t): \Omega\times[0, \infty) \to \mathbb{R}$, } \\
+&\text{$\theta(\textbf{x}, t): \Omega\times[0, \infty) \to \mathbb{R}$, } \\
+&\text{$s(\textbf{x}, t): \Omega\times[0, \infty) \to \mathbb{R}$, } \\
+&\text{$\psi(\textbf{x}, t): \Omega\times[0, \infty) \to \mathbb{R}$ and $\textbf{u}(\textbf{x}, t): \Omega\times[0, \infty) \to \mathbb{R}^d$} \\
+& \text{such that} \\
+&\begin{cases}
+\phi\frac{\partial c}{\partial t} + Ad\,\textbf{u}\cdot\nabla c = \frac{1}{Pe}\nabla\cdot(\mathsf{D}(\phi, \textbf{u})\cdot\nabla c) + KiR(s, c, \theta) & \\
+\phi\frac{\partial\theta}{\partial t} + Ad\,\textbf{u}\cdot\nabla\theta = \frac{1}{LePe}\nabla\cdot(\mathsf{G}(\phi, \textbf{u})\cdot\nabla\theta) & \\
+\nabla\cdot\bigg(\frac{\mu\mathsf{K}^{\mathsf{T}}\cdot\nabla\psi}{\det\mathsf{K}}\bigg) = -\frac{\partial(\rho\,\textbf{e}_g\cdot\textbf{e}_y)}{\partial x} + \frac{\partial(\rho\,\textbf{e}_g\cdot\textbf{e}_x)}{\partial y} \\
+\textbf{u} = (-\frac{\partial\psi}{\partial y}, \frac{\partial\psi}{\partial x}) & \forall(\textbf{x}, t)\in\Omega \times [0,\infty] \\
+c(\textbf{x},t=0)=c_0 & \forall\textbf{x}\in\Omega \\
+\theta(\textbf{x},t=0)=\theta_0 & \forall\textbf{x}\in\Omega \\
+s(\textbf{x},t=0)=s_0 & \forall\textbf{x}\in\Omega \\
+c=c_{\text{D}} & \forall(\textbf{x}, t)\in\partial\Omega_{\text{D}, c} \times [0,\infty] \\
+\textbf{n}\cdot(\mathsf{D}\cdot\nabla c) = c_{\text{N}} & \forall(\textbf{x}, t)\in\partial\Omega_{\text{N}, c}
+\times [0,\infty]~,~\partial\Omega_{\text{N}, c}=\partial\Omega/\partial\Omega_{\text{D}, c} \\
+\theta=\theta_{\text{D}} & \forall (\textbf{x}, t)\in\partial\Omega_{\text{D}, \theta} \times [0,\infty] \\
+\textbf{n}\cdot(\mathsf{G}\cdot\nabla \theta) = \theta_{\text{N}} & \forall(\textbf{x}, t)\in\partial\Omega_{\text{N}, \theta}
+\times [0,\infty]~,~\partial\Omega_{\text{N}, \theta}=\partial\Omega/\partial\Omega_{\text{D}, \theta} \\
+\psi = \psi_{\text{D}} & \forall(\textbf{x}, t)\in\partial\Omega\times [0,\infty]
+\end{cases}~.
+\end{align*}
+$$
+
+
+## Constitutive relations
+
+The above equations are closed by the constitutive relations
+$$
+\begin{cases}
+\textbf{e}_g[~=\text{$-(\textbf{e}_z$ if $\Omega\sub\mathbb{R}^3$ else $\textbf{e}_y$)~]} & \text{gravitational unit vector} \\
+\varphi(\textbf{x})[~=1] & \text{rock porosity}\\
+\mathsf{D}(\phi, \textbf{u})[~=\mathsf{I}~] & \text{solutal dispersion} \\
+\mathsf{G}(\phi, \textbf{u})[~=\mathsf{I}~]  & \text{thermal dispersion} \\
+K(\phi)[~=\phi^2\mathsf{I}~] & \text{permeability}\\
+\mu(c, \theta)[~=1~] & \text{fluid viscosity } \\
+\rho(c, \theta)[~=c-\theta~] & \text{fluid density}\\
+R(s, c, \theta)[~=s(1-c)\theta~] & \text{reaction rate} \\
+\end{cases}
+$$
+
+which assume their default values denoted inside square brackets if not prescribed. 
+
+## Boundary conditions
+
+The partial differential equations are constrained by the boundary conditions
+
+$$
+\begin{cases}
+\partial\Omega_{\text{D},\theta}[~=\varnothing~]~,~c\vert_{\partial\Omega_{\text{D},\theta}}\equiv\theta_{\text{D}} & \text{thermal Dirichlet} \\
+\partial\Omega_{\text{N},\theta}[~=\partial\Omega~]~,~c\vert_{\partial\Omega_{\text{N},\theta}}\equiv\theta_{\text{N}}=[~0~] & \text{thermal Neumann} \\
+\partial\Omega_{\text{D},c}[~=\varnothing~]~,~c\vert_{\partial\Omega_{\text{D},c}}\equiv c_{\text{D}} & \text{solutal Dirichlet} \\
+\partial\Omega_{\text{N},c}[~=\partial\Omega~]~,~c\vert_{\partial\Omega_{\text{N},c}}\equiv c_{\text{N}}[~=0~] & \text{solutal Neumann} \\
+\partial\Omega_{\text{E}}[~=\partial\Omega~]~,~(\textbf{n}\cdot\textbf{u})\vert_{\partial\Omega_{\text{E}}} \equiv u_{\text{E}}=[~=0~] & \text{essential} \\
+\partial\Omega_{\text{N}}[~=\varnothing~]~,~p\vert_{\partial\Omega_{\text{N}}} \equiv p_{\text{N}} & \text{natural} \\
+~\psi\vert_{\partial\Omega}\equiv\psi_{\text{D}}[~=0~] & \text{streamfunction Dirichlet} 
+\end{cases}
+$$
+
+which assume their default values denoted inside square brackets if not prescribed.  --></section>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            name: "python3",
+            path: "./notebooks/generic"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="../../home.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">CRoCoDiL 🐊</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="02_diagnostic_equations.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Diagnostic equations</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#dimensional-equations">Dimensional equations</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#strong-form">Strong form</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#specification">Specification</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#non-dimensionalization">Non-dimensionalization</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#scalings">Scalings</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#dimensionless-numbers">Dimensionless numbers</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#abstract-dimensionless-numbers">Abstract dimensionless numbers</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#physical-dimensionless-numbers">Physical dimensionless numbers</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">Dimensional equations</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#time-discretized-strong-form">Time-discretized strong form</a></li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By The Jupyter Book community
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2023.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

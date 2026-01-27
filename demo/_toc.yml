@@ -1,0 +1,19 @@
+format: jb-book
+root: home
+
+parts:
+  - caption: Generic system
+    chapters:
+      - file: notebooks/generic/01_governing_equations
+      - file: notebooks/generic/02_diagnostic_equations
+      - file: notebooks/generic/03_numerical_method
+      - file: notebooks/generic/04_tutorial
+  - caption: System A
+    chapters:
+      - file: notebooks/system_a/A00_specification
+      - file: notebooks/system_a/A01
+      - file: notebooks/system_a/A02
+  # - caption: System B
+  #   chapters:
+  #     - file: notebooks/system_b/B00_governing_equations
+  #     - file: notebooks/system_b/B01
