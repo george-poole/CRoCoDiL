@@ -32,7 +32,7 @@ from lucifex.utils.dofs_utils import limits_corrector
 from lucifex.utils.py_utils import arity
 from lucifex.pde.evolution import evolution, evolution_update
 
-from .utils import mass_dissolved, mass_capillary_trapped
+from .utils import mass_dissolved, mass_capillary_trapped, vertical_flux
 
 
 Phi: TypeAlias = Expr | ExprSeries
@@ -79,7 +79,7 @@ def dns_generic(
     dt_min: float = 0.0,
     dt_max: float = 0.5,
     cfl_h: str | float = "hmin",
-    cfl_courant: float | None = 0.55,
+    cfl_courant: float | None = 0.5,
     r_courant: float | None = None,
     # time discretization
     D_adv_solutal: FiniteDifference | FiniteDifferenceArgwise = FE,
@@ -104,7 +104,9 @@ def dns_generic(
     theta_petsc: OptionsPETSc = OptionsPETSc('gmres', 'ilu'),
     s_petsc: OptionsPETSc | None = None,
     # optional postprocessing
-    diagnostic: bool | Iterable[Solver] = False,     
+    diagnostic: bool | Iterable[Solver] = False,   
+    fluxes_solutal: Iterable[tuple[str, float | int, float]] = (), 
+    fluxes_thermal: Iterable[tuple[str, float | int, float]] = (), 
     namespace: Iterable[Function | Constant | ExprSeries | tuple[str, Expr]] = (),
 ) -> Simulation:    
     """
@@ -213,9 +215,9 @@ def dns_generic(
     if STREAMF:
         psi_bcs = BoundaryConditions(("dirichlet", dOmega.union, 0.0)) if flow_bcs is Ellipsis else flow_bcs
         psi_petsc, u_petsc = flow_petsc
-        psi_cache = not(EVOL or viscosity)
+        psi_cache_matrix = not(EVOL or viscosity)
         egx, egy = eg
-        psi_solver = bvp(darcy_streamfunction, psi_bcs, petsc=psi_petsc, cache_matrix=psi_cache)(
+        psi_solver = bvp(darcy_streamfunction, psi_bcs, petsc=psi_petsc, cache_matrix=psi_cache_matrix)(
             psi, FE(k), FE(mu), egx * FE(rho), egy * FE(rho),
         ) 
         if u_petsc is None:
@@ -235,7 +237,7 @@ def dns_generic(
     # timestep solver
     if SOLUTAL:
         dt_solver = evaluation(dt, cflr_timestep)(
-            u[0], rEff[0], cfl_h, cfl_courant, r_courant, dt_max, dt_min,
+            u[0], FE(rEff), cfl_h, cfl_courant, r_courant, dt_max, dt_min,
         ) 
     else:
         dt_solver = evaluation(dt, cfl_timestep)(
@@ -295,7 +297,7 @@ def dns_generic(
             )
         solvers.append(s_solver)
 
-    # optional solvers
+    # optional post-processing
     if diagnostic:
         uMinMax = ConstantSeries(Omega, "uMinMax", shape=(2,))
         solvers.append(evaluation(uMinMax, extrema)(u[0]))
@@ -327,5 +329,20 @@ def dns_generic(
             solvers.append(evaluation(dtK, reactive_timestep)(rEff[0]))
         if isinstance(diagnostic, Iterable):
             solvers.extend(diagnostic)
+
+    for i in (*fluxes_solutal, *fluxes_thermal):
+        name, y_target, l = i
+        f = ConstantSeries(
+            Omega, 
+            (name, (name, f'{name}Plus', f'{name}Minus')), 
+            shape=(3, 2),
+        )
+        if i in fluxes_solutal:
+           _c = c
+           _d = d
+        else:
+            _c = theta
+            _d = g 
+        solvers.append(integration(f, vertical_flux)(_c[0], u[0], FE(_d), y_target, l))
     
     return Simulation(solvers, t, dt, namespace)

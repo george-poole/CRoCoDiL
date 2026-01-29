@@ -6,17 +6,18 @@ from ufl.core.expr import Expr
 
 from lucifex.fem import Function, Constant
 from lucifex.mesh import MeshBoundary, mesh_boundary, rectangle_mesh
-from lucifex.utils import mesh_integral
+from lucifex.utils import mesh_integral, as_index, mesh_axes
+from lucifex.pde.advection_diffusion import flux
 from lucifex.pde.scaling import ScalingOptions
 
 
 CONVECTION_REACTION_SCALINGS = ScalingOptions(
-    ('Ad', 'Di', 'Ki', 'Bu', 'Xl'),
+    ('Ad', 'Di', 'Ki', 'Bu', 'X'),
     lambda Ra, Da=0: {
         'advective': (1, 1/Ra, Da, 1, 1),
         'diffusive': (1, 1, Ra * Da, Ra, 1),
         'advective_diffusive': (1, 1, Da/Ra, 1, Ra),
-        'reactive': (1, 1, 1, np.sqrt(Ra / Da), np.sqrt(Ra * Da)),
+        'reactive': (1, 1, 1, np.sqrt(Ra / Da) if Da else np.inf, np.sqrt(Ra * Da)),
     }
 )
 """
@@ -39,6 +40,64 @@ and time scale `𝒯` in the non-dimensionalization.
 `ℒ` = diffusive length \\
 `𝒯` = reactive time
 """
+
+
+def vertical_flux(
+    u: Function,
+    a: Function,
+    d: Function,
+    y_target: float | int,
+    Lx: float,
+    tol: float | None = 1e-6,
+) -> np.ndarray:
+    """
+    Evaluates the vertical advective and diffusive fluxes per unit length
+     
+    `Fᵁ = 1/Lₓ ∫ (𝐧·𝐚)u ds` \\
+    `Fᴰ = 1/Lₓ ∫ 𝐧·(-D·∇u) ds`
+
+    at heights `y ≃ y₀, y₀⁺, y₀⁻`. Returns `np.ndarray` of shape `(3, 2)`.
+    """
+    mesh = u.function_space.mesh
+    y_axis = mesh_axes(mesh)[1]
+    h0_index = as_index(
+        y_axis, 
+        y_target, 
+        lambda aprx, trgt: aprx <= trgt and np.abs(aprx - trgt) < tol, 
+        'Mesh resolution must be chosen such that `h0` is aligned with cell facets.',
+    )
+    h0_approx = y_axis[h0_index]
+    h0_plus = y_axis[h0_index + 1]
+    h0_minus = y_axis[h0_index - 1]
+    return (1 / Lx) * flux(
+        'dS', 
+        lambda x: x[1] - h0_approx, 
+        lambda x: x[1] - h0_plus, 
+        lambda x: x[1] - h0_minus, 
+        facet_side="+",
+    )(u, a, d)
+
+
+@mesh_integral
+def mass_capillary_trapped(
+    s: Function, 
+    epsilon: Constant | float,
+) -> Expr:
+    """
+    `mᶜ = ∫ s / ε dx` 
+    """
+    return s / epsilon
+
+
+@mesh_integral
+def mass_dissolved(
+    c: Function, 
+    phi: Function,
+) -> Expr:
+    """
+    `mᴰ = ∫ ϕc dx` 
+    """
+    return phi * c
 
 
 def heaviside(
@@ -74,28 +133,6 @@ def heaviside(
         )
     else:
         return lambda x: f_plus * ind(x) + f_minus
-    
-
-@mesh_integral
-def mass_capillary_trapped(
-    s: Function, 
-    epsilon: Constant | float,
-) -> Expr:
-    """
-    `mᶜ = ∫ s / ε dx` 
-    """
-    return s / epsilon
-
-
-@mesh_integral
-def mass_dissolved(
-    c: Function, 
-    phi: Function,
-) -> Expr:
-    """
-    `mᴰ = ∫ ϕc dx` 
-    """
-    return phi * c
 
 
 def rectangle_mesh_closure(
@@ -104,13 +141,12 @@ def rectangle_mesh_closure(
     Nx: int,
     Ny: int,
     cell: str,
-    name: str = 'LxLy',
+    name: str = 'Omega',
     clockwise_names: tuple[str, str, str, str] = ('upper', 'right', 'lower', 'left'),
 ) -> tuple[Mesh, MeshBoundary]:
     """
     `Ω ∪ ∂Ω`
     """
-    
     mesh = rectangle_mesh(Lx, Ly, Nx, Ny, cell, name)
     boundary = mesh_boundary(
         mesh,
@@ -121,5 +157,4 @@ def rectangle_mesh_closure(
             clockwise_names[3]: lambda x: x[0],
         },
     )
-
     return mesh, boundary

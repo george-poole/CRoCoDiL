@@ -1,4 +1,5 @@
 # data
+*PARAMETERS.txt
 *.npy
 *.npz
 *.csv
@@ -6,10 +7,13 @@
 *.xdmf
 *.xml
 *.vtk
-*.mp4
-*.pdf
 *.pickle
-*PARAMETERS.txt
+*.pdf
+*.png
+*.mp4
+!demo/**/*.pdf
+!demo/**/*.png
+!demo/**/*.mp4
 
 # interactive
 .ipynb_checkpoints

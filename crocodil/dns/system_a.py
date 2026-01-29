@@ -1,11 +1,10 @@
-import numpy as np
+from typing import Iterable
 
-from lucifex.fem import Constant, Function, SpatialPerturbation, cubic_noise
-from lucifex.fdm import ConstantSeries, FiniteDifference, FiniteDifferenceArgwise, CN, AB, AM
-from lucifex.utils import CellType, as_index, mesh_axes
-from lucifex.solver import OptionsPETSc, OptionsJIT, integration
+from lucifex.fem import Constant, SpatialPerturbation, cubic_noise
+from lucifex.fdm import FiniteDifference, FiniteDifferenceArgwise, CN, AB, AM
+from lucifex.utils import CellType
+from lucifex.solver import OptionsPETSc, OptionsJIT
 from lucifex.sim import configure_simulation
-from lucifex.pde.advection_diffusion import flux
 from lucifex.utils.dofs_utils import limits_corrector
 
 from .generic import dns_generic
@@ -66,30 +65,34 @@ def dns_system_a(
     s_petsc: OptionsPETSc | None = None,
     # optional postprocessing
     diagnostic: bool = True,
+    fluxes: Iterable[tuple[str, float | int, float]] = (),
 ):
     """
-    `𝜑∂s/∂t = -εKi s(1 - c)`
-    `Ω = [0, A·Xl] × [0, Xl]` \\
+    `Ω = [0, A·X] × [0, X]` \\
+    `𝜑∂s/∂t = -εKi s(1 - c)` \\
     `ϕ∂c/∂t + 𝐮·∇c =  Di ∇·(ϕ∇c) + Ki s(1 - c)` \\
     `∇⋅𝐮 = 0` \\
-    `𝐮 = -(∇p - Bu c e₉)` \\
+    `𝐮 = -(∇p + Bu c 𝐞ʸ)` \\
 
     `s₀ = sᵣH(y - h₀) + N(𝐱)` \\
     `c₀ = cᵣH(y - h₀) + N(𝐱)`\\
-    `𝐧⋅𝐮 = 0` on `∂Ω` \\
-    `𝐧⋅∇c = 0` on `∂Ω`
+    `𝐧⋅∇c = 0` on `∂Ω` \\
+    `𝐧⋅𝐮 = 0` on `∂Ω`
     """
+    # space
     scaling_map = CONVECTION_REACTION_SCALINGS[scaling](Ra, Da)
-
-    Xl = scaling_map['Xl']
-    Lx = aspect * Xl
-    Ly = 1.0 * Xl
+    X = scaling_map['X']
+    Lx = aspect * X
+    Ly = 1.0 * X
+    h0_X = h0 * X
+    h0_eps_X = h0_eps * X if h0_eps is not None else None
     Omega, dOmega = rectangle_mesh_closure(Lx, Ly, Nx, Ny, cell)
+    # constants
     Di, Bu, Ki = scaling_map[Omega, 'Di', 'Bu', 'Ki']
     Ra = Constant(Omega, Ra, 'Ra')
     Da = Constant(Omega, Da, 'Da')
-
-    s_ics = heaviside(lambda x: x[1] - h0, sr, eps=h0_eps) 
+    # initial conditions
+    s_ics = heaviside(lambda x: x[1] - h0_X, sr, eps=h0_eps_X) 
     if s_ampl:
         s_ics = SpatialPerturbation(
             s_ics,
@@ -99,7 +102,7 @@ def dns_system_a(
             limits_corrector(0, sr),
         )
 
-    c_ics = heaviside(lambda x: x[1] - h0, cr, eps=h0_eps),
+    c_ics = heaviside(lambda x: x[1] - h0_X, cr, eps=h0_eps_X),
     if c_ampl:
         c_ics = SpatialPerturbation(
             c_ics,
@@ -108,13 +111,16 @@ def dns_system_a(
             c_ampl,
             limits_corrector(0, 1),
             )  
-         
+    # constitutive
     density = lambda c: Bu * c
     dispersion = lambda phi: Di * phi
     reaction = lambda s: -Ki * s
     source = lambda s: Ki * s
 
-    simulation = dns_generic(
+    if diagnostic:
+        fluxes = [('f', h0, Lx), *fluxes]
+
+    return dns_generic(
         # domain
         Omega=Omega, 
         dOmega=dOmega, 
@@ -150,55 +156,8 @@ def dns_system_a(
         s_petsc=s_petsc,
         # optional solvers
         diagnostic=diagnostic,
-        namespace=(Ra, Da, Di, Bu, Ki),
+        fluxes_solutal=fluxes,
+        namespace=[Ra, Da, Di, Bu, Ki, ('X', X)],
     )
 
-    if diagnostic:
-        c, u, d = simulation['c', 'u', 'd']
-        f = ConstantSeries(
-            Omega, 
-            ('f', ['fInterface', 'fPlus', 'fMinus', 'fMid']), 
-            shape=(4, 2),
-        )
-        flux_solver = integration(f, vertical_flux)(c[0], u[0], d[0], h0, Lx)
-        simulation.solvers.append(flux_solver)
 
-    return simulation
-
-
-def vertical_flux(
-    c: Function,
-    u: Function,
-    d: Function,
-    h0: float,
-    Lx: float,
-    tol: float | None = 1e-6,
-) -> np.ndarray:
-    """
-    Evaluates the advective and diffusive fluxes per unit length
-     
-    `Fᵁ = 1 / Lx ∫ (𝐧·𝐚)u ds` \\
-    `Fᴰ = 1 / Lx ∫ 𝐧·(D·∇u) ds`
-
-    at heights
-    
-    `y ≃ h₀, h₀⁺, h₀⁻, h₀/2`
-    """
-    mesh = c.function_space.mesh
-    y_axis = mesh_axes(mesh)[1]
-
-    ineq = lambda aprx, trgt: aprx <= trgt and np.abs(aprx - trgt) < tol
-    ineq_msg = 'Mesh resolution must be chosen such that `h0` is aligned with cell facets.'
-    h0_index = as_index(y_axis, h0, ineq, ineq_msg)
-    h0_approx = y_axis[h0_index]
-    h0_plus = y_axis[h0_index + 1]
-    h0_minus = y_axis[h0_index - 1]
-    h0_mid = y_axis[int(0.5 * h0_index)]
-    return (1 / Lx) * flux(
-        'dS', 
-        lambda x: x[1] - h0_approx, 
-        lambda x: x[1] - h0_plus, 
-        lambda x: x[1] - h0_minus, 
-        lambda x: x[1] - h0_mid,
-        facet_side="+",
-    )(c, u, d)

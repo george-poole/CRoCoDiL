@@ -1,0 +1,157 @@
+from lucifex.fem import Constant, SpatialPerturbation, cubic_noise
+from lucifex.fdm import FiniteDifference, FiniteDifferenceArgwise, CN, AB, AM
+from lucifex.utils import CellType, SpatialPerturbation, cubic_noise
+from lucifex.solver import OptionsPETSc, OptionsJIT
+from lucifex.sim import configure_simulation
+
+from crocodil.dns.generic import dns_generic
+from crocodil.dns.utils import CONVECTION_REACTION_SCALINGS, rectangle_mesh_closure
+
+
+@configure_simulation(
+    jit=OptionsJIT("./__jit__/"),
+    dir_base="./data",
+)
+def dns_model_b(
+    # mesh
+    aspect: float = 2.0,
+    Nx: int = 100,
+    Ny: int = 100,
+    cell: str = CellType.QUADRILATERAL,
+    # physical
+    scaling: str = 'advective',
+    Le: float = 1.0,
+    Ra: float = 1e3,
+    Da: float = 1e2,
+    epsilon: float = 1e-2,
+    # initial saturation
+    sr = 0.1,
+    # temperature 
+    theta_eps: float = 1e-6,
+    theta_freq: tuple[int, int] = (8, 8),
+    theta_seed: tuple[int, int] = (1234, 5678),
+    # constitutive relations
+    delta: float = 1.0,
+    gamma: float = 1.0,
+    # time step
+    dt_max: float = 0.5,
+    cfl_h: str | float = "hmin",
+    cfl_courant: float = 0.75,
+    r_courant: float = 0.1,
+    # time discretization
+    D_adv_solutal: FiniteDifference 
+    | FiniteDifferenceArgwise = (AB(2) @ CN),
+    D_diff_solutal: FiniteDifference
+    | FiniteDifferenceArgwise = CN,
+    D_adv_thermal: FiniteDifference 
+    | FiniteDifferenceArgwise = (AB(2) @ CN),
+    D_diff_thermal: FiniteDifference
+    | FiniteDifferenceArgwise = CN,
+    D_reac: FiniteDifference 
+    | FiniteDifferenceArgwise = (AB(2) @ CN @ CN),
+    D_src: FiniteDifference = AB(1),
+    D_evol: FiniteDifference 
+    | FiniteDifferenceArgwise = (AM(1) @ AB(1)),
+    # stabilization
+    c_stabilization: str | tuple[str, float] | tuple[float, float] = None,
+    c_limits: bool | tuple[float, float] = False,
+    theta_stabilization = None,
+    theta_limits = False,
+    s_limits = None,
+    # linear algebra
+    flow_petsc: tuple[OptionsPETSc, OptionsPETSc | None] 
+    | OptionsPETSc = (OptionsPETSc('cg', 'gamg'), None),
+    c_petsc: OptionsPETSc = OptionsPETSc('gmres', 'ilu'),
+    s_petsc: OptionsPETSc | None = None,
+    # secondary
+    secondary: bool = False,   
+):
+    """
+    `Ω = [0, A·X] × [0, X]` \\
+    `𝜑∂s/∂t = -εKi s(1 + δθ - c)` \\
+    `ϕ∂c/∂t + 𝐮·∇c =  Di ∇·(ϕ∇c) + Ki s(1 + δθ - c)` \\
+    `ϕ∂θ/∂t + 𝐮·∇θ =  Di/Le ∇·(ϕ∇θ) \\
+    `∇⋅𝐮 = 0` \\
+    `𝐮 = -(∇p + Bu(c -γθ)𝐞ʸ)` \\
+
+    `s₀ = sr` \\
+    `c₀ = ...y... ` \\
+    `θ₀ = 1 - y + N(x,y`) \\
+    `𝐧⋅∇c = 0` on `∂Ω` \\
+    `𝐧⋅𝐮 = 0` on `∂Ω`
+    """
+    # space
+    scaling_map = CONVECTION_REACTION_SCALINGS[scaling](Ra)
+    X = scaling_map['X']
+    Lx = aspect * X
+    Ly = 1.0 * X
+    Omega, dOmega = rectangle_mesh_closure(Lx, Ly, Nx, Ny, cell)
+    # constants
+    Di, Bu, Ki = scaling_map[Omega, 'Di', 'Bu', 'Ki']
+    Le = Constant(Omega, Le, 'Le')
+    Ra = Constant(Omega, Ra, 'Ra')
+    Da = Constant(Omega, Da, 'Da')
+    gamma = Constant(Omega, gamma, 'gamma')
+    delta = Constant(Omega, delta, 'delta')
+    # initial conditions
+    s_ics = sr
+    c_ics = lambda x: x[1] # FIXME
+    theta_ics = SpatialPerturbation(
+        lambda x: 1 - x[1] / Ly,
+        cubic_noise(['neumann', 'dirichlet'], [Lx, Ly], theta_freq, theta_seed),
+        theta_eps,
+        [Lx, Ly],
+    )   
+    # constitutive relations
+    dispersion_solutal = lambda phi: Di * phi
+    dispersion_thermal = lambda phi: (Di/Le) * phi
+    density = lambda c, theta: Bu * (c - gamma * theta)
+    reaction = lambda s: -Ki * s
+    source = lambda s, theta: Ki * s * (1 + delta * theta)
+
+    if c_limits is True:
+        c_limits = (0, 1 + delta)
+
+    return dns_generic(
+        # domain
+        Omega=Omega, 
+        dOmeg=dOmega, 
+        # physical
+        epsilon=epsilon,
+        # initial conditions
+        c_ics=c_ics,
+        theta_ics=theta_ics,
+        s_ics=s_ics, 
+        # constitutive relations
+        density=density,
+        reaction=reaction,
+        source=source,
+        dispersion_solutal=dispersion_solutal,
+        dispersion_thermal=dispersion_thermal,
+        # time step
+        dt_max=dt_max,
+        cfl_h=cfl_h,
+        cfl_courant=cfl_courant,
+        r_courant=r_courant,
+        # time discretization
+        D_adv_solutal=D_adv_solutal,
+        D_diff_solutal=D_diff_solutal,
+        D_reac_solutal=D_reac,
+        D_src_solutal=D_src,
+        D_adv_thermal=D_adv_thermal,
+        D_diff_thermal=D_diff_thermal,
+        D_reac_evol=D_evol,
+        # stabilization
+        c_stabilization=c_stabilization,
+        c_limits=c_limits,
+        theta_stabilization=theta_stabilization,
+        theta_limits=theta_limits,
+        s_limits=s_limits,
+        # linear algebra
+        flow_petsc=flow_petsc,
+        c_petsc=c_petsc,
+        s_petsc=s_petsc,
+        # optional solvers
+        diagnostic=secondary,
+        namespace=[gamma],
+    )
