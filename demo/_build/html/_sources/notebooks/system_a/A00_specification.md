@@ -1,12 +1,11 @@
 # Specification
 
-![Figure](./figures/domain_horizontal_t>0.png)
-<!-- <img src="./figures/domain_horizontal_t>0.png" width="400"/> -->
+![Figure](./figures/system_a_t_geq_0.png)
+<!-- <img src="./figures/system_a_t>0.png" width="400"/> -->
 
 $$
 \mathbb{S}\begin{cases}
 \Omega=[0, \mathcal{A}Xl] \times [0, Xl] & \text{rectangular domain} \\ 
-\theta=1 & \text{isothermal} \\ 
 s_0(y)=s_r\text{H}(y-h_0) \\
 c_0(x,y)=c_r\text{H}(y-h_0) + \mathcal{N}(x,y) \\
 \varphi = 1 & \text{constant rock porosity} \\
