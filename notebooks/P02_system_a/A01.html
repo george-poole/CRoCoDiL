@@ -379,7 +379,7 @@ document.write(`
     <span class="n">cfl_courant</span><span class="o">=</span><span class="mf">0.25</span><span class="p">,</span>
     <span class="c1"># s_limits=(0, sr),</span>
     <span class="n">c_limits</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
-    <span class="n">c_stabilization</span><span class="o">=</span><span class="s1">&#39;codina&#39;</span><span class="p">,</span>
+    <span class="n">c_stabilization</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="n">diagnostic</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
 <span class="p">)</span>
 
@@ -392,173 +392,6 @@ document.write(`
     <span class="n">xdmf_to_npz</span><span class="p">(</span><span class="n">simulation</span><span class="p">,</span> <span class="n">delete_xdmf</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
 <span class="n">s</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">psi</span> <span class="o">=</span> <span class="n">simulation</span><span class="p">[</span><span class="s1">&#39;s&#39;</span><span class="p">,</span> <span class="s1">&#39;c&#39;</span><span class="p">,</span> <span class="s1">&#39;u&#39;</span><span class="p">,</span> <span class="s1">&#39;psi&#39;</span><span class="p">]</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span><span class="gt">---------------------------------------------------------------------------</span>
-<span class="ne">AttributeError</span><span class="g g-Whitespace">                            </span>Traceback (most recent call last)
-<span class="n">Cell</span> <span class="n">In</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">line</span> <span class="mi">13</span>
-<span class="g g-Whitespace">     </span><span class="mi">10</span> <span class="n">DIR_PARAMS</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;Ra&#39;</span><span class="p">,</span> <span class="s1">&#39;Da&#39;</span><span class="p">,</span> <span class="s1">&#39;epsilon&#39;</span><span class="p">,</span> <span class="s1">&#39;sr&#39;</span><span class="p">,</span> <span class="s1">&#39;cr&#39;</span><span class="p">,</span> <span class="s1">&#39;Nx&#39;</span><span class="p">,</span> <span class="s1">&#39;Ny&#39;</span><span class="p">)</span>
-<span class="g g-Whitespace">     </span><span class="mi">12</span> <span class="n">sr</span> <span class="o">=</span> <span class="mf">0.2</span>
-<span class="ne">---&gt; </span><span class="mi">13</span> <span class="n">simulation</span> <span class="o">=</span> <span class="n">dns_system_a</span><span class="p">(</span>
-<span class="g g-Whitespace">     </span><span class="mi">14</span>     <span class="n">store_delta</span><span class="o">=</span><span class="n">STORE</span><span class="p">,</span> 
-<span class="g g-Whitespace">     </span><span class="mi">15</span>     <span class="n">write_delta</span><span class="o">=</span><span class="n">WRITE</span><span class="p">,</span> 
-<span class="g g-Whitespace">     </span><span class="mi">16</span>     <span class="n">dir_base</span><span class="o">=</span><span class="n">DIR_BASE</span><span class="p">,</span> 
-<span class="g g-Whitespace">     </span><span class="mi">17</span>     <span class="n">dir_params</span><span class="o">=</span><span class="n">DIR_PARAMS</span><span class="p">,</span>
-<span class="g g-Whitespace">     </span><span class="mi">18</span> <span class="p">)(</span>
-<span class="g g-Whitespace">     </span><span class="mi">19</span>     <span class="n">aspect</span><span class="o">=</span><span class="mf">2.0</span><span class="p">,</span>
-<span class="g g-Whitespace">     </span><span class="mi">20</span>     <span class="n">Nx</span><span class="o">=</span><span class="mi">64</span><span class="p">,</span>
-<span class="g g-Whitespace">     </span><span class="mi">21</span>     <span class="n">Ny</span><span class="o">=</span><span class="mi">64</span><span class="p">,</span>
-<span class="g g-Whitespace">     </span><span class="mi">22</span>     <span class="n">scaling</span><span class="o">=</span><span class="s1">&#39;advective&#39;</span><span class="p">,</span>
-<span class="g g-Whitespace">     </span><span class="mi">23</span>     <span class="n">Ra</span><span class="o">=</span><span class="mf">5e2</span><span class="p">,</span>
-<span class="g g-Whitespace">     </span><span class="mi">24</span>     <span class="n">Da</span><span class="o">=</span><span class="mf">100.0</span><span class="p">,</span>
-<span class="g g-Whitespace">     </span><span class="mi">25</span>     <span class="n">epsilon</span><span class="o">=</span><span class="mf">1e-2</span><span class="p">,</span>
-<span class="g g-Whitespace">     </span><span class="mi">26</span>     <span class="n">sr</span><span class="o">=</span><span class="n">sr</span><span class="p">,</span>
-<span class="g g-Whitespace">     </span><span class="mi">27</span>     <span class="n">cr</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>
-<span class="g g-Whitespace">     </span><span class="mi">28</span>     <span class="n">D_adv</span><span class="o">=</span><span class="n">AB</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span><span class="nd">@CN</span><span class="p">,</span> 
-<span class="g g-Whitespace">     </span><span class="mi">29</span>     <span class="n">D_diff</span><span class="o">=</span><span class="n">AB</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="nd">@CN</span><span class="p">,</span>
-<span class="g g-Whitespace">     </span><span class="mi">30</span>     <span class="n">dt_max</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>
-<span class="g g-Whitespace">     </span><span class="mi">31</span>     <span class="n">cfl_courant</span><span class="o">=</span><span class="mf">0.25</span><span class="p">,</span>
-<span class="g g-Whitespace">     </span><span class="mi">32</span>     <span class="c1"># s_limits=(0, sr),</span>
-<span class="g g-Whitespace">     </span><span class="mi">33</span>     <span class="n">c_limits</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
-<span class="g g-Whitespace">     </span><span class="mi">34</span>     <span class="n">c_stabilization</span><span class="o">=</span><span class="s1">&#39;codina&#39;</span><span class="p">,</span>
-<span class="g g-Whitespace">     </span><span class="mi">35</span>     <span class="n">diagnostic</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-<span class="g g-Whitespace">     </span><span class="mi">36</span> <span class="p">)</span>
-<span class="g g-Whitespace">     </span><span class="mi">38</span> <span class="n">t_stop</span> <span class="o">=</span> <span class="mf">12.0</span>
-<span class="g g-Whitespace">     </span><span class="mi">39</span> <span class="n">n_stop</span> <span class="o">=</span> <span class="mi">300</span>
-
-<span class="nn">File ~/Desktop/LUCiFEx/lucifex/sim/simulation.py:352,</span> in <span class="ni">configure_simulation.&lt;locals&gt;._decorator.&lt;locals&gt;._.&lt;locals&gt;._inner</span><span class="nt">(*sim_func_args, **sim_func_kwargs)</span>
-<span class="g g-Whitespace">    </span><span class="mi">343</span> <span class="n">classes</span> <span class="o">=</span> <span class="p">(</span>
-<span class="g g-Whitespace">    </span><span class="mi">344</span>     <span class="n">BoundaryValueProblem</span><span class="p">,</span> 
-<span class="g g-Whitespace">    </span><span class="mi">345</span>     <span class="n">InitialBoundaryValueProblem</span><span class="p">,</span> 
-   <span class="p">(</span><span class="o">...</span><span class="p">)</span>
-<span class="g g-Whitespace">    </span><span class="mi">349</span>     <span class="n">Interpolation</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">350</span> <span class="p">)</span>
-<span class="g g-Whitespace">    </span><span class="mi">351</span> <span class="p">[</span><span class="n">filter_kwargs</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">set_defaults</span><span class="p">)(</span><span class="o">**</span><span class="n">kwargs_complete</span><span class="p">)</span> <span class="k">for</span> <span class="bp">cls</span> <span class="ow">in</span> <span class="n">classes</span><span class="p">]</span>
-<span class="ne">--&gt; </span><span class="mi">352</span> <span class="n">simulation_func_return</span> <span class="o">=</span> <span class="n">simulation_func</span><span class="p">(</span><span class="o">*</span><span class="n">sim_func_args</span><span class="p">,</span> <span class="o">**</span><span class="n">sim_func_kwargs</span><span class="p">)</span>
-<span class="g g-Whitespace">    </span><span class="mi">353</span> <span class="p">[</span><span class="bp">cls</span><span class="o">.</span><span class="n">set_defaults</span><span class="p">()</span> <span class="k">for</span> <span class="bp">cls</span> <span class="ow">in</span> <span class="n">classes</span><span class="p">]</span>
-<span class="g g-Whitespace">    </span><span class="mi">355</span> <span class="n">sim_parameters</span> <span class="o">=</span> <span class="p">{</span>
-<span class="g g-Whitespace">    </span><span class="mi">356</span>     <span class="n">k</span><span class="p">:</span> <span class="n">v</span><span class="o">.</span><span class="n">default</span>
-<span class="nn">    357     for k, v</span> in <span class="ni">simulation_func_params.items</span><span class="nt">()</span>
-<span class="g g-Whitespace">    </span><span class="mi">358</span>     <span class="k">if</span> <span class="n">v</span><span class="o">.</span><span class="n">default</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">v</span><span class="o">.</span><span class="n">empty</span>
-<span class="g g-Whitespace">    </span><span class="mi">359</span> <span class="p">}</span>
-
-<span class="nn">File ~/Desktop/CRoCoDiL/crocodil/dns/system_a.py:123,</span> in <span class="ni">dns_system_a</span><span class="nt">(aspect, Nx, Ny, cell, scaling, Ra, Da, epsilon, h0, h0_eps, sr, s_ampl, s_freq, s_seed, cr, c_ampl, c_freq, c_seed, dt_min, dt_max, cfl_h, cfl_courant, r_courant, D_adv, D_diff, D_reac, D_src, D_evol, c_stabilization, c_limits, s_limits, flow_petsc, c_petsc, s_petsc, diagnostic, fluxes)</span>
-<span class="g g-Whitespace">    </span><span class="mi">120</span> <span class="k">if</span> <span class="n">diagnostic</span><span class="p">:</span>
-<span class="g g-Whitespace">    </span><span class="mi">121</span>     <span class="n">fluxes</span> <span class="o">=</span> <span class="p">[(</span><span class="s1">&#39;f&#39;</span><span class="p">,</span> <span class="n">h0</span><span class="p">,</span> <span class="n">Lx</span><span class="p">),</span> <span class="o">*</span><span class="n">fluxes</span><span class="p">]</span>
-<span class="ne">--&gt; </span><span class="mi">123</span> <span class="k">return</span> <span class="n">dns_generic</span><span class="p">(</span>
-<span class="g g-Whitespace">    </span><span class="mi">124</span>     <span class="c1"># domain</span>
-<span class="g g-Whitespace">    </span><span class="mi">125</span>     <span class="n">Omega</span><span class="o">=</span><span class="n">Omega</span><span class="p">,</span> 
-<span class="g g-Whitespace">    </span><span class="mi">126</span>     <span class="n">dOmega</span><span class="o">=</span><span class="n">dOmega</span><span class="p">,</span> 
-<span class="g g-Whitespace">    </span><span class="mi">127</span>     <span class="c1"># physical</span>
-<span class="g g-Whitespace">    </span><span class="mi">128</span>     <span class="n">epsilon</span><span class="o">=</span><span class="n">epsilon</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">129</span>     <span class="c1"># initial conditions</span>
-<span class="g g-Whitespace">    </span><span class="mi">130</span>     <span class="n">s_ics</span><span class="o">=</span><span class="n">s_ics</span><span class="p">,</span> 
-<span class="g g-Whitespace">    </span><span class="mi">131</span>     <span class="n">c_ics</span><span class="o">=</span><span class="n">c_ics</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">132</span>     <span class="c1"># constitutive relations</span>
-<span class="g g-Whitespace">    </span><span class="mi">133</span>     <span class="n">density</span><span class="o">=</span><span class="n">density</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">134</span>     <span class="n">reaction</span><span class="o">=</span><span class="n">reaction</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">135</span>     <span class="n">source</span><span class="o">=</span><span class="n">source</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">136</span>     <span class="n">dispersion_solutal</span><span class="o">=</span><span class="n">dispersion</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">137</span>     <span class="c1"># time step</span>
-<span class="g g-Whitespace">    </span><span class="mi">138</span>     <span class="n">dt_min</span><span class="o">=</span><span class="n">dt_min</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">139</span>     <span class="n">dt_max</span><span class="o">=</span><span class="n">dt_max</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">140</span>     <span class="n">cfl_h</span><span class="o">=</span><span class="n">cfl_h</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">141</span>     <span class="n">cfl_courant</span><span class="o">=</span><span class="n">cfl_courant</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">142</span>     <span class="n">r_courant</span><span class="o">=</span><span class="n">r_courant</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">143</span>     <span class="c1"># time discretization</span>
-<span class="g g-Whitespace">    </span><span class="mi">144</span>     <span class="n">D_adv_solutal</span><span class="o">=</span><span class="n">D_adv</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">145</span>     <span class="n">D_diff_solutal</span><span class="o">=</span><span class="n">D_diff</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">146</span>     <span class="n">D_reac_solutal</span><span class="o">=</span><span class="n">D_reac</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">147</span>     <span class="n">D_src_solutal</span><span class="o">=</span><span class="n">D_src</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">148</span>     <span class="n">D_reac_evol</span><span class="o">=</span><span class="n">D_evol</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">149</span>     <span class="c1"># stabilization</span>
-<span class="g g-Whitespace">    </span><span class="mi">150</span>     <span class="n">c_stabilization</span><span class="o">=</span><span class="n">c_stabilization</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">151</span>     <span class="n">c_limits</span><span class="o">=</span><span class="n">c_limits</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">152</span>     <span class="n">s_limits</span><span class="o">=</span><span class="n">s_limits</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">153</span>     <span class="c1"># linear algebra</span>
-<span class="g g-Whitespace">    </span><span class="mi">154</span>     <span class="n">flow_petsc</span><span class="o">=</span><span class="n">flow_petsc</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">155</span>     <span class="n">c_petsc</span><span class="o">=</span><span class="n">c_petsc</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">156</span>     <span class="n">s_petsc</span><span class="o">=</span><span class="n">s_petsc</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">157</span>     <span class="c1"># optional solvers</span>
-<span class="g g-Whitespace">    </span><span class="mi">158</span>     <span class="n">diagnostic</span><span class="o">=</span><span class="n">diagnostic</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">159</span>     <span class="n">fluxes_solutal</span><span class="o">=</span><span class="n">fluxes</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">160</span>     <span class="n">namespace</span><span class="o">=</span><span class="p">[</span><span class="n">Ra</span><span class="p">,</span> <span class="n">Da</span><span class="p">,</span> <span class="n">Di</span><span class="p">,</span> <span class="n">Bu</span><span class="p">,</span> <span class="n">Ki</span><span class="p">,</span> <span class="p">(</span><span class="s1">&#39;X&#39;</span><span class="p">,</span> <span class="n">X</span><span class="p">)],</span>
-<span class="g g-Whitespace">    </span><span class="mi">161</span> <span class="p">)</span>
-
-<span class="nn">File ~/Desktop/CRoCoDiL/crocodil/dns/generic.py:270,</span> in <span class="ni">dns_generic</span><span class="nt">(Omega, dOmega, eg, epsilon, c_ics, theta_ics, s_ics, flow_bcs, c_bcs, theta_bcs, rock_porosity, permeability, dispersion_solutal, dispersion_thermal, density, viscosity, reaction, source, dt_min, dt_max, cfl_h, cfl_courant, r_courant, D_adv_solutal, D_diff_solutal, D_reac_solutal, D_src_solutal, D_adv_thermal, D_diff_thermal, D_reac_evol, c_stabilization, c_limits, theta_stabilization, theta_limits, s_limits, flow_petsc, c_petsc, theta_petsc, s_petsc, diagnostic, fluxes_solutal, fluxes_thermal, namespace)</span>
-<span class="g g-Whitespace">    </span><span class="mi">268</span> <span class="n">c_corrector</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;cCorr&#39;</span><span class="p">,</span> <span class="n">limits_corrector</span><span class="p">(</span><span class="o">*</span><span class="n">c_limits</span><span class="p">))</span> <span class="k">if</span> <span class="n">c_limits</span> <span class="k">else</span> <span class="kc">None</span>
-<span class="g g-Whitespace">    </span><span class="mi">269</span> <span class="k">if</span> <span class="n">SOLUTAL_CNTS</span><span class="p">:</span>
-<span class="ne">--&gt; </span><span class="mi">270</span>     <span class="n">c_solver</span> <span class="o">=</span> <span class="n">ibvp</span><span class="p">(</span><span class="n">advection_diffusion_reaction</span><span class="p">,</span> <span class="n">bcs</span><span class="o">=</span><span class="n">c_bcs</span><span class="p">,</span> <span class="n">petsc</span><span class="o">=</span><span class="n">c_petsc</span><span class="p">,</span> <span class="n">corrector</span><span class="o">=</span><span class="n">c_corrector</span><span class="p">)(</span>
-<span class="g g-Whitespace">    </span><span class="mi">271</span>         <span class="n">c</span><span class="p">,</span> <span class="n">dt</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="n">D_adv_solutal</span><span class="p">,</span> <span class="n">D_diff_solutal</span><span class="p">,</span> <span class="n">D_reac_solutal</span><span class="p">,</span> <span class="n">D_src_solutal</span><span class="p">,</span> <span class="n">phi</span><span class="o">=</span><span class="n">phi</span><span class="p">,</span> <span class="n">supg</span><span class="o">=</span><span class="n">c_stabilization</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">272</span>     <span class="p">)</span>
-<span class="g g-Whitespace">    </span><span class="mi">273</span> <span class="k">else</span><span class="p">:</span>
-<span class="g g-Whitespace">    </span><span class="mi">274</span>     <span class="n">c_alpha</span><span class="p">,</span> <span class="n">c_gamma</span> <span class="o">=</span> <span class="n">c_stabilization</span>
-
-<span class="nn">File ~/Desktop/LUCiFEx/lucifex/solver/pde.py:583,</span> in <span class="ni">InitialBoundaryValueProblem.from_forms_func.&lt;locals&gt;._create</span><span class="nt">(*args, **kwargs)</span>
-<span class="g g-Whitespace">    </span><span class="mi">580</span>     <span class="n">forms_init</span> <span class="o">=</span> <span class="kc">None</span>
-<span class="g g-Whitespace">    </span><span class="mi">581</span>     <span class="n">n_init</span> <span class="o">=</span> <span class="kc">None</span>
-<span class="ne">--&gt; </span><span class="mi">583</span> <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span>
-<span class="g g-Whitespace">    </span><span class="mi">584</span>     <span class="n">solution</span><span class="p">,</span> 
-<span class="g g-Whitespace">    </span><span class="mi">585</span>     <span class="n">forms</span><span class="p">,</span> 
-<span class="g g-Whitespace">    </span><span class="mi">586</span>     <span class="n">forms_init</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">587</span>     <span class="n">n_init</span><span class="p">,</span> 
-<span class="g g-Whitespace">    </span><span class="mi">588</span>     <span class="n">ics</span><span class="p">,</span> 
-<span class="g g-Whitespace">    </span><span class="mi">589</span>     <span class="n">bcs</span><span class="p">,</span> 
-<span class="g g-Whitespace">    </span><span class="mi">590</span>     <span class="n">petsc</span><span class="p">,</span> 
-<span class="g g-Whitespace">    </span><span class="mi">591</span>     <span class="n">jit</span><span class="p">,</span> 
-<span class="g g-Whitespace">    </span><span class="mi">592</span>     <span class="n">ffcx</span><span class="p">,</span> 
-<span class="g g-Whitespace">    </span><span class="mi">593</span>     <span class="n">corrector</span><span class="p">,</span> 
-<span class="g g-Whitespace">    </span><span class="mi">594</span>     <span class="n">cache_matrix</span><span class="p">,</span> 
-<span class="g g-Whitespace">    </span><span class="mi">595</span>     <span class="n">assemble_termwise</span><span class="p">,</span> 
-<span class="g g-Whitespace">    </span><span class="mi">596</span>     <span class="n">future</span><span class="p">,</span> 
-<span class="g g-Whitespace">    </span><span class="mi">597</span>     <span class="n">overwrite</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">598</span> <span class="p">)</span>
-
-<span class="nn">File ~/Desktop/LUCiFEx/lucifex/solver/pde.py:495,</span> in <span class="ni">InitialBoundaryValueProblem.__init__</span><span class="nt">(self, solution, forms, forms_init, n_init, ics, bcs, petsc, jit, ffcx, corrector, cache_matrix, assemble_termwise, future, overwrite)</span>
-<span class="g g-Whitespace">    </span><span class="mi">492</span> <span class="k">if</span> <span class="n">ics</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-<span class="g g-Whitespace">    </span><span class="mi">493</span>     <span class="n">solution</span><span class="o">.</span><span class="n">initialize_from_ics</span><span class="p">(</span><span class="n">ics</span><span class="p">)</span>
-<span class="ne">--&gt; </span><span class="mi">495</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
-<span class="g g-Whitespace">    </span><span class="mi">496</span>     <span class="n">solution</span><span class="p">,</span> 
-<span class="g g-Whitespace">    </span><span class="mi">497</span>     <span class="n">forms</span><span class="p">,</span> 
-<span class="g g-Whitespace">    </span><span class="mi">498</span>     <span class="n">bcs</span><span class="p">,</span> 
-<span class="g g-Whitespace">    </span><span class="mi">499</span>     <span class="n">petsc</span><span class="p">,</span> 
-<span class="g g-Whitespace">    </span><span class="mi">500</span>     <span class="n">jit</span><span class="p">,</span> 
-<span class="g g-Whitespace">    </span><span class="mi">501</span>     <span class="n">ffcx</span><span class="p">,</span> 
-<span class="g g-Whitespace">    </span><span class="mi">502</span>     <span class="n">corrector</span><span class="p">,</span> 
-<span class="g g-Whitespace">    </span><span class="mi">503</span>     <span class="n">cache_matrix</span><span class="p">,</span> 
-<span class="g g-Whitespace">    </span><span class="mi">504</span>     <span class="n">assemble_termwise</span><span class="p">,</span> 
-<span class="g g-Whitespace">    </span><span class="mi">505</span>     <span class="n">future</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">506</span>     <span class="n">overwrite</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">507</span> <span class="p">)</span>
-<span class="g g-Whitespace">    </span><span class="mi">509</span> <span class="k">if</span> <span class="n">forms_init</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-<span class="g g-Whitespace">    </span><span class="mi">510</span>     <span class="bp">self</span><span class="o">.</span><span class="n">_initial</span> <span class="o">=</span> <span class="n">InitialBoundaryValueProblem</span><span class="p">(</span>
-<span class="g g-Whitespace">    </span><span class="mi">511</span>         <span class="n">solution</span><span class="p">,</span> 
-<span class="g g-Whitespace">    </span><span class="mi">512</span>         <span class="n">forms_init</span><span class="p">,</span> 
-   <span class="p">(</span><span class="o">...</span><span class="p">)</span>
-<span class="g g-Whitespace">    </span><span class="mi">519</span>         <span class="n">assemble_termwise</span><span class="o">=</span><span class="n">assemble_termwise</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">520</span>     <span class="p">)</span>
-
-<span class="nn">File ~/Desktop/LUCiFEx/lucifex/solver/pde.py:128,</span> in <span class="ni">BoundaryValueProblem.__init__</span><span class="nt">(self, solution, forms, bcs, petsc, jit, ffcx, corrector, cache_matrix, assemble_termwise, future, overwrite)</span>
-<span class="g g-Whitespace">    </span><span class="mi">126</span> <span class="bp">self</span><span class="o">.</span><span class="n">_forms</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)</span> <span class="k">else</span> <span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">forms</span><span class="p">]</span>
-<span class="g g-Whitespace">    </span><span class="mi">127</span> <span class="c1"># bilinear forms</span>
-<span class="ne">--&gt; </span><span class="mi">128</span> <span class="bp">self</span><span class="o">.</span><span class="n">_a_forms</span> <span class="o">=</span> <span class="p">[</span><span class="n">lhs</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">i</span><span class="o">.</span><span class="n">arguments</span><span class="p">())</span> <span class="o">==</span> <span class="mi">2</span> <span class="k">else</span> <span class="kc">None</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_forms</span><span class="p">]</span>
-<span class="g g-Whitespace">    </span><span class="mi">129</span> <span class="bp">self</span><span class="o">.</span><span class="n">_a_form_termwise</span><span class="p">:</span> <span class="n">Form</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">([</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_a_forms</span> <span class="k">if</span> <span class="n">i</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">])</span>
-<span class="g g-Whitespace">    </span><span class="mi">130</span> <span class="bp">self</span><span class="o">.</span><span class="n">_a_form_nontermwise</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span>
-<span class="g g-Whitespace">    </span><span class="mi">131</span>     <span class="p">[</span><span class="n">i</span> <span class="o">*</span> <span class="n">j</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_scalings</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_a_forms</span><span class="p">,</span> <span class="n">strict</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="k">if</span> <span class="n">j</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">]</span>
-<span class="g g-Whitespace">    </span><span class="mi">132</span> <span class="p">)</span>
-
-<span class="nn">File ~/Desktop/LUCiFEx/lucifex/solver/pde.py:128,</span> in <span class="ni">&lt;listcomp&gt;</span><span class="nt">(.0)</span>
-<span class="g g-Whitespace">    </span><span class="mi">126</span> <span class="bp">self</span><span class="o">.</span><span class="n">_forms</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)</span> <span class="k">else</span> <span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">forms</span><span class="p">]</span>
-<span class="g g-Whitespace">    </span><span class="mi">127</span> <span class="c1"># bilinear forms</span>
-<span class="ne">--&gt; </span><span class="mi">128</span> <span class="bp">self</span><span class="o">.</span><span class="n">_a_forms</span> <span class="o">=</span> <span class="p">[</span><span class="n">lhs</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">i</span><span class="o">.</span><span class="n">arguments</span><span class="p">())</span> <span class="o">==</span> <span class="mi">2</span> <span class="k">else</span> <span class="kc">None</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_forms</span><span class="p">]</span>
-<span class="g g-Whitespace">    </span><span class="mi">129</span> <span class="bp">self</span><span class="o">.</span><span class="n">_a_form_termwise</span><span class="p">:</span> <span class="n">Form</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">([</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_a_forms</span> <span class="k">if</span> <span class="n">i</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">])</span>
-<span class="g g-Whitespace">    </span><span class="mi">130</span> <span class="bp">self</span><span class="o">.</span><span class="n">_a_form_nontermwise</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span>
-<span class="g g-Whitespace">    </span><span class="mi">131</span>     <span class="p">[</span><span class="n">i</span> <span class="o">*</span> <span class="n">j</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_scalings</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_a_forms</span><span class="p">,</span> <span class="n">strict</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="k">if</span> <span class="n">j</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">]</span>
-<span class="g g-Whitespace">    </span><span class="mi">132</span> <span class="p">)</span>
-
-<span class="ne">AttributeError</span>: &#39;ExprSeries&#39; object has no attribute &#39;arguments&#39;
 </pre></div>
 </div>
 </div>
@@ -578,6 +411,9 @@ document.write(`
 <span class="n">save_figure</span><span class="p">(</span><span class="s1">&#39;f(y=h0,t)&#39;</span><span class="p">,</span> <span class="n">simulation</span><span class="o">.</span><span class="n">dir_path</span><span class="p">,</span> <span class="n">prefix_ipynb</span><span class="o">=</span><span class="kc">False</span><span class="p">)(</span><span class="n">fig</span><span class="p">)</span>
 </pre></div>
 </div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../../_images/daff0ea016454ec221d7bcc128e388ad42d0069055a2c35f43c2825717770296.png" src="../../_images/daff0ea016454ec221d7bcc128e388ad42d0069055a2c35f43c2825717770296.png" />
 </div>
 </div>
 <div class="cell docutils container">
@@ -602,6 +438,10 @@ document.write(`
 <span class="n">save_figure</span><span class="p">(</span><span class="s1">&#39;uMax(t)&#39;</span><span class="p">,</span> <span class="n">simulation</span><span class="o">.</span><span class="n">dir_path</span><span class="p">)(</span><span class="n">fig</span><span class="p">)</span>
 </pre></div>
 </div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../../_images/90593a924c0b89c0dd947948e0d26c3da905c60feedfb8a9716e099912c87213.png" src="../../_images/90593a924c0b89c0dd947948e0d26c3da905c60feedfb8a9716e099912c87213.png" />
+<img alt="../../_images/ee27db7cf44a0951fcd672064b2b4c694ab8934fb6cf0c9887eeb908dd0f9867.png" src="../../_images/ee27db7cf44a0951fcd672064b2b4c694ab8934fb6cf0c9887eeb908dd0f9867.png" />
 </div>
 </div>
 <div class="cell docutils container">
@@ -647,6 +487,11 @@ document.write(`
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<img alt="../../_images/32073d9f6b818d2eaf26ae28575f756431e36d656b5127fd7fa16b76cc65f237.png" src="../../_images/32073d9f6b818d2eaf26ae28575f756431e36d656b5127fd7fa16b76cc65f237.png" />
+<img alt="../../_images/a5668f6866b8bd03bf26fcf77215860536a3fa9ff0f4a61020750a42314f7aeb.png" src="../../_images/a5668f6866b8bd03bf26fcf77215860536a3fa9ff0f4a61020750a42314f7aeb.png" />
+<img alt="../../_images/f195ff4a14cd437532b57367073c76ebfce744e3b7e67c05be7ecd1b07281a35.png" src="../../_images/f195ff4a14cd437532b57367073c76ebfce744e3b7e67c05be7ecd1b07281a35.png" />
+</div>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -677,6 +522,11 @@ document.write(`
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<img alt="../../_images/f1673087bce9d95f375dd1c563ee0526176a8ff9dc458ec415350dc5b5e80b21.png" src="../../_images/f1673087bce9d95f375dd1c563ee0526176a8ff9dc458ec415350dc5b5e80b21.png" />
+<img alt="../../_images/2f966991c460d4d34afdedf482c40029f1bdb499ecd7417f65a28ecb74b133f1.png" src="../../_images/2f966991c460d4d34afdedf482c40029f1bdb499ecd7417f65a28ecb74b133f1.png" />
+<img alt="../../_images/265bfa71246862102b95b7a5b19ae57eb8186301324672ef2ad4ef45614abc16.png" src="../../_images/265bfa71246862102b95b7a5b19ae57eb8186301324672ef2ad4ef45614abc16.png" />
+</div>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -691,6 +541,9 @@ document.write(`
 <span class="n">save_figure</span><span class="p">(</span><span class="s1">&#39;dt(t)&#39;</span><span class="p">,</span> <span class="n">simulation</span><span class="o">.</span><span class="n">dir_path</span><span class="p">,</span> <span class="n">prefix_ipynb</span><span class="o">=</span><span class="kc">False</span><span class="p">)(</span><span class="n">fig</span><span class="p">)</span>
 </pre></div>
 </div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../../_images/f29ba2c42ccb9fb334c3847e21dc5528dc3d5b61e15953d6ae512e01fdf13360.png" src="../../_images/f29ba2c42ccb9fb334c3847e21dc5528dc3d5b61e15953d6ae512e01fdf13360.png" />
 </div>
 </div>
 </section>
