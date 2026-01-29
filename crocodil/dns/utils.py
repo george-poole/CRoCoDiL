@@ -42,6 +42,42 @@ and time scale `𝒯` in the non-dimensionalization.
 """
 
 
+def critical_wavelength(
+    scaling: str,
+    Ra: float,
+) -> float:
+    """
+    `λ = 90 / Ra`
+    """
+    # TODO effects of scaling? other versions?
+    scaling_map = CONVECTION_REACTION_SCALINGS[scaling](Ra)
+    Di = scaling_map['Di']
+    return 90.0 * Di
+
+
+def critical_dx(
+    scaling: str,
+    Ra: float,
+    n_per_cell: int,
+):
+    """
+    `Δx ≤ λ / N`
+    """
+    return critical_wavelength(scaling, Ra) / n_per_cell
+
+
+def critical_Nx(
+    scaling: str,
+    Ra: float,
+    n_per_cell: int,
+    Lx: float
+):
+    """
+    `Nₓ ≥ n Lₓ / λ`
+    """
+    return np.ceil(Lx / critical_dx(scaling, Ra, n_per_cell))
+
+
 def vertical_flux(
     u: Function,
     a: Function,

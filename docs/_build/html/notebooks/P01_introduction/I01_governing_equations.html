@@ -32,7 +32,7 @@
     <link rel="stylesheet" type="text/css" href="../../_static/styles/sphinx-book-theme.css?v=eba8b062" />
     <link rel="stylesheet" type="text/css" href="../../_static/togglebutton.css?v=13237357" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
-    <link rel="stylesheet" type="text/css" href="../../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css?v=6644e6bb" />
     <link rel="stylesheet" type="text/css" href="../../_static/sphinx-thebe.css?v=4fa983c6" />
     <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=95c83b7e" />
   
@@ -347,6 +347,7 @@ document.write(`
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#scalings">Scalings</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#abstract-dimensionless-numbers">Abstract dimensionless numbers</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#physical-dimensionless-numbers">Physical dimensionless numbers</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#scaling-choice">Scaling choice</a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#non-dimensional-time-discretized-equations">Non-dimensional time-discretized  equations</a><ul class="nav section-nav flex-column">
@@ -489,7 +490,50 @@ Ki=\frac{\mathcal{T}\Delta R}{\phi_{\text{ref}}\Delta c}~,~
 Bu=\frac{K_{\text{ref}}\,g\Delta\rho}{\mu_{\text{ref}}\,\mathcal{U}}~,~
 Xl=\frac{\mathcal{L}}{\mathcal{L}_\Omega}
 \]</div>
-<p>A particular choice of non-dimensionalization with <span class="math notranslate nohighlight">\(\mathcal{L}\)</span>, <span class="math notranslate nohighlight">\(\mathcal{U}\)</span> and <span class="math notranslate nohighlight">\(\mathcal{T}\)</span> chosen according to the details of the specified system (e.g. boundary conditions, dominant transport processes) will map the abstract dimensionless numbers <span class="math notranslate nohighlight">\(\{Ad, Di, Ki, Bu, Xl\}\)</span> onto combinations of the physical dimensionless numbers introduced below.</p>
+</section>
+<section id="physical-dimensionless-numbers">
+<h3>Physical dimensionless numbers<a class="headerlink" href="#physical-dimensionless-numbers" title="Link to this heading">#</a></h3>
+<p>Rayleigh number (defined with respect to the transport of <span class="math notranslate nohighlight">\(c\)</span> and domain length scale)
+$<span class="math notranslate nohighlight">\(Ra=\frac{\mathcal{L}_\Omega K_{\text{ref}}g\Delta\rho}{\mu_{\text{ref}}D_{\text{ref}}}=\underbrace{\frac{K_{\text{ref}}\,g\Delta\rho}{\mu_{\text{ref}}}}_{\text{convective speed}} \big/ \underbrace{\frac{D_{\text{ref}}}{\mathcal{L}_\Omega}}_{\text{diffusive speed}}\)</span>$</p>
+<p><span class="math notranslate nohighlight">\(Da\)</span> is the Damköhler number (defined with respect to the transport of <span class="math notranslate nohighlight">\(c\)</span> and domain length scale)</p>
+<div class="math notranslate nohighlight">
+\[Da=\frac{\mathcal{L}_\Omega \mu_{\text{ref}}\,\Delta R}{K_{\text{ref}}\,g\Delta\rho\Delta c} = \underbrace{\frac{\Delta R}{\Delta c}}_{\text{reaction rate}} \big/ \underbrace{\frac{K_{\text{ref}}\,g\Delta\rho}{\mathcal{L}_\Omega \mu_{\text{ref}}}}_{\text{convection rate}}\]</div>
+<p>evolution number</p>
+<div class="math notranslate nohighlight">
+\[\varepsilon = \frac{\Delta c}{\varrho}\ll1\]</div>
+<p>Lewis number for the ratio of thermal to solutal diffusivity</p>
+<div class="math notranslate nohighlight">
+\[Le=\frac{G_{\text{ref}}}{D_{\text{ref}}}\]</div>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Definition</p></th>
+<th class="head"><p>Name</p></th>
+<th class="head"><p>Physical interpretation</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><span class="math notranslate nohighlight">\(Ra=\frac{\mathcal{L}_\Omega K_{\text{ref}}g\Delta\rho}{\mu_{\text{ref}}D_{\text{ref}}}=\underbrace{\frac{K_{\text{ref}}\,g\Delta\rho}{\mu_{\text{ref}}}}_{\text{convective speed}} \big/ \underbrace{\frac{D_{\text{ref}}}{\mathcal{L}_\Omega}}_{\text{diffusive speed}}\)</span></p></td>
+<td><p>Rayleigh</p></td>
+<td><p>Ratio of convective to diffusive speeds, defined with respect to the transport of <span class="math notranslate nohighlight">\(c\)</span> and domain length scale.</p></td>
+</tr>
+<tr class="row-odd"><td><p><span class="math notranslate nohighlight">\(Da=\frac{\mathcal{L}_\Omega \mu_{\text{ref}}\,\Delta R}{K_{\text{ref}}\,g\Delta\rho\Delta c} = \underbrace{\frac{\Delta R}{\Delta c}}_{\text{reaction rate}} \big/ \underbrace{\frac{K_{\text{ref}}\,g\Delta\rho}{\mathcal{L}_\Omega \mu_{\text{ref}}}}_{\text{convection rate}}\)</span></p></td>
+<td><p>Damköhler</p></td>
+<td><p>Ratio of reaction to convection rates, defined with respect to the transport of <span class="math notranslate nohighlight">\(c\)</span> and domain length scale.</p></td>
+</tr>
+<tr class="row-even"><td><p><span class="math notranslate nohighlight">\(Le=\frac{G_{\text{ref}}}{D_{\text{ref}}}\)</span></p></td>
+<td><p>Lewis</p></td>
+<td><p>Ratio of thermal to solutal diffusivities.</p></td>
+</tr>
+<tr class="row-odd"><td><p><span class="math notranslate nohighlight">\(\varepsilon = \frac{\Delta c}{\varrho}\ll1\)</span></p></td>
+<td><p>evolution</p></td>
+<td><p>…</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="scaling-choice">
+<h3>Scaling choice<a class="headerlink" href="#scaling-choice" title="Link to this heading">#</a></h3>
 <div class="pst-scrollable-table-container"><table class="table">
 <thead>
 <tr class="row-odd"><th class="head"><p>Name</p></th>
@@ -532,20 +576,6 @@ Xl=\frac{\mathcal{L}}{\mathcal{L}_\Omega}
 </tbody>
 </table>
 </div>
-</section>
-<section id="physical-dimensionless-numbers">
-<h3>Physical dimensionless numbers<a class="headerlink" href="#physical-dimensionless-numbers" title="Link to this heading">#</a></h3>
-<p>Rayleigh number (defined with respect to the transport of <span class="math notranslate nohighlight">\(c\)</span> and domain length scale)
-$<span class="math notranslate nohighlight">\(Ra=\frac{\mathcal{L}_\Omega K_{\text{ref}}g\Delta\rho}{\mu_{\text{ref}}D_{\text{ref}}}=\underbrace{\frac{K_{\text{ref}}\,g\Delta\rho}{\mu_{\text{ref}}}}_{\text{convective speed}} \big/ \underbrace{\frac{D_{\text{ref}}}{\mathcal{L}_\Omega}}_{\text{diffusive speed}}\)</span>$</p>
-<p><span class="math notranslate nohighlight">\(Da\)</span> is the Damköhler number (defined with respect to the transport of <span class="math notranslate nohighlight">\(c\)</span> and domain length scale)</p>
-<div class="math notranslate nohighlight">
-\[Da=\frac{\mathcal{L}_\Omega \mu_{\text{ref}}\,\Delta R}{K_{\text{ref}}\,g\Delta\rho\Delta c} = \underbrace{\frac{\Delta R}{\Delta c}}_{\text{reaction rate}} \big/ \underbrace{\frac{K_{\text{ref}}\,g\Delta\rho}{\mathcal{L}_\Omega \mu_{\text{ref}}}}_{\text{convection rate}}\]</div>
-<p>evolution number</p>
-<div class="math notranslate nohighlight">
-\[\varepsilon = \frac{\Delta c}{\varrho}\ll1\]</div>
-<p>Lewis number for the ratio of thermal to solutal diffusivity</p>
-<div class="math notranslate nohighlight">
-\[Le=\frac{G_{\text{ref}}}{D_{\text{ref}}}\]</div>
 </section>
 </section>
 <section id="non-dimensional-time-discretized-equations">
@@ -724,6 +754,7 @@ which assume their default values denoted inside square brackets if not prescrib
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#scalings">Scalings</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#abstract-dimensionless-numbers">Abstract dimensionless numbers</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#physical-dimensionless-numbers">Physical dimensionless numbers</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#scaling-choice">Scaling choice</a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#non-dimensional-time-discretized-equations">Non-dimensional time-discretized  equations</a><ul class="nav section-nav flex-column">

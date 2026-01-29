@@ -12,7 +12,7 @@ from crocodil.dns.utils import CONVECTION_REACTION_SCALINGS, rectangle_mesh_clos
     jit=OptionsJIT("./__jit__/"),
     dir_base="./data",
 )
-def dns_model_b(
+def dns_system_b(
     # mesh
     aspect: float = 2.0,
     Nx: int = 100,

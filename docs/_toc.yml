@@ -13,11 +13,11 @@ parts:
       - file: notebooks/P02_system_a/A00_specification
       - file: notebooks/P02_system_a/A01
       - file: notebooks/P02_system_a/A02
-  - caption: System B
-    chapters:
-      - file: notebooks/P03_system_b/B00_specification
-      - file: notebooks/P03_system_b/B01
-      - file: notebooks/P03_system_b/B02
+  # - caption: System B
+  #   chapters:
+  #     - file: notebooks/P03_system_b/B00_specification
+  #     - file: notebooks/P03_system_b/B01
+  #     - file: notebooks/P03_system_b/B02
   - caption: Benchmarks
     chapters:
       - file: notebooks/Pxx_benchmark/X01_darcy_rayleigh_benard

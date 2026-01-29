@@ -24,8 +24,8 @@ from lucifex.sim import Simulation
 from lucifex.pde.streamfunction import streamfunction_velocity
 from lucifex.pde.darcy import darcy_streamfunction, darcy_incompressible
 from lucifex.pde.advection_diffusion import (
-    advection_diffusion_reaction, advection_diffusion, 
-    advection_diffusion_reaction_dg, advection_diffusion_dg, flux,
+    dg_advection_diffusion_reaction, advection_diffusion, 
+    dg_advection_diffusion, flux,
 )
 from lucifex.utils.mesh_utils import CellType
 from lucifex.utils.dofs_utils import limits_corrector
@@ -256,7 +256,7 @@ def dns_generic(
             )
         else:
             theta_alpha, theta_gamma = theta_stabilization
-            theta_solver = ibvp(advection_diffusion_dg, petsc=theta_petsc, corrector=theta_corrector)(
+            theta_solver = ibvp(dg_advection_diffusion, petsc=theta_petsc, corrector=theta_corrector)(
                 theta, dt, u, g, theta_alpha, theta_gamma, D_adv_thermal, D_diff_thermal, phi=phi, bcs=theta_bcs,
             )
         solvers.append(theta_solver)
@@ -267,12 +267,12 @@ def dns_generic(
         c_limits = (0, 1) if c_limits is True else c_limits
         c_corrector = ('cCorr', limits_corrector(*c_limits)) if c_limits else None
         if SOLUTAL_CNTS:
-            c_solver = ibvp(advection_diffusion_reaction, bcs=c_bcs, petsc=c_petsc, corrector=c_corrector)(
+            c_solver = ibvp(dg_advection_diffusion_reaction, bcs=c_bcs, petsc=c_petsc, corrector=c_corrector)(
                 c, dt, u, d, r, j, D_adv_solutal, D_diff_solutal, D_reac_solutal, D_src_solutal, phi=phi, supg=c_stabilization,
             )
         else:
             c_alpha, c_gamma = c_stabilization
-            c_solver = ibvp(advection_diffusion_reaction_dg, petsc=c_petsc, corrector=c_corrector)(
+            c_solver = ibvp(dg_advection_diffusion_reaction, petsc=c_petsc, corrector=c_corrector)(
                 c, dt, u, d, r, j, c_alpha, c_gamma, D_adv_solutal, D_diff_solutal, D_reac_solutal, phi=phi, bcs=c_bcs,
             )
         solvers.append(c_solver)

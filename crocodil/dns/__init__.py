@@ -4,6 +4,7 @@ from .benchmark import (
     dns_darcy_thermosolutal,
 )
 from .utils import (
-    CONVECTION_REACTION_SCALINGS, vertical_flux,
+    CONVECTION_REACTION_SCALINGS, vertical_flux, critical_wavelength,
+    critical_dx, critical_Nx,
     heaviside, rectangle_mesh_closure, mass_capillary_trapped, mass_dissolved
 )

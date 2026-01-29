@@ -351,7 +351,7 @@ def dns_darcy_thermosolutal(
     gamma = Constant(Omega, gamma, 'gamma')
     # initial conditions
     c_ics = SpatialPerturbation(
-        lambda x: 1 - x[1] / Ly,
+        lambda x: x[1] / Ly,
         cubic_noise(['neumann', 'dirichlet'], [Lx, Ly], c_freq, c_seed),
         [Lx, Ly],
         c_ampl,
