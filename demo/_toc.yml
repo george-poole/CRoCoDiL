@@ -4,6 +4,7 @@ root: home
 parts:
   - caption: Introduction
     chapters:
+      - file: notebooks/P01_user_guide/U00_introduction
       - file: notebooks/P01_user_guide/U01_governing_equations
       - file: notebooks/P01_user_guide/U02_diagnostic_equations
       - file: notebooks/P01_user_guide/U03_numerical_method
