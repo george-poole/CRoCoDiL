@@ -1,0 +1,46 @@
+REMOTE=false
+DRY=false
+
+while [[ "$1" == --* ]]; do
+    case "$1" in
+        --remote)
+        REMOTE=true
+        shift
+        ;;
+    esac
+    case "$1" in
+        --dry)
+        DRY=true
+        shift
+        ;;
+    esac
+done
+
+GLOB=$1
+BUILD=$2
+
+IPYNB=($(find . -name "$GLOB.ipynb" -path "./notebooks/*"))
+for i in "${IPYNB[@]}"
+    do 
+        echo Found notebook to execute $i
+    done
+
+if $DRY; then
+    echo "Exiting dry run"
+    exit
+fi
+
+echo Beginning excution "$(date)"
+for i in "${IPYNB[@]}"
+    do 
+        echo Executing notebook $i 
+        export IPYNB_FILE_NAME="${i}"
+        jupyter nbconvert --execute --to notebook --inplace "${i}" --allow-errors  
+    done
+echo Finished excution "$(date)"
+
+jupyter-book build . $BUILD
+
+if $REMOTE; then
+    ghp-import -n -p -f ./_build/html
+fi
