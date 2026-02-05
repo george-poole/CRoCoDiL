@@ -11,16 +11,18 @@ parts:
   - caption: System A
     chapters:
       - file: notebooks/P02_system_a/A00_specification
-      - file: notebooks/P02_system_a/A01
-      - file: notebooks/P02_system_a/A02
+      - file: notebooks/P02_system_a/A01_demo
+      - file: notebooks/P02_system_a/A02_stabilization
+      - file: notebooks/P02_system_a/A03_resolution
+      - file: notebooks/P02_system_a/A04_sensitivity
   # - caption: System B
   #   chapters:
   #     - file: notebooks/P03_system_b/B00_specification
   #     - file: notebooks/P03_system_b/B01
   #     - file: notebooks/P03_system_b/B02
-  - caption: Benchmarks
+  - caption: Test systems
     chapters:
-      - file: notebooks/Pxx_benchmark/X01_darcy_rayleigh_benard
-      - file: notebooks/Pxx_benchmark/X02_darcy_evolving
-      - file: notebooks/Pxx_benchmark/X03_darcy_rayleigh_taylor
-      - file: notebooks/Pxx_benchmark/X04_darcy_thermosolutal
+      - file: notebooks/P00_test_systems/T01_darcy_rayleigh_benard
+      - file: notebooks/P00_test_systems/T02_darcy_evolving
+      - file: notebooks/P00_test_systems/T03_darcy_rayleigh_taylor
+      - file: notebooks/P00_test_systems/T04_darcy_thermosolutal

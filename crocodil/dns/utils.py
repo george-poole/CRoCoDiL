@@ -42,40 +42,50 @@ and time scale `𝒯` in the non-dimensionalization.
 """
 
 
+# TODO effects of scaling? other versions?
 def critical_wavelength(
-    scaling: str,
     Ra: float,
+    Ly: float,
 ) -> float:
     """
-    `λ = 90 / Ra`
+    `λ = 90 Ly / Ra`
     """
-    # TODO effects of scaling? other versions?
-    scaling_map = CONVECTION_REACTION_SCALINGS[scaling](Ra)
-    Di = scaling_map['Di']
-    return 90.0 * Di
+    return 90.0 * Ly / Ra
 
 
 def critical_dx(
-    scaling: str,
     Ra: float,
+    Ly: float,
     n_per_cell: int,
 ):
     """
-    `Δx ≤ λ / N`
+    `Δx ≤ λ / N` to resolve instabilities
     """
-    return critical_wavelength(scaling, Ra) / n_per_cell
+    return critical_wavelength(Ra, Ly) / n_per_cell
 
 
 def critical_Nx(
-    scaling: str,
     Ra: float,
+    Lx: float,
+    Ly: float,
     n_per_cell: int,
-    Lx: float
 ):
     """
-    `Nₓ ≥ n Lₓ / λ`
+    `Nₓ ≥ n Lₓ / λ` to resolve instabilities
     """
-    return np.ceil(Lx / critical_dx(scaling, Ra, n_per_cell))
+    return np.ceil(Lx / critical_dx(Ra, Ly, n_per_cell))
+
+
+def critical_rayleigh(
+    Lx: float,
+    Ly: float,
+    Nx: int,
+    n_per_cell: int,
+):
+    """
+    `Ra ≤ 90 Ly Nₓ / n Lₓ` to resolve instabilities
+    """
+    return 90.0 * Ly * Nx / (n_per_cell * Lx)
 
 
 def vertical_flux(
@@ -99,8 +109,8 @@ def vertical_flux(
     h0_index = as_index(
         y_axis, 
         y_target, 
-        lambda aprx, trgt: aprx <= trgt and np.abs(aprx - trgt) < tol, 
-        'Mesh resolution must be chosen such that `h0` is aligned with cell facets.',
+        condition=lambda aprx, trgt: aprx <= trgt and np.abs(aprx - trgt) < tol, 
+        msg='Mesh resolution must be chosen such that `y_target` is aligned with cell facets',
     )
     h0_approx = y_axis[h0_index]
     h0_plus = y_axis[h0_index + 1]

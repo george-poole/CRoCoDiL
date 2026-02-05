@@ -38,7 +38,7 @@ def dns_darcy_rayleigh_benard(
     theta_limits: bool | tuple[float, float] = False,
     # linear algebra
     flow_petsc: tuple[OptionsPETSc, OptionsPETSc | None] 
-    | OptionsPETSc = (OptionsPETSc('cg', 'gamg'), None),
+    | OptionsPETSc = (OptionsPETSc('gmres', 'ilu'), None),
     theta_petsc: OptionsPETSc = OptionsPETSc('gmres', 'ilu'),
     # optional post-processing
     diagnostic: bool = False,
@@ -132,7 +132,7 @@ def dns_darcy_evolving(
     theta_limits: bool | tuple[float, float] = False,
     # linear algebra
     flow_petsc: tuple[OptionsPETSc, OptionsPETSc | None] 
-    | OptionsPETSc = (OptionsPETSc('cg', 'gamg'), None),
+    | OptionsPETSc = (OptionsPETSc('gmres', 'ilu'), None),
     theta_petsc: OptionsPETSc = OptionsPETSc('gmres', 'ilu'),
     # optional post-processing
     diagnostic: bool = False,
@@ -156,11 +156,11 @@ def dns_darcy_evolving(
     )
     theta_bcs = BoundaryConditions(
         ("dirichlet", dOmega['upper'], 1.0),
-        ('neumann', dOmega['lower', 'upper', 'right'], 0.0)
+        ('neumann', dOmega['lower', 'left', 'right'], 0.0)
     )
     # constitutive relations
-    density = lambda theta: Bu * theta
     dispersion = lambda phi: Di * phi
+    density = lambda theta: Bu * theta
 
     if diagnostic:
         fluxes = [('q', -2, Lx), *fluxes]
@@ -228,7 +228,7 @@ def dns_darcy_rayleigh_taylor(
     c_limits: bool | tuple[float, float] = False,
     # linear algebra
     flow_petsc: tuple[OptionsPETSc, OptionsPETSc | None] 
-    | OptionsPETSc = (OptionsPETSc('cg', 'gamg'), None),
+    | OptionsPETSc = (OptionsPETSc('gmres', 'ilu'), None),
     c_petsc: OptionsPETSc = OptionsPETSc('gmres', 'ilu'),
     # optional post-processing
     diagnostic: bool = False,
@@ -332,7 +332,7 @@ def dns_darcy_thermosolutal(
     theta_limits: bool | tuple[float, float] = False,
     # linear algebra
     flow_petsc: tuple[OptionsPETSc, OptionsPETSc | None] 
-    | OptionsPETSc = (OptionsPETSc('cg', 'gamg'), None),
+    | OptionsPETSc = (OptionsPETSc('gmres', 'ilu'), None),
     c_petsc: OptionsPETSc = OptionsPETSc('gmres', 'ilu'),
     theta_petsc: OptionsPETSc = OptionsPETSc('gmres', 'ilu'),
     # optional post-processing

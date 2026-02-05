@@ -60,7 +60,7 @@ def dns_system_b(
     s_limits = None,
     # linear algebra
     flow_petsc: tuple[OptionsPETSc, OptionsPETSc | None] 
-    | OptionsPETSc = (OptionsPETSc('cg', 'gamg'), None),
+    | OptionsPETSc = (OptionsPETSc('gmres', 'ilu'), None),
     c_petsc: OptionsPETSc = OptionsPETSc('gmres', 'ilu'),
     s_petsc: OptionsPETSc | None = None,
     # secondary

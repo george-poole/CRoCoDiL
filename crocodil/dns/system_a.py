@@ -5,10 +5,32 @@ from lucifex.fdm import FiniteDifference, FiniteDifferenceArgwise, CN, AB, AM
 from lucifex.utils import CellType
 from lucifex.solver import OptionsPETSc, OptionsJIT
 from lucifex.sim import configure_simulation
-from lucifex.utils.dofs_utils import limits_corrector
+from lucifex.utils import limits_corrector, frozen_dict
 
 from .generic import dns_generic
 from .utils import heaviside, rectangle_mesh_closure, CONVECTION_REACTION_SCALINGS
+
+
+SYSTEM_A_REFERENCE = frozen_dict(
+    aspect=2.0,
+    Ra=1000.0,
+    Da=100.0,
+    epsilon=1e-2,
+    h0=0.9,
+    sr=0.2,
+    cr=0.0,
+)
+"""
+Dictionary containing reference parameters `aspect, Ra, Da, epsilon, h0, sr, cr` 
+governing the physical (as opposed to numerical) behaviour of system A.
+"""
+
+def critical_sr(
+    h0: float,
+    cr: float,
+    epsilon: float,
+) -> float:
+    return epsilon * (-cr + 1 / (1 - h0)) / (1 - epsilon * cr)
 
 
 @configure_simulation(
@@ -31,13 +53,13 @@ def dns_system_a(
     # initial saturation
     sr: float = 0.2,
     s_ampl: float | None = None,
-    s_freq: tuple[int, int] | None = None,
-    s_seed: tuple[int, int] | None = None,
+    s_freq: tuple[int, int] = (16, 16),
+    s_seed: tuple[int, int] = (1234, 5678),
     # initial concentration
     cr: float = 1.0,
     c_ampl: float | None = 1e-6,
-    c_freq: tuple[int, int] | None = (16, 16),
-    c_seed: tuple[int, int] | None = (1234, 5678),
+    c_freq: tuple[int, int] = (16, 16),
+    c_seed: tuple[int, int] = (1234, 5678),
     # time step
     dt_min: float = 0.0,
     dt_max: float = 0.5,
@@ -60,7 +82,7 @@ def dns_system_a(
     s_limits: bool = False,
     # linear algebra
     flow_petsc: tuple[OptionsPETSc, OptionsPETSc | None] 
-    | OptionsPETSc = (OptionsPETSc('cg', 'gamg'), None),
+    | OptionsPETSc = (OptionsPETSc('gmres', 'ilu'), None),
     c_petsc: OptionsPETSc = OptionsPETSc('gmres', 'ilu'),
     s_petsc: OptionsPETSc | None = None,
     # optional postprocessing
@@ -84,15 +106,15 @@ def dns_system_a(
     X = scaling_map['X']
     Lx = aspect * X
     Ly = 1.0 * X
-    h0_X = h0 * X
-    h0_eps_X = h0_eps * X if h0_eps is not None else None
+    Lh = h0 * X
+    Leps = h0_eps * X if h0_eps is not None else None
     Omega, dOmega = rectangle_mesh_closure(Lx, Ly, Nx, Ny, cell)
     # constants
     Di, Bu, Ki = scaling_map[Omega, 'Di', 'Bu', 'Ki']
     Ra = Constant(Omega, Ra, 'Ra')
     Da = Constant(Omega, Da, 'Da')
     # initial conditions
-    s_ics = heaviside(lambda x: x[1] - h0_X, sr, eps=h0_eps_X) 
+    s_ics = heaviside(lambda x: x[1] - Lh, sr, eps=Leps) 
     if s_ampl:
         s_ics = SpatialPerturbation(
             s_ics,
@@ -102,7 +124,7 @@ def dns_system_a(
             limits_corrector(0, sr),
         )
 
-    c_ics = heaviside(lambda x: x[1] - h0_X, cr, eps=h0_eps_X),
+    c_ics = heaviside(lambda x: x[1] - Lh, cr, eps=Leps),
     if c_ampl:
         c_ics = SpatialPerturbation(
             c_ics,
@@ -118,7 +140,7 @@ def dns_system_a(
     source = lambda s: Ki * s
 
     if diagnostic:
-        fluxes = [('f', h0, Lx), *fluxes]
+        fluxes = [('f', Lh, Lx), *fluxes]
 
     return dns_generic(
         # domain
