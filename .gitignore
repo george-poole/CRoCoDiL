@@ -11,9 +11,9 @@
 *.pdf
 *.png
 *.mp4
-!docs/**/*.pdf
-!docs/**/*.png
-!docs/**/*.mp4
+!demo/**/*.pdf
+!demo/**/*.png
+!demo/**/*.mp4
 
 # interactive
 .ipynb_checkpoints
