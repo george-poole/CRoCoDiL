@@ -14,8 +14,6 @@ from lucifex.utils import StrSlice, as_index, as_indices
 
 from .contour import contour_peak_trajectories, filter_trajectories, contour_coordinates
 from .compute import compute_horizontal_average
-from .tex_utils import TeX
-
 
 @postprocess
 def plot_colormaps(
@@ -38,7 +36,7 @@ def plot_colormaps(
 
     fig_axs: list[tuple[Figure, Axes]] = []
     for i in time_indices:
-        title = f'{u_label}({TeX.X}, {TeX.Y}, {TeX.t}={u.time_series[i]:.6f})'
+        title = f'{u_label}(x, y, t={u.time_series[i]:.6f})'
         fig, ax = plot_colormap((u.series[i], *u.axes), title=title, **kwargs)
         if suptitle:
             fig.suptitle(suptitle)
@@ -136,7 +134,7 @@ def plot_timeseries(
     if label is None:
         label = u.name
 
-    fig, ax = plot_line((u.time_series, u.series), x_label=TeX.T, y_label=label, **kwargs)
+    fig, ax = plot_line((u.time_series, u.series), x_label='t', y_label=label, **kwargs)
 
     if t_events:
         ylims = ax.get_ylim()
@@ -172,21 +170,21 @@ def plot_twinned_timeseries(
     fig_axs: list[tuple[Figure, Axes]] = []
     if individual:
         for i, l in zip(u, labels, strict=True):
-            fig_ax = plot_line((i.time_series, i.series), x_label=TeX.T, y_label=l)
+            fig_ax = plot_line((i.time_series, i.series), x_label='t', y_label=l)
             fig_axs.append(fig_ax)
 
     if together:
         x_lims = (min(i.time_series[0] for i in u),
                   min(i.time_series[-1] for i in u))
         fig_ax = plot_line(
-            [(i.time_series, i.series) for i in u],  x_lims=x_lims, x_label=TeX.T, legend_labels=labels)
+            [(i.time_series, i.series) for i in u],  x_lims=x_lims, x_label='t', legend_labels=labels)
         fig_axs.append(fig_ax)
 
     if twins:
         assert len(u) == 2
         assert len(labels) == 2
         fig_ax = plot_twin_lines(
-            (u[0].time_series, u[1].time_series), (u[0].series, u[1].series), labels,  x_label=TeX.T)
+            (u[0].time_series, u[1].time_series), (u[0].series, u[1].series), labels,  x_label='t')
         fig_axs.append(fig_ax)
 
     if suptitle:
@@ -223,13 +221,13 @@ def plot_horizontal_average(
     if legend:
         legend_kwargs = dict(
             legend_labels=(min(time_values), max(time_values)),
-            legend_title=TeX.T,
+            legend_title=t,
         )
 
     return plot_line(
         *fig_ax,
         [(u_braket.series[i], y) for i in time_indices], 
-        x_label=f'{TeX.BRAKET(u_label)}_x', 
+        x_label=f'$\langle {u_label}\\rangle$', 
         y_label='y', 
         x_lims=x_lims,
         y_lims=y_lims,
@@ -280,7 +278,7 @@ def plot_finger_trajectories(
         adaptive,
     )
     
-    title = f'{c_label}({TeX.X}, {TeX.Y}, {TeX.T}={c.time_series[ti_max]:.3f})'
+    title = f'{c_label}(x, y, t={c.time_series[ti_max]:.3f})'
     fig, ax = plot_colormap((c.series[ti_max], x, y), title=title, **kwargs)
     ax.plot(*xy_contour, **line_kwargs)
 

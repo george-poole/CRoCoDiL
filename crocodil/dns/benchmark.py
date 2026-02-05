@@ -70,7 +70,7 @@ def dns_darcy_rayleigh_benard(
     density = lambda theta: -Bu * theta
 
     if diagnostic:
-        fluxes = [('q', int(0.5 * Ny), Lx), *fluxes]
+        fluxes = [('q', 0.5 * Ly, Lx), *fluxes]
 
     return dns_generic(
         # domain

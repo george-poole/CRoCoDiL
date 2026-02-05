@@ -14,7 +14,6 @@ from lucifex.io.post import co_postprocess
 from lucifex.utils import StrSlice, as_index
 
 from .plot import plot_horizontal_average
-from .tex_utils import TeX
 
 
 @co_postprocess
@@ -121,7 +120,7 @@ def co_plot_timeseries(
         [(i.time_series, i.series) for i in u], 
         legend_labels, 
         legend_title, 
-        x_label=TeX.T, 
+        x_label='t', 
         **kwargs,
     )
 
