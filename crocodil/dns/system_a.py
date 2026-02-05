@@ -30,6 +30,9 @@ def critical_sr(
     cr: float,
     epsilon: float,
 ) -> float:
+    """
+    `sr = ε ( 1 / (1 - h₀) - cr ) / (1 - εcr)`
+    """
     return epsilon * (-cr + 1 / (1 - h0)) / (1 - epsilon * cr)
 
 

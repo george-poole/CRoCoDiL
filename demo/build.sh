@@ -17,7 +17,8 @@ while [[ "$1" == --* ]]; do
 done
 
 GLOB=$1
-BUILD=$2
+NBCONVERT_ARGS=${2:-"--allow-errors"}
+BUILD_ARGS=${3:-""}
 
 IPYNB=($(find . -name "$GLOB.ipynb" -path "./notebooks/*"))
 for i in "${IPYNB[@]}"
@@ -30,14 +31,14 @@ if $DRY; then
     exit
 fi
 
-echo Beginning excution "$(date)"
 for i in "${IPYNB[@]}"
     do 
         echo Executing notebook $i 
         export IPYNB_FILE_NAME="${i}"
-        jupyter nbconvert --execute --to notebook --inplace "${i}" --allow-errors  
+        echo Beginning excution "$(date)"
+        jupyter nbconvert --execute --to notebook --inplace "${i}" $NBCONVERT_ARGS  
+        echo Finished excution "$(date)"
     done
-echo Finished excution "$(date)"
 
 jupyter-book build . $BUILD
 
