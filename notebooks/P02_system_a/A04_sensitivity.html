@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Specification &#8212; CRoCoDiL Docs</title>
+    <title>Sensitivity to initial conditions &#8212; CRoCoDiL Docs</title>
   
   
   
@@ -57,13 +57,11 @@
     <script async="async" src="../../_static/sphinx-thebe.js?v=c100c467"></script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
     <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
-    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
-    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-    <script>DOCUMENTATION_OPTIONS.pagename = 'notebooks/P02_system_a/A00_specification';</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'notebooks/P02_system_a/A04_sensitivity';</script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="Demo" href="A01_demo.html" />
-    <link rel="prev" title="User guide" href="../P01_user_guide/U04_user_guide.html" />
+    <link rel="next" title="Damkohler numbers" href="A05_damkohler.html" />
+    <link rel="prev" title="Mesh resolution" href="A03_resolution.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   </head>
@@ -184,11 +182,11 @@
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">System A</span></p>
 <ul class="current nav bd-sidenav">
-<li class="toctree-l1 current active"><a class="current reference internal" href="#">Specification</a></li>
+<li class="toctree-l1"><a class="reference internal" href="A00_specification.html">Specification</a></li>
 <li class="toctree-l1"><a class="reference internal" href="A01_demo.html">Demo</a></li>
 <li class="toctree-l1"><a class="reference internal" href="A02_stabilization.html">Stabilization of the advection-diffusion-reaction equation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="A03_resolution.html">Mesh resolution</a></li>
-<li class="toctree-l1"><a class="reference internal" href="A04_sensitivity.html">Sensitivity to initial conditions</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Sensitivity to initial conditions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="A05_damkohler.html">Damkohler numbers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="A06_rayleigh.html">Rayleigh numbers</a></li>
 </ul>
@@ -252,7 +250,7 @@
       
       
       
-      <li><a href="../../_sources/notebooks/P02_system_a/A00_specification.md" target="_blank"
+      <li><a href="../../_sources/notebooks/P02_system_a/A04_sensitivity.ipynb" target="_blank"
    class="btn btn-sm btn-download-source-button dropdown-item"
    title="Download source file"
    data-bs-placement="left" data-bs-toggle="tooltip"
@@ -262,7 +260,7 @@
 <span class="btn__icon-container">
   <i class="fas fa-file"></i>
   </span>
-<span class="btn__text-container">.md</span>
+<span class="btn__text-container">.ipynb</span>
 </a>
 </li>
       
@@ -334,7 +332,7 @@ document.write(`
               
 
 <div id="jb-print-docs-body" class="onlyprint">
-    <h1>Specification</h1>
+    <h1>Sensitivity to initial conditions</h1>
     <!-- Table of contents -->
     <div id="print-main-content">
         <div id="jb-print-toc">
@@ -348,24 +346,103 @@ document.write(`
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section class="tex2jax_ignore mathjax_ignore" id="specification">
-<h1>Specification<a class="headerlink" href="#specification" title="Link to this heading">#</a></h1>
-<p><img alt="Figure" src="../../_images/system_a_t_geq_0.png" /></p>
-<!-- <img src="./figures/system_a_t>0.png" width="400"/> -->
-<div class="math notranslate nohighlight">
-\[\begin{split}
-\mathbb{S}\begin{cases}
-\Omega=[0, \mathcal{A}X] \times [0, X] &amp; \text{aspect ratio $\mathcal{A}=\mathcal{O}(1)$} \\ 
-s_0(y)=s_r\text{H}(y-\mathcal{A}h_0) &amp; \text{initial saturation} \\
-c_0(x,y)=c_r\text{H}(y-\mathcal{A}h_0) + \mathcal{N}(x,y) &amp; \text{initial concentration} \\
-\varphi = 1 &amp; \text{constant rock porosity} \\
-\mathsf{K} = \phi\mathsf{I} &amp; \text{isotropic permeability} \\
-\mathsf{D} = \phi\mathsf{I} &amp; \text{isotropic dispersion}\\
-\mu = 1 &amp; \text{constant viscosity} \\
-\rho(c)=c &amp; \text{linear density} \\
-\Sigma(c, s)=s(1-c) \implies R(s)=-s, J(s)=s &amp; \text{linear reaction} \\
-\end{cases}
-\end{split}\]</div>
+  <section class="tex2jax_ignore mathjax_ignore" id="sensitivity-to-initial-conditions">
+<h1>Sensitivity to initial conditions<a class="headerlink" href="#sensitivity-to-initial-conditions" title="Link to this heading">#</a></h1>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">lucifex.solver</span><span class="w"> </span><span class="kn">import</span> <span class="n">OptionsPETSc</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">lucifex.fdm</span><span class="w"> </span><span class="kn">import</span> <span class="n">AB</span><span class="p">,</span> <span class="n">CN</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">lucifex.sim</span><span class="w"> </span><span class="kn">import</span> <span class="n">run</span><span class="p">,</span> <span class="n">Simulation</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">lucifex.viz</span><span class="w"> </span><span class="kn">import</span> <span class="n">plot_colormap</span><span class="p">,</span> <span class="n">plot_line</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">crocodil.dns</span><span class="w"> </span><span class="kn">import</span> <span class="n">dns_system_a</span><span class="p">,</span> <span class="n">SYSTEM_A_REFERENCE</span>
+
+<span class="n">STORE</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="n">NX</span> <span class="o">=</span> <span class="mi">60</span>
+<span class="n">NY</span> <span class="o">=</span> <span class="mi">60</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">create_simulation</span><span class="p">(</span>
+    <span class="n">c_ampl</span><span class="o">=</span><span class="mf">1e-6</span><span class="p">,</span>
+    <span class="n">c_freq</span><span class="o">=</span><span class="p">(</span><span class="mi">16</span><span class="p">,</span> <span class="mi">16</span><span class="p">),</span>
+    <span class="n">c_seed</span><span class="o">=</span><span class="p">(</span><span class="mi">1234</span><span class="p">,</span> <span class="mi">5678</span><span class="p">),</span>
+<span class="p">):</span>
+    <span class="k">return</span> <span class="n">dns_system_a</span><span class="p">(</span>
+        <span class="n">store_delta</span><span class="o">=</span><span class="n">STORE</span><span class="p">,</span> 
+    <span class="p">)(</span>
+        <span class="n">Nx</span><span class="o">=</span><span class="n">NX</span><span class="p">,</span>
+        <span class="n">Ny</span><span class="o">=</span><span class="n">NY</span><span class="p">,</span>
+        <span class="n">scaling</span><span class="o">=</span><span class="s1">&#39;advective&#39;</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">SYSTEM_A_REFERENCE</span><span class="p">,</span>
+        <span class="n">c_ampl</span><span class="o">=</span><span class="n">c_ampl</span><span class="p">,</span>
+        <span class="n">c_freq</span><span class="o">=</span><span class="n">c_freq</span><span class="p">,</span>
+        <span class="n">c_seed</span><span class="o">=</span><span class="n">c_seed</span><span class="p">,</span>
+        <span class="n">D_adv</span><span class="o">=</span><span class="n">AB</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="nd">@CN</span><span class="p">,</span>
+        <span class="n">D_diff</span><span class="o">=</span><span class="n">AB</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="nd">@CN</span><span class="p">,</span>
+        <span class="n">dt_max</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>
+        <span class="n">cfl_courant</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
+        <span class="n">c_stabilization</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">c_limits</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">c_petsc</span><span class="o">=</span><span class="n">OptionsPETSc</span><span class="p">(</span><span class="s1">&#39;gmres&#39;</span><span class="p">,</span> <span class="s1">&#39;ilu&#39;</span><span class="p">),</span>
+        <span class="n">flow_petsc</span><span class="o">=</span><span class="p">(</span><span class="n">OptionsPETSc</span><span class="p">(</span><span class="s1">&#39;cg&#39;</span><span class="p">,</span> <span class="s1">&#39;hypre&#39;</span><span class="p">),</span> <span class="kc">None</span><span class="p">),</span>
+        <span class="n">diagnostic</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="p">)</span>
+
+
+<span class="n">ICS_KWARG</span> <span class="o">=</span> <span class="s1">&#39;c_freq&#39;</span>
+<span class="n">ics_opts</span> <span class="o">=</span> <span class="p">((</span><span class="mi">8</span><span class="p">,</span> <span class="mi">8</span><span class="p">),</span> <span class="p">(</span><span class="mi">16</span><span class="p">,</span> <span class="mi">16</span><span class="p">),</span> <span class="p">(</span><span class="mi">32</span><span class="p">,</span> <span class="mi">32</span><span class="p">),</span> <span class="p">(</span><span class="mi">48</span><span class="p">,</span> <span class="mi">48</span><span class="p">))</span>
+<span class="n">simulations</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">tuple</span><span class="p">,</span> <span class="n">Simulation</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+
+<span class="k">for</span> <span class="n">opt</span> <span class="ow">in</span> <span class="n">ics_opts</span><span class="p">:</span>
+    <span class="n">simulations</span><span class="p">[</span><span class="n">opt</span><span class="p">]</span> <span class="o">=</span> <span class="n">create_simulation</span><span class="p">(</span><span class="o">**</span><span class="p">{</span><span class="n">ICS_KWARG</span><span class="p">:</span> <span class="n">opt</span><span class="p">})</span>
+
+<span class="n">n_stop</span> <span class="o">=</span> <span class="mi">200</span>
+<span class="n">t_stop</span> <span class="o">=</span> <span class="mf">12.0</span>
+<span class="n">dt_init</span> <span class="o">=</span> <span class="mf">1e-6</span>
+<span class="n">n_init</span> <span class="o">=</span> <span class="mi">10</span>
+<span class="k">for</span> <span class="n">opt</span> <span class="ow">in</span> <span class="n">ics_opts</span><span class="p">:</span>
+    <span class="n">sim</span> <span class="o">=</span> <span class="n">simulations</span><span class="p">[</span><span class="n">opt</span><span class="p">]</span>
+    <span class="n">run</span><span class="p">(</span><span class="n">sim</span><span class="p">,</span> <span class="n">n_stop</span><span class="p">,</span> <span class="n">t_stop</span><span class="p">,</span> <span class="n">dt_init</span><span class="o">=</span><span class="n">dt_init</span><span class="p">,</span> <span class="n">n_init</span><span class="o">=</span><span class="n">n_init</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">opt</span> <span class="ow">in</span> <span class="n">ics_opts</span><span class="p">:</span>
+    <span class="n">title</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="se">\\</span><span class="s1">texttt</span><span class="se">{{</span><span class="si">{</span><span class="n">ICS_KWARG</span><span class="si">}</span><span class="s1">=</span><span class="si">{</span><span class="n">opt</span><span class="si">}</span><span class="se">}}</span><span class="s1">&#39;</span>
+    <span class="n">sim</span> <span class="o">=</span> <span class="n">simulations</span><span class="p">[</span><span class="n">opt</span><span class="p">]</span>
+    <span class="n">uMinMax</span> <span class="o">=</span> <span class="n">sim</span><span class="p">[</span><span class="s1">&#39;uMinMax&#39;</span><span class="p">]</span>
+    <span class="n">uMax</span> <span class="o">=</span> <span class="n">uMinMax</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plot_line</span><span class="p">(</span>
+        <span class="p">(</span><span class="n">uMax</span><span class="o">.</span><span class="n">time_series</span><span class="p">,</span> <span class="n">uMax</span><span class="o">.</span><span class="n">value_series</span><span class="p">),</span>
+        <span class="n">x_label</span><span class="o">=</span><span class="s1">&#39;$t$&#39;</span><span class="p">,</span>
+        <span class="n">y_label</span><span class="o">=</span><span class="s1">&#39;$\max_{\mathbf</span><span class="si">{x}</span><span class="s1">}|\mathbf</span><span class="si">{u}</span><span class="s1">|$&#39;</span><span class="p">,</span>
+        <span class="n">title</span><span class="o">=</span><span class="n">title</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">c</span> <span class="o">=</span> <span class="n">sim</span><span class="p">[</span><span class="s1">&#39;c&#39;</span><span class="p">]</span>
+    <span class="k">for</span> <span class="n">time_index</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+        <span class="n">cmap_title</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">title</span><span class="si">}</span><span class="se">\n</span><span class="s1"> $c(t=</span><span class="si">{</span><span class="n">c</span><span class="o">.</span><span class="n">time_series</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s1">)$&#39;</span>
+        <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plot_colormap</span><span class="p">(</span>
+            <span class="n">c</span><span class="o">.</span><span class="n">series</span><span class="p">[</span><span class="n">time_index</span><span class="p">],</span> 
+            <span class="n">title</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;$c(t=</span><span class="si">{</span><span class="n">c</span><span class="o">.</span><span class="n">time_series</span><span class="p">[</span><span class="n">time_index</span><span class="p">]</span><span class="si">}</span><span class="s1">)$&#39;</span><span class="p">,</span>
+        <span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../../_images/3c7ea4401670f297cce5c79630557960fce53fcd39a824ed2c915638f406c33b.png" src="../../_images/3c7ea4401670f297cce5c79630557960fce53fcd39a824ed2c915638f406c33b.png" />
+<img alt="../../_images/1d88503fa7c72b3b17079278cff36136bfde231113a50e25a7385b8408ea2ef3.png" src="../../_images/1d88503fa7c72b3b17079278cff36136bfde231113a50e25a7385b8408ea2ef3.png" />
+<img alt="../../_images/860d9a23ade30adeabd49501f7a6085876bf60cea6cf2ec6c1cbcbd7354f9fca.png" src="../../_images/860d9a23ade30adeabd49501f7a6085876bf60cea6cf2ec6c1cbcbd7354f9fca.png" />
+<img alt="../../_images/0f58787273500ee8729e0ae7f92988c4c156561c677c86ab5cab2ad9a58d596e.png" src="../../_images/0f58787273500ee8729e0ae7f92988c4c156561c677c86ab5cab2ad9a58d596e.png" />
+<img alt="../../_images/7388eae0234eb550d5d5e5db34ce46e4929b0ca745908c7e20fad3a1c7149320.png" src="../../_images/7388eae0234eb550d5d5e5db34ce46e4929b0ca745908c7e20fad3a1c7149320.png" />
+<img alt="../../_images/ad034d996c180e175052a851361c67ba8f18c033ff21fe0398473403e81a9ab7.png" src="../../_images/ad034d996c180e175052a851361c67ba8f18c033ff21fe0398473403e81a9ab7.png" />
+<img alt="../../_images/f89d48f20974978d3e96dad8bce5e77862120c9d98e009edd3ae0e2c658adccf.png" src="../../_images/f89d48f20974978d3e96dad8bce5e77862120c9d98e009edd3ae0e2c658adccf.png" />
+<img alt="../../_images/9d52a4df7a7b5f02b1a6abe157160b221208beb08e0d52e264a5fb35a439a465.png" src="../../_images/9d52a4df7a7b5f02b1a6abe157160b221208beb08e0d52e264a5fb35a439a465.png" />
+<img alt="../../_images/60de35965eadd1fb979b925ec8cb55c432ea84d760d926697a10bf1fd0cb3346.png" src="../../_images/60de35965eadd1fb979b925ec8cb55c432ea84d760d926697a10bf1fd0cb3346.png" />
+<img alt="../../_images/0552f358578f99c1c37d2507ccaa6f43a20c9e7ba6baab209289cd542bf7b330.png" src="../../_images/0552f358578f99c1c37d2507ccaa6f43a20c9e7ba6baab209289cd542bf7b330.png" />
+<img alt="../../_images/8f3cf384277ea3ce914aab333f8981f57fe61d711bc7e1ac5a1f3366d13aa0cf.png" src="../../_images/8f3cf384277ea3ce914aab333f8981f57fe61d711bc7e1ac5a1f3366d13aa0cf.png" />
+<img alt="../../_images/1887bb894d1213d1382cb5e75b74f119df9f39d21533fa4660cdfbdc42ac5144.png" src="../../_images/1887bb894d1213d1382cb5e75b74f119df9f39d21533fa4660cdfbdc42ac5144.png" />
+</div>
+</div>
 </section>
 
     <script type="text/x-thebe-config">
@@ -399,20 +476,20 @@ c_0(x,y)=c_r\text{H}(y-\mathcal{A}h_0) + \mathcal{N}(x,y) &amp; \text{initial co
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="../P01_user_guide/U04_user_guide.html"
+       href="A03_resolution.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">User guide</p>
+        <p class="prev-next-title">Mesh resolution</p>
       </div>
     </a>
     <a class="right-next"
-       href="A01_demo.html"
+       href="A05_damkohler.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Demo</p>
+        <p class="prev-next-title">Damkohler numbers</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
