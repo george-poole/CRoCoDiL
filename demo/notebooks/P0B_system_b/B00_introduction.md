@@ -1,4 +1,4 @@
-# Specification
+# Introduction
 
 $$
 \begin{cases}
@@ -12,3 +12,5 @@ c_0(x,y)=f(y) + \mathcal{N}(x,y)\\
 \theta_{\text{N}}(x=L_x, y)=0
 \end{cases}
 $$ 
+
+![System B initial conditions](./figures/Omega0.png)

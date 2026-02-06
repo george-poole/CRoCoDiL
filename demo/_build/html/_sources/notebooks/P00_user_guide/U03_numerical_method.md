@@ -24,23 +24,6 @@ $$
 \end{align}
 $$
 
-| $\mathcal{D}$ operator | Default | Description |
-| -------- | ------- | ------- | 
-| $\mathcal{D}_\phi$ | `AB(1)` | forward Euler | 
-| $\mathcal{D}_{\mathsf{G}}$ | `AB(1)` | forward Euler | 
-| $\mathcal{D}_{\mathsf{D}}$ | `AB(1)` | forward Euler | 
-| $\mathcal{D}_{\textbf{u},\theta}$ | `AB(2) @ CN` | second-order Adams-Bashforth on $\textbf{u}$ and Crank-Nicolson on $\theta$ | 
-| $\mathcal{D}_{\textbf{u},c}$ | `AB(2) @ CN` | second-order Adams-Bashforth on $\textbf{u}$ and Crank-Nicolson on $c$ | 
-| $\mathcal{D}_{\theta}$ | `CN` | Crank-Nicolson | 
-| $\mathcal{D}_{c}$ | `CN` | Crank-Nicolson |  
-| $\mathcal{D}_{R,c}$ | `AB(1) @ AM(1)` | forward Euler on $R(s)$ and backward Euler on $c$|  
-| $\mathcal{D}_{J}$ | `AB(1)` | forward Euler on $J(s)$ |  
-| $\mathcal{D}_{s,c,\theta}$ | `AB(1) @ AM(1)` | forward Euler on $s$ and backward Euler on $c$ | 
-
-For mass conservation, ideally choose $\mathcal{D}_{R,c}, \mathcal{D}_{J}, \mathcal{D}_{s,c,\theta}$ such that
-
-$$\mathcal{D}_{R,c}(Rc) + \mathcal{D}_J(J) \equiv \mathcal{D}_{s,c,\theta}(\Sigma)$$
-
 ## Adaptive timestep
 
 $$
@@ -52,7 +35,7 @@ where
 $$
 \begin{align*}
 \Delta t^n_{\text{CFLR}} &= \min\{C_{\text{CFL}}\Delta t^n_{\text{CFL}}, C_R\Delta t^n_R\} \\
-\Delta t^n_{\text{CFL}} &= \min_{\textbf{x}}\bigg(\frac{\ell(\textbf{x})}{Ad\,|\textbf{u}^n|}\bigg)  \\
+\Delta t^n_{\text{CFL}} &= \min_{\textbf{x}}\bigg(\frac{h(\textbf{x})}{Ad\,|\textbf{u}^n|}\bigg)  \\
 \Delta t^n_{\text{R}} &= \frac{1}{\max_{\textbf{x}}(Ki\,|R^n|)}
 \end{align*}
 $$
@@ -161,11 +144,11 @@ $$
 stabilization parameter
 
 $$
-\tau^n=\tau^n(\ell, \textbf{u}_{\text{eff}}, \mathsf{D}_{\text{eff}}, R_{\text{eff}})=\begin{cases}
-(2|\textbf{u}_{\text{eff}}| / \ell  +  4D_{\text{eff}} / \ell^2  -  R_{\text{eff}})^{-1} & \text{Codina} \\
-((2|\textbf{u}_{\text{eff}}| / \ell)^2  +  9(4D_{\text{eff}} / \ell^2)^2  +  R_{\text{eff}}^2)^{-1/2} & \text{Shakib} \\
-((2 / \Delta t)^2 + (2|\textbf{u}_{\text{eff}}| / \ell)^2  +  (2D_{\text{eff}} / \ell^2)^2  +  R_{\text{eff}}^2)^{-1/2} & \text{transient} \\
-(\ell/2|\textbf{u}_{\text{eff}}|)(\text{coth}(|\textbf{u}_{\text{eff}}|\ell/2D_{\text{eff}}) - 2D_{\text{eff}}/|\textbf{u}_{\text{eff}}|\ell) & \text{coth} \\
+\tau^n=\tau^n(h, \textbf{u}_{\text{eff}}, \mathsf{D}_{\text{eff}}, R_{\text{eff}})=\begin{cases}
+(2|\textbf{u}_{\text{eff}}| / h  +  4D_{\text{eff}} / h^2  -  R_{\text{eff}})^{-1} & \text{Codina} \\
+((2|\textbf{u}_{\text{eff}}| / h)^2  +  9(4D_{\text{eff}} / h^2)^2  +  R_{\text{eff}}^2)^{-1/2} & \text{Shakib} \\
+((2 / \Delta t)^2 + (2|\textbf{u}_{\text{eff}}| / h)^2  +  (2D_{\text{eff}} / h^2)^2  +  R_{\text{eff}}^2)^{-1/2} & \text{transient} \\
+(h/2|\textbf{u}_{\text{eff}}|)(\text{coth}(|\textbf{u}_{\text{eff}}|h/2D_{\text{eff}}) - 2D_{\text{eff}}/|\textbf{u}_{\text{eff}}|h) & \text{coth} \\
 0 & \text{none}
 \end{cases}
 $$
@@ -220,12 +203,12 @@ c_{\text{N}}\,\textbf{n}\cdot\textbf{u} & \text{otherwise} \\
 \end{cases} \\
 &\quad +\frac{1}{Pe}\int_\Omega\text{d}\Omega~\nabla\left(\frac{v}{\mathcal{D}_\phi(\phi)}\right)\cdot\nabla(\mathcal{D}_{\mathsf{D}}(\mathsf{D})\cdot\nabla\mathcal{D}_c(c)) \\
 &\quad - \frac{1}{Pe}\int_{\mathcal{F}/\partial\Omega}\text{d}\Gamma~\left\{\mathcal{D}_{\mathsf{D}}(\mathsf{D})\cdot\nabla\left(\frac{v}{\mathcal{D}_\phi(\phi)}\right)\right\}\cdot\llbracket\mathcal{D}_c(c)\rrbracket\textbf{n}+\left\{\mathcal{D}_{\mathsf{D}}(\mathsf{D})\cdot\nabla\mathcal{D}_c(c)\right\}\cdot\llbracket \frac{v}{\mathcal{D}_\phi(\phi)}\rrbracket\textbf{n} \\
-&\quad +\frac{1}{Pe}\int_{\mathcal{F}/\partial\Omega}\text{d}\Gamma~ \frac{\alpha_{\text{DG}}}{\ell}\llbracket \frac{v}{\mathcal{D}_\phi(\phi)}\rrbracket\cdot\llbracket\mathcal{D}_c(c)\rrbracket\\
+&\quad +\frac{1}{Pe}\int_{\mathcal{F}/\partial\Omega}\text{d}\Gamma~ \frac{\alpha_{\text{DG}}}{h}\llbracket \frac{v}{\mathcal{D}_\phi(\phi)}\rrbracket\cdot\llbracket\mathcal{D}_c(c)\rrbracket\\
 &\quad -\frac{1}{Pe}\quad \int_{\partial\Omega_{\text{D},c}}\text{d}\Gamma~\left(\mathcal{D}_{\mathsf{D}}(\mathsf{D})\cdot\nabla\left(\frac{v}{\mathcal{D}_\phi(\phi)}\right)\right)\cdot(\mathcal{D}_c(c)-c_{\text{D}})\textbf{n}\\
 
 &\quad -\frac{1}{Pe}\quad \int_{\partial\Omega_{\text{D},c}}\text{d}\Gamma~(\mathcal{D}_{\mathsf{D}}(\mathsf{D})\cdot\nabla\mathcal{D}_c(c))\cdot\left(\frac{v}{\mathcal{D}_\phi(\phi)}\textbf{n}\right)\\
 
-&\quad +\frac{1}{Pe}\quad \int_{\partial\Omega_{\text{D},c}}\text{d}\Gamma~\frac{\gamma_{\text{DG}}}{\ell} v(c-c_{\text{D}})\\
+&\quad +\frac{1}{Pe}\quad \int_{\partial\Omega_{\text{D},c}}\text{d}\Gamma~\frac{\gamma_{\text{DG}}}{h} v(c-c_{\text{D}})\\
 &\quad -\frac{1}{Pe}\quad \int_{\partial\Omega_{\text{N},c}}\text{d}\Gamma~\frac{vc_{\text{N}}}{\mathcal{D}_\phi(\phi)}\\
 &\quad -Ki\int_\Omega\text{d}\Omega~v\,\frac{\mathcal{D}_{R,c}(Rc)}{\mathcal{D}_\phi(\phi)} \\
 &=0 \qquad \forall v\in\hat{V}_c 
