@@ -130,8 +130,8 @@ def dns_system_b(
         dispersion_thermal=dispersion_thermal,
         # time step
         dt_max=dt_max,
-        cfl_h=cfl_h,
-        cfl_courant=cfl_courant,
+        dt_h=cfl_h,
+        u_courant=cfl_courant,
         r_courant=r_courant,
         # time discretization
         D_adv_solutal=D_adv_solutal,

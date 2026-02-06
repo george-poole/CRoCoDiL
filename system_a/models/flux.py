@@ -174,7 +174,7 @@ class FluxModel:
     Lx: float
     Da: float
     epsilon: float
-    h0: float
+    zeta0: float
     sr: float
     cr: float
     lmbda: float
@@ -187,7 +187,7 @@ class FluxModel:
             self.t,
             self.Da,
             self.epsilon,
-            self.h0,
+            self.zeta0,
             self.sr,
             self.cr,
             self.lmbda,
@@ -229,7 +229,7 @@ class FluxModel:
             self.epsilon,
             self.sr,
             self.cr,
-            self.h0,
+            self.zeta0,
         )
     
     @property
@@ -244,7 +244,7 @@ class FluxModel:
             self.epsilon,
             self.sr,
             self.cr,
-            self.h0,
+            self.zeta0,
             self.Lx,
         )
     
@@ -260,7 +260,7 @@ class FluxModel:
             self.epsilon,
             self.sr,
             self.cr,
-            self.h0,
+            self.zeta0,
             self.Lx,
         )
     
@@ -307,7 +307,7 @@ class DaInftyFluxModel(FluxModel):
     @property
     def h(self):
         """
-        `h(t) ≈ h₀`
+        `h(t) ≈ ζ₀`
         """
         return np.full_like(np.array(self.t), self.parameters.h0)
     
@@ -323,7 +323,7 @@ class DaInftyFluxModel(FluxModel):
         """
         `f(t, y)` right-hand side function for the decoupled ODE
 
-        `dc⁻(t) / dt = F(c⁻) / h₀`        
+        `dc⁻(t) / dt = F(c⁻) / ζ₀`        
         """
         c_minus = y[0]
         f = cls.flux(1, c_minus, lmbda, n)
@@ -438,7 +438,7 @@ class EpsilonZeroModel(FluxModel):
 #     ):
 #         """
 #         mass per unit horizontal length
-#         `mᶜ(Θ; Sᵣ, h₀, ε) / L`
+#         `mᶜ(Θ; Sᵣ, ζ₀, ε) / L`
 #         """
 #         ...
 
@@ -452,7 +452,7 @@ class EpsilonZeroModel(FluxModel):
 #     ):
 #         """
 #         mass per unit horizontal length
-#         `mᴰ(Θ; Sᵣ, h₀, ε) / L`
+#         `mᴰ(Θ; Sᵣ, ζ₀, ε) / L`
 #         """
 #         ...
 
@@ -465,7 +465,7 @@ class EpsilonZeroModel(FluxModel):
 #         epsilon: float,
 #     ):
 #         """
-#         `h(Θ; Sᵣ, h₀, ε)`
+#         `h(Θ; Sᵣ, ζ₀, ε)`
 #         """
 #         ...
 
@@ -478,7 +478,7 @@ class EpsilonZeroModel(FluxModel):
 #         epsilon: float,
 #     ):
 #         """
-#         `dh/dΘ(Θ; Sᵣ, h₀, ε)`
+#         `dh/dΘ(Θ; Sᵣ, ζ₀, ε)`
 #         """
 #         ...
 
@@ -591,7 +591,7 @@ class EpsilonZeroModel(FluxModel):
     
 #     def _mD_model(t, lmbda):
 #         theta = concentration_sharp_front(t, lmbda, Sr, h0, epsilon)
-#         return quantity_func(theta, Sr=Sr, h0=h0, epsilon=epsilon)
+#         return quantity_func(theta, Sr=Sr, zeta0=h0, epsilon=epsilon)
     
 #     assert len(t_dns) == len(quantity_dns)
 #     t_dns = np.asarray(t_dns)

@@ -32,7 +32,7 @@ def dns_model_c(
     # initial conditions
     cr: float = 0.0,
     sr: float = 0.2,
-    h0: float | tuple[float, float, float] = 4.0,
+    zeta0: float | tuple[float, float, float] = 4.0,
     H_eps: float | None = None,
     # concentration SpatialPerturbation
     c_eps: float = 1e-6,
@@ -62,8 +62,8 @@ def dns_model_c(
     secondary: bool = False,
 ):
     """
-    `s(x,y,t=0) = sᵣ · H(x - h₀)` \\
-    `c(x,y,t=0) = cᵣ · H(x - h₀) + N(x, y)`
+    `s(x,y,t=0) = sᵣ · H(x - ζ₀)` \\
+    `c(x,y,t=0) = cᵣ · H(x - ζ₀) + N(x, y)`
     """
     Omega, dOmega = rectangle_mesh_closure(Lx, Ly, Nx, Ny, cell)
     beta_rad = beta * np.pi / 180
@@ -71,9 +71,9 @@ def dns_model_c(
     egx = Constant(Omega, -np.sin(beta_rad))
     egy = Constant(Omega, -np.cos(beta_rad))
 
-    s_ics = heaviside(lambda x: x[0] - h0, sr, eps=H_eps) 
+    s_ics = heaviside(lambda x: x[0] - zeta0, sr, eps=H_eps) 
     c_ics = SpatialPerturbation(
-        heaviside(lambda x: x[0] - h0, cr, eps=H_eps),
+        heaviside(lambda x: x[0] - zeta0, cr, eps=H_eps),
         cubic_noise(['neumann', 'neumann'], [Lx, Ly], c_freq, c_seed),
         [Lx, Ly],
         c_eps,
@@ -104,8 +104,8 @@ def dns_model_c(
         reaction=reaction,
         # time step
         dt_max=dt_max,
-        cfl_h=cfl_h,
-        cfl_courant=cfl_courant,
+        dt_h=cfl_h,
+        u_courant=cfl_courant,
         r_courant=r_courant,
         # time discretization
         D_adv_solutal=D_adv,

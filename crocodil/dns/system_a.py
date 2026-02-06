@@ -16,7 +16,7 @@ SYSTEM_A_REFERENCE = frozen_dict(
     Ra=1000.0,
     Da=100.0,
     epsilon=1e-2,
-    h0=0.9,
+    zeta0=0.9,
     sr=0.2,
     cr=0.0,
 )
@@ -26,14 +26,14 @@ governing the physical (as opposed to numerical) behaviour of system A.
 """
 
 def critical_sr(
-    h0: float,
+    zeta0: float,
     cr: float,
     epsilon: float,
 ) -> float:
     """
-    `sr = ε ( 1 / (1 - h₀) - cr ) / (1 - εcr)`
+    `sᵣ = ε ( 1 / (1 - ζ₀) - cᵣ) / (1 - εcᵣ)`
     """
-    return epsilon * (-cr + 1 / (1 - h0)) / (1 - epsilon * cr)
+    return epsilon * (-cr + 1 / (1 - zeta0)) / (1 - epsilon * cr)
 
 
 @configure_simulation(
@@ -51,16 +51,16 @@ def dns_system_a(
     Da: float = 1e2,
     epsilon: float = 1e-2,
     # initial front
-    h0: float = 0.9,
-    h0_eps: float | tuple[float, float] | None = None,
+    zeta0: float = 0.9,
+    zeta_eps: float | tuple[float, float] | None = None,
     # initial saturation
     sr: float = 0.2,
-    s_ampl: float | None = None,
+    s_ampl: float = 0,
     s_freq: tuple[int, int] = (16, 16),
     s_seed: tuple[int, int] = (1234, 5678),
     # initial concentration
     cr: float = 1.0,
-    c_ampl: float | None = 1e-6,
+    c_ampl: float = 1e-6,
     c_freq: tuple[int, int] = (16, 16),
     c_seed: tuple[int, int] = (1234, 5678),
     # time step
@@ -99,8 +99,8 @@ def dns_system_a(
     `∇⋅𝐮 = 0` \\
     `𝐮 = -(∇p + Bu c 𝐞ʸ)` \\
 
-    `s₀ = sᵣH(y - h₀) + N(𝐱)` \\
-    `c₀ = cᵣH(y - h₀) + N(𝐱)`\\
+    `s₀ = sᵣH(y - ζ₀) + N(𝐱)` \\
+    `c₀ = cᵣH(y - ζ₀) + N(𝐱)`\\
     `𝐧⋅∇c = 0` on `∂Ω` \\
     `𝐧⋅𝐮 = 0` on `∂Ω`
     """
@@ -109,15 +109,15 @@ def dns_system_a(
     X = scaling_map['X']
     Lx = aspect * X
     Ly = 1.0 * X
-    Lh = h0 * X
-    Leps = h0_eps * X if h0_eps is not None else None
+    Lzeta = zeta0 * X
+    Lzeta_eps = zeta_eps * X if zeta_eps is not None else None
     Omega, dOmega = rectangle_mesh_closure(Lx, Ly, Nx, Ny, cell)
     # constants
     Di, Bu, Ki = scaling_map[Omega, 'Di', 'Bu', 'Ki']
     Ra = Constant(Omega, Ra, 'Ra')
     Da = Constant(Omega, Da, 'Da')
     # initial conditions
-    s_ics = heaviside(lambda x: x[1] - Lh, sr, eps=Leps) 
+    s_ics = heaviside(lambda x: x[1] - Lzeta, sr - s_ampl, eps=Lzeta_eps) 
     if s_ampl:
         s_ics = SpatialPerturbation(
             s_ics,
@@ -126,8 +126,7 @@ def dns_system_a(
             s_ampl,
             limits_corrector(0, sr),
         )
-
-    c_ics = heaviside(lambda x: x[1] - Lh, cr, eps=Leps),
+    c_ics = heaviside(lambda x: x[1] - Lzeta, cr - c_ampl, eps=Lzeta_eps),
     if c_ampl:
         c_ics = SpatialPerturbation(
             c_ics,
@@ -143,7 +142,7 @@ def dns_system_a(
     source = lambda s: Ki * s
 
     if diagnostic:
-        fluxes = [('f', Lh, Lx), *fluxes]
+        fluxes = [('f', Lzeta, Lx), *fluxes]
 
     return dns_generic(
         # domain
@@ -162,8 +161,8 @@ def dns_system_a(
         # time step
         dt_min=dt_min,
         dt_max=dt_max,
-        cfl_h=cfl_h,
-        cfl_courant=cfl_courant,
+        dt_h=cfl_h,
+        u_courant=cfl_courant,
         r_courant=r_courant,
         # time discretization
         D_adv_solutal=D_adv,

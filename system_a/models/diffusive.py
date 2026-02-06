@@ -15,7 +15,7 @@ class ExprSeparableSolution:
         t: float, 
         Lmbda: float,
         Ra: float,
-        h0: float,
+        zeta0: float,
         c0: Callable,
         s0: Callable,  
         cutoff: tuple[float, float] | None = None
@@ -23,12 +23,12 @@ class ExprSeparableSolution:
         """
         `c(y, t)`
         """
-        eigenvalues = ExprSeparableSolution.eigenvalues(Lmbda, h0, cutoff)
+        eigenvalues = ExprSeparableSolution.eigenvalues(Lmbda, zeta0, cutoff)
         c = 1
         for lmbda in eigenvalues:
-            Cn = ExprSeparableSolution.Cn(c0, s0, h0, Lmbda, lmbda)
-            Yn = ExprSeparableSolution.Yn(y, h0, Lmbda, lmbda)
-            c -= Cn * np.exp(-lmbda * t / Ra) * Yn(y, h0, Lmbda, lmbda)
+            Cn = ExprSeparableSolution.Cn(c0, s0, zeta0, Lmbda, lmbda)
+            Yn = ExprSeparableSolution.Yn(y, zeta0, Lmbda, lmbda)
+            c -= Cn * np.exp(-lmbda * t / Ra) * Yn(y, zeta0, Lmbda, lmbda)
         return c
 
     @staticmethod
@@ -43,15 +43,15 @@ class ExprSeparableSolution:
         y: float, 
         lmbda: float, 
         Lmbda: float,
-        h0: float, 
+        zeta0: float, 
     ) -> float:
-        if y > h0:
-            Bn = ExprSeparableSolution.Bn_plus(lmbda, Lmbda, h0)
+        if y > zeta0:
+            Bn = ExprSeparableSolution.Bn_plus(lmbda, Lmbda, zeta0)
         else:
-            Bn = ExprSeparableSolution.Bn_minus(lmbda, Lmbda, h0)
+            Bn = ExprSeparableSolution.Bn_minus(lmbda, Lmbda, zeta0)
 
         if lmbda > Lmbda:
-            if y > h0:
+            if y > zeta0:
                 cfunc = np.cos
                 sfunc = np.sin
                 arg = lmbda - Lmbda
@@ -60,7 +60,7 @@ class ExprSeparableSolution:
                 sfunc = np.sin
                 arg = lmbda
         elif lmbda < Lmbda and lmbda > 0:
-            if y > h0:
+            if y > zeta0:
                 cfunc = np.cosh
                 sfunc = np.sinh
                 arg = Lmbda - lmbda
@@ -69,7 +69,7 @@ class ExprSeparableSolution:
                 sfunc = np.sinh
                 arg = lmbda
         else:
-            if y > h0:
+            if y > zeta0:
                 cfunc = np.cosh
                 sfunc = np.sinh
                 arg = Lmbda + np.abs(lmbda)
@@ -78,11 +78,11 @@ class ExprSeparableSolution:
                 sfunc = np.sinh
                 arg = np.abs(lmbda)
 
-        arg = (y - h0) * np.sqrt(arg)
+        arg = (y - zeta0) * np.sqrt(arg)
         return cfunc(arg) + Bn * sfunc(arg)
     
     @staticmethod
-    def Bn_plus(lmbda, Lmbda, h0):
+    def Bn_plus(lmbda, Lmbda, zeta0):
         if lmbda > Lmbda:
             arg = lmbda - Lmbda
             func = np.tan
@@ -93,11 +93,11 @@ class ExprSeparableSolution:
             arg = Lmbda + np.abs(lmbda)
             func = -np.tanh
 
-        arg = (1 - h0) * np.sqrt(arg)
+        arg = (1 - zeta0) * np.sqrt(arg)
         return func(arg)      
 
     @staticmethod
-    def Bn_minus(lmbda, Lmbda, h0):
+    def Bn_minus(lmbda, Lmbda, zeta0):
         if lmbda > Lmbda:
             arg = lmbda
             func = -np.tan
@@ -108,39 +108,39 @@ class ExprSeparableSolution:
             arg = np.abs(lmbda)
             func = np.tanh
 
-        arg = h0 * np.sqrt(arg)
+        arg = zeta0 * np.sqrt(arg)
         return func(arg)
     
     @staticmethod
     def Cn(
         lmbda: float,
         Lmbda: float,
-        h0: float,  
+        zeta0: float,  
         s0: Callable,
         c0: Callable,
     ) -> float:
         Yn = ExprSeparableSolution.Yn
-        numer = lambda y: (1 - s0(y)) * (1 - c0(y)) * Yn(y, h0, Lmbda, lmbda)
-        denom = lambda y: (1 - s0(y)) * Yn(y, h0, Lmbda, lmbda) ** 2
+        numer = lambda y: (1 - s0(y)) * (1 - c0(y)) * Yn(y, zeta0, Lmbda, lmbda)
+        denom = lambda y: (1 - s0(y)) * Yn(y, zeta0, Lmbda, lmbda) ** 2
         y_interval = (0.0, 1.0)
         return quad(numer, *y_interval)[0] / quad(denom, *y_interval)[0]
 
     @staticmethod
     def eigenvalues(
         Lmbda: float,
-        h0: float,
+        zeta0: float,
         cutoff: tuple[float, float] | None = None,
     ) -> np.ndarray:
-        return ExprSeparableSolution._eigenvalues(Lmbda, h0, cutoff)
+        return ExprSeparableSolution._eigenvalues(Lmbda, zeta0, cutoff)
         
     @staticmethod
     @lru_cache
     def _eigenvalues(
         Lmbda: float,
-        h0: float,
+        zeta0: float,
         cutoff: tuple[float, float] | None = None,
     ) -> np.ndarray:
-        func = lambda x: ExprSeparableSolution.characteristic(x, Lmbda, h0)
+        func = lambda x: ExprSeparableSolution.characteristic(x, Lmbda, zeta0)
         roots = fsolve(func, full_output=True)
         return roots
 
@@ -148,7 +148,7 @@ class ExprSeparableSolution:
     def characteristic(
         lmbda: float,
         Lmbda: float,
-        h0: float
+        zeta0: float
     ) -> float:
         if lmbda > Lmbda:
             nfunc = np.tan
@@ -166,8 +166,8 @@ class ExprSeparableSolution:
             arg = Lmbda + np.abs(lmbda)
             coeff = -np.sqrt(arg)
 
-        arg = (1 - h0) * np.sqrt(arg)
-        return np.sqrt(np.abs(lmbda)) - coeff * nfunc(arg) / dfunc(h0 * np.sqrt(np.abs(lmbda)))
+        arg = (1 - zeta0) * np.sqrt(arg)
+        return np.sqrt(np.abs(lmbda)) - coeff * nfunc(arg) / dfunc(zeta0 * np.sqrt(np.abs(lmbda)))
 
 
 @dataclass
@@ -175,14 +175,14 @@ class SeparableSolution:
     """
     separation of variables solution
     `ε = 0` \\
-    `s₀(y) = sr·H(y - h₀)` \\
-    `c₀(y) = cr·H(y - h₀)`  
+    `s₀(y) = sr·H(y - ζ₀)` \\
+    `c₀(y) = cr·H(y - ζ₀)`  
     """
     t: Iterable[float]
     y: Iterable[float]
     Ra: float
     Da: float
-    h0: float
+    zeta0: float
     sr: float
     cr: float
 
@@ -206,7 +206,7 @@ class SeparableSolution:
         for t in self.t:
             _ct = []
             for y in self.y:
-                _cyt = self.expr.c(y, t, self.Lmbda, self.Ra, self.h0, c0, s0)
+                _cyt = self.expr.c(y, t, self.Lmbda, self.Ra, self.zeta0, c0, s0)
                 _ct.append(_cyt)
             _c.append(np.array(_ct))
 
@@ -219,7 +219,7 @@ class SimilaritySolution:
     y: Iterable[float]
     Ra: float
     Da: float
-    h0: float
+    zeta0: float
     sr: float
     cr: float
 

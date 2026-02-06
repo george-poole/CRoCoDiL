@@ -171,7 +171,7 @@ def compute_plume_width_average(
     window: tuple[float, float],
     alpha,
     adaptive,
-    h0: float,
+    zeta0: float,
     fraction: float = 0.5,
     negative: bool = True,
     name: str | None = None,
@@ -181,7 +181,7 @@ def compute_plume_width_average(
 
     wbar_series = []
     for cntr in zip(contour.series):
-        widths, *_ = contour_peak_dimensions(cntr, h0, fraction, negative=negative)
+        widths, *_ = contour_peak_dimensions(cntr, zeta0, fraction, negative=negative)
     wbar_series.append(np.mean(widths))
 
     return  NumericSeries(wbar_series, contour.time_series, name)
@@ -224,7 +224,7 @@ def compute_subdomain_averages(
     h: float | NumericSeries,
 ):
     """
-    `c⁺(t)`, `c⁻(t)` averages in upper and lower subdomains partitioned by either `h₀`, `h(t)` or `h(x,t)`
+    `c⁺(t)`, `c⁻(t)` averages in upper and lower subdomains partitioned by either `ζ₀`, `h(t)` or `h(x,t)`
     """
     if isinstance(h, float):
         y_index = as_index(c.axes[1], h)

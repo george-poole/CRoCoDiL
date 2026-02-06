@@ -74,8 +74,8 @@ def dns_system_a(
     `scaling` determines `Pe, Ki, Bu, Xl` from `Ra, Da`. \\
     `Ω = [0, aspect·Xl] × [0, Xl]`
 
-    `s₀ = sᵣ · H(y - h₀)` plus optional noise \\
-    `c₀ = cᵣ · H(y - h₀)` plus optional noise
+    `s₀ = sᵣ · H(y - ζ₀)` plus optional noise \\
+    `c₀ = cᵣ · H(y - ζ₀)` plus optional noise
     """
     scaling_map = CONVECTION_REACTION_SCALINGS[scaling](Ra, Da)
 
@@ -129,8 +129,8 @@ def dns_system_a(
         # time step
         dt_min=dt_min,
         dt_max=dt_max,
-        cfl_h=cfl_h,
-        cfl_courant=cfl_courant,
+        dt_h=cfl_h,
+        u_courant=cfl_courant,
         r_courant=r_courant,
         # time discretization
         D_adv_solutal=D_adv,
@@ -168,7 +168,7 @@ def interfacial_flux(
     c: Function,
     u: Function,
     d: Function,
-    h0: float,
+    zeta0: float,
     Lx: float,
     tol: float | None = 1e-6,
 ) -> np.ndarray:
@@ -180,23 +180,23 @@ def interfacial_flux(
 
     at heights
     
-    `y ≃ h₀, h₀⁺, h₀⁻, h₀/2`
+    `y ≃ ζ₀, ζ₀⁺, ζ₀⁻, ζ₀/2`
     """
     mesh = c.function_space.mesh
     y_axis = mesh_axes(mesh)[1]
 
     ineq = lambda aprx, trgt: aprx <= trgt and np.abs(aprx - trgt) < tol
     ineq_msg = 'Mesh resolution must be chosen such that `h0` is aligned with cell facets.'
-    h0_index = as_index(y_axis, h0, ineq, ineq_msg)
-    h0_approx = y_axis[h0_index]
-    h0_plus = y_axis[h0_index + 1]
-    h0_minus = y_axis[h0_index - 1]
-    h0_mid = y_axis[int(0.5 * h0_index)]
+    zeta0_index = as_index(y_axis, zeta0, ineq, ineq_msg)
+    zeta0_approx = y_axis[zeta0_index]
+    zeta0_plus = y_axis[zeta0_index + 1]
+    zeta0_minus = y_axis[zeta0_index - 1]
+    zeta0_mid = y_axis[int(0.5 * zeta0_index)]
     return (1 / Lx) * flux(
         'dS', 
-        lambda x: x[1] - h0_approx, 
-        lambda x: x[1] - h0_plus, 
-        lambda x: x[1] - h0_minus, 
-        lambda x: x[1] - h0_mid,
+        lambda x: x[1] - zeta0_approx, 
+        lambda x: x[1] - zeta0_plus, 
+        lambda x: x[1] - zeta0_minus, 
+        lambda x: x[1] - zeta0_mid,
         facet_side="+",
     )(c, u, d)

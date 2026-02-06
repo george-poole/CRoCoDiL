@@ -12,7 +12,7 @@ from lucifex.mesh import MeshBoundary
 from lucifex.fdm import (
     FunctionSeries, ConstantSeries, FiniteDifference, FE, 
     ExprSeries, FiniteDifferenceArgwise, finite_difference_order,
-    advective_reactive_timestep, advective_timestep, reactive_timestep,
+    adr_timestep, advective_timestep, advective_diffusive_timestep, diffusive_timestep, reactive_timestep,
 )
 from lucifex.solver import (
     BoundaryConditions, OptionsPETSc, Solver,
@@ -78,9 +78,10 @@ def dns_generic(
     # time step
     dt_min: float = 0.0,
     dt_max: float = 0.5,
-    cfl_h: str | float = "hmin",
-    cfl_courant: float | None = 0.5,
-    r_courant: float | None = None,
+    dt_h: str | float = "hmin",
+    adv_courant: float | None = 0.5,
+    diff_courant: float | None = 0.75,
+    reac_courant: float | None = None,
     # time discretization
     D_adv_solutal: FiniteDifference | FiniteDifferenceArgwise = FE,
     D_diff_solutal: FiniteDifference = FE,
@@ -236,12 +237,12 @@ def dns_generic(
 
     # timestep solver
     if SOLUTAL:
-        dt_solver = evaluation(dt, advective_reactive_timestep)(
-            u[0], FE(Sigma), cfl_h, cfl_courant, r_courant, dt_max, dt_min,
+        dt_solver = evaluation(dt, adr_timestep)(
+            u[0], FE(d), FE(Sigma), dt_h, adv_courant, diff_courant, reac_courant, dt_max, dt_min,
         ) 
     else:
-        dt_solver = evaluation(dt, advective_timestep)(
-            u[0], cfl_h, cfl_courant, dt_max, dt_min, 
+        dt_solver = evaluation(dt, advective_diffusive_timestep)(
+            u[0], FE(g), dt_h, adv_courant, diff_courant, dt_max, dt_min, 
         )
     solvers.append(dt_solver)
 
@@ -304,27 +305,31 @@ def dns_generic(
         solvers.append(integration(uRMS, L_norm, 'dx', norm=norm)(sqrt(inner(u[0], u[0])), norm))
         uDiv = ConstantSeries(Omega, 'uDiv')
         solvers.append(integration(uDiv, div_norm, 'dx', norm=norm)(u[0], norm))
-        dtCFL = ConstantSeries(Omega, "dtCFL")
-        solvers.append(evaluation(dtCFL, advective_timestep)(u[0], cfl_h))
+        dtU = ConstantSeries(Omega, "dtU")
+        solvers.append(evaluation(dtU, advective_timestep)(u[0], dt_h))
         if THERMAL:
             thetaMinMax = ConstantSeries(Omega, "thetaMinMax", shape=(2,))
             solvers.append(evaluation(thetaMinMax, extrema)(theta[0]))
             qBoundary = ConstantSeries(Omega, "qBoundary", shape=(len(dOmega.markers), 2))
             solvers.append(integration(qBoundary, flux, 'ds', *dOmega.markers)(theta[0], u[0], FE(g)))
+            dtG = ConstantSeries(Omega, "dtG")
+            solvers.append(evaluation(dtG, diffusive_timestep)(FE(g), dt_h))
         if SOLUTAL:
-            cMinMax = ConstantSeries(Omega, "cMinMax", shape=(2,))
-            solvers.append(evaluation(cMinMax, extrema)(c[0]))
             mD = ConstantSeries(Omega, "mD")
             solvers.append(integration(mD, mass_dissolved, 'dx')(c[0], FE(phi)))
+            cMinMax = ConstantSeries(Omega, "cMinMax", shape=(2,))
+            solvers.append(evaluation(cMinMax, extrema)(c[0]))
             fBoundary = ConstantSeries(Omega, "fBoundary", shape=(len(dOmega.markers), 2))
             solvers.append(integration(fBoundary, flux, 'ds', *dOmega.markers)(c[0], u[0], FE(d)))
+            dtD = ConstantSeries(Omega, "dtD")
+            solvers.append(evaluation(dtD, diffusive_timestep)(FE(d), dt_h))
         if EVOL:
-            sMinMax = ConstantSeries(Omega, "sMinMax", shape=(2,))
-            solvers.append(evaluation(sMinMax, extrema)(s[0]))
             mC = ConstantSeries(Omega, "mC")
             solvers.append(integration(mC, mass_capillary_trapped, 'dx')(s[0], epsilon))
-            dtK = ConstantSeries(Omega, "dtK")
-            solvers.append(evaluation(dtK, reactive_timestep)(Sigma[0]))
+            sMinMax = ConstantSeries(Omega, "sMinMax", shape=(2,))
+            solvers.append(evaluation(sMinMax, extrema)(s[0]))
+            dtSigma = ConstantSeries(Omega, "dtSigma")
+            solvers.append(evaluation(dtSigma, reactive_timestep)(Sigma[0]))
         if isinstance(diagnostic, Iterable):
             solvers.extend(diagnostic)
 

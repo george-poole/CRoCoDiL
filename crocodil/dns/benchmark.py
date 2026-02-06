@@ -85,8 +85,8 @@ def dns_darcy_rayleigh_benard(
         dispersion_thermal=dispersion,
         # time step
         dt_max=dt_max,
-        cfl_h=cfl_h,
-        cfl_courant=cfl_courant,
+        dt_h=cfl_h,
+        u_courant=cfl_courant,
         # time discretization
         D_adv_thermal=D_adv,
         D_diff_thermal=D_diff,
@@ -178,8 +178,8 @@ def dns_darcy_evolving(
         dispersion_thermal=dispersion,
         # time step
         dt_max=dt_max,
-        cfl_h=cfl_h,
-        cfl_courant=cfl_courant,
+        dt_h=cfl_h,
+        u_courant=cfl_courant,
         # time discretization
         D_adv_thermal=D_adv,
         D_diff_thermal=D_diff,
@@ -210,8 +210,8 @@ def dns_darcy_rayleigh_taylor(
     Ra: float = 1e3,
     # initial conditions
     cr: float = 1.0,
-    h0: float = 0.5,
-    h0_eps: float | None = None,
+    zeta0: float = 0.5,
+    zeta_eps: float | None = None,
     c_ampl: float = 1e-6,
     c_freq: tuple[int, int] = (8, 8),
     c_seed: tuple[int, int] = (1234, 5678),
@@ -245,7 +245,7 @@ def dns_darcy_rayleigh_taylor(
     Ra = Constant(Omega, Ra, 'Ra')
     # initial conditions
     c_ics = SpatialPerturbation(
-        heaviside(lambda x: x[1] - h0 * X, cr, eps=h0_eps * X if h0_eps is not None else None),
+        heaviside(lambda x: x[1] - zeta0 * X, cr, eps=zeta_eps * X if zeta_eps is not None else None),
         cubic_noise(['neumann', 'neumann'], [Lx, Ly], c_freq, c_seed),
         [Lx, Ly],
         c_ampl,
@@ -273,8 +273,8 @@ def dns_darcy_rayleigh_taylor(
         dispersion_solutal=dispersion,
         # time step
         dt_max=dt_max,
-        cfl_h=cfl_h,
-        cfl_courant=cfl_courant,
+        dt_h=cfl_h,
+        u_courant=cfl_courant,
         # time discretization
         D_adv_solutal=D_adv,
         D_diff_solutal=D_diff,
@@ -394,8 +394,8 @@ def dns_darcy_thermosolutal(
         dispersion_thermal=dispersion_thermal,
         # time step
         dt_max=dt_max,
-        cfl_h=cfl_h,
-        cfl_courant=cfl_courant,
+        dt_h=cfl_h,
+        u_courant=cfl_courant,
         # time discretization
         D_adv_solutal=D_adv_solutal,
         D_diff_solutal=D_diff_solutal,
