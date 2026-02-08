@@ -45,14 +45,16 @@ $$
 \begin{align*}
 &\text{Find} \\
 &(\textbf{u}^n, p^n)\in V_\textbf{u}\times V_p \\
-&c^{n+1}\in V_c \\
 &\theta^{n+1}\in V_\theta \\
+&c^{n+1}\in V_c \\
+&s^{n+1}\in V_s \\
 &\text{such that} \\
 &\mathbb{F} 
 \begin{cases}
-F_{\textbf{u},p}(\textbf{u}^n, p^n, \textbf{v}, q)=0 \quad\forall(\textbf{v}, q)\in V_{\textbf{u}} \times V_p\\
-F_c(c^{n+1}, v) = 0\quad\forall v\in V_c \\ 
+F_{\textbf{u},p}(\textbf{u}^n, p^n, \textbf{v}, q)=0 \quad\forall(\textbf{v}, q)\in V_{\textbf{u}} \times V_p \\
 F_\theta(\theta^{n+1}, v) = 0\quad\forall v\in V_\theta \\ 
+F_c(c^{n+1}, v) = 0\quad\forall v\in V_c \\ 
+F_s(s^{n+1}, v) = 0\quad\forall v\in V_s \\ 
 \end{cases}
 \end{align*}
 $$
@@ -64,15 +66,17 @@ $$
 &\text{Find} \\
 &\psi^n\in V_\psi \\
 &\textbf{u}^n\in V_\textbf{u} \\
-&c^{n+1}\in V_c \\
 &\theta^{n+1}\in V_\theta \\
+&c^{n+1}\in V_c \\
+&s^{n+1}\in V_s \\
 &\text{such that} \\
 &\mathbb{F} 
 \begin{cases}
 F_\psi(\psi^n, v) = 0\quad\forall v\in V_\psi \\
 F_{\textbf{u}}(\textbf{u}^n, \textbf{v}) = 0\quad\forall \textbf{v}\in V_{\textbf{u}} \\ 
-F_c(c^{n+1}, v) = 0\quad\forall v\in V_c \\ 
 F_\theta(\theta^{n+1}, v) = 0\quad\forall v\in V_\theta \\ 
+F_c(c^{n+1}, v) = 0\quad\forall v\in V_c \\ 
+F_s(s^{n+1}, v) = 0\quad\forall v\in V_s \\ 
 \end{cases}
 \end{align*}
 $$
@@ -87,8 +91,8 @@ F_{\textbf{u}}(\textbf{u}^n, \textbf{v}) &= \int_\Omega\text{d}\Omega~\textbf{v}
 -\frac{\partial\psi^n}{\partial y} \\
 \frac{\partial\psi^n}{\partial x}
 \end{pmatrix} \\
-F_c(c^{n+1}, v) &\in F^{j}(\theta^{n+1}, v, Ad\,\textbf{u}, Di\mathsf{D}, Ki R, Ki J)~,~j\in\{\text{CG}, \text{DG}\}\\
-F_\theta(\theta^{n+1}, v) &\in F^{j}(\theta^{n+1}, v, Ad\,\textbf{u}, \tfrac{Di}{Le}\mathsf{G}, 0, 0)~,~j\in\{\text{CG}, \text{DG}\}\\
+F_c(c^{n+1}, v) &\in F^{j}(\theta^{n+1}, v; Ad\,\textbf{u}, Di\mathsf{D}, Ki R, Ki J)~,~j\in\{\text{CG}, \text{DG}\}\\
+F_\theta(\theta^{n+1}, v) &\in F^{j}(\theta^{n+1}, v; Ad\,\textbf{u}, \tfrac{Di}{Le}\mathsf{G}, 0, 0)~,~j\in\{\text{CG}, \text{DG}\}\\
 F^{\text{CG}}(w^{n+1}, v; \textbf{u}, \mathsf{D}, R, J) &= \int_\Omega\text{d}\Omega~v\frac{w^{n+1}-w^n}{\Delta t^n} \\
 &\quad +\int_\Omega\text{d}\Omega~v\frac{\mathcal{D}_{\textbf{u}, w}(\textbf{u}\cdot\nabla w)}{\mathcal{D}_\phi(\phi)} \\
 &\quad +\int_\Omega\text{d}\Omega~\nabla\bigg(\frac{v}{\mathcal{D}_\phi(\phi)}\bigg)\cdot(\mathcal{D}_{\mathsf{D}}(\mathsf{D})\cdot\nabla \mathcal{D}_w(w)) \\
@@ -133,5 +137,31 @@ F^{\text{DG}}(w^{n+1}, v; \textbf{u}, \mathsf{D}, R, J) &= \dots
 % &\quad -\frac{1}{Pe}\quad \int_{\partial\Omega_{\text{N},c}}\text{d}\Gamma~\frac{vc_{\text{N}}}{\mathcal{D}_\phi(\phi)}\\
 % &\quad -Ki\int_\Omega\text{d}\Omega~v\,\frac{\mathcal{D}_{R,c}(Rc)}{\mathcal{D}_\phi(\phi)} \\
 
+\end{align*}
+$$
+
+## Linear algebra 
+
+$$
+\textbf{u}^n=\sum_jU_j^n\boldsymbol{\xi}_j^{\textbf{u}}~,~
+p^n=\sum_jP_j\xi_j^{p} ~,~
+\psi^n=\sum_j\Psi_j^n\xi_j^{\psi} ~,~
+\theta^n =\sum_j\Theta_j^n\xi_j^{\theta} ~,~
+c^n=\sum_jC_j^n\xi_j^{c} ~,~
+s^n =\sum_jS_j^n\xi_j^{s}
+$$
+
+$$\text{span}\{\xi_j^w\}_j\subset V_j\quad\forall w\in\{\textbf{u}, p,\psi,\theta,c,s\}$$
+
+$$
+\begin{align*}
+&\text{Find}~\textbf{U}^n,~\textbf{P}^n,~\boldsymbol{\Theta}^{n+1},~\textbf{C}^{n+1},~\textbf{S}^{n+1}~\text{such that}~\forall n\geq0 \\
+&\mathbb{A} 
+\begin{cases}
+\mathsf{A}^n_{\textbf{u},p}\cdot(\textbf{U}^n, \textbf{P}^n)^{\mathsf{T}}=\textbf{b}^n_{\textbf{u},p} \\
+\mathsf{A}^{n}_{\theta}\cdot\boldsymbol{\Theta}^{n+1}\cdot\textbf{C}^n=\textbf{b}^n_{\theta} \\
+\mathsf{A}^{n}_{c}\cdot\textbf{C}^{n+1}=\textbf{b}^n_{c} \\
+\mathsf{A}^{n}_{s}\cdot\textbf{S}^{n+1}=\textbf{b}^n_{s} \\
+\end{cases}
 \end{align*}
 $$

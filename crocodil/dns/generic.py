@@ -21,7 +21,7 @@ from lucifex.solver import (
     extrema, div_norm, L_norm,
 )
 from lucifex.sim import Simulation
-from lucifex.pde.streamfunction import streamfunction_velocity
+from lucifex.pde.streamfunction_vorticity import velocity_from_streamfunction
 from lucifex.pde.darcy import darcy_streamfunction, darcy_incompressible
 from lucifex.pde.advection_diffusion import (
     dg_advection_diffusion_reaction, advection_diffusion, 
@@ -222,9 +222,9 @@ def dns_generic(
             psi, FE(k), FE(mu), egx * FE(rho), egy * FE(rho),
         ) 
         if u_petsc is None:
-            u_solver = interpolation(u, streamfunction_velocity)(psi[0])
+            u_solver = interpolation(u, velocity_from_streamfunction)(psi[0])
         else:
-            u_solver = projection(u, streamfunction_velocity, petsc=u_petsc)(psi[0])
+            u_solver = projection(u, velocity_from_streamfunction, petsc=u_petsc)(psi[0])
         
         solvers.extend((psi_solver, u_solver))
     else:
