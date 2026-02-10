@@ -1,17 +1,32 @@
 from typing import Callable
+from enum import Enum
 
 import numpy as np
+from mpi4py import MPI
 from dolfinx.mesh import Mesh
 from ufl.core.expr import Expr
 
 from lucifex.fem import Function, Constant
 from lucifex.mesh import MeshBoundary, mesh_boundary, rectangle_mesh
 from lucifex.utils import mesh_integral, as_index, mesh_axes
+from lucifex.utils.py_utils import FloatEnum
 from lucifex.pde.advection_diffusion import flux
-from lucifex.pde.scaling import ScalingOptions
+from lucifex.pde.scaling import ScalingChoice
 
 
-CONVECTION_REACTION_SCALINGS = ScalingOptions(
+class ConvectionConstants(FloatEnum):
+    """
+    Constants from the theory of convection in porous media
+    """
+
+    CRITICAL_RA = 4 * np.pi **2
+    """
+    Critical Rayleigh for the onset of Rayleigh-Benard convection
+    """
+    # FLUX = ...
+
+
+CONVECTION_REACTION_SCALINGS = ScalingChoice(
     ('Ad', 'Di', 'Ki', 'Bu', 'X'),
     lambda Ra, Da=0: {
         'advective': (1, 1/Ra, Da, 1, 1),
@@ -43,7 +58,7 @@ and time scale `𝒯` in the non-dimensionalization.
 
 
 # TODO effects of scaling? other versions?
-def critical_wavelength(
+def threshold_wavelength(
     Ra: float,
     Ly: float,
 ) -> float:
@@ -53,7 +68,7 @@ def critical_wavelength(
     return 90.0 * Ly / Ra
 
 
-def critical_dx(
+def threshold_dx(
     Ra: float,
     Ly: float,
     n_per_cell: int,
@@ -61,10 +76,10 @@ def critical_dx(
     """
     `Δx ≤ λ / N` to resolve instabilities
     """
-    return critical_wavelength(Ra, Ly) / n_per_cell
+    return threshold_wavelength(Ra, Ly) / n_per_cell
 
 
-def critical_Nx(
+def threshold_Nx(
     Ra: float,
     Lx: float,
     Ly: float,
@@ -73,10 +88,10 @@ def critical_Nx(
     """
     `Nₓ ≥ n Lₓ / λ` to resolve instabilities
     """
-    return np.ceil(Lx / critical_dx(Ra, Ly, n_per_cell))
+    return np.ceil(Lx / threshold_dx(Ra, Ly, n_per_cell))
 
 
-def critical_rayleigh(
+def threshold_rayleigh(
     Lx: float,
     Ly: float,
     Nx: int,
@@ -189,11 +204,12 @@ def rectangle_mesh_closure(
     cell: str,
     name: str = 'Omega',
     clockwise_names: tuple[str, str, str, str] = ('upper', 'right', 'lower', 'left'),
+    comm: MPI.Comm | str = MPI.COMM_WORLD,
 ) -> tuple[Mesh, MeshBoundary]:
     """
     `Ω ∪ ∂Ω`
     """
-    mesh = rectangle_mesh(Lx, Ly, Nx, Ny, cell, name)
+    mesh = rectangle_mesh(Lx, Ly, Nx, Ny, cell, name, comm)
     boundary = mesh_boundary(
         mesh,
         {

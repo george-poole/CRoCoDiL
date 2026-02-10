@@ -1,27 +1,29 @@
 from typing import Iterable
 
+from mpi4py import MPI
 from lucifex.fem import Constant, SpatialPerturbation, cubic_noise
 from lucifex.fdm import FiniteDifference, FiniteDifferenceArgwise, CN, AB, AM
 from lucifex.utils import CellType
 from lucifex.solver import OptionsPETSc, OptionsJIT
 from lucifex.sim import configure_simulation
-from lucifex.utils import limits_corrector, frozen_dict
+from lucifex.utils import limits_corrector
+from lucifex.utils.py_utils import FrozenDict
 
 from .generic import dns_generic
 from .utils import heaviside, rectangle_mesh_closure, CONVECTION_REACTION_SCALINGS
 
 
-SYSTEM_A_REFERENCE = frozen_dict(
-    aspect=2.0,
+SYSTEM_A_REFERENCE = FrozenDict(
     Ra=1000.0,
     Da=100.0,
     epsilon=1e-2,
     zeta0=0.9,
     sr=0.2,
     cr=0.0,
+    aspect=2.0,
 )
 """
-Dictionary containing reference parameters `aspect, Ra, Da, epsilon, h0, sr, cr` 
+Reference parameters `aspect, Ra, Da, epsilon, h0, sr, cr` 
 governing the physical (as opposed to numerical) behaviour of system A.
 """
 
@@ -41,6 +43,7 @@ def critical_sr(
 )
 def dns_system_a(
     # mesh
+    comm: MPI.Comm = MPI.COMM_WORLD,
     aspect: float = 2.0,
     Nx: int = 100,
     Ny: int = 100,
@@ -65,11 +68,11 @@ def dns_system_a(
     c_seed: tuple[int, int] = (1234, 5678),
     # time step
     dt_min: float = 0.0,
-    dt_max: float = 0.5,
+    dt_max: float = 0.1,
     dt_h: str | float = "hmin",
-    adv_courant: float | None = 0.5,
-    diff_courant: float = 0.5,
-    reac_courant: float = 0.1,
+    courant_adv: float | None = 0.5,
+    courant_diff: float | None = 0.5,
+    courant_reac: float | None = 0.1,
     # time discretization
     D_adv: FiniteDifference
     | FiniteDifferenceArgwise = (AB(2) @ CN),
@@ -112,9 +115,9 @@ def dns_system_a(
     Ly = 1.0 * X
     Lzeta = zeta0 * X
     Lzeta_eps = zeta_eps * X if zeta_eps is not None else None
-    Omega, dOmega = rectangle_mesh_closure(Lx, Ly, Nx, Ny, cell)
+    Omega, dOmega = rectangle_mesh_closure(Lx, Ly, Nx, Ny, cell, comm=comm)
     # constants
-    Di, Bu, Ki = scaling_map[Omega, 'Di', 'Bu', 'Ki']
+    Di, Ki, Bu = scaling_map[Omega, 'Di', 'Ki', 'Bu']
     Ra = Constant(Omega, Ra, 'Ra')
     Da = Constant(Omega, Da, 'Da')
     # initial conditions
@@ -127,7 +130,7 @@ def dns_system_a(
             s_ampl,
             limits_corrector(0, sr),
         )
-    c_ics = heaviside(lambda x: x[1] - Lzeta, cr - c_ampl, eps=Lzeta_eps),
+    c_ics = heaviside(lambda x: x[1] - Lzeta, max(0, cr - c_ampl), eps=Lzeta_eps),
     if c_ampl:
         c_ics = SpatialPerturbation(
             c_ics,
@@ -137,10 +140,10 @@ def dns_system_a(
             limits_corrector(0, 1),
             )  
     # constitutive
-    density = lambda c: Bu * c
     dispersion = lambda phi: Di * phi
     reaction = lambda s: -Ki * s
     source = lambda s: Ki * s
+    density = lambda c: Bu * c
 
     if diagnostic:
         fluxes = [('f', Lzeta, Lx), *fluxes]
@@ -163,9 +166,9 @@ def dns_system_a(
         dt_min=dt_min,
         dt_max=dt_max,
         dt_h=dt_h,
-        adv_courant=adv_courant,
-        diff_courant=diff_courant,
-        reac_courant=reac_courant,
+        courant_adv=courant_adv,
+        courant_diff=courant_diff,
+        courant_reac=courant_reac,
         # time discretization
         D_adv_solutal=D_adv,
         D_diff_solutal=D_diff,
@@ -183,7 +186,7 @@ def dns_system_a(
         # optional solvers
         diagnostic=diagnostic,
         fluxes_solutal=fluxes,
-        namespace=[Ra, Da, Di, Bu, Ki, ('X', X)],
+        namespace=[Ra, Da, Di, Bu, Ki, ('X', X), ('Lx', Lx), ('Ly', Ly)],
     )
 
 

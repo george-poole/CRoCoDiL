@@ -29,7 +29,7 @@ def dns_darcy_rayleigh_benard(
     # time step
     dt_max: float = 0.5,
     cfl_h: str | float = "hmin",
-    cfl_courant: float = 0.75,
+    courant_adv: float = 0.75,
     # time discretization
     D_adv: FiniteDifference | FiniteDifferenceArgwise = (AB(2) @ CN),
     D_diff: FiniteDifference | FiniteDifferenceArgwise = CN,
@@ -86,7 +86,7 @@ def dns_darcy_rayleigh_benard(
         # time step
         dt_max=dt_max,
         dt_h=cfl_h,
-        u_courant=cfl_courant,
+        courant_adv=courant_adv,
         # time discretization
         D_adv_thermal=D_adv,
         D_diff_thermal=D_diff,
@@ -123,7 +123,7 @@ def dns_darcy_evolving(
     # time step
     dt_max: float = 0.5,
     cfl_h: str | float = "hmin",
-    cfl_courant: float = 0.75,
+    courant_adv: float = 0.75,
     # time discretization
     D_adv: FiniteDifference | FiniteDifferenceArgwise = (AB(2) @ CN),
     D_diff: FiniteDifference = CN,
@@ -179,7 +179,7 @@ def dns_darcy_evolving(
         # time step
         dt_max=dt_max,
         dt_h=cfl_h,
-        u_courant=cfl_courant,
+        courant_adv=courant_adv,
         # time discretization
         D_adv_thermal=D_adv,
         D_diff_thermal=D_diff,
@@ -218,7 +218,7 @@ def dns_darcy_rayleigh_taylor(
     # time step
     dt_max: float = 0.5,
     cfl_h: str | float = "hmin",
-    cfl_courant: float = 0.75,
+    courant_adv: float = 0.75,
     # time discretization
     D_adv: FiniteDifference 
     | FiniteDifferenceArgwise = (AB(2) @ CN),
@@ -274,7 +274,7 @@ def dns_darcy_rayleigh_taylor(
         # time step
         dt_max=dt_max,
         dt_h=cfl_h,
-        u_courant=cfl_courant,
+        courant_adv=courant_adv,
         # time discretization
         D_adv_solutal=D_adv,
         D_diff_solutal=D_diff,
@@ -315,7 +315,7 @@ def dns_darcy_thermosolutal(
     # time step
     dt_max: float = 0.5,
     cfl_h: str | float = "hmin",
-    cfl_courant: float = 0.75,
+    courant_adv: float = 0.75,
     # time discretization
     D_adv_solutal: FiniteDifference 
     | FiniteDifferenceArgwise = (AB(2) @ CN),
@@ -395,7 +395,7 @@ def dns_darcy_thermosolutal(
         # time step
         dt_max=dt_max,
         dt_h=cfl_h,
-        u_courant=cfl_courant,
+        courant_adv=courant_adv,
         # time discretization
         D_adv_solutal=D_adv_solutal,
         D_diff_solutal=D_diff_solutal,

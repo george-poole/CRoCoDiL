@@ -3,7 +3,7 @@ from typing import Callable, TypeAlias
 from types import EllipsisType
 
 import numpy as np
-from ufl import as_vector, inner, sqrt
+from ufl import as_vector, inner, sqrt, min_value
 from ufl.core.expr import Expr
 from dolfinx.mesh import Mesh
 
@@ -79,9 +79,9 @@ def dns_generic(
     dt_min: float = 0.0,
     dt_max: float = 0.5,
     dt_h: str | float = "hmin",
-    adv_courant: float | None = 0.5,
-    diff_courant: float | None = 0.75,
-    reac_courant: float | None = None,
+    courant_adv: float | None = 1.0,
+    courant_diff: float | None = 1.0,
+    courant_reac: float | None = 1.0,
     # time discretization
     D_adv_solutal: FiniteDifference | FiniteDifferenceArgwise = FE,
     D_diff_solutal: FiniteDifference = FE,
@@ -237,12 +237,16 @@ def dns_generic(
 
     # timestep solver
     if SOLUTAL:
+        if THERMAL:
+            dt_disp = min_value(FE(d), FE(g))
+        else:
+            dt_disp = FE(d)
         dt_solver = evaluation(dt, adr_timestep)(
-            u[0], FE(d), FE(Sigma), dt_h, adv_courant, diff_courant, reac_courant, dt_max, dt_min,
+            u[0], dt_disp, FE(Sigma), dt_h, courant_adv, courant_diff, courant_reac, dt_max, dt_min,
         ) 
     else:
         dt_solver = evaluation(dt, advective_diffusive_timestep)(
-            u[0], FE(g), dt_h, adv_courant, diff_courant, dt_max, dt_min, 
+            u[0], FE(g), dt_h, courant_adv, courant_diff, dt_max, dt_min, 
         )
     solvers.append(dt_solver)
 
