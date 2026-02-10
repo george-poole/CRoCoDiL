@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>CRoCoDiL 🐊 &#8212; CRoCoDiL Docs</title>
+    <title>CRoCoDiL 🐊 &#8212; CRoCoDiL Demo</title>
   
   
   
@@ -152,7 +152,7 @@
   
   
   
-    <p class="title logo__title">CRoCoDiL Docs</p>
+    <p class="title logo__title">CRoCoDiL Demo</p>
   
 </a></div>
         <div class="sidebar-primary-item">
@@ -176,25 +176,26 @@
                 </a>
             </li>
         </ul>
-        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Introduction</span></p>
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">User Guide</span></p>
 <ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="notebooks/P00_user_guide/U00_introduction.html">Introduction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="notebooks/P00_user_guide/U01_governing_equations.html">Governing equations</a></li>
 <li class="toctree-l1"><a class="reference internal" href="notebooks/P00_user_guide/U02_diagnostic_equations.html">Diagnostic equations</a></li>
-<li class="toctree-l1"><a class="reference internal" href="notebooks/P00_user_guide/U03_numerical_method.html">Numerical method</a></li>
-<li class="toctree-l1"><a class="reference internal" href="notebooks/P00_user_guide/U04_user_guide.html">User guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notebooks/P00_user_guide/U03_finite_element_method.html">Finite element method</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notebooks/P00_user_guide/U04_best_practices.html">Best practices</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">System A</span></p>
 <ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="notebooks/P0A_system_a/A00_specification.html">Specification</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notebooks/P0A_system_a/A00_introduction.html">Introduction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="notebooks/P0A_system_a/A01_demo.html">Demo</a></li>
 <li class="toctree-l1"><a class="reference internal" href="notebooks/P0A_system_a/A02_stabilization.html">Stabilization of the advection-diffusion-reaction equation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="notebooks/P0A_system_a/A03_resolution.html">Mesh resolution</a></li>
 <li class="toctree-l1"><a class="reference internal" href="notebooks/P0A_system_a/A04_sensitivity.html">Sensitivity to initial conditions</a></li>
-<li class="toctree-l1"><a class="reference internal" href="notebooks/P0A_system_a/A05_damkohler.html">Damköhler numbers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="notebooks/P0A_system_a/A06_rayleigh.html">Rayleigh numbers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="notebooks/P0A_system_a/A07_cr.html">Residual concentrations</a></li>
-<li class="toctree-l1"><a class="reference internal" href="notebooks/P0A_system_a/A08_sr.html">Residual saturation saturations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notebooks/P0A_system_a/A05_scaling.html">Scaling choice</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notebooks/P0A_system_a/A06_damkohler.html">Damköhler numbers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notebooks/P0A_system_a/A07_rayleigh.html">Rayleigh numbers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notebooks/P0A_system_a/A08_cr.html">Residual concentrations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notebooks/P0A_system_a/A09_sr.html">Residual saturations</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Benchmarks</span></p>
 <ul class="nav bd-sidenav">
@@ -327,7 +328,9 @@ document.write(`
   </button>
 `);
 </script>
-
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
 </div></div>
       
     </div>
@@ -343,6 +346,14 @@ document.write(`
     <div id="print-main-content">
         <div id="jb-print-toc">
             
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#installation">Installation</a></li>
+</ul>
+            </nav>
         </div>
     </div>
 </div>
@@ -355,6 +366,10 @@ document.write(`
   <section class="tex2jax_ignore mathjax_ignore" id="crocodil">
 <h1>CRoCoDiL 🐊<a class="headerlink" href="#crocodil" title="Link to this heading">#</a></h1>
 <p>Welcome to the <em> <strong>C</strong>onvection-<strong>R</strong>eaction <strong>o</strong>f <strong>C</strong>arb<strong>o</strong>n <strong>D</strong>iodixe <strong>i</strong>n <strong>L</strong>UCiFEx </em> package!</p>
+<section id="installation">
+<h2>Installation<a class="headerlink" href="#installation" title="Link to this heading">#</a></h2>
+<p>See <a class="reference external" href="https://github.com/george-poole/CRoCoDiL/blob/main/README.md">README.md</a></p>
+</section>
 <div class="toctree-wrapper compound">
 </div>
 <div class="toctree-wrapper compound">
@@ -408,6 +423,21 @@ document.write(`
             </div>
             
             
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#installation">Installation</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
               
             
           </div>

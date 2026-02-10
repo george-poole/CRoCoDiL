@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Diagnostic equations &#8212; CRoCoDiL Docs</title>
+    <title>Diagnostic equations &#8212; CRoCoDiL Demo</title>
   
   
   
@@ -62,7 +62,7 @@
     <script>DOCUMENTATION_OPTIONS.pagename = 'notebooks/P00_user_guide/U02_diagnostic_equations';</script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="Numerical method" href="U03_numerical_method.html" />
+    <link rel="next" title="Finite element method" href="U03_finite_element_method.html" />
     <link rel="prev" title="Governing equations" href="U01_governing_equations.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
@@ -151,7 +151,7 @@
   
   
   
-    <p class="title logo__title">CRoCoDiL Docs</p>
+    <p class="title logo__title">CRoCoDiL Demo</p>
   
 </a></div>
         <div class="sidebar-primary-item">
@@ -175,25 +175,26 @@
                 </a>
             </li>
         </ul>
-        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Introduction</span></p>
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">User Guide</span></p>
 <ul class="current nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="U00_introduction.html">Introduction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="U01_governing_equations.html">Governing equations</a></li>
 <li class="toctree-l1 current active"><a class="current reference internal" href="#">Diagnostic equations</a></li>
-<li class="toctree-l1"><a class="reference internal" href="U03_numerical_method.html">Numerical method</a></li>
-<li class="toctree-l1"><a class="reference internal" href="U04_user_guide.html">User guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="U03_finite_element_method.html">Finite element method</a></li>
+<li class="toctree-l1"><a class="reference internal" href="U04_best_practices.html">Best practices</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">System A</span></p>
 <ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="../P0A_system_a/A00_specification.html">Specification</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../P0A_system_a/A00_introduction.html">Introduction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../P0A_system_a/A01_demo.html">Demo</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../P0A_system_a/A02_stabilization.html">Stabilization of the advection-diffusion-reaction equation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../P0A_system_a/A03_resolution.html">Mesh resolution</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../P0A_system_a/A04_sensitivity.html">Sensitivity to initial conditions</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../P0A_system_a/A05_damkohler.html">Damköhler numbers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../P0A_system_a/A06_rayleigh.html">Rayleigh numbers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../P0A_system_a/A07_cr.html">Residual concentration <span class="math notranslate nohighlight">\(c_r\)</span></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../P0A_system_a/A08_sr.html">Residual saturation <span class="math notranslate nohighlight">\(s_r\)</span></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../P0A_system_a/A05_scaling.html">Scaling choice</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../P0A_system_a/A06_damkohler.html">Damköhler numbers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../P0A_system_a/A07_rayleigh.html">Rayleigh numbers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../P0A_system_a/A08_cr.html">Residual concentrations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../P0A_system_a/A09_sr.html">Residual saturations</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Benchmarks</span></p>
 <ul class="nav bd-sidenav">
@@ -380,11 +381,29 @@ document.write(`
 <tr class="row-odd"><td><p>mass of dissolved CO<sub>2</sub></p></td>
 <td><p><span class="math notranslate nohighlight">\(m_D=\int_{\Omega}\phi(\rho(c,\theta)-\rho(0,\theta))~\text{d}\Omega\)</span></p></td>
 </tr>
-<tr class="row-even"><td><p>solutal flux</p></td>
-<td><p><span class="math notranslate nohighlight">\(F=\frac{1}{\vert\Gamma\vert}\int_\Gamma(\textbf{u}c-\nabla\cdot(\mathsf{D}\cdot\nabla c))\cdot\textbf{n}~\text{d}\Gamma\)</span></p></td>
+<tr class="row-even"><td><p>total mass of CO<sub>2</sub></p></td>
+<td><p><span class="math notranslate nohighlight">\(m=m_C + m_D\)</span></p></td>
 </tr>
-<tr class="row-odd"><td><p>thermal flux</p></td>
-<td><p><span class="math notranslate nohighlight">\(Q=\frac{1}{\vert\Gamma\vert}\int_\Gamma(\textbf{u}\theta-\nabla\cdot(\mathsf{G}\cdot\nabla \theta))\cdot\textbf{n}~\text{d}\Gamma\)</span></p></td>
+<tr class="row-odd"><td><p>solutal flux</p></td>
+<td><p><span class="math notranslate nohighlight">\(F=\frac{1}{\vert\Gamma\vert}\int_\Gamma(\textbf{u}c-\nabla\cdot(\mathsf{D}\cdot\nabla c))\cdot\textbf{n}~\text{d}\Gamma = F_{\textbf{u}} + F_{\mathsf{D}}\)</span></p></td>
+</tr>
+<tr class="row-even"><td><p>thermal flux</p></td>
+<td><p><span class="math notranslate nohighlight">\(Q=\frac{1}{\vert\Gamma\vert}\int_\Gamma(\textbf{u}\theta-\nabla\cdot(\mathsf{G}\cdot\nabla \theta))\cdot\textbf{n}~\text{d}\Gamma = Q_{\textbf{u}} + Q_{\mathsf{G}}\)</span></p></td>
+</tr>
+<tr class="row-odd"><td><p>maximum speed</p></td>
+<td><p><span class="math notranslate nohighlight">\(\max_{\textbf{x}}\vert\textbf{u}\vert\)</span></p></td>
+</tr>
+<tr class="row-even"><td><p>root-mean-square speed</p></td>
+<td><p><span class="math notranslate nohighlight">\(\text{rms}(\textbf{u})=\Vert\textbf{u}\cdot\textbf{u}\Vert_{L_2(\Omega)}=\left(\int_\Omega\textbf{u}\cdot\textbf{u}~\text{d}\Omega\right)^{1/2}\)</span></p></td>
+</tr>
+<tr class="row-odd"><td><p>velocity divergence norm</p></td>
+<td><p><span class="math notranslate nohighlight">\(\text{divnorm}(\textbf{u})=\Vert\nabla\cdot\textbf{u}\Vert_{L_2(\Omega)}=\left(\int_\Omega(\nabla\cdot\textbf{u})~\text{d}\Omega\right)^{1/2}\)</span></p></td>
+</tr>
+<tr class="row-even"><td><p>solutal correction</p></td>
+<td><p><span class="math notranslate nohighlight">\(\mathcal{C}(c)=\max(c_{\text{min}}, \min(c, c_{\text{max}})) - c\)</span></p></td>
+</tr>
+<tr class="row-odd"><td><p>thermal correction</p></td>
+<td><p><span class="math notranslate nohighlight">\(\mathcal{C}(\theta)=\max(\theta_{\text{min}}, \min(\theta, \theta_{\text{max}})) - \theta\)</span></p></td>
 </tr>
 </tbody>
 </table>
@@ -481,11 +500,11 @@ document.write(`
       </div>
     </a>
     <a class="right-next"
-       href="U03_numerical_method.html"
+       href="U03_finite_element_method.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Numerical method</p>
+        <p class="prev-next-title">Finite element method</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>

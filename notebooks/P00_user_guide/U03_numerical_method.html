@@ -62,7 +62,7 @@
     <script>DOCUMENTATION_OPTIONS.pagename = 'notebooks/P00_user_guide/U03_numerical_method';</script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="User guide" href="U04_user_guide.html" />
+    <link rel="next" title="Best practices" href="U04_best_practices.html" />
     <link rel="prev" title="Diagnostic equations" href="U02_diagnostic_equations.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
@@ -175,13 +175,13 @@
                 </a>
             </li>
         </ul>
-        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Introduction</span></p>
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">User Guide</span></p>
 <ul class="current nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="U00_introduction.html">Introduction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="U01_governing_equations.html">Governing equations</a></li>
 <li class="toctree-l1"><a class="reference internal" href="U02_diagnostic_equations.html">Diagnostic equations</a></li>
 <li class="toctree-l1 current active"><a class="current reference internal" href="#">Numerical method</a></li>
-<li class="toctree-l1"><a class="reference internal" href="U04_user_guide.html">User guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="U04_best_practices.html">Best practices</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">System A</span></p>
 <ul class="nav bd-sidenav">
@@ -190,10 +190,11 @@
 <li class="toctree-l1"><a class="reference internal" href="../P0A_system_a/A02_stabilization.html">Stabilization of the advection-diffusion-reaction equation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../P0A_system_a/A03_resolution.html">Mesh resolution</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../P0A_system_a/A04_sensitivity.html">Sensitivity to initial conditions</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../P0A_system_a/A05_damkohler.html">Damköhler numbers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../P0A_system_a/A06_rayleigh.html">Rayleigh numbers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../P0A_system_a/A07_cr.html">Residual concentration <span class="math notranslate nohighlight">\(c_r\)</span></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../P0A_system_a/A08_sr.html">Residual saturation <span class="math notranslate nohighlight">\(s_r\)</span></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../P0A_system_a/A05_scaling.html">Scaling choice</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../P0A_system_a/A06_damkohler.html">Damköhler numbers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../P0A_system_a/A07_rayleigh.html">Rayleigh numbers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../P0A_system_a/A08_cr.html">Residual concentrations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../P0A_system_a/A09_sr.html">Residual saturations</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Benchmarks</span></p>
 <ul class="nav bd-sidenav">
@@ -400,60 +401,6 @@ $<span class="math notranslate nohighlight">\(
 \varphi\frac{s^{n+1} - s^n}{\Delta t^n} &amp;= -\varepsilon Ki\,\mathcal{D}_{s,c,\theta}(\Sigma)
 \end{align}
 \end{split}\]</div>
-<div class="pst-scrollable-table-container"><table class="table">
-<thead>
-<tr class="row-odd"><th class="head"><p><span class="math notranslate nohighlight">\(\mathcal{D}\)</span> operator</p></th>
-<th class="head"><p>Default</p></th>
-<th class="head"><p>Description</p></th>
-</tr>
-</thead>
-<tbody>
-<tr class="row-even"><td><p><span class="math notranslate nohighlight">\(\mathcal{D}_\phi\)</span></p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">AB(1)</span></code></p></td>
-<td><p>forward Euler</p></td>
-</tr>
-<tr class="row-odd"><td><p><span class="math notranslate nohighlight">\(\mathcal{D}_{\mathsf{G}}\)</span></p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">AB(1)</span></code></p></td>
-<td><p>forward Euler</p></td>
-</tr>
-<tr class="row-even"><td><p><span class="math notranslate nohighlight">\(\mathcal{D}_{\mathsf{D}}\)</span></p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">AB(1)</span></code></p></td>
-<td><p>forward Euler</p></td>
-</tr>
-<tr class="row-odd"><td><p><span class="math notranslate nohighlight">\(\mathcal{D}_{\textbf{u},\theta}\)</span></p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">AB(2)</span> <span class="pre">&#64;</span> <span class="pre">CN</span></code></p></td>
-<td><p>second-order Adams-Bashforth on <span class="math notranslate nohighlight">\(\textbf{u}\)</span> and Crank-Nicolson on <span class="math notranslate nohighlight">\(\theta\)</span></p></td>
-</tr>
-<tr class="row-even"><td><p><span class="math notranslate nohighlight">\(\mathcal{D}_{\textbf{u},c}\)</span></p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">AB(2)</span> <span class="pre">&#64;</span> <span class="pre">CN</span></code></p></td>
-<td><p>second-order Adams-Bashforth on <span class="math notranslate nohighlight">\(\textbf{u}\)</span> and Crank-Nicolson on <span class="math notranslate nohighlight">\(c\)</span></p></td>
-</tr>
-<tr class="row-odd"><td><p><span class="math notranslate nohighlight">\(\mathcal{D}_{\theta}\)</span></p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">CN</span></code></p></td>
-<td><p>Crank-Nicolson</p></td>
-</tr>
-<tr class="row-even"><td><p><span class="math notranslate nohighlight">\(\mathcal{D}_{c}\)</span></p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">CN</span></code></p></td>
-<td><p>Crank-Nicolson</p></td>
-</tr>
-<tr class="row-odd"><td><p><span class="math notranslate nohighlight">\(\mathcal{D}_{R,c}\)</span></p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">AB(1)</span> <span class="pre">&#64;</span> <span class="pre">AM(1)</span></code></p></td>
-<td><p>forward Euler on <span class="math notranslate nohighlight">\(R(s)\)</span> and backward Euler on <span class="math notranslate nohighlight">\(c\)</span></p></td>
-</tr>
-<tr class="row-even"><td><p><span class="math notranslate nohighlight">\(\mathcal{D}_{J}\)</span></p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">AB(1)</span></code></p></td>
-<td><p>forward Euler on <span class="math notranslate nohighlight">\(J(s)\)</span></p></td>
-</tr>
-<tr class="row-odd"><td><p><span class="math notranslate nohighlight">\(\mathcal{D}_{s,c,\theta}\)</span></p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">AB(1)</span> <span class="pre">&#64;</span> <span class="pre">AM(1)</span></code></p></td>
-<td><p>forward Euler on <span class="math notranslate nohighlight">\(s\)</span> and backward Euler on <span class="math notranslate nohighlight">\(c\)</span></p></td>
-</tr>
-</tbody>
-</table>
-</div>
-<p>For mass conservation, ideally choose <span class="math notranslate nohighlight">\(\mathcal{D}_{R,c}, \mathcal{D}_{J}, \mathcal{D}_{s,c,\theta}\)</span> such that</p>
-<div class="math notranslate nohighlight">
-\[\mathcal{D}_{R,c}(Rc) + \mathcal{D}_J(J) \equiv \mathcal{D}_{s,c,\theta}(\Sigma)\]</div>
 </section>
 <section id="adaptive-timestep">
 <h2>Adaptive timestep<a class="headerlink" href="#adaptive-timestep" title="Link to this heading">#</a></h2>
@@ -466,7 +413,7 @@ $<span class="math notranslate nohighlight">\(
 \[\begin{split}
 \begin{align*}
 \Delta t^n_{\text{CFLR}} &amp;= \min\{C_{\text{CFL}}\Delta t^n_{\text{CFL}}, C_R\Delta t^n_R\} \\
-\Delta t^n_{\text{CFL}} &amp;= \min_{\textbf{x}}\bigg(\frac{\ell(\textbf{x})}{Ad\,|\textbf{u}^n|}\bigg)  \\
+\Delta t^n_{\text{CFL}} &amp;= \min_{\textbf{x}}\bigg(\frac{h(\textbf{x})}{Ad\,|\textbf{u}^n|}\bigg)  \\
 \Delta t^n_{\text{R}} &amp;= \frac{1}{\max_{\textbf{x}}(Ki\,|R^n|)}
 \end{align*}
 \end{split}\]</div>
@@ -565,11 +512,11 @@ F_\theta(\theta^{n+1}, v)&amp;\equiv
 <p>stabilization parameter</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}
-\tau^n=\tau^n(\ell, \textbf{u}_{\text{eff}}, \mathsf{D}_{\text{eff}}, R_{\text{eff}})=\begin{cases}
-(2|\textbf{u}_{\text{eff}}| / \ell  +  4D_{\text{eff}} / \ell^2  -  R_{\text{eff}})^{-1} &amp; \text{Codina} \\
-((2|\textbf{u}_{\text{eff}}| / \ell)^2  +  9(4D_{\text{eff}} / \ell^2)^2  +  R_{\text{eff}}^2)^{-1/2} &amp; \text{Shakib} \\
-((2 / \Delta t)^2 + (2|\textbf{u}_{\text{eff}}| / \ell)^2  +  (2D_{\text{eff}} / \ell^2)^2  +  R_{\text{eff}}^2)^{-1/2} &amp; \text{transient} \\
-(\ell/2|\textbf{u}_{\text{eff}}|)(\text{coth}(|\textbf{u}_{\text{eff}}|\ell/2D_{\text{eff}}) - 2D_{\text{eff}}/|\textbf{u}_{\text{eff}}|\ell) &amp; \text{coth} \\
+\tau^n=\tau^n(h, \textbf{u}_{\text{eff}}, \mathsf{D}_{\text{eff}}, R_{\text{eff}})=\begin{cases}
+(2|\textbf{u}_{\text{eff}}| / h  +  4D_{\text{eff}} / h^2  -  R_{\text{eff}})^{-1} &amp; \text{Codina} \\
+((2|\textbf{u}_{\text{eff}}| / h)^2  +  9(4D_{\text{eff}} / h^2)^2  +  R_{\text{eff}}^2)^{-1/2} &amp; \text{Shakib} \\
+((2 / \Delta t)^2 + (2|\textbf{u}_{\text{eff}}| / h)^2  +  (2D_{\text{eff}} / h^2)^2  +  R_{\text{eff}}^2)^{-1/2} &amp; \text{transient} \\
+(h/2|\textbf{u}_{\text{eff}}|)(\text{coth}(|\textbf{u}_{\text{eff}}|h/2D_{\text{eff}}) - 2D_{\text{eff}}/|\textbf{u}_{\text{eff}}|h) &amp; \text{coth} \\
 0 &amp; \text{none}
 \end{cases}
 \end{split}\]</div>
@@ -621,8 +568,8 @@ c_{\text{N}}\,\textbf{n}\cdot\textbf{u} &amp; \text{otherwise} \\
 \end{cases} \\
 &amp;\quad +\frac{1}{Pe}\int_\Omega\text{d}\Omega~\nabla\left(\frac{v}{\mathcal{D}_\phi(\phi)}\right)\cdot\nabla(\mathcal{D}_{\mathsf{D}}(\mathsf{D})\cdot\nabla\mathcal{D}_c(c)) \\
 &amp;\quad - \frac{1}{Pe}\int_{\mathcal{F}/\partial\Omega}\text{d}\Gamma~\left\{\mathcal{D}_{\mathsf{D}}(\mathsf{D})\cdot\nabla\left(\frac{v}{\mathcal{D}_\phi(\phi)}\right)\right\}\cdot\llbracket\mathcal{D}_c(c)\rrbracket\textbf{n}+\left\{\mathcal{D}_{\mathsf{D}}(\mathsf{D})\cdot\nabla\mathcal{D}_c(c)\right\}\cdot\llbracket \frac{v}{\mathcal{D}_\phi(\phi)}\rrbracket\textbf{n} \\
-&amp;\quad +\frac{1}{Pe}\int_{\mathcal{F}/\partial\Omega}\text{d}\Gamma~ \frac{\alpha_{\text{DG}}}{\ell}\llbracket \frac{v}{\mathcal{D}_\phi(\phi)}\rrbracket\cdot\llbracket\mathcal{D}_c(c)\rrbracket\\
-&amp;\quad -\frac{1}{Pe}\quad \int_{\partial\Omega_{\text{D},c}}\text{d}\Gamma~\left(\mathcal{D}_{\mathsf{D}}(\mathsf{D})\cdot\nabla\left(\frac{v}{\mathcal{D}_\phi(\phi)}\right)\right)\cdot(\mathcal{D}_c(c)-c_{\text{D}})\textbf{n}\\\end{split}\\\begin{split}&amp;\quad -\frac{1}{Pe}\quad \int_{\partial\Omega_{\text{D},c}}\text{d}\Gamma~(\mathcal{D}_{\mathsf{D}}(\mathsf{D})\cdot\nabla\mathcal{D}_c(c))\cdot\left(\frac{v}{\mathcal{D}_\phi(\phi)}\textbf{n}\right)\\\end{split}\\\begin{split}&amp;\quad +\frac{1}{Pe}\quad \int_{\partial\Omega_{\text{D},c}}\text{d}\Gamma~\frac{\gamma_{\text{DG}}}{\ell} v(c-c_{\text{D}})\\
+&amp;\quad +\frac{1}{Pe}\int_{\mathcal{F}/\partial\Omega}\text{d}\Gamma~ \frac{\alpha_{\text{DG}}}{h}\llbracket \frac{v}{\mathcal{D}_\phi(\phi)}\rrbracket\cdot\llbracket\mathcal{D}_c(c)\rrbracket\\
+&amp;\quad -\frac{1}{Pe}\quad \int_{\partial\Omega_{\text{D},c}}\text{d}\Gamma~\left(\mathcal{D}_{\mathsf{D}}(\mathsf{D})\cdot\nabla\left(\frac{v}{\mathcal{D}_\phi(\phi)}\right)\right)\cdot(\mathcal{D}_c(c)-c_{\text{D}})\textbf{n}\\\end{split}\\\begin{split}&amp;\quad -\frac{1}{Pe}\quad \int_{\partial\Omega_{\text{D},c}}\text{d}\Gamma~(\mathcal{D}_{\mathsf{D}}(\mathsf{D})\cdot\nabla\mathcal{D}_c(c))\cdot\left(\frac{v}{\mathcal{D}_\phi(\phi)}\textbf{n}\right)\\\end{split}\\\begin{split}&amp;\quad +\frac{1}{Pe}\quad \int_{\partial\Omega_{\text{D},c}}\text{d}\Gamma~\frac{\gamma_{\text{DG}}}{h} v(c-c_{\text{D}})\\
 &amp;\quad -\frac{1}{Pe}\quad \int_{\partial\Omega_{\text{N},c}}\text{d}\Gamma~\frac{vc_{\text{N}}}{\mathcal{D}_\phi(\phi)}\\
 &amp;\quad -Ki\int_\Omega\text{d}\Omega~v\,\frac{\mathcal{D}_{R,c}(Rc)}{\mathcal{D}_\phi(\phi)} \\
 &amp;=0 \qquad \forall v\in\hat{V}_c 
@@ -711,11 +658,11 @@ c_{\text{N}}\,\textbf{n}\cdot\textbf{u} &amp; \text{otherwise} \\
       </div>
     </a>
     <a class="right-next"
-       href="U04_user_guide.html"
+       href="U04_best_practices.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">User guide</p>
+        <p class="prev-next-title">Best practices</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>

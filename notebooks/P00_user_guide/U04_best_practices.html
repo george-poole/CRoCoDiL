@@ -1,0 +1,661 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Best practices &#8212; CRoCoDiL Demo</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../../_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="../../_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/sphinx-book-theme.css?v=eba8b062" />
+    <link rel="stylesheet" type="text/css" href="../../_static/togglebutton.css?v=13237357" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css?v=6644e6bb" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-thebe.css?v=4fa983c6" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=95c83b7e" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+    <script src="../../_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="../../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../_static/copybutton.js?v=f281be69"></script>
+    <script src="../../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../../_static/togglebutton.js?v=4a39c7ea"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="../../_static/design-tabs.js?v=f930bc37"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script async="async" src="../../_static/sphinx-thebe.js?v=c100c467"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'notebooks/P00_user_guide/U04_best_practices';</script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Introduction" href="../P0A_system_a/A00_introduction.html" />
+    <link rel="prev" title="Finite element method" href="U03_finite_element_method.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search this book..."
+         aria-label="Search this book..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../home.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">CRoCoDiL Demo</p>
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="../../home.html">
+                    CRoCoDiL 🐊
+                </a>
+            </li>
+        </ul>
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="U00_introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="U01_governing_equations.html">Governing equations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="U02_diagnostic_equations.html">Diagnostic equations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="U03_finite_element_method.html">Finite element method</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Best practices</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">System A</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../P0A_system_a/A00_introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../P0A_system_a/A01_demo.html">Demo</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../P0A_system_a/A02_stabilization.html">Stabilization of the advection-diffusion-reaction equation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../P0A_system_a/A03_resolution.html">Mesh resolution</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../P0A_system_a/A04_sensitivity.html">Sensitivity to initial conditions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../P0A_system_a/A05_scaling.html">Scaling choice</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../P0A_system_a/A06_damkohler.html">Damköhler numbers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../P0A_system_a/A07_rayleigh.html">Rayleigh numbers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../P0A_system_a/A08_cr.html">Residual concentrations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../P0A_system_a/A09_sr.html">Residual saturations</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Benchmarks</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../P0X_benchmarks/X01_darcy_rayleigh_benard.html">Rayleigh-Bénard convection of a Darcy fluid</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../P0X_benchmarks/X02_darcy_evolving.html">Evolving convection of a Darcy fluid</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../P0X_benchmarks/X03_darcy_rayleigh_taylor.html">Rayleigh-Taylor instability of a Darcy fluid</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../P0X_benchmarks/X04_darcy_thermosolutal.html">Thermosolutal convection of a Darcy fluid</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../../_sources/notebooks/P00_user_guide/U04_best_practices.md" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.md</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Best practices</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#mesh-resolution">Mesh resolution</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#boundary-layers">Boundary layers</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#adaptive-timestep">Adaptive timestep</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#time-discretization">Time discretization</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#stabilization-of-the-advection-diffusion-reaction-equation">Stabilization of the advection-diffusion-reaction equation</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#linear-algebra-options">Linear algebra options</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#darcy-equations">Darcy equations</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#mixed-formulation">Mixed formulation</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#streamfunction-formulation">Streamfunction formulation</a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#advection-diffusion-reaction-equation">Advection-diffusion-reaction equation</a></li>
+</ul>
+</li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="best-practices">
+<h1>Best practices<a class="headerlink" href="#best-practices" title="Link to this heading">#</a></h1>
+<section id="mesh-resolution">
+<h2>Mesh resolution<a class="headerlink" href="#mesh-resolution" title="Link to this heading">#</a></h2>
+<p>critical wavelength</p>
+<div class="math notranslate nohighlight">
+\[\lambda_{\text{c}} = \frac{90 L_y}{Ra}\]</div>
+<div class="math notranslate nohighlight">
+\[2\min_{\textbf{x}}h(\textbf{x}) \leq\lambda_{\text{c}}\]</div>
+<p><span class="math notranslate nohighlight">\(h=\Delta x = \frac{L_x}{N_x}\)</span> for a uniform Cartesian mesh.</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{align*}
+2\Delta x &amp; \leq\lambda_{\text{c}} \\
+\frac{2L_x}{N_x} &amp; \leq\frac{90 L_y}{Ra} \\
+\frac{\mathcal{A}Ra}{45} &amp; \leq N_x \\
+\end{align*}
+\end{split}\]</div>
+<section id="boundary-layers">
+<h3>Boundary layers<a class="headerlink" href="#boundary-layers" title="Link to this heading">#</a></h3>
+<p>Dirichlet boundary conditions on the concentration or temperature can lead to boundary layers across which the concentration or temperature adjusts from its value in the bulk of the domain to its Dirichlet value.</p>
+</section>
+</section>
+<section id="adaptive-timestep">
+<h2>Adaptive timestep<a class="headerlink" href="#adaptive-timestep" title="Link to this heading">#</a></h2>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{align*}
+\Delta t &amp;\leq \min\{\Delta t_{\textbf{u}}, \Delta t_{\mathsf{D}} ,\Delta t_{\Sigma}\} \\
+\Delta t_{\textbf{u}} &amp;= \min_{\textbf{x}}\left(\frac{h}{|\textbf{u}|}\right)  \\
+\Delta t_{\mathsf{D}} &amp; = \min_{\textbf{x}}\left(\frac{h^2}{|\mathsf{D}|}\right) \\
+\Delta t_{\Sigma} &amp;= \min_{\textbf{x}}\left(\frac{1}{|\Sigma|}\right) \\
+\end{align*}
+\end{split}\]</div>
+<div class="math notranslate nohighlight">
+\[
+\Delta t = \min\{C_{\textbf{u}}\Delta t_{\textbf{u}}, C_{\mathsf{D}}\Delta t_{\mathsf{D}}, C_{\Sigma}\Delta t_{\Sigma}\}
+\]</div>
+</section>
+<section id="time-discretization">
+<h2>Time discretization<a class="headerlink" href="#time-discretization" title="Link to this heading">#</a></h2>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Finite difference operator</p></th>
+<th class="head"><p>Recommended</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><span class="math notranslate nohighlight">\(\mathcal{D}_\phi\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(\text{AB}_1\)</span></p></td>
+<td><p>forward Euler</p></td>
+</tr>
+<tr class="row-odd"><td><p><span class="math notranslate nohighlight">\(\mathcal{D}_{\textbf{u},\theta}\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(\text{AB}_2\circ\text{CN}\)</span></p></td>
+<td><p>second-order Adams-Bashforth on <span class="math notranslate nohighlight">\(\textbf{u}\)</span> and Crank-Nicolson on <span class="math notranslate nohighlight">\(\theta\)</span></p></td>
+</tr>
+<tr class="row-even"><td><p><span class="math notranslate nohighlight">\(\mathcal{D}_{\textbf{u},c}\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(\text{AB}_2\circ\text{CN}\)</span></p></td>
+<td><p>second-order Adams-Bashforth on <span class="math notranslate nohighlight">\(\textbf{u}\)</span> and Crank-Nicolson on <span class="math notranslate nohighlight">\(c\)</span></p></td>
+</tr>
+<tr class="row-odd"><td><p><span class="math notranslate nohighlight">\(\mathcal{D}_{\mathsf{G}, \theta}\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(\text{AB}_1\circ\text{CN}\)</span></p></td>
+<td><p>forward Euler on <span class="math notranslate nohighlight">\(\mathsf{G}\)</span> and Crank-Nicolson on <span class="math notranslate nohighlight">\(\theta\)</span></p></td>
+</tr>
+<tr class="row-even"><td><p><span class="math notranslate nohighlight">\(\mathcal{D}_{\mathsf{D}, c}\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(\text{AB}_1\circ\text{CN}\)</span></p></td>
+<td><p>forward Euler on <span class="math notranslate nohighlight">\(\mathsf{D}\)</span> and Crank-Nicolson on <span class="math notranslate nohighlight">\(c\)</span></p></td>
+</tr>
+<tr class="row-odd"><td><p><span class="math notranslate nohighlight">\(\mathcal{D}_{R,c}\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(\text{AB}_1\circ\text{AM}_1\)</span></p></td>
+<td><p>forward Euler on <span class="math notranslate nohighlight">\(R(s)\)</span> and backward Euler on <span class="math notranslate nohighlight">\(c\)</span></p></td>
+</tr>
+<tr class="row-even"><td><p><span class="math notranslate nohighlight">\(\mathcal{D}_{J}\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(\text{AB}_1\)</span></p></td>
+<td><p>forward Euler on <span class="math notranslate nohighlight">\(J(s)\)</span></p></td>
+</tr>
+<tr class="row-odd"><td><p><span class="math notranslate nohighlight">\(\mathcal{D}_{\Sigma, s}\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(\text{AB}_1\circ\text{AM}_1\)</span></p></td>
+<td><p>forward Euler on <span class="math notranslate nohighlight">\(s\)</span> and backward Euler on <span class="math notranslate nohighlight">\(c\)</span></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>For mass conservation, ideally choose finite difference operators such that</p>
+<div class="math notranslate nohighlight">
+\[\mathcal{D}_{R,c}(Rc) + \mathcal{D}_J(J) = \mathcal{D}_{\Sigma, s}(\Sigma)\]</div>
+</section>
+<section id="stabilization-of-the-advection-diffusion-reaction-equation">
+<h2>Stabilization of the advection-diffusion-reaction equation<a class="headerlink" href="#stabilization-of-the-advection-diffusion-reaction-equation" title="Link to this heading">#</a></h2>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Finite element method</p></th>
+<th class="head"><p>Pros</p></th>
+<th class="head"><p>Cons</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>unstabilized continuous Galerkin</p></td>
+<td><p>simplest formulation, least computational cost</p></td>
+<td><p>unstable to small diffusivities and large velocities</p></td>
+</tr>
+<tr class="row-odd"><td><p>SUPG-stabilized continuous Galerkin</p></td>
+<td><p>simple formulation, low computational cost</p></td>
+<td><p>can introduce artificial and crosswind diffusivities, ambiguous choice of parameter</p></td>
+</tr>
+<tr class="row-even"><td><p>discontinuous Galerkin</p></td>
+<td><p>stable to sharp gradients and discontinuities</p></td>
+<td><p>intricate formulation, higher computational cost</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="linear-algebra-options">
+<h2>Linear algebra options<a class="headerlink" href="#linear-algebra-options" title="Link to this heading">#</a></h2>
+<p>Significant computional speedups can be achieved with a suitable choice of Krylov subspace  (<code class="docutils literal notranslate"><span class="pre">ksp_type</span></code>) and preconditioner (<code class="docutils literal notranslate"><span class="pre">pc_type</span></code>), informed by the properties of matrix operator resulting from the finite element discretization.</p>
+<section id="darcy-equations">
+<h3>Darcy equations<a class="headerlink" href="#darcy-equations" title="Link to this heading">#</a></h3>
+<section id="mixed-formulation">
+<h4>Mixed formulation<a class="headerlink" href="#mixed-formulation" title="Link to this heading">#</a></h4>
+<p>If no natural boundary conditions on the pressure are prescibed (<span class="math notranslate nohighlight">\(\partial\Omega_{\text{N}}=\varnothing\iff\partial\Omega_{\text{E}}=\partial\Omega\)</span>), then the linear algebra options need to be configured to handle the nullspace airising from the invariance of the equations under the addition of a constant to the pressure.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">pc_factor_mat_solver_type</span> <span class="o">=</span> <span class="s1">&#39;mumps&#39;</span>
+</pre></div>
+</div>
+</section>
+<section id="streamfunction-formulation">
+<h4>Streamfunction formulation<a class="headerlink" href="#streamfunction-formulation" title="Link to this heading">#</a></h4>
+<p>The matrix is (in theory) symmetric. Interpolation, as opposed to projection, of the streamfunction gradients to obtain the velocity is the recommended method.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">psi_petsc</span> <span class="o">=</span> <span class="n">OptionsPETSc</span><span class="p">(</span><span class="s1">&#39;cg&#39;</span><span class="p">,</span> <span class="s1">&#39;hypre&#39;</span><span class="p">)</span>
+<span class="n">u_petsc</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="n">flow_petsc</span> <span class="o">=</span> <span class="p">(</span><span class="n">psi_petsc</span><span class="p">,</span> <span class="n">u_petsc</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="advection-diffusion-reaction-equation">
+<h3>Advection-diffusion-reaction equation<a class="headerlink" href="#advection-diffusion-reaction-equation" title="Link to this heading">#</a></h3>
+<p>The matrix is not symmetric</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">c_petsc</span> <span class="o">=</span> <span class="n">OptionsPETSc</span><span class="p">(</span><span class="s1">&#39;gmres&#39;</span><span class="p">,</span> <span class="s1">&#39;ilu&#39;</span><span class="p">)</span>
+<span class="n">theta_petsc</span> <span class="o">=</span> <span class="n">OptionsPETSc</span><span class="p">(</span><span class="s1">&#39;gmres&#39;</span><span class="p">,</span> <span class="s1">&#39;ilu&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            name: "python3",
+            path: "./notebooks/P00_user_guide"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="U03_finite_element_method.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Finite element method</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="../P0A_system_a/A00_introduction.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Introduction</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#mesh-resolution">Mesh resolution</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#boundary-layers">Boundary layers</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#adaptive-timestep">Adaptive timestep</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#time-discretization">Time discretization</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#stabilization-of-the-advection-diffusion-reaction-equation">Stabilization of the advection-diffusion-reaction equation</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#linear-algebra-options">Linear algebra options</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#darcy-equations">Darcy equations</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#mixed-formulation">Mixed formulation</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#streamfunction-formulation">Streamfunction formulation</a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#advection-diffusion-reaction-equation">Advection-diffusion-reaction equation</a></li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By The Jupyter Book community
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2023.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>
