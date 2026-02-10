@@ -185,16 +185,16 @@
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">System A</span></p>
 <ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="../P0A_system_a/A00_specification.html">Specification</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../P0A_system_a/A00_introduction.html">Introduction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../P0A_system_a/A01_demo.html">Demo</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../P0A_system_a/A02_stabilization.html">Stabilization of the advection-diffusion-reaction equation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../P0A_system_a/A03_resolution.html">Mesh resolution</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../P0A_system_a/A04_sensitivity.html">Sensitivity to initial conditions</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../P0A_system_a/A05_scaling.html">Scaling choice</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../P0A_system_a/A06_damkohler.html">Damköhler numbers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../P0A_system_a/A07_rayleigh.html">Rayleigh numbers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../P0A_system_a/A08_cr.html">Residual concentrations</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../P0A_system_a/A09_sr.html">Residual saturations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../P0A_system_a/A02_damkohler.html">Damköhler numbers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../P0A_system_a/A03_rayleigh.html">Rayleigh numbers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../P0A_system_a/A04_cr.html">Residual concentrations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../P0A_system_a/A05_sr.html">Residual saturations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../P0A_system_a/Ax01_timestep.html">Timestep constraints</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../P0A_system_a/Ax02_resolution.html">Mesh resolution</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../P0A_system_a/Ax03_stabilization.html">Stabilization of the advection-diffusion-reaction equation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../P0A_system_a/Ax04_sensitivity.html">Sensitivity to initial conditions</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Benchmarks</span></p>
 <ul class="nav bd-sidenav">
@@ -364,6 +364,7 @@ document.write(`
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#variational-forms">Variational forms</a></li>
 </ul>
 </li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#linear-algebra">Linear algebra</a></li>
 </ul>
             </nav>
         </div>
@@ -430,14 +431,16 @@ V_w^{\text{DG}} = \{v\in L^2(\Omega)~:~v|_{\mathcal{K}}\in\text{P}_1(\mathcal{K}
 \begin{align*}
 &amp;\text{Find} \\
 &amp;(\textbf{u}^n, p^n)\in V_\textbf{u}\times V_p \\
-&amp;c^{n+1}\in V_c \\
 &amp;\theta^{n+1}\in V_\theta \\
+&amp;c^{n+1}\in V_c \\
+&amp;s^{n+1}\in V_s \\
 &amp;\text{such that} \\
 &amp;\mathbb{F} 
 \begin{cases}
-F_{\textbf{u},p}(\textbf{u}^n, p^n, \textbf{v}, q)=0 \quad\forall(\textbf{v}, q)\in V_{\textbf{u}} \times V_p\\
-F_c(c^{n+1}, v) = 0\quad\forall v\in V_c \\ 
+F_{\textbf{u},p}(\textbf{u}^n, p^n, \textbf{v}, q)=0 \quad\forall(\textbf{v}, q)\in V_{\textbf{u}} \times V_p \\
 F_\theta(\theta^{n+1}, v) = 0\quad\forall v\in V_\theta \\ 
+F_c(c^{n+1}, v) = 0\quad\forall v\in V_c \\ 
+F_s(s^{n+1}, v) = 0\quad\forall v\in V_s \\ 
 \end{cases}
 \end{align*}
 \end{split}\]</div>
@@ -450,15 +453,17 @@ F_\theta(\theta^{n+1}, v) = 0\quad\forall v\in V_\theta \\
 &amp;\text{Find} \\
 &amp;\psi^n\in V_\psi \\
 &amp;\textbf{u}^n\in V_\textbf{u} \\
-&amp;c^{n+1}\in V_c \\
 &amp;\theta^{n+1}\in V_\theta \\
+&amp;c^{n+1}\in V_c \\
+&amp;s^{n+1}\in V_s \\
 &amp;\text{such that} \\
 &amp;\mathbb{F} 
 \begin{cases}
 F_\psi(\psi^n, v) = 0\quad\forall v\in V_\psi \\
 F_{\textbf{u}}(\textbf{u}^n, \textbf{v}) = 0\quad\forall \textbf{v}\in V_{\textbf{u}} \\ 
-F_c(c^{n+1}, v) = 0\quad\forall v\in V_c \\ 
 F_\theta(\theta^{n+1}, v) = 0\quad\forall v\in V_\theta \\ 
+F_c(c^{n+1}, v) = 0\quad\forall v\in V_c \\ 
+F_s(s^{n+1}, v) = 0\quad\forall v\in V_s \\ 
 \end{cases}
 \end{align*}
 \end{split}\]</div>
@@ -474,8 +479,8 @@ F_{\textbf{u}}(\textbf{u}^n, \textbf{v}) &amp;= \int_\Omega\text{d}\Omega~\textb
 -\frac{\partial\psi^n}{\partial y} \\
 \frac{\partial\psi^n}{\partial x}
 \end{pmatrix} \\
-F_c(c^{n+1}, v) &amp;\in F^{j}(\theta^{n+1}, v, Ad\,\textbf{u}, Di\mathsf{D}, Ki R, Ki J)~,~j\in\{\text{CG}, \text{DG}\}\\
-F_\theta(\theta^{n+1}, v) &amp;\in F^{j}(\theta^{n+1}, v, Ad\,\textbf{u}, \tfrac{Di}{Le}\mathsf{G}, 0, 0)~,~j\in\{\text{CG}, \text{DG}\}\\
+F_c(c^{n+1}, v) &amp;\in F^{j}(\theta^{n+1}, v; Ad\,\textbf{u}, Di\mathsf{D}, Ki R, Ki J)~,~j\in\{\text{CG}, \text{DG}\}\\
+F_\theta(\theta^{n+1}, v) &amp;\in F^{j}(\theta^{n+1}, v; Ad\,\textbf{u}, \tfrac{Di}{Le}\mathsf{G}, 0, 0)~,~j\in\{\text{CG}, \text{DG}\}\\
 F^{\text{CG}}(w^{n+1}, v; \textbf{u}, \mathsf{D}, R, J) &amp;= \int_\Omega\text{d}\Omega~v\frac{w^{n+1}-w^n}{\Delta t^n} \\
 &amp;\quad +\int_\Omega\text{d}\Omega~v\frac{\mathcal{D}_{\textbf{u}, w}(\textbf{u}\cdot\nabla w)}{\mathcal{D}_\phi(\phi)} \\
 &amp;\quad +\int_\Omega\text{d}\Omega~\nabla\bigg(\frac{v}{\mathcal{D}_\phi(\phi)}\bigg)\cdot(\mathcal{D}_{\mathsf{D}}(\mathsf{D})\cdot\nabla \mathcal{D}_w(w)) \\
@@ -511,6 +516,33 @@ F^{\text{DG}}(w^{n+1}, v; \textbf{u}, \mathsf{D}, R, J) &amp;= \dots\end{split}\
 % &amp;\quad -Ki\int_\Omega\text{d}\Omega~v\,\frac{\mathcal{D}_{R,c}(Rc)}{\mathcal{D}_\phi(\phi)} \\\end{split}\\\end{align*}
 \end{aligned}\end{align} \]</div>
 </section>
+</section>
+<section id="linear-algebra">
+<h2>Linear algebra<a class="headerlink" href="#linear-algebra" title="Link to this heading">#</a></h2>
+<div class="math notranslate nohighlight">
+\[
+\textbf{u}^n=\sum_jU_j^n\boldsymbol{\xi}_j^{\textbf{u}}~,~
+p^n=\sum_jP_j\xi_j^{p} ~,~
+\psi^n=\sum_j\Psi_j^n\xi_j^{\psi} ~,~
+\theta^n =\sum_j\Theta_j^n\xi_j^{\theta} ~,~
+c^n=\sum_jC_j^n\xi_j^{c} ~,~
+s^n =\sum_jS_j^n\xi_j^{s}
+\]</div>
+<div class="math notranslate nohighlight">
+\[\text{span}\{\xi_j^w\}_j\subset V_j\quad\forall w\in\{\textbf{u}, p,\psi,\theta,c,s\}\]</div>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{align*}
+&amp;\text{Find}~\textbf{U}^n,~\textbf{P}^n,~\boldsymbol{\Theta}^{n+1},~\textbf{C}^{n+1},~\textbf{S}^{n+1}~\text{such that}~\forall n\geq0 \\
+&amp;\mathbb{A} 
+\begin{cases}
+\mathsf{A}^n_{\textbf{u},p}\cdot(\textbf{U}^n, \textbf{P}^n)^{\mathsf{T}}=\textbf{b}^n_{\textbf{u},p} \\
+\mathsf{A}^{n}_{\theta}\cdot\boldsymbol{\Theta}^{n+1}\cdot\textbf{C}^n=\textbf{b}^n_{\theta} \\
+\mathsf{A}^{n}_{c}\cdot\textbf{C}^{n+1}=\textbf{b}^n_{c} \\
+\mathsf{A}^{n}_{s}\cdot\textbf{S}^{n+1}=\textbf{b}^n_{s} \\
+\end{cases}
+\end{align*}
+\end{split}\]</div>
 </section>
 </section>
 
@@ -592,6 +624,7 @@ F^{\text{DG}}(w^{n+1}, v; \textbf{u}, \mathsf{D}, R, J) &amp;= \dots\end{split}\
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#variational-forms">Variational forms</a></li>
 </ul>
 </li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#linear-algebra">Linear algebra</a></li>
 </ul>
   </nav></div>
 

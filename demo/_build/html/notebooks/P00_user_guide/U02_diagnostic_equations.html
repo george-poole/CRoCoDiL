@@ -185,16 +185,16 @@
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">System A</span></p>
 <ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="../P0A_system_a/A00_specification.html">Specification</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../P0A_system_a/A00_introduction.html">Introduction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../P0A_system_a/A01_demo.html">Demo</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../P0A_system_a/A02_stabilization.html">Stabilization of the advection-diffusion-reaction equation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../P0A_system_a/A03_resolution.html">Mesh resolution</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../P0A_system_a/A04_sensitivity.html">Sensitivity to initial conditions</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../P0A_system_a/A05_scaling.html">Scaling choice</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../P0A_system_a/A06_damkohler.html">Damköhler numbers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../P0A_system_a/A07_rayleigh.html">Rayleigh numbers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../P0A_system_a/A08_cr.html">Residual concentrations</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../P0A_system_a/A09_sr.html">Residual saturations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../P0A_system_a/A02_damkohler.html">Damköhler numbers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../P0A_system_a/A03_rayleigh.html">Rayleigh numbers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../P0A_system_a/A04_cr.html">Residual concentrations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../P0A_system_a/A05_sr.html">Residual saturations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../P0A_system_a/Ax01_timestep.html">Timestep constraints</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../P0A_system_a/Ax02_resolution.html">Mesh resolution</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../P0A_system_a/Ax03_stabilization.html">Stabilization of the advection-diffusion-reaction equation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../P0A_system_a/Ax04_sensitivity.html">Sensitivity to initial conditions</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Benchmarks</span></p>
 <ul class="nav bd-sidenav">
@@ -381,17 +381,23 @@ document.write(`
 <tr class="row-odd"><td><p>mass of dissolved CO<sub>2</sub></p></td>
 <td><p><span class="math notranslate nohighlight">\(m_D=\int_{\Omega}\phi(\rho(c,\theta)-\rho(0,\theta))~\text{d}\Omega\)</span></p></td>
 </tr>
-<tr class="row-even"><td><p>solutal flux</p></td>
+<tr class="row-even"><td><p>total mass of CO<sub>2</sub></p></td>
+<td><p><span class="math notranslate nohighlight">\(m=m_C + m_D\)</span></p></td>
+</tr>
+<tr class="row-odd"><td><p>solutal flux</p></td>
 <td><p><span class="math notranslate nohighlight">\(F=\frac{1}{\vert\Gamma\vert}\int_\Gamma(\textbf{u}c-\nabla\cdot(\mathsf{D}\cdot\nabla c))\cdot\textbf{n}~\text{d}\Gamma = F_{\textbf{u}} + F_{\mathsf{D}}\)</span></p></td>
 </tr>
-<tr class="row-odd"><td><p>thermal flux</p></td>
+<tr class="row-even"><td><p>thermal flux</p></td>
 <td><p><span class="math notranslate nohighlight">\(Q=\frac{1}{\vert\Gamma\vert}\int_\Gamma(\textbf{u}\theta-\nabla\cdot(\mathsf{G}\cdot\nabla \theta))\cdot\textbf{n}~\text{d}\Gamma = Q_{\textbf{u}} + Q_{\mathsf{G}}\)</span></p></td>
 </tr>
-<tr class="row-even"><td><p>maximum speed</p></td>
+<tr class="row-odd"><td><p>maximum speed</p></td>
 <td><p><span class="math notranslate nohighlight">\(\max_{\textbf{x}}\vert\textbf{u}\vert\)</span></p></td>
 </tr>
-<tr class="row-odd"><td><p>root-mean-square speed</p></td>
-<td><p><span class="math notranslate nohighlight">\(\text{rms}(\textbf{u})=\left(\int_\Omega\vert\textbf{u}\vert^2~\text{d}\Omega\right)^{1/2}\)</span></p></td>
+<tr class="row-even"><td><p>root-mean-square speed</p></td>
+<td><p><span class="math notranslate nohighlight">\(\text{rms}(\textbf{u})=\Vert\textbf{u}\cdot\textbf{u}\Vert_{L_2(\Omega)}=\left(\int_\Omega\textbf{u}\cdot\textbf{u}~\text{d}\Omega\right)^{1/2}\)</span></p></td>
+</tr>
+<tr class="row-odd"><td><p>velocity divergence norm</p></td>
+<td><p><span class="math notranslate nohighlight">\(\text{divnorm}(\textbf{u})=\Vert\nabla\cdot\textbf{u}\Vert_{L_2(\Omega)}=\left(\int_\Omega(\nabla\cdot\textbf{u})~\text{d}\Omega\right)^{1/2}\)</span></p></td>
 </tr>
 <tr class="row-even"><td><p>solutal correction</p></td>
 <td><p><span class="math notranslate nohighlight">\(\mathcal{C}(c)=\max(c_{\text{min}}, \min(c, c_{\text{max}})) - c\)</span></p></td>

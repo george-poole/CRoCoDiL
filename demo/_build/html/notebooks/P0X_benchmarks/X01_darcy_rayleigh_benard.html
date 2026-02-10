@@ -61,7 +61,7 @@
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
     <link rel="next" title="Evolving convection of a Darcy fluid" href="X02_darcy_evolving.html" />
-    <link rel="prev" title="Residual saturations" href="../P0A_system_a/A09_sr.html" />
+    <link rel="prev" title="Sensitivity to initial conditions" href="../P0A_system_a/Ax04_sensitivity.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   </head>
@@ -183,16 +183,16 @@
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">System A</span></p>
 <ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="../P0A_system_a/A00_specification.html">Specification</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../P0A_system_a/A00_introduction.html">Introduction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../P0A_system_a/A01_demo.html">Demo</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../P0A_system_a/A02_stabilization.html">Stabilization of the advection-diffusion-reaction equation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../P0A_system_a/A03_resolution.html">Mesh resolution</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../P0A_system_a/A04_sensitivity.html">Sensitivity to initial conditions</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../P0A_system_a/A05_scaling.html">Scaling choice</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../P0A_system_a/A06_damkohler.html">Damköhler numbers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../P0A_system_a/A07_rayleigh.html">Rayleigh numbers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../P0A_system_a/A08_cr.html">Residual concentrations</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../P0A_system_a/A09_sr.html">Residual saturations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../P0A_system_a/A02_damkohler.html">Damköhler numbers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../P0A_system_a/A03_rayleigh.html">Rayleigh numbers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../P0A_system_a/A04_cr.html">Residual concentrations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../P0A_system_a/A05_sr.html">Residual saturations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../P0A_system_a/Ax01_timestep.html">Timestep constraints</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../P0A_system_a/Ax02_resolution.html">Mesh resolution</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../P0A_system_a/Ax03_stabilization.html">Stabilization of the advection-diffusion-reaction equation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../P0A_system_a/Ax04_sensitivity.html">Sensitivity to initial conditions</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Benchmarks</span></p>
 <ul class="current nav bd-sidenav">
@@ -473,7 +473,7 @@ document.write(`
 <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plot_line</span><span class="p">(</span>
     <span class="p">[(</span><span class="n">dt</span><span class="o">.</span><span class="n">time_series</span><span class="p">,</span> <span class="n">dt</span><span class="o">.</span><span class="n">value_series</span><span class="p">),</span> <span class="p">(</span><span class="n">dtCFL</span><span class="o">.</span><span class="n">time_series</span><span class="p">,</span> <span class="n">dtCFL</span><span class="o">.</span><span class="n">value_series</span><span class="p">)],</span>
     <span class="n">x_label</span><span class="o">=</span><span class="s1">&#39;$t$&#39;</span><span class="p">,</span>
-    <span class="n">legend_labels</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;$\Delta t$&#39;</span><span class="p">,</span> <span class="s1">&#39;$\Delta t_{\mathrm</span><span class="si">{CFL}</span><span class="s1">}$&#39;</span><span class="p">],</span>
+    <span class="n">legend_labels</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;$\Delta t$&#39;</span><span class="p">,</span> <span class="s1">&#39;$\Delta t_{\mathbf</span><span class="si">{u}</span><span class="s1">}$&#39;</span><span class="p">],</span>
 <span class="p">)</span>
 <span class="n">ax</span><span class="o">.</span><span class="n">set_yscale</span><span class="p">(</span><span class="s1">&#39;log&#39;</span><span class="p">)</span>
 <span class="n">save_figure</span><span class="p">(</span><span class="s1">&#39;dt(t)&#39;</span><span class="p">,</span> <span class="n">simulation</span><span class="o">.</span><span class="n">dir_path</span><span class="p">,</span> <span class="n">prefix_ipynb</span><span class="o">=</span><span class="kc">False</span><span class="p">)(</span><span class="n">fig</span><span class="p">)</span>
@@ -543,12 +543,12 @@ document.write(`
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="../P0A_system_a/A09_sr.html"
+       href="../P0A_system_a/Ax04_sensitivity.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">Residual saturations</p>
+        <p class="prev-next-title">Sensitivity to initial conditions</p>
       </div>
     </a>
     <a class="right-next"

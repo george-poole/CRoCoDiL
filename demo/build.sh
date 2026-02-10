@@ -40,7 +40,7 @@ for i in "${IPYNB[@]}"
         echo Finished excution "$(date)"
     done
 
-jupyter-book build . $BUILD
+jupyter-book build . $BUILD_ARGS
 
 if $REMOTE; then
     ghp-import -n -p -f ./_build/html

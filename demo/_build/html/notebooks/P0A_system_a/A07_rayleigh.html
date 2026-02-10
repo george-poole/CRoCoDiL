@@ -183,7 +183,7 @@
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">System A</span></p>
 <ul class="current nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="A00_specification.html">Specification</a></li>
+<li class="toctree-l1"><a class="reference internal" href="A00_introduction.html">Introduction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="A01_demo.html">Demo</a></li>
 <li class="toctree-l1"><a class="reference internal" href="A02_stabilization.html">Stabilization of the advection-diffusion-reaction equation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="A03_resolution.html">Mesh resolution</a></li>
@@ -352,6 +352,132 @@ document.write(`
                   
   <section class="tex2jax_ignore mathjax_ignore" id="rayleigh-numbers">
 <h1>Rayleigh numbers<a class="headerlink" href="#rayleigh-numbers" title="Link to this heading">#</a></h1>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">ipyparallel</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">ipp</span>
+
+<span class="n">N_PROC</span> <span class="o">=</span> <span class="mi">2</span>
+<span class="n">cluster</span> <span class="o">=</span> <span class="n">ipp</span><span class="o">.</span><span class="n">Cluster</span><span class="p">(</span><span class="n">engines</span><span class="o">=</span><span class="s1">&#39;mpi&#39;</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="n">N_PROC</span><span class="p">)</span>
+<span class="n">rc</span> <span class="o">=</span> <span class="n">cluster</span><span class="o">.</span><span class="n">start_and_connect_sync</span><span class="p">()</span>
+<span class="n">view</span> <span class="o">=</span> <span class="n">rc</span><span class="o">.</span><span class="n">load_balanced_view</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Starting 2 engines with &lt;class &#39;ipyparallel.cluster.launcher.MPIEngineSetLauncher&#39;&gt;
+100%|██████████| 2/2 [00:09&lt;00:00,  4.66s/engine]
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Callable</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">functools</span><span class="w"> </span><span class="kn">import</span> <span class="n">partial</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">lucifex.sim</span><span class="w"> </span><span class="kn">import</span> <span class="n">Simulation</span><span class="p">,</span> <span class="n">GridSimulation</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">lucifex.viz</span><span class="w"> </span><span class="kn">import</span> <span class="n">plot_colormap</span><span class="p">,</span> <span class="n">plot_line</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">ipp_simulation</span><span class="p">(</span>
+    <span class="n">Ra</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+    <span class="n">Nx</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+    <span class="n">Ny</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+    <span class="n">store</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+    <span class="o">**</span><span class="n">run_kwargs</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">GridSimulation</span><span class="p">:</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">mpi4py</span><span class="w"> </span><span class="kn">import</span> <span class="n">MPI</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">lucifex.solver</span><span class="w"> </span><span class="kn">import</span> <span class="n">OptionsPETSc</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">lucifex.fdm</span><span class="w"> </span><span class="kn">import</span> <span class="n">AB</span><span class="p">,</span> <span class="n">CN</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">lucifex.sim</span><span class="w"> </span><span class="kn">import</span> <span class="n">run</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">crocodil.dns</span><span class="w"> </span><span class="kn">import</span> <span class="n">dns_system_a</span><span class="p">,</span> <span class="n">SYSTEM_A_REFERENCE</span>
+    <span class="n">physical</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">SYSTEM_A_REFERENCE</span><span class="p">)</span>
+    <span class="n">physical</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">Ra</span><span class="o">=</span><span class="n">Ra</span><span class="p">)</span>
+    <span class="n">sim</span> <span class="o">=</span> <span class="n">dns_system_a</span><span class="p">(</span>
+        <span class="n">store_delta</span><span class="o">=</span><span class="n">store</span><span class="p">,</span> 
+    <span class="p">)(</span>
+        <span class="n">comm</span><span class="o">=</span><span class="n">MPI</span><span class="o">.</span><span class="n">COMM_SELF</span><span class="p">,</span>
+        <span class="n">Nx</span><span class="o">=</span><span class="n">Nx</span><span class="p">,</span>
+        <span class="n">Ny</span><span class="o">=</span><span class="n">Ny</span><span class="p">,</span>
+        <span class="n">scaling</span><span class="o">=</span><span class="s1">&#39;advective&#39;</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">SYSTEM_A_REFERENCE</span><span class="p">,</span>
+        <span class="n">D_adv</span><span class="o">=</span><span class="n">AB</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="nd">@CN</span><span class="p">,</span>
+        <span class="n">D_diff</span><span class="o">=</span><span class="n">AB</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="nd">@CN</span><span class="p">,</span>
+        <span class="n">c_petsc</span><span class="o">=</span><span class="n">OptionsPETSc</span><span class="p">(</span><span class="s1">&#39;gmres&#39;</span><span class="p">,</span> <span class="s1">&#39;ilu&#39;</span><span class="p">),</span>
+        <span class="n">flow_petsc</span><span class="o">=</span><span class="p">(</span><span class="n">OptionsPETSc</span><span class="p">(</span><span class="s1">&#39;cg&#39;</span><span class="p">,</span> <span class="s1">&#39;hypre&#39;</span><span class="p">),</span> <span class="kc">None</span><span class="p">),</span>
+        <span class="n">diagnostic</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">run_kwargs</span><span class="p">:</span>
+        <span class="n">run</span><span class="p">(</span><span class="n">sim</span><span class="p">,</span> <span class="o">**</span><span class="n">run_kwargs</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">GridSimulation</span><span class="o">.</span><span class="n">from_simulation</span><span class="p">(</span><span class="n">sim</span><span class="p">)</span>
+
+
+<span class="n">STORE</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="n">NX</span> <span class="o">=</span> <span class="mi">60</span>
+<span class="n">NY</span> <span class="o">=</span> <span class="mi">60</span>
+
+<span class="n">N_STOP</span> <span class="o">=</span> <span class="mi">10</span>
+<span class="n">T_STOP</span> <span class="o">=</span> <span class="mf">20.0</span>
+<span class="n">DT_INIT</span> <span class="o">=</span> <span class="mf">1e-6</span>
+<span class="n">N_INIT</span> <span class="o">=</span> <span class="mi">6</span>
+
+<span class="n">Ra_opts</span> <span class="o">=</span> <span class="p">(</span><span class="mf">500.0</span><span class="p">,</span> <span class="mf">800.0</span><span class="p">)</span>
+
+<span class="n">run_func</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="c1"># run_func = partial(ipp_run, n_stop=N_STOP, t_stop=T_STOP, dt_init=DT_INIT, n_init=N_INIT)</span>
+<span class="n">sim_func</span> <span class="o">=</span> <span class="n">partial</span><span class="p">(</span>
+    <span class="n">ipp_simulation</span><span class="p">,</span>
+    <span class="n">Nx</span><span class="o">=</span><span class="n">NX</span><span class="p">,</span>
+    <span class="n">Ny</span><span class="o">=</span><span class="n">NY</span><span class="p">,</span>
+    <span class="n">store</span><span class="o">=</span><span class="n">STORE</span><span class="p">,</span>
+    <span class="n">run_func</span><span class="o">=</span><span class="n">run_func</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">futures</span> <span class="o">=</span> <span class="n">view</span><span class="o">.</span><span class="n">map_async</span><span class="p">(</span>
+    <span class="n">partial</span><span class="p">(</span><span class="n">sim_func</span><span class="p">,</span> <span class="n">run_func</span><span class="o">=</span><span class="n">run_func</span><span class="p">),</span> <span class="n">Ra_opts</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">simulations</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">Simulation</span><span class="p">]</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+    <span class="nb">zip</span><span class="p">(</span><span class="n">Ra_opts</span><span class="p">,</span> <span class="n">futures</span><span class="o">.</span><span class="n">get</span><span class="p">()),</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">mpi4py</span><span class="w"> </span><span class="kn">import</span> <span class="n">MPI</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">joblib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Parallel</span><span class="p">,</span> <span class="n">delayed</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">math</span><span class="w"> </span><span class="kn">import</span> <span class="n">sqrt</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">lucifex.mesh</span><span class="w"> </span><span class="kn">import</span> <span class="n">rectangle_mesh</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">lucifex.fem</span><span class="w"> </span><span class="kn">import</span> <span class="n">Function</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">job</span><span class="p">(</span><span class="n">Nx</span><span class="p">):</span>
+    <span class="n">comm</span> <span class="o">=</span> <span class="n">MPI</span><span class="o">.</span><span class="n">COMM_SELF</span>
+    <span class="n">mesh</span> <span class="o">=</span> <span class="n">rectangle_mesh</span><span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="n">Nx</span><span class="p">,</span> <span class="n">Nx</span><span class="p">,</span> <span class="n">comm</span><span class="o">=</span><span class="n">comm</span><span class="p">)</span>
+    <span class="n">f</span> <span class="o">=</span> <span class="n">Function</span><span class="p">((</span><span class="n">mesh</span><span class="p">,</span> <span class="s1">&#39;P&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+    <span class="n">dofs</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">x</span><span class="o">.</span><span class="n">array</span><span class="p">[:]</span>
+    <span class="k">return</span> <span class="k">lambda</span><span class="p">:</span> <span class="n">dofs</span>
+
+
+<span class="n">Nx_opts</span> <span class="o">=</span> <span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">30</span><span class="p">)</span>
+
+<span class="n">Parallel</span><span class="p">(</span><span class="n">n_jobs</span><span class="o">=</span><span class="mi">2</span><span class="p">)(</span>
+    <span class="n">delayed</span><span class="p">(</span><span class="n">job</span><span class="p">)(</span><span class="n">nx</span><span class="p">)</span> <span class="k">for</span> <span class="n">nx</span> <span class="ow">in</span> <span class="n">Nx_opts</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[&lt;function __main__.job.&lt;locals&gt;.&lt;lambda&gt;()&gt;,
+ &lt;function __main__.job.&lt;locals&gt;.&lt;lambda&gt;()&gt;,
+ &lt;function __main__.job.&lt;locals&gt;.&lt;lambda&gt;()&gt;]
+</pre></div>
+</div>
+</div>
+</div>
 </section>
 
     <script type="text/x-thebe-config">
