@@ -3,14 +3,15 @@ from typing import Iterable
 from mpi4py import MPI
 from lucifex.fem import Constant, SpatialPerturbation, cubic_noise
 from lucifex.fdm import FiniteDifference, FiniteDifferenceArgwise, CN, AB, AM
-from lucifex.utils import CellType
+from lucifex.utils.fenicsx_utils import CellType
 from lucifex.solver import OptionsPETSc, OptionsJIT
 from lucifex.sim import configure_simulation
-from lucifex.utils import limits_corrector
+from lucifex.utils.fenicsx_utils import limits_corrector
 from lucifex.utils.py_utils import FrozenDict
 
 from .generic import dns_generic
-from .utils import heaviside, rectangle_mesh_closure, CONVECTION_REACTION_SCALINGS
+from .utils import heaviside, rectangle_mesh_closure
+from .theory import CONVECTION_REACTION_SCALINGS
 
 
 SYSTEM_A_REFERENCE = FrozenDict(
@@ -36,6 +37,54 @@ def critical_sr(
     `sᵣ = ε ( 1 / (1 - ζ₀) - cᵣ) / (1 - εcᵣ)`
     """
     return epsilon * (-cr + 1 / (1 - zeta0)) / (1 - epsilon * cr)
+
+
+def mass_dissolved_asymptote(
+    mass_initial: float,
+    epsilon: float,
+    Lx: float,
+    Ly: float,
+) -> float:
+    """
+    `mᴰ -> ... ` as `t -> ∞`
+    
+    with `vol(Ω) = LxLy` under the assumption that `𝜑 = 1`.
+    """
+    return (mass_initial - Lx * Ly / epsilon) / (1 - 1 / epsilon)
+
+
+def mass_capillary_asymptote(
+    mass_initial: float,
+    epsilon: float,
+    Lx: float,
+    Ly: float,
+) -> float:
+    """
+    `mᶜ -> ...` as `t -> ∞`
+
+    with `vol(Ω) = LxLy` under the assumption that `𝜑 = 1`.
+    """
+    return (mass_initial - Lx * Ly ) / (1 - epsilon)
+
+
+def mass_dissolved_initial(
+    sr: float,
+    cr: float,
+    zeta0: float,
+    Lx: float,
+    Ly: float,
+)-> float:
+    return Lx * Ly * (1 - zeta0) * (1 - sr) * cr
+
+
+def mass_capillary_initial(
+    sr: float,
+    epsilon: float,
+    zeta0: float,
+    Lx: float,
+    Ly: float,
+) -> float:
+    return Lx * Ly * (1 - zeta0) * sr / epsilon
 
 
 @configure_simulation(

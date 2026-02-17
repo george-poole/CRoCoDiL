@@ -5,65 +5,6 @@ from lucifex.fem import Function
 from lucifex.utils import grid, as_index
 
 
-@overload
-def time_average(
-    series: Iterable[float],
-    window: int,
-) -> list[float]:
-    ...
-
-
-@overload
-def time_average(
-    series: Iterable[float],
-    window: float,
-    time_series: Iterable[float],
-) -> list[float]:
-    ...
-
-def time_average(
-    series: Iterable[float],
-    window: int | float,
-    time_series: Iterable[float] | None = None,
-):
-    ma = [series[0]]
-    if isinstance(window, int):
-        ma.extend([np.mean(series[max(i - window, 0): i]) for i in range(1, len(series))])
-    else:
-        assert time_series is not None
-        assert len(series) == len(time_series)
-        for i in range(1, len(series)):
-            t_target = time_series[i] - window
-            lower_index = as_index(time_series, t_target)
-            if lower_index == i:
-                ma.append(series[i])
-            else:
-                ma.append(np.mean(series[max(lower_index, 0): i]))
-            
-    return ma 
-
-
-def spatial_average(
-    f: Function  | np.ndarray,
-    axis: str | int | None = None,
-    slc: slice | tuple[slice, slice] | None = None, # TODO import as_slice
-) -> np.ndarray:
-
-    if isinstance(axis, str):
-        axis = ('x', 'y', 'z').index(axis)
-
-    if isinstance(f, Function):
-        f = grid(f)
-
-    if isinstance(slc, slice):
-        f = f[slc]
-
-    if isinstance(slc, tuple):
-        f = f[slc[0], slc[1]]
-
-    return np.mean(f, axis)
-
-
 def grid_vertical_partition(
     f: np.ndarray,
     x_axis: np.ndarray,

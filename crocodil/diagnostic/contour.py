@@ -7,7 +7,8 @@ from scipy.signal import find_peaks
 from dolfinx.fem import Function
 from scipy.interpolate import interp1d
 
-from lucifex.utils import grid, optional_lru_cache
+from lucifex.fem import as_grid_function
+from lucifex.utils.py_utils import optional_lru_cache
 
 
 @optional_lru_cache
@@ -29,8 +30,8 @@ def contour_coordinates(
     `Γ = {(x,y) ∈ Ω : c = α}`
     """
     if isinstance(fxy, Function):
-        f = grid(fxy)
-        x_axis, y_axis = grid(use_cache=True)(fxy.function_space.mesh)
+        f = as_grid_function(fxy)
+        x_axis, y_axis = as_grid_function(use_cache=True)(fxy.function_space.mesh)
     else:
         f, x_axis, y_axis = fxy
 

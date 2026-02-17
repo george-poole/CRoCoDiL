@@ -12,7 +12,8 @@ from lucifex.mesh import MeshBoundary
 from lucifex.fdm import (
     FunctionSeries, ConstantSeries, FiniteDifference, FE, 
     ExprSeries, FiniteDifferenceArgwise, finite_difference_order,
-    adr_timestep, advective_timestep, advective_diffusive_timestep, diffusive_timestep, reactive_timestep,
+    adr_timestep, advective_timestep, advective_diffusive_timestep, 
+    diffusive_timestep, reactive_timestep,
 )
 from lucifex.solver import (
     BoundaryConditions, OptionsPETSc, Solver,
@@ -27,12 +28,11 @@ from lucifex.pde.advection_diffusion import (
     dg_advection_diffusion_reaction, advection_diffusion, 
     dg_advection_diffusion, advection_diffusion_reaction, flux,
 )
-from lucifex.utils.mesh_utils import CellType
-from lucifex.utils.dofs_utils import limits_corrector
+from lucifex.utils.fenicsx_utils import CellType, limits_corrector
 from lucifex.utils.py_utils import arity
 from lucifex.pde.evolution import evolution, evolution_update
 
-from .utils import mass_dissolved, mass_capillary_trapped, vertical_flux
+from .diagnostic import mass_dissolved, mass_capillary, vertical_flux
 
 
 Phi: TypeAlias = Expr | ExprSeries
@@ -329,7 +329,7 @@ def dns_generic(
             solvers.append(evaluation(dtD, diffusive_timestep)(FE(d), dt_h))
         if EVOL:
             mC = ConstantSeries(Omega, "mC")
-            solvers.append(integration(mC, mass_capillary_trapped, 'dx')(s[0], epsilon))
+            solvers.append(integration(mC, mass_capillary, 'dx')(s[0], varphi, epsilon))
             sMinMax = ConstantSeries(Omega, "sMinMax", shape=(2,))
             solvers.append(evaluation(sMinMax, extrema)(s[0]))
             dtSigma = ConstantSeries(Omega, "dtSigma")

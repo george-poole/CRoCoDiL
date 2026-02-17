@@ -2,12 +2,13 @@ import scipy.special as sp
 
 from lucifex.fem import Constant, SpatialPerturbation, cubic_noise
 from lucifex.fdm import FiniteDifference, FiniteDifferenceArgwise, CN, AB
-from lucifex.utils import CellType
+from lucifex.utils.fenicsx_utils import CellType
 from lucifex.solver import BoundaryConditions, OptionsPETSc, OptionsJIT
 from lucifex.sim import configure_simulation
 
 from .generic import dns_generic
-from .utils import CONVECTION_REACTION_SCALINGS, rectangle_mesh_closure, heaviside
+from .theory import CONVECTION_REACTION_SCALINGS
+from .utils import rectangle_mesh_closure, heaviside
 
 
 @configure_simulation(

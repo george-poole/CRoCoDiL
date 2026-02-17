@@ -4,31 +4,39 @@ root: home
 parts:
   - caption: User Guide
     chapters:
-      - file: notebooks/P00_user_guide/U00_introduction
-      - file: notebooks/P00_user_guide/U01_governing_equations
-      - file: notebooks/P00_user_guide/U02_diagnostic_equations
-      - file: notebooks/P00_user_guide/U03_finite_element_method
-      - file: notebooks/P00_user_guide/U04_best_practices
+      - file: notebooks/P0_user_guide/U00_introduction
+      - file: notebooks/P0_user_guide/U01_governing_equations
+      - file: notebooks/P0_user_guide/U02_diagnostic_equations
+      - file: notebooks/P0_user_guide/U03_finite_element_method
+      - file: notebooks/P0_user_guide/U04_best_practices
   - caption: System A
     chapters:
-      - file: notebooks/P0A_system_a/A00_introduction
-      - file: notebooks/P0A_system_a/A01_demo
-      - file: notebooks/P0A_system_a/A02_damkohler
-      - file: notebooks/P0A_system_a/A03_rayleigh
-      - file: notebooks/P0A_system_a/A04_cr
-      - file: notebooks/P0A_system_a/A05_sr
-      - file: notebooks/P0A_system_a/Ax01_timestep 
-      - file: notebooks/P0A_system_a/Ax02_resolution
-      - file: notebooks/P0A_system_a/Ax03_stabilization
-      - file: notebooks/P0A_system_a/Ax04_sensitivity
+      - file: notebooks/PA_system_a/A00_introduction
+        sections: 
+          - file: notebooks/PA_system_a/A01_mass
+          - file: notebooks/PA_system_a/A02_flux
+      - file: notebooks/PA_system_a/A10_overview
+      - file: notebooks/PA_system_a/A20_parameters
+        sections:
+          - file: notebooks/PA_system_a/A21_damkohler
+          - file: notebooks/PA_system_a/A22_rayleigh
+          - file: notebooks/PA_system_a/A23_cr
+          - file: notebooks/PA_system_a/A24_sr
+      - file: notebooks/PA_system_a/A30_numerical
+        sections:
+          - file: notebooks/PA_system_a/A31_timestep
+          - file: notebooks/PA_system_a/A32_resolution
+          - file: notebooks/PA_system_a/A33_stabilization
+          - file: notebooks/PA_system_a/A34_sensitivity
+          - file: notebooks/PA_system_a/A35_scaling
   # - caption: System B
   #   chapters:
-  #     - file: notebooks/P0B_system_b/B00_specification
-  #     - file: notebooks/P0B_system_b/B01
-  #     - file: notebooks/P0B_system_b/B02
+  #     - file: notebooks/PB_system_b/B00_specification
+  #     - file: notebooks/PB_system_b/B01
+  #     - file: notebooks/PB_system_b/B02
   - caption: Benchmarks
     chapters:
-      - file: notebooks/P0X_benchmarks/X01_darcy_rayleigh_benard
-      - file: notebooks/P0X_benchmarks/X02_darcy_evolving
-      - file: notebooks/P0X_benchmarks/X03_darcy_rayleigh_taylor
-      - file: notebooks/P0X_benchmarks/X04_darcy_thermosolutal
+      - file: notebooks/PX_benchmarks/X01_darcy_rayleigh_benard
+      - file: notebooks/PX_benchmarks/X02_darcy_evolving
+      - file: notebooks/PX_benchmarks/X03_darcy_rayleigh_taylor
+      - file: notebooks/PX_benchmarks/X04_darcy_thermosolutal
