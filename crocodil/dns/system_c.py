@@ -38,7 +38,7 @@ def dns_model_c(
     c_eps: float = 1e-6,
     c_freq: tuple[int, int] = (8, 8),
     c_seed: tuple[int, int] = (1234, 5678),
-    # time step
+    # timestep
     dt_max: float = 0.5,
     cfl_h: str | float = "hmin",
     courant_adv: float = 0.75,
@@ -102,7 +102,7 @@ def dns_model_c(
         permeability=permeability,
         density=density,
         reaction=reaction,
-        # time step
+        # timestep
         dt_max=dt_max,
         dt_h=cfl_h,
         courant_adv=courant_adv,

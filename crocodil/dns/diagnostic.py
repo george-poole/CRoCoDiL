@@ -25,20 +25,20 @@ def vertical_flux(
     """
     mesh = u.function_space.mesh
     y_axis = mesh_axes(mesh)[1]
-    h0_index = as_index(
+    y_index = as_index(
         y_axis, 
         y_target, 
         condition=lambda aprx, trgt: aprx <= trgt and np.abs(aprx - trgt) < tol, 
         msg='Mesh resolution must be chosen such that `y_target` is aligned with cell facets',
     )
-    h0_approx = y_axis[h0_index]
-    h0_plus = y_axis[h0_index + 1]
-    h0_minus = y_axis[h0_index - 1]
+    y_approx = y_axis[y_index]
+    y_approx_plus = y_axis[y_index + 1]
+    y_approx_minus = y_axis[y_index - 1]
     return (1 / Lx) * flux(
         'dS', 
-        lambda x: x[1] - h0_approx, 
-        lambda x: x[1] - h0_plus, 
-        lambda x: x[1] - h0_minus, 
+        lambda x: x[1] - y_approx, 
+        lambda x: x[1] - y_approx_plus, 
+        lambda x: x[1] - y_approx_minus, 
         facet_side="+",
     )(u, a, d)
 

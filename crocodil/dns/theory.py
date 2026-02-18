@@ -9,11 +9,14 @@ class CONVECTION_CONSTANTS(FloatEnum):
     Constants from the theory of convection in porous media
     """
 
-    CRITICAL_RA = 4 * np.pi **2
+    RA_CRITICAL = 4 * np.pi **2
     """
     Critical Rayleigh for the onset of Rayleigh-Benard convection
     """
-    # FLUX = ...
+    FLUX_FACTOR = 0.008
+    """
+    TODO
+    """
 
 
 CONVECTION_REACTION_SCALINGS = ScalingChoice(

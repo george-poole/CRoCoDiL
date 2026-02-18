@@ -27,7 +27,7 @@ def dns_darcy_rayleigh_benard(
     theta_ampl: float = 1e-6,
     theta_freq: tuple[int, int] = (8, 8),
     theta_seed: tuple[int, int] = (1234, 5678),
-    # time step
+    # timestep
     dt_max: float = 0.5,
     cfl_h: str | float = "hmin",
     courant_adv: float = 0.75,
@@ -84,7 +84,7 @@ def dns_darcy_rayleigh_benard(
         # constitutive relations
         density=density,
         dispersion_thermal=dispersion,
-        # time step
+        # timestep
         dt_max=dt_max,
         dt_h=cfl_h,
         courant_adv=courant_adv,
@@ -121,7 +121,7 @@ def dns_darcy_evolving(
     theta_freq: tuple[int, int] = (8, 8),
     theta_seed: tuple[int, int] = (1234, 5678),
     theta_eps: float = 1e-2,
-    # time step
+    # timestep
     dt_max: float = 0.5,
     cfl_h: str | float = "hmin",
     courant_adv: float = 0.75,
@@ -177,7 +177,7 @@ def dns_darcy_evolving(
         # constitutive relations
         density=density,
         dispersion_thermal=dispersion,
-        # time step
+        # timestep
         dt_max=dt_max,
         dt_h=cfl_h,
         courant_adv=courant_adv,
@@ -216,7 +216,7 @@ def dns_darcy_rayleigh_taylor(
     c_ampl: float = 1e-6,
     c_freq: tuple[int, int] = (8, 8),
     c_seed: tuple[int, int] = (1234, 5678),
-    # time step
+    # timestep
     dt_max: float = 0.5,
     cfl_h: str | float = "hmin",
     courant_adv: float = 0.75,
@@ -272,7 +272,7 @@ def dns_darcy_rayleigh_taylor(
         # constitutive relations
         density=density,
         dispersion_solutal=dispersion,
-        # time step
+        # timestep
         dt_max=dt_max,
         dt_h=cfl_h,
         courant_adv=courant_adv,
@@ -313,7 +313,7 @@ def dns_darcy_thermosolutal(
     theta_ampl: float = 1e-3,
     theta_freq: tuple[int, int] = (8, 8),
     theta_seed: tuple[int, int] = (1234, 5678),
-    # time step
+    # timestep
     dt_max: float = 0.5,
     cfl_h: str | float = "hmin",
     courant_adv: float = 0.75,
@@ -393,7 +393,7 @@ def dns_darcy_thermosolutal(
         density=density,
         dispersion_solutal=dispersion_solutal,
         dispersion_thermal=dispersion_thermal,
-        # time step
+        # timestep
         dt_max=dt_max,
         dt_h=cfl_h,
         courant_adv=courant_adv,

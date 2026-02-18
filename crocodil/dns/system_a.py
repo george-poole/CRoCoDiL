@@ -48,9 +48,9 @@ def mass_dissolved_asymptote(
     """
     `mᴰ -> ... ` as `t -> ∞`
     
-    with `vol(Ω) = LxLy` under the assumption that `𝜑 = 1`.
+    with `vol(Ω) = LxLy`.
     """
-    return (mass_initial - Lx * Ly / epsilon) / (1 - 1 / epsilon)
+    return min(mass_initial, (mass_initial - Lx * Ly / epsilon) / (1 - 1 / epsilon))
 
 
 def mass_capillary_asymptote(
@@ -62,9 +62,9 @@ def mass_capillary_asymptote(
     """
     `mᶜ -> ...` as `t -> ∞`
 
-    with `vol(Ω) = LxLy` under the assumption that `𝜑 = 1`.
+    with `vol(Ω) = LxLy`.
     """
-    return (mass_initial - Lx * Ly ) / (1 - epsilon)
+    return max(0, (mass_initial - Lx * Ly ) / (1 - epsilon))
 
 
 def mass_dissolved_initial(
@@ -92,7 +92,7 @@ def mass_capillary_initial(
 )
 def dns_system_a(
     # mesh
-    comm: MPI.Comm = MPI.COMM_WORLD,
+    comm: MPI.Comm | str = 'COMM_WORLD',
     aspect: float = 2.0,
     Nx: int = 100,
     Ny: int = 100,
@@ -115,7 +115,7 @@ def dns_system_a(
     c_ampl: float = 1e-6,
     c_freq: tuple[int, int] = (16, 16),
     c_seed: tuple[int, int] = (1234, 5678),
-    # time step
+    # timestep
     dt_min: float = 0.0,
     dt_max: float = 0.1,
     dt_h: str | float = "hmin",
@@ -135,7 +135,9 @@ def dns_system_a(
     # stabilization
     c_stabilization: str | tuple[float, float] = None,
     c_limits: bool = False,
+    s_elem: tuple[str, int] = ('DP', 0),
     s_limits: bool = False,
+    phi_elem: tuple[str, int] | None = None,
     # linear algebra
     flow_petsc: tuple[OptionsPETSc, OptionsPETSc | None] 
     | OptionsPETSc = (OptionsPETSc('gmres', 'ilu'), None),
@@ -162,7 +164,7 @@ def dns_system_a(
     X = scaling_map['X']
     Lx = aspect * X
     Ly = 1.0 * X
-    Lzeta = zeta0 * X
+    Lzeta0 = zeta0 * X
     Lzeta_eps = zeta_eps * X if zeta_eps is not None else None
     Omega, dOmega = rectangle_mesh_closure(Lx, Ly, Nx, Ny, cell, comm=comm)
     # constants
@@ -170,7 +172,7 @@ def dns_system_a(
     Ra = Constant(Omega, Ra, 'Ra')
     Da = Constant(Omega, Da, 'Da')
     # initial conditions
-    s_ics = heaviside(lambda x: x[1] - Lzeta, sr - s_ampl, eps=Lzeta_eps) 
+    s_ics = heaviside(lambda x: x[1] - Lzeta0, max(0, sr - s_ampl), eps=Lzeta_eps) 
     if s_ampl:
         s_ics = SpatialPerturbation(
             s_ics,
@@ -179,7 +181,7 @@ def dns_system_a(
             s_ampl,
             limits_corrector(0, sr),
         )
-    c_ics = heaviside(lambda x: x[1] - Lzeta, max(0, cr - c_ampl), eps=Lzeta_eps),
+    c_ics = heaviside(lambda x: x[1] - Lzeta0, max(0, cr - c_ampl), eps=Lzeta_eps),
     if c_ampl:
         c_ics = SpatialPerturbation(
             c_ics,
@@ -195,7 +197,13 @@ def dns_system_a(
     density = lambda c: Bu * c
 
     if diagnostic:
-        fluxes = [('f', Lzeta, Lx), *fluxes]
+        fluxes = [('f', Lzeta0, Lx), *fluxes]
+
+    namespace=[
+        Ra, Da, Di, Bu, Ki, 
+        ('X', X), ('Lx', Lx), ('Ly', Ly), ('zeta0', zeta0), 
+        ('sr', sr), ('cr', cr),
+    ]
 
     return dns_generic(
         # domain
@@ -211,7 +219,7 @@ def dns_system_a(
         reaction=reaction,
         source=source,
         dispersion_solutal=dispersion,
-        # time step
+        # timestep
         dt_min=dt_min,
         dt_max=dt_max,
         dt_h=dt_h,
@@ -227,7 +235,9 @@ def dns_system_a(
         # stabilization
         c_stabilization=c_stabilization,
         c_limits=c_limits,
+        s_elem=s_elem,
         s_limits=s_limits,
+        phi_elem=phi_elem,
         # linear algebra
         flow_petsc=flow_petsc,
         c_petsc=c_petsc,
@@ -235,7 +245,7 @@ def dns_system_a(
         # optional solvers
         diagnostic=diagnostic,
         fluxes_solutal=fluxes,
-        namespace=[Ra, Da, Di, Bu, Ki, ('X', X), ('Lx', Lx), ('Ly', Ly)],
+        namespace=namespace,
     )
 
 

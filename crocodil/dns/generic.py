@@ -30,7 +30,7 @@ from lucifex.pde.advection_diffusion import (
 )
 from lucifex.utils.fenicsx_utils import CellType, limits_corrector
 from lucifex.utils.py_utils import arity
-from lucifex.pde.evolution import evolution, evolution_update
+from lucifex.pde.evolution import evolution, evolution_rhs
 
 from .diagnostic import mass_dissolved, mass_capillary, vertical_flux
 
@@ -75,7 +75,7 @@ def dns_generic(
     source: Callable[[S], Expr | ExprSeries] 
     | Callable[[S, Theta], ExprSeries] 
     | None = None,
-    # time step
+    # timestep
     dt_min: float = 0.0,
     dt_max: float = 0.5,
     dt_h: str | float = "hmin",
@@ -97,7 +97,9 @@ def dns_generic(
     c_limits: tuple[float, float] | bool = False,
     theta_stabilization: str | float | tuple[float, float] = None,
     theta_limits: tuple[float, float] | EllipsisType | None = None,
+    s_elem: tuple[str, int] = ('P', 1),
     s_limits: tuple[float, float] | bool = False,
+    phi_elem: tuple[str, int] | None = None,
     # linear algebra
     flow_petsc: tuple[OptionsPETSc, OptionsPETSc | None] 
     | OptionsPETSc = (OptionsPETSc('gmres', 'ilu'), None),
@@ -129,10 +131,12 @@ def dns_generic(
     THERMAL = theta_ics is not None
     THERMOSOLUTAL = SOLUTAL and THERMAL
     EVOL = epsilon is not None
-    SOLUTAL_CG = isinstance(c_stabilization, (str, type(None)))
-    THERMAL_CG = isinstance(theta_stabilization, (str, type(None)))
+    is_cg = lambda arg: isinstance(arg, (str, type(None)))
+    SOLUTAL_CG = is_cg(c_stabilization)
+    THERMAL_CG = is_cg(theta_stabilization)
     SOLUTAL_MECH = arity(dispersion_solutal) == 2
     THERMAL_MECH = arity(dispersion_thermal) == 2
+    HETEROGENEOUS = callable(rock_porosity)
 
     solvers = []
     namespace = list(namespace)
@@ -162,14 +166,18 @@ def dns_generic(
     if THERMAL:
         theta = FunctionSeries((Omega, 'P' if THERMAL_CG else 'DP', 1), 'theta', order, ics=theta_ics)
     if EVOL:
-        s = FunctionSeries((Omega, 'P', 1), 's', order, ics=s_ics)
+        s = FunctionSeries((Omega, *s_elem), 's', order, ics=s_ics)
         epsilon = Constant(Omega, epsilon, 'epsilon')
         namespace.append(epsilon)
     else:
-        s = Function((Omega, 'P', 1), s_ics, 's')
+        s = Function((Omega, *s_elem), s_ics, 's')
 
     # constitutive
-    varphi = Function((Omega, 'P', 1), rock_porosity, 'varphi')
+    if HETEROGENEOUS:
+        phi_elem = s_elem if phi_elem is None else phi_elem
+        varphi = Function((Omega, *phi_elem), rock_porosity, 'varphi')
+    else:
+        varphi = Constant(Omega, rock_porosity, 'varphi')
     phi = varphi * (1 - s)
     k = permeability(phi)   
     rho = density(
@@ -283,7 +291,7 @@ def dns_generic(
     # evolution solver
     if EVOL:
         reaction_evol = lambda c, *args: -epsilon * reaction_sum(c, *args)
-        rEvol = ExprSeries.from_expr_func(reaction_evol, name='rEvol')(
+        rEvol = ExprSeries.from_expr_factory(reaction_evol, name='rEvol')(
             *(c, s, theta) if THERMOSOLUTAL
             else (c, s)
         )
@@ -291,8 +299,8 @@ def dns_generic(
         s_limits = (np.min(s.ics.x.array), np.max(s.ics.x.array)) if s_limits is True else s_limits
         s_corrector = ('sCorr', limits_corrector(*s_limits)) if s_limits else None
         if s_petsc is None:
-            s_solver = interpolation(s, evolution_update, corrector=s_corrector, future=True)(
-                s, dt, rEvol, D_reac_evol, phi=varphi, explicit=1,
+            s_solver = interpolation(s, evolution_rhs, corrector=s_corrector, future=True)(
+                s, dt, rEvol, D_reac_evol, phi=varphi, argwise_index=1,
             )
         else:
             s_solver = ivp(evolution, petsc=s_petsc, corrector=s_corrector)(

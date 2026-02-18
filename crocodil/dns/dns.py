@@ -38,7 +38,7 @@ def dns_system_a(
     c_ampl: float | None = 1e-6,
     c_freq: tuple[int, int] | None = (16, 16),
     c_seed: tuple[int, int] | None = (1234, 5678),
-    # time step
+    # timestep
     dt_min: float = 0.0,
     dt_max: float = 0.5,
     cfl_h: str | float = "hmin",
@@ -126,7 +126,7 @@ def dns_system_a(
         reaction=reaction,
         source=source,
         dispersion_solutal=dispersion,
-        # time step
+        # timestep
         dt_min=dt_min,
         dt_max=dt_max,
         dt_h=cfl_h,

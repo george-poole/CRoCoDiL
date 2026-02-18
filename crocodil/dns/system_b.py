@@ -33,7 +33,7 @@ def dns_system_b(
     # constitutive relations
     delta: float = 1.0,
     gamma: float = 1.0,
-    # time step
+    # timestep
     dt_max: float = 0.5,
     cfl_h: str | float = "hmin",
     courant_adv: float = 0.75,
@@ -128,7 +128,7 @@ def dns_system_b(
         source=source,
         dispersion_solutal=dispersion_solutal,
         dispersion_thermal=dispersion_thermal,
-        # time step
+        # timestep
         dt_max=dt_max,
         dt_h=cfl_h,
         courant_adv=courant_adv,
