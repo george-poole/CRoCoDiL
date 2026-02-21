@@ -202,6 +202,7 @@
 <li class="toctree-l2"><a class="reference internal" href="A33_stabilization.html">Stabilization of the advection-diffusion-reaction equation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="A34_sensitivity.html">Sensitivity to initial conditions</a></li>
 <li class="toctree-l2"><a class="reference internal" href="A35_scaling.html">Scaling choice</a></li>
+<li class="toctree-l2"><a class="reference internal" href="A36_profiling.html">Profiling</a></li>
 </ul>
 </details></li>
 </ul>
@@ -375,21 +376,22 @@ document.write(`
 <span class="n">STORE</span> <span class="o">=</span> <span class="mi">1</span>
 <span class="n">create_sim</span> <span class="o">=</span> <span class="n">dns_system_a</span><span class="p">(</span><span class="n">store_delta</span><span class="o">=</span><span class="n">STORE</span><span class="p">)</span>
 
-<span class="n">Nx_opts</span> <span class="o">=</span> <span class="p">(</span><span class="mi">60</span><span class="p">,</span> <span class="mi">120</span><span class="p">,)</span><span class="c1"># 120, 160, 160, 180)</span>
-<span class="n">Ny_opts</span> <span class="o">=</span> <span class="p">(</span><span class="mi">60</span><span class="p">,</span> <span class="mi">60</span><span class="p">,)</span><span class="c1"># 120, 120, 160, 180)</span>
+<span class="n">Nx_opts</span> <span class="o">=</span> <span class="p">(</span><span class="mi">60</span><span class="p">,</span> <span class="mi">120</span><span class="p">,</span> <span class="mi">120</span><span class="p">,</span> <span class="mi">160</span><span class="p">,</span> <span class="mi">160</span><span class="p">,</span> <span class="mi">180</span><span class="p">)</span>
+<span class="n">Ny_opts</span> <span class="o">=</span> <span class="p">(</span><span class="mi">60</span><span class="p">,</span> <span class="mi">60</span><span class="p">,</span> <span class="mi">120</span><span class="p">,</span> <span class="mi">120</span><span class="p">,</span> <span class="mi">160</span><span class="p">,</span> <span class="mi">180</span><span class="p">)</span>
 <span class="n">CELL_TYPE</span> <span class="o">=</span> <span class="s1">&#39;quadrilateral&#39;</span>
 <span class="n">COURANT_ADV</span> <span class="o">=</span> <span class="mf">0.75</span>
 <span class="n">COURANT_DIFF</span> <span class="o">=</span> <span class="mf">0.75</span>
 <span class="n">COURANT_REAC</span> <span class="o">=</span> <span class="mf">0.1</span>
 
 <span class="n">n_proc</span> <span class="o">=</span> <span class="n">set_ipynb_variable</span><span class="p">(</span><span class="s1">&#39;N_PROC&#39;</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
-<span class="n">n_stop</span> <span class="o">=</span> <span class="n">set_ipynb_variable</span><span class="p">(</span><span class="s1">&#39;N_STOP&#39;</span><span class="p">,</span> <span class="mi">200</span><span class="p">)</span>
+<span class="n">n_stop</span> <span class="o">=</span> <span class="n">set_ipynb_variable</span><span class="p">(</span><span class="s1">&#39;N_STOP&#39;</span><span class="p">,</span> <span class="mi">300</span><span class="p">)</span>
 <span class="n">t_stop</span> <span class="o">=</span> <span class="mf">20.0</span>
 <span class="n">dt_init</span> <span class="o">=</span> <span class="mf">1e-6</span>
 <span class="n">n_init</span> <span class="o">=</span> <span class="mi">10</span>
 
 <span class="n">simulations</span> <span class="o">=</span> <span class="n">parallel_run</span><span class="p">(</span>
-    <span class="n">create_sim</span><span class="p">,</span> <span class="n">n_proc</span><span class="p">,</span> <span class="n">n_stop</span><span class="p">,</span> <span class="n">dt_init</span><span class="p">,</span> <span class="n">n_init</span><span class="p">,</span>
+    <span class="n">create_sim</span><span class="p">,</span> <span class="n">n_proc</span><span class="p">,</span> <span class="n">n_stop</span><span class="p">,</span> 
+    <span class="n">dt_init</span><span class="o">=</span><span class="n">dt_init</span><span class="p">,</span> <span class="n">n_init</span><span class="o">=</span><span class="n">n_init</span><span class="p">,</span>
     <span class="n">serialize</span><span class="o">=</span><span class="n">as_grid_simulation</span><span class="p">,</span> <span class="n">link</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
 <span class="p">)(</span>
     <span class="n">cell</span><span class="o">=</span><span class="n">CELL_TYPE</span><span class="p">,</span>
@@ -404,43 +406,11 @@ document.write(`
     <span class="n">c_limits</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="n">c_petsc</span><span class="o">=</span><span class="n">OptionsPETSc</span><span class="p">(</span><span class="s1">&#39;gmres&#39;</span><span class="p">,</span> <span class="s1">&#39;ilu&#39;</span><span class="p">),</span>
     <span class="n">flow_petsc</span><span class="o">=</span><span class="p">(</span><span class="n">OptionsPETSc</span><span class="p">(</span><span class="s1">&#39;cg&#39;</span><span class="p">,</span> <span class="s1">&#39;hypre&#39;</span><span class="p">),</span> <span class="kc">None</span><span class="p">),</span>
-    <span class="n">diagnostic</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">diagnostic</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
 <span class="p">)(</span>
     <span class="n">Nx</span><span class="o">=</span><span class="n">Nx_opts</span><span class="p">,</span>
     <span class="n">Ny</span><span class="o">=</span><span class="n">Ny_opts</span><span class="p">,</span>
 <span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>{&#39;psi&#39;: 1, &#39;u&#39;: 1, &#39;c&#39;: 1, &#39;s&#39;: 1, &#39;dt&#39;: 2}
-psi 1 0.0
-u 1 0.0
-dt 1 0.0
-c 1 0.0
-s 1 0.0
-{&#39;psi&#39;: 1, &#39;u&#39;: 1, &#39;c&#39;: 1, &#39;s&#39;: 1, &#39;dt&#39;: 2}
-psi 1 0.0
-u 1 0.0
-dt 1 0.0
-c 1 0.0
-s 1 0.0
-</pre></div>
-</div>
-</div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sim</span> <span class="o">=</span> <span class="n">simulations</span><span class="p">[(</span><span class="mi">60</span><span class="p">,</span> <span class="mi">60</span><span class="p">)]</span>
-
-<span class="n">c</span><span class="p">,</span> <span class="n">s</span> <span class="o">=</span> <span class="n">sim</span><span class="p">[</span><span class="s1">&#39;c&#39;</span><span class="p">,</span> <span class="s1">&#39;s&#39;</span><span class="p">]</span>
-
-<span class="n">c</span><span class="o">.</span><span class="n">time_series</span><span class="p">,</span> <span class="n">s</span><span class="o">.</span><span class="n">time_series</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>([0.0], [0.0])
 </pre></div>
 </div>
 </div>
@@ -481,6 +451,12 @@ s 1 0.0
 <span class="p">)</span>
 </pre></div>
 </div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../../_images/6b75a9dd8c86465f25083c71258605ce7c72b21608b7a5064da1eff43c9d7b73.png" src="../../_images/6b75a9dd8c86465f25083c71258605ce7c72b21608b7a5064da1eff43c9d7b73.png" />
+<img alt="../../_images/0205caf1d0682eeb713508b9fe234aa2ba48ab9ff16995fcac8285c980e3a15f.png" src="../../_images/0205caf1d0682eeb713508b9fe234aa2ba48ab9ff16995fcac8285c980e3a15f.png" />
+<img alt="../../_images/48a4f467fa38e3dfa1a718bed7223b6051bd9afa33ebcf6a1bc36c3e97052548.png" src="../../_images/48a4f467fa38e3dfa1a718bed7223b6051bd9afa33ebcf6a1bc36c3e97052548.png" />
+<img alt="../../_images/f660febf631a60891a8f9db9ad85d495272017007af96e760f2cf5582a2ac42f.png" src="../../_images/f660febf631a60891a8f9db9ad85d495272017007af96e760f2cf5582a2ac42f.png" />
 </div>
 </div>
 </section>

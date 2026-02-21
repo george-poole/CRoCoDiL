@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Flux &#8212; CRoCoDiL Demo</title>
+    <title>Flux modelling &#8212; CRoCoDiL Demo</title>
   
   
   
@@ -57,6 +57,8 @@
     <script async="async" src="../../_static/sphinx-thebe.js?v=c100c467"></script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
     <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'notebooks/PA_system_a/A02_flux';</script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
@@ -185,23 +187,24 @@
 <ul class="current nav bd-sidenav">
 <li class="toctree-l1 current active has-children"><a class="reference internal" href="A00_introduction.html">Introduction</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="A01_mass.html">Dissolved and capillary-trapped mass</a></li>
-<li class="toctree-l2 current active"><a class="current reference internal" href="#">Flux</a></li>
+<li class="toctree-l2 current active"><a class="current reference internal" href="#">Flux modelling</a></li>
 </ul>
 </details></li>
 <li class="toctree-l1"><a class="reference internal" href="A10_overview.html">Quick overview</a></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="A20_parameters.html">Parameter space</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l2"><a class="reference internal" href="A21_damkohler.html">Damköhler numbers</a></li>
 <li class="toctree-l2"><a class="reference internal" href="A22_rayleigh.html">Rayleigh numbers</a></li>
-<li class="toctree-l2"><a class="reference internal" href="A23_cr.html">Residual concentrations</a></li>
-<li class="toctree-l2"><a class="reference internal" href="A24_sr.html">Residual saturations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="A23_saturations.html">Supercritical, subcritical and critical residual saturations</a></li>
 </ul>
 </details></li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="A30_numerical.html">Numerical validation</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l2"><a class="reference internal" href="A31_timestep.html">Timestep constraints</a></li>
-<li class="toctree-l2"><a class="reference internal" href="A32_resolution.html">Mesh resolution</a></li>
-<li class="toctree-l2"><a class="reference internal" href="A33_stabilization.html">Stabilization of the advection-diffusion-reaction equation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="A34_sensitivity.html">Sensitivity to initial conditions</a></li>
-<li class="toctree-l2"><a class="reference internal" href="A35_scaling.html">Scaling choice</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="AX0_numerical.html">Numerical validation</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="AX1_timestep.html">Timestep constraints</a></li>
+<li class="toctree-l2"><a class="reference internal" href="AX2_resolution.html">Mesh resolution</a></li>
+<li class="toctree-l2"><a class="reference internal" href="AX3_stabilization.html">Stabilization of the advection-diffusion-reaction equation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="AX4_sensitivity_i.html">Sensitivity to initial perturbations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="AX5_sensitivity_ii.html">Sensitivity to initial residual concentration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="AX6_scaling.html">Choice of scaling</a></li>
+<li class="toctree-l2"><a class="reference internal" href="AX7_profiling.html">Profiling</a></li>
 </ul>
 </details></li>
 </ul>
@@ -336,7 +339,9 @@ document.write(`
   </button>
 `);
 </script>
-
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
 </div></div>
       
     </div>
@@ -347,11 +352,23 @@ document.write(`
               
 
 <div id="jb-print-docs-body" class="onlyprint">
-    <h1>Flux</h1>
+    <h1>Flux modelling</h1>
     <!-- Table of contents -->
     <div id="print-main-content">
         <div id="jb-print-toc">
             
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#constrained-equations">Constrained equations</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#constant-height-constraint">Constant height constraint</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#equilibrium-concentration-constraint">Equilibrium concentration constraint</a></li>
+</ul>
+</li>
+</ul>
+            </nav>
         </div>
     </div>
 </div>
@@ -361,9 +378,73 @@ document.write(`
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section class="tex2jax_ignore mathjax_ignore" id="flux">
-<h1>Flux<a class="headerlink" href="#flux" title="Link to this heading">#</a></h1>
-<p>…</p>
+  <section class="tex2jax_ignore mathjax_ignore" id="flux-modelling">
+<h1>Flux modelling<a class="headerlink" href="#flux-modelling" title="Link to this heading">#</a></h1>
+<p>Subdomain averaging of the advection-diffusion-reaction and evolution equations obtains</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{align*}
+\frac{\text{d}c^+}{\text{d}t} &amp;= -\frac{F(t)}{1-\zeta(t)} + \gamma_{c} Da\frac{s^+(1-c^+)}{1-s^+} \\
+\frac{\text{d}c^-}{\text{d}t} &amp;= \frac{F(t)}{\zeta(t)} \\
+\frac{\text{d}s^+}{\text{d}t} &amp;= -\varepsilon \gamma_{s} Da s^+(1-c^+)
+\end{align*}
+\end{split}\]</div>
+<p>where due to the positive correlation of <span class="math notranslate nohighlight">\(s\)</span> and <span class="math notranslate nohighlight">\(c\)</span> in <span class="math notranslate nohighlight">\(\Omega^+\)</span> the inequalities</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{align*}
+\frac{1}{\text{vol}(\Omega^+)}\int_{\Omega^+}\frac{s(1-c)}{1-s}~\text{d}\Omega &amp;\leq \frac{s^+(1-c^+)}{1-s^+} \\
+\frac{1}{\text{vol}(\Omega^+)}\int_{\Omega^+}s(1-c)~\text{d}\Omega &amp;\leq s^+(1-c^+) \\
+\end{align*}
+\end{split}\]</div>
+<p>may be assumed to suppose that</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{align*}
+\int_{\Omega^+}\frac{s(1-c)}{1-s}~\text{d}\Omega &amp;= \gamma_c\frac{s^+(1-c^+)}{1-s^+} \\
+\int_{\Omega^+}s(1-c)~\text{d}\Omega &amp;= \gamma_s s^+(1-c^+) \\
+\end{align*}
+\end{split}\]</div>
+<p>for some <span class="math notranslate nohighlight">\(\gamma_c, \gamma_s \leq 1\)</span>.</p>
+<p>From total mass conservation,</p>
+<div class="math notranslate nohighlight">
+\[\underbrace{(1-\zeta_0)\left(\frac{s_r}{\varepsilon}+(1-s_r)c_r\right)}_{=m_0/\text{vol}(\Omega)}=(1-\zeta)(1-s^+)c^+ + \zeta c^- + (1-\zeta)\frac{s^+}{\varepsilon}\]</div>
+<p>so</p>
+<div class="math notranslate nohighlight">
+\[\zeta=\frac{\frac{m_0}{\text{vol}(\Omega)}-\frac{s^+}{\varepsilon}-(1-s^+)c^+}{c^- -\frac{s^+}{\varepsilon} - (1-s^+)c^+}\]</div>
+<p>Empirically, let</p>
+<div class="math notranslate nohighlight">
+\[F(c^+, c^-)=\alpha(c^+ - c^-) + \beta(c^+ - c^-)^2\]</div>
+<p>to close the ordinary differential equations, which may be solved numerically for <span class="math notranslate nohighlight">\(t&gt;0\)</span> with initial conditions</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{align*}
+c^+(t=0)=c_r \\
+c^-(t=0)=0 \\
+s^+(t=0) = s_r
+\end{align*}
+\end{split}\]</div>
+<p>or for <span class="math notranslate nohighlight">\(t&gt;t_*\)</span> with initial conditions</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{align*}
+c^+(t=t_*)=c^+_* \\
+c^-(t=t_*)=c^-_* \\
+s^+(t=t_*) = s^+_*
+\end{align*}
+\end{split}\]</div>
+<p>deduced from the direct numerical simulation data at <span class="math notranslate nohighlight">\(t=t_*\)</span>.</p>
+<section id="constrained-equations">
+<h2>Constrained equations<a class="headerlink" href="#constrained-equations" title="Link to this heading">#</a></h2>
+<section id="constant-height-constraint">
+<h3>Constant height constraint<a class="headerlink" href="#constant-height-constraint" title="Link to this heading">#</a></h3>
+<p>If <span class="math notranslate nohighlight">\(\zeta=\zeta_0\)</span> for all times, then instead <span class="math notranslate nohighlight">\(c^-\)</span> can be eliminated via total mass conservation.</p>
+</section>
+<section id="equilibrium-concentration-constraint">
+<h3>Equilibrium concentration constraint<a class="headerlink" href="#equilibrium-concentration-constraint" title="Link to this heading">#</a></h3>
+<p>If <span class="math notranslate nohighlight">\(c^+=1\)</span> for all times, then <span class="math notranslate nohighlight">\(s^+\)</span> is constant and only <span class="math notranslate nohighlight">\(c^-\)</span> needs to be solved for.</p>
+</section>
+</section>
 </section>
 
     <script type="text/x-thebe-config">
@@ -420,6 +501,25 @@ document.write(`
             </div>
             
             
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#constrained-equations">Constrained equations</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#constant-height-constraint">Constant height constraint</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#equilibrium-concentration-constraint">Equilibrium concentration constraint</a></li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+</div></div>
               
             
           </div>

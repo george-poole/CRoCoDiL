@@ -62,7 +62,7 @@
     <script>DOCUMENTATION_OPTIONS.pagename = 'notebooks/PA_system_a/A01_mass';</script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="Flux" href="A02_flux.html" />
+    <link rel="next" title="Flux modelling" href="A02_flux.html" />
     <link rel="prev" title="Introduction" href="A00_introduction.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
@@ -187,23 +187,24 @@
 <ul class="current nav bd-sidenav">
 <li class="toctree-l1 current active has-children"><a class="reference internal" href="A00_introduction.html">Introduction</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
 <li class="toctree-l2 current active"><a class="current reference internal" href="#">Dissolved and capillary-trapped mass</a></li>
-<li class="toctree-l2"><a class="reference internal" href="A02_flux.html">Flux</a></li>
+<li class="toctree-l2"><a class="reference internal" href="A02_flux.html">Flux modelling</a></li>
 </ul>
 </details></li>
 <li class="toctree-l1"><a class="reference internal" href="A10_overview.html">Quick overview</a></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="A20_parameters.html">Parameter space</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l2"><a class="reference internal" href="A21_damkohler.html">Damköhler numbers</a></li>
 <li class="toctree-l2"><a class="reference internal" href="A22_rayleigh.html">Rayleigh numbers</a></li>
-<li class="toctree-l2"><a class="reference internal" href="A23_cr.html">Residual concentrations</a></li>
-<li class="toctree-l2"><a class="reference internal" href="A24_sr.html">Residual saturations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="A23_saturations.html">Supercritical, subcritical and critical residual saturations</a></li>
 </ul>
 </details></li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="A30_numerical.html">Numerical validation</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l2"><a class="reference internal" href="A31_timestep.html">Timestep constraints</a></li>
-<li class="toctree-l2"><a class="reference internal" href="A32_resolution.html">Mesh resolution</a></li>
-<li class="toctree-l2"><a class="reference internal" href="A33_stabilization.html">Stabilization of the advection-diffusion-reaction equation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="A34_sensitivity.html">Sensitivity to initial conditions</a></li>
-<li class="toctree-l2"><a class="reference internal" href="A35_scaling.html">Scaling choice</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="AX0_numerical.html">Numerical validation</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="AX1_timestep.html">Timestep constraints</a></li>
+<li class="toctree-l2"><a class="reference internal" href="AX2_resolution.html">Mesh resolution</a></li>
+<li class="toctree-l2"><a class="reference internal" href="AX3_stabilization.html">Stabilization of the advection-diffusion-reaction equation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="AX4_sensitivity_i.html">Sensitivity to initial perturbations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="AX5_sensitivity_ii.html">Sensitivity to initial residual concentration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="AX6_scaling.html">Choice of scaling</a></li>
+<li class="toctree-l2"><a class="reference internal" href="AX7_profiling.html">Profiling</a></li>
 </ul>
 </details></li>
 </ul>
@@ -395,7 +396,7 @@ m_C^0 &amp;= \frac{1}{\varepsilon}\mathcal{A}X^2(1-\zeta_0)\left(s_r + \mathcal{
 m_D^0 &amp;= \mathcal{A}X^2(1-\zeta_0)\left((1-s_r - \mathcal{O}(\mathcal{N}_s))(c_r + \mathcal{O}(\mathcal{N}_c))\right) + \mathcal{A}X^2\zeta_0(1-\mathcal{O}(\mathcal{N}_s))\mathcal{O}(\mathcal{N}_c)
 \end{align*}
 \end{split}\]</div>
-<p>If <span class="math notranslate nohighlight">\(\mathcal{N}_s=\mathcal{N}_c=0\)</span>, then</p>
+<p>If <span class="math notranslate nohighlight">\(\mathcal{O}(\mathcal{N}_s), \mathcal{O}(\mathcal{N}_c) \ll 1\)</span>, then approximately</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}
 \begin{align*}
@@ -406,7 +407,7 @@ m_D^0 &amp;= \mathcal{A}X^2(1-\zeta_0)(1-s_r)c_r \\
 <p>so the total conserved mass is</p>
 <div class="math notranslate nohighlight">
 \[
-m = \mathcal{A}X^2(1-\zeta_0)\left(\frac{s_r}{\varepsilon}+(1-s_r)c_r\right)
+m_0 = \mathcal{A}X^2(1-\zeta_0)\left(\frac{s_r}{\varepsilon}+(1-s_r)c_r\right)
 \]</div>
 </section>
 <section id="complete-dissolution">
@@ -440,11 +441,11 @@ m_D^{\infty} &amp; = \int_\Omega \varphi(1 - s_\infty)~\text{d}\Omega = \text{vo
 <div class="math notranslate nohighlight">
 \[\begin{split}
 \begin{align*}
-m_C^{\infty} &amp;= \frac{m - \text{vol}(\Omega)\langle\varphi\rangle}{1-\varepsilon} \\
-m_D^{\infty} &amp;= \frac{m - \frac{\text{vol}(\Omega)\langle\varphi\rangle}{\varepsilon}}{1-\frac{1}{\varepsilon}}
+m_C^{\infty} &amp;= \frac{m_0 - \text{vol}(\Omega)\langle\varphi\rangle}{1-\varepsilon} \\
+m_D^{\infty} &amp;= \frac{m_0 - \frac{\text{vol}(\Omega)\langle\varphi\rangle}{\varepsilon}}{1-\frac{1}{\varepsilon}}
 \end{align*}
 \end{split}\]</div>
-<p>With <span class="math notranslate nohighlight">\(\varphi=1\)</span> and <span class="math notranslate nohighlight">\(\Omega = [0, \mathcal{A}X] \times [0, X]\)</span>, <span class="math notranslate nohighlight">\(\langle\varphi\rangle=1\)</span> and <span class="math notranslate nohighlight">\(\text{vol}(\Omega)=\mathcal{A}X^2\)</span>.</p>
+<p>If <span class="math notranslate nohighlight">\(\varphi=1\)</span> and <span class="math notranslate nohighlight">\(\Omega = [0, \mathcal{A}X] \times [0, X]\)</span>, then <span class="math notranslate nohighlight">\(\langle\varphi\rangle=1\)</span> and <span class="math notranslate nohighlight">\(\text{vol}(\Omega)=\mathcal{A}X^2\)</span>.</p>
 <p>Using the previous expression for the total conserved mass and noting the physical constraint <span class="math notranslate nohighlight">\(m_C^{\infty}\geq0\)</span> obtains the same expression for the critical residual saturation <span class="math notranslate nohighlight">\(s_r^*\)</span>.</p>
 </section>
 </section>
@@ -493,7 +494,7 @@ m_D^{\infty} &amp;= \frac{m - \frac{\text{vol}(\Omega)\langle\varphi\rangle}{\va
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Flux</p>
+        <p class="prev-next-title">Flux modelling</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>

@@ -20,7 +20,7 @@ m_D^0 &= \mathcal{A}X^2(1-\zeta_0)\left((1-s_r - \mathcal{O}(\mathcal{N}_s))(c_r
 \end{align*}
 $$
 
-If $\mathcal{N}_s=\mathcal{N}_c=0$, then
+If $\mathcal{O}(\mathcal{N}_s), \mathcal{O}(\mathcal{N}_c) \ll 1$, then approximately
 
 $$
 \begin{align*}
@@ -32,7 +32,7 @@ $$
 so the total conserved mass is
 
 $$
-m = \mathcal{A}X^2(1-\zeta_0)\left(\frac{s_r}{\varepsilon}+(1-s_r)c_r\right)
+m_0 = \mathcal{A}X^2(1-\zeta_0)\left(\frac{s_r}{\varepsilon}+(1-s_r)c_r\right)
 $$
 
 ## Complete dissolution
@@ -69,11 +69,11 @@ By mass conservation $m=m_C^{\infty}+m_D^{\infty}$ so
 
 $$
 \begin{align*}
-m_C^{\infty} &= \frac{m - \text{vol}(\Omega)\langle\varphi\rangle}{1-\varepsilon} \\
-m_D^{\infty} &= \frac{m - \frac{\text{vol}(\Omega)\langle\varphi\rangle}{\varepsilon}}{1-\frac{1}{\varepsilon}}
+m_C^{\infty} &= \frac{m_0 - \text{vol}(\Omega)\langle\varphi\rangle}{1-\varepsilon} \\
+m_D^{\infty} &= \frac{m_0 - \frac{\text{vol}(\Omega)\langle\varphi\rangle}{\varepsilon}}{1-\frac{1}{\varepsilon}}
 \end{align*}
 $$
 
-With $\varphi=1$ and $\Omega = [0, \mathcal{A}X] \times [0, X]$, $\langle\varphi\rangle=1$ and $\text{vol}(\Omega)=\mathcal{A}X^2$.
+If $\varphi=1$ and $\Omega = [0, \mathcal{A}X] \times [0, X]$, then $\langle\varphi\rangle=1$ and $\text{vol}(\Omega)=\mathcal{A}X^2$.
 
 Using the previous expression for the total conserved mass and noting the physical constraint $m_C^{\infty}\geq0$ obtains the same expression for the critical residual saturation $s_r^*$.

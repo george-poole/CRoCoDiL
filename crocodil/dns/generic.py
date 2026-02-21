@@ -28,7 +28,7 @@ from lucifex.pde.advection_diffusion import (
     dg_advection_diffusion_reaction, advection_diffusion, 
     dg_advection_diffusion, advection_diffusion_reaction, flux,
 )
-from lucifex.utils.fenicsx_utils import CellType, limits_corrector
+from lucifex.utils.fenicsx_utils import is_simplicial, limits_corrector
 from lucifex.utils.py_utils import arity
 from lucifex.pde.evolution import evolution, evolution_rhs
 
@@ -99,7 +99,7 @@ def dns_generic(
     theta_limits: tuple[float, float] | EllipsisType | None = None,
     s_elem: tuple[str, int] = ('P', 1),
     s_limits: tuple[float, float] | bool = False,
-    phi_elem: tuple[str, int] | None = None,
+    phi_elem: tuple[str, int] = ('P', 1),
     # linear algebra
     flow_petsc: tuple[OptionsPETSc, OptionsPETSc | None] 
     | OptionsPETSc = (OptionsPETSc('gmres', 'ilu'), None),
@@ -155,7 +155,7 @@ def dns_generic(
         psi = FunctionSeries((Omega, 'P', psi_deg), 'psi')
         u = FunctionSeries((Omega, "P", psi_deg - 1, 2), "u", order)
     else:
-        u_fam = 'BDM' if Omega.topology.cell_name() == CellType.TRIANGLE else 'BDMCF'
+        u_fam = 'BDM' if is_simplicial(Omega) else 'BDMCF'
         u_deg = 1
         up = FunctionSeries((Omega, [(u_fam, u_deg), ('DP', u_deg - 1)]), ('up', ['u', 'p']), order)
         u = up.sub(0)
@@ -174,7 +174,6 @@ def dns_generic(
 
     # constitutive
     if HETEROGENEOUS:
-        phi_elem = s_elem if phi_elem is None else phi_elem
         varphi = Function((Omega, *phi_elem), rock_porosity, 'varphi')
     else:
         varphi = Constant(Omega, rock_porosity, 'varphi')

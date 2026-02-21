@@ -184,23 +184,24 @@
 <ul class="nav bd-sidenav">
 <li class="toctree-l1 has-children"><a class="reference internal" href="../PA_system_a/A00_introduction.html">Introduction</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l2"><a class="reference internal" href="../PA_system_a/A01_mass.html">Dissolved and capillary-trapped mass</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../PA_system_a/A02_flux.html">Flux</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../PA_system_a/A02_flux.html">Flux modelling</a></li>
 </ul>
 </details></li>
 <li class="toctree-l1"><a class="reference internal" href="../PA_system_a/A10_overview.html">Quick overview</a></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../PA_system_a/A20_parameters.html">Parameter space</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l2"><a class="reference internal" href="../PA_system_a/A21_damkohler.html">Damköhler numbers</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../PA_system_a/A22_rayleigh.html">Rayleigh numbers</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../PA_system_a/A23_cr.html">Residual concentrations</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../PA_system_a/A24_sr.html">Residual saturations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../PA_system_a/A23_saturations.html">Supercritical, subcritical and critical residual saturations</a></li>
 </ul>
 </details></li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="../PA_system_a/A30_numerical.html">Numerical validation</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l2"><a class="reference internal" href="../PA_system_a/A31_timestep.html">Timestep constraints</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../PA_system_a/A32_resolution.html">Mesh resolution</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../PA_system_a/A33_stabilization.html">Stabilization of the advection-diffusion-reaction equation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../PA_system_a/A34_sensitivity.html">Sensitivity to initial conditions</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../PA_system_a/A35_scaling.html">Scaling choice</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../PA_system_a/AX0_numerical.html">Numerical validation</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../PA_system_a/AX1_timestep.html">Timestep constraints</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../PA_system_a/AX2_resolution.html">Mesh resolution</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../PA_system_a/AX3_stabilization.html">Stabilization of the advection-diffusion-reaction equation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../PA_system_a/AX4_sensitivity_i.html">Sensitivity to initial perturbations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../PA_system_a/AX5_sensitivity_ii.html">Sensitivity to initial residual concentration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../PA_system_a/AX6_scaling.html">Choice of scaling</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../PA_system_a/AX7_profiling.html">Profiling</a></li>
 </ul>
 </details></li>
 </ul>
@@ -374,13 +375,13 @@ document.write(`
 
 <span class="n">STORE</span> <span class="o">=</span> <span class="mi">1</span>
 <span class="n">WRITE</span> <span class="o">=</span> <span class="kc">None</span>
-<span class="n">DIR_BASE</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;./</span><span class="si">{</span><span class="n">get_ipynb_file_name</span><span class="p">()</span><span class="si">}</span><span class="s1">&#39;</span>
+<span class="n">DIR_ROOT</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;./</span><span class="si">{</span><span class="n">get_ipynb_file_name</span><span class="p">()</span><span class="si">}</span><span class="s1">&#39;</span>
 <span class="n">DIR_PARAMS</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;Ra&#39;</span><span class="p">,</span> <span class="s1">&#39;Le&#39;</span><span class="p">,</span> <span class="s1">&#39;gamma&#39;</span><span class="p">,</span> <span class="s1">&#39;Nx&#39;</span><span class="p">,</span> <span class="s1">&#39;Ny&#39;</span><span class="p">)</span>
 
 <span class="n">simulation</span> <span class="o">=</span> <span class="n">dns_darcy_thermosolutal</span><span class="p">(</span>
     <span class="n">store_delta</span><span class="o">=</span><span class="n">STORE</span><span class="p">,</span> 
     <span class="n">write_delta</span><span class="o">=</span><span class="n">WRITE</span><span class="p">,</span> 
-    <span class="n">dir_base</span><span class="o">=</span><span class="n">DIR_BASE</span><span class="p">,</span> 
+    <span class="n">dir_root</span><span class="o">=</span><span class="n">DIR_ROOT</span><span class="p">,</span> 
     <span class="n">dir_params</span><span class="o">=</span><span class="n">DIR_PARAMS</span><span class="p">,</span>
     <span class="n">dir_timestamp</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
 <span class="p">)(</span>

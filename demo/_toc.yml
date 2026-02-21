@@ -20,15 +20,16 @@ parts:
         sections:
           - file: notebooks/PA_system_a/A21_damkohler
           - file: notebooks/PA_system_a/A22_rayleigh
-          - file: notebooks/PA_system_a/A23_cr
-          - file: notebooks/PA_system_a/A24_sr
-      - file: notebooks/PA_system_a/A30_numerical
+          - file: notebooks/PA_system_a/A23_saturations
+      - file: notebooks/PA_system_a/AX0_numerical
         sections:
-          - file: notebooks/PA_system_a/A31_timestep
-          - file: notebooks/PA_system_a/A32_resolution
-          - file: notebooks/PA_system_a/A33_stabilization
-          - file: notebooks/PA_system_a/A34_sensitivity
-          - file: notebooks/PA_system_a/A35_scaling
+          - file: notebooks/PA_system_a/AX1_timestep
+          - file: notebooks/PA_system_a/AX2_resolution
+          - file: notebooks/PA_system_a/AX3_stabilization
+          - file: notebooks/PA_system_a/AX4_sensitivity_i
+          - file: notebooks/PA_system_a/AX5_sensitivity_ii
+          - file: notebooks/PA_system_a/AX6_scaling
+          - file: notebooks/PA_system_a/AX7_profiling
   # - caption: System B
   #   chapters:
   #     - file: notebooks/PB_system_b/B00_specification

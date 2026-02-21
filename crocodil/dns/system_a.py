@@ -68,9 +68,9 @@ def mass_capillary_asymptote(
 
 
 def mass_dissolved_initial(
+    zeta0: float,
     sr: float,
     cr: float,
-    zeta0: float,
     Lx: float,
     Ly: float,
 )-> float:
@@ -78,9 +78,9 @@ def mass_dissolved_initial(
 
 
 def mass_capillary_initial(
-    sr: float,
     epsilon: float,
     zeta0: float,
+    sr: float,
     Lx: float,
     Ly: float,
 ) -> float:
@@ -133,11 +133,11 @@ def dns_system_a(
     D_evol: FiniteDifference 
     | FiniteDifferenceArgwise = (AM(1) @ AB(1)),
     # stabilization
-    c_stabilization: str | tuple[float, float] = None,
+    c_stabilization: str | tuple[float, float] | None = None,
     c_limits: bool = False,
     s_elem: tuple[str, int] = ('DP', 0),
     s_limits: bool = False,
-    phi_elem: tuple[str, int] | None = None,
+    phi_elem: tuple[str, int] = ('P', 1),
     # linear algebra
     flow_petsc: tuple[OptionsPETSc, OptionsPETSc | None] 
     | OptionsPETSc = (OptionsPETSc('gmres', 'ilu'), None),
