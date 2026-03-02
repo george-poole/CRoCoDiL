@@ -28,7 +28,7 @@ Reference parameters `aspect, Ra, Da, epsilon, h0, sr, cr`
 governing the physical (as opposed to numerical) behaviour of system A.
 """
 
-def critical_sr(
+def critical_saturation(
     zeta0: float,
     cr: float,
     epsilon: float,
@@ -140,7 +140,7 @@ def dns_system_a(
     phi_elem: tuple[str, int] = ('P', 1),
     # linear algebra
     flow_petsc: tuple[OptionsPETSc, OptionsPETSc | None] 
-    | OptionsPETSc = (OptionsPETSc('gmres', 'ilu'), None),
+    | OptionsPETSc = (OptionsPETSc('cg', 'hypre'), None),
     c_petsc: OptionsPETSc = OptionsPETSc('gmres', 'ilu'),
     s_petsc: OptionsPETSc | None = None,
     # optional postprocessing
@@ -154,8 +154,8 @@ def dns_system_a(
     `∇⋅𝐮 = 0` \\
     `𝐮 = -(∇p + Bu c 𝐞ʸ)` \\
 
-    `s₀ = sᵣH(y - ζ₀) + N(𝐱)` \\
-    `c₀ = cᵣH(y - ζ₀) + N(𝐱)`\\
+    `s₀(𝐱) = sᵣH(y - ζ₀) + N(𝐱)` \\
+    `c₀(𝐱) = cᵣH(y - ζ₀) + N(𝐱)`\\
     `𝐧⋅∇c = 0` on `∂Ω` \\
     `𝐧⋅𝐮 = 0` on `∂Ω`
     """
@@ -181,7 +181,7 @@ def dns_system_a(
             s_ampl,
             limits_corrector(0, sr),
         )
-    c_ics = heaviside(lambda x: x[1] - Lzeta0, max(0, cr - c_ampl), eps=Lzeta_eps),
+    c_ics = heaviside(lambda x: x[1] - Lzeta0, max(0, cr - c_ampl), eps=Lzeta_eps)
     if c_ampl:
         c_ics = SpatialPerturbation(
             c_ics,
@@ -189,7 +189,7 @@ def dns_system_a(
             [Lx, Ly],
             c_ampl,
             limits_corrector(0, 1),
-            )  
+        )  
     # constitutive
     dispersion = lambda phi: Di * phi
     reaction = lambda s: -Ki * s
@@ -231,7 +231,7 @@ def dns_system_a(
         D_diff_solutal=D_diff,
         D_reac_solutal=D_reac,
         D_src_solutal=D_src,
-        D_reac_evol=D_evol,
+        D_evol=D_evol,
         # stabilization
         c_stabilization=c_stabilization,
         c_limits=c_limits,

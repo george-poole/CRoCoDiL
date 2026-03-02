@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<Xdmf Version="3.0" xmlns:xi="http://www.w3.org/2001/XInclude">
+  <Domain>
+    <Grid Name="s" GridType="Uniform">
+      <Topology TopologyType="PolyLine" NumberOfElements="3600" NodesPerElement="2">
+        <DataItem Dimensions="3600 2" NumberType="Int" Format="HDF">CHECKPOINT.h5:/Mesh/s/topology</DataItem>
+      </Topology>
+      <Geometry GeometryType="XY">
+        <DataItem Dimensions="3601 2" Format="HDF">CHECKPOINT.h5:/Mesh/s/geometry</DataItem>
+      </Geometry>
+    </Grid>
+    <Grid Name="s" GridType="Collection" CollectionType="Temporal">
+      <Grid Name="s" GridType="Uniform">
+        <xi:include xpointer="xpointer(/Xdmf/Domain/Grid[@GridType='Uniform'][1]/*[self::Topology or self::Geometry])" />
+        <Time Value="5.4771535875962787" />
+        <Attribute Name="s" AttributeType="Scalar" Center="Cell">
+          <DataItem Dimensions="3600 1" Format="HDF">CHECKPOINT.h5:/Function/s/5_4771535875962787</DataItem>
+        </Attribute>
+      </Grid>
+    </Grid>
+  </Domain>
+</Xdmf>

@@ -57,10 +57,12 @@
     <script async="async" src="../../_static/sphinx-thebe.js?v=c100c467"></script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
     <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'notebooks/PA_system_a/A20_parameters';</script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="Damköhler numbers" href="A21_damkohler.html" />
+    <link rel="next" title="Rayleigh numbers" href="A21_rayleigh.html" />
     <link rel="prev" title="Quick overview" href="A10_overview.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
@@ -190,8 +192,8 @@
 </details></li>
 <li class="toctree-l1"><a class="reference internal" href="A10_overview.html">Quick overview</a></li>
 <li class="toctree-l1 current active has-children"><a class="current reference internal" href="#">Parameter space</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l2"><a class="reference internal" href="A21_damkohler.html">Damköhler numbers</a></li>
-<li class="toctree-l2"><a class="reference internal" href="A22_rayleigh.html">Rayleigh numbers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="A21_rayleigh.html">Rayleigh numbers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="A22_damkohler.html">Damköhler numbers</a></li>
 <li class="toctree-l2"><a class="reference internal" href="A23_saturations.html">Supercritical, subcritical and critical residual saturations</a></li>
 </ul>
 </details></li>
@@ -202,9 +204,19 @@
 <li class="toctree-l2"><a class="reference internal" href="AX4_sensitivity_i.html">Sensitivity to initial perturbations</a></li>
 <li class="toctree-l2"><a class="reference internal" href="AX5_sensitivity_ii.html">Sensitivity to initial residual concentration</a></li>
 <li class="toctree-l2"><a class="reference internal" href="AX6_scaling.html">Choice of scaling</a></li>
-<li class="toctree-l2"><a class="reference internal" href="AX7_profiling.html">Profiling</a></li>
+<li class="toctree-l2"><a class="reference internal" href="AX7_finite_difference.html">Choice of finite difference discretization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="AX8_profiling.html">Profiling</a></li>
 </ul>
 </details></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">System B</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../PB_system_b/B00_introduction.html">Introduction</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">System C</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../PC_system_c/C00_introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../PC_system_c/C10_overview.html">Quick overview</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Benchmarks</span></p>
 <ul class="nav bd-sidenav">
@@ -266,7 +278,7 @@
       
       
       
-      <li><a href="../../_sources/notebooks/PA_system_a/A20_parameters.md" target="_blank"
+      <li><a href="../../_sources/notebooks/PA_system_a/A20_parameters.ipynb" target="_blank"
    class="btn btn-sm btn-download-source-button dropdown-item"
    title="Download source file"
    data-bs-placement="left" data-bs-toggle="tooltip"
@@ -276,7 +288,7 @@
 <span class="btn__icon-container">
   <i class="fas fa-file"></i>
   </span>
-<span class="btn__text-container">.md</span>
+<span class="btn__text-container">.ipynb</span>
 </a>
 </li>
       
@@ -364,6 +376,32 @@ document.write(`
                   
   <section class="tex2jax_ignore mathjax_ignore" id="parameter-space">
 <h1>Parameter space<a class="headerlink" href="#parameter-space" title="Link to this heading">#</a></h1>
+<p>The following notebooks explore the effect of varying the parameters <span class="math notranslate nohighlight">\(Ra\)</span>, <span class="math notranslate nohighlight">\(Da\)</span>, <span class="math notranslate nohighlight">\(s_r\)</span> compared to a canonical reference system of aspect ratio <span class="math notranslate nohighlight">\(\mathcal{A}=2\)</span> chosen to have the parameter values</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{align*}
+Ra &amp;= 1000 \\
+Da &amp;= 100 \\
+\varepsilon &amp;= 0.01 \\
+\zeta_0 &amp;= 0.9 \\
+s_r &amp;= 0.2 \\
+c_r &amp;= 0.0 \\
+\end{align*}
+\end{split}\]</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">crocodil.dns.system_a</span><span class="w"> </span><span class="kn">import</span> <span class="n">SYSTEM_A_REFERENCE</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">SYSTEM_A_REFERENCE</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>{&#39;Ra&#39;: 1000.0, &#39;Da&#39;: 100.0, &#39;epsilon&#39;: 0.01, &#39;zeta0&#39;: 0.9, &#39;sr&#39;: 0.2, &#39;cr&#39;: 0.0, &#39;aspect&#39;: 2.0}
+</pre></div>
+</div>
+</div>
+</div>
 <div class="toctree-wrapper compound">
 </div>
 </section>
@@ -408,11 +446,11 @@ document.write(`
       </div>
     </a>
     <a class="right-next"
-       href="A21_damkohler.html"
+       href="A21_rayleigh.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Damköhler numbers</p>
+        <p class="prev-next-title">Rayleigh numbers</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>

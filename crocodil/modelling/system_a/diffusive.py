@@ -7,7 +7,7 @@ from scipy.integrate import quad
 from scipy.optimize import fsolve
 
 
-class ExprSeparableSolution:
+class ExactDiffusiveModelEquations:
 
     @staticmethod
     def c(
@@ -23,11 +23,11 @@ class ExprSeparableSolution:
         """
         `c(y, t)`
         """
-        eigenvalues = ExprSeparableSolution.eigenvalues(Lmbda, zeta0, cutoff)
+        eigenvalues = ExactDiffusiveModelEquations.eigenvalues(Lmbda, zeta0, cutoff)
         c = 1
         for lmbda in eigenvalues:
-            Cn = ExprSeparableSolution.Cn(c0, s0, zeta0, Lmbda, lmbda)
-            Yn = ExprSeparableSolution.Yn(y, zeta0, Lmbda, lmbda)
+            Cn = ExactDiffusiveModelEquations.Cn(c0, s0, zeta0, Lmbda, lmbda)
+            Yn = ExactDiffusiveModelEquations.Yn(y, zeta0, Lmbda, lmbda)
             c -= Cn * np.exp(-lmbda * t / Ra) * Yn(y, zeta0, Lmbda, lmbda)
         return c
 
@@ -46,9 +46,9 @@ class ExprSeparableSolution:
         zeta0: float, 
     ) -> float:
         if y > zeta0:
-            Bn = ExprSeparableSolution.Bn_plus(lmbda, Lmbda, zeta0)
+            Bn = ExactDiffusiveModelEquations.Bn_plus(lmbda, Lmbda, zeta0)
         else:
-            Bn = ExprSeparableSolution.Bn_minus(lmbda, Lmbda, zeta0)
+            Bn = ExactDiffusiveModelEquations.Bn_minus(lmbda, Lmbda, zeta0)
 
         if lmbda > Lmbda:
             if y > zeta0:
@@ -119,7 +119,7 @@ class ExprSeparableSolution:
         s0: Callable,
         c0: Callable,
     ) -> float:
-        Yn = ExprSeparableSolution.Yn
+        Yn = ExactDiffusiveModelEquations.Yn
         numer = lambda y: (1 - s0(y)) * (1 - c0(y)) * Yn(y, zeta0, Lmbda, lmbda)
         denom = lambda y: (1 - s0(y)) * Yn(y, zeta0, Lmbda, lmbda) ** 2
         y_interval = (0.0, 1.0)
@@ -131,7 +131,7 @@ class ExprSeparableSolution:
         zeta0: float,
         cutoff: tuple[float, float] | None = None,
     ) -> np.ndarray:
-        return ExprSeparableSolution._eigenvalues(Lmbda, zeta0, cutoff)
+        return ExactDiffusiveModelEquations._eigenvalues(Lmbda, zeta0, cutoff)
         
     @staticmethod
     @lru_cache
@@ -140,7 +140,7 @@ class ExprSeparableSolution:
         zeta0: float,
         cutoff: tuple[float, float] | None = None,
     ) -> np.ndarray:
-        func = lambda x: ExprSeparableSolution.characteristic(x, Lmbda, zeta0)
+        func = lambda x: ExactDiffusiveModelEquations.characteristic(x, Lmbda, zeta0)
         roots = fsolve(func, full_output=True)
         return roots
 
@@ -171,7 +171,7 @@ class ExprSeparableSolution:
 
 
 @dataclass
-class SeparableSolution:
+class ExactDiffusiveModel:
     """
     separation of variables solution
     `ε = 0` \\
@@ -186,7 +186,7 @@ class SeparableSolution:
     sr: float
     cr: float
 
-    expr = ExprSeparableSolution
+    expr = ExactDiffusiveModelEquations
     
     @property
     def Lmbda(self):
@@ -214,7 +214,7 @@ class SeparableSolution:
 
 
 @dataclass
-class SimilaritySolution:
+class SimilarityDiffusiveModel:
     t: Iterable[float]
     y: Iterable[float]
     Ra: float

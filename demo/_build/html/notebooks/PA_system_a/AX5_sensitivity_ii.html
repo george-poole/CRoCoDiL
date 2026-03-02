@@ -190,8 +190,8 @@
 </details></li>
 <li class="toctree-l1"><a class="reference internal" href="A10_overview.html">Quick overview</a></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="A20_parameters.html">Parameter space</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l2"><a class="reference internal" href="A21_damkohler.html">Damköhler numbers</a></li>
-<li class="toctree-l2"><a class="reference internal" href="A22_rayleigh.html">Rayleigh numbers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="A21_rayleigh.html">Rayleigh numbers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="A22_damkohler.html">Damköhler numbers</a></li>
 <li class="toctree-l2"><a class="reference internal" href="A23_saturations.html">Supercritical, subcritical and critical residual saturations</a></li>
 </ul>
 </details></li>
@@ -202,9 +202,19 @@
 <li class="toctree-l2"><a class="reference internal" href="AX4_sensitivity_i.html">Sensitivity to initial perturbations</a></li>
 <li class="toctree-l2 current active"><a class="current reference internal" href="#">Sensitivity to initial residual concentration</a></li>
 <li class="toctree-l2"><a class="reference internal" href="AX6_scaling.html">Choice of scaling</a></li>
-<li class="toctree-l2"><a class="reference internal" href="AX7_profiling.html">Profiling</a></li>
+<li class="toctree-l2"><a class="reference internal" href="AX7_finite_difference.html">Choice of finite difference discretization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="AX8_profiling.html">Profiling</a></li>
 </ul>
 </details></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">System B</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../PB_system_b/B00_introduction.html">Introduction</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">System C</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../PC_system_c/C00_introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../PC_system_c/C10_overview.html">Quick overview</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Benchmarks</span></p>
 <ul class="nav bd-sidenav">
@@ -460,7 +470,7 @@ document.write(`
     <span class="n">f_lines</span><span class="p">,</span>
     <span class="n">cyc</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">,</span>
     <span class="n">x_label</span><span class="o">=</span><span class="s1">&#39;$t$&#39;</span><span class="p">,</span>
-    <span class="n">y_label</span><span class="o">=</span><span class="s1">&#39;$F(y=h_0)$&#39;</span><span class="p">,</span>
+    <span class="n">y_label</span><span class="o">=</span><span class="s1">&#39;$F(y=\zeta_0)$&#39;</span><span class="p">,</span>
     <span class="n">legend_labels</span><span class="o">=</span><span class="n">labels</span><span class="p">,</span>
     <span class="n">legend_title</span><span class="o">=</span><span class="n">legend_title</span><span class="p">,</span>
 <span class="p">)</span>

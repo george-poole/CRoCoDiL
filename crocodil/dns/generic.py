@@ -15,6 +15,7 @@ from lucifex.fdm import (
     adr_timestep, advective_timestep, advective_diffusive_timestep, 
     diffusive_timestep, reactive_timestep,
 )
+from lucifex.fdm.ufl_operators import max_value
 from lucifex.solver import (
     BoundaryConditions, OptionsPETSc, Solver,
     bvp, ibvp, ivp, 
@@ -90,7 +91,7 @@ def dns_generic(
     D_src_solutal: FiniteDifference = FE,
     D_adv_thermal: FiniteDifference | FiniteDifferenceArgwise = FE,
     D_diff_thermal: FiniteDifference = FE,
-    D_reac_evol: FiniteDifference 
+    D_evol: FiniteDifference 
     | FiniteDifferenceArgwise = FE,
     # stabilization
     c_stabilization: str | float | tuple[float, float] | None = None,
@@ -100,9 +101,10 @@ def dns_generic(
     s_elem: tuple[str, int] = ('P', 1),
     s_limits: tuple[float, float] | bool = False,
     phi_elem: tuple[str, int] = ('P', 1),
+    use_max_value: bool = False,
     # linear algebra
     flow_petsc: tuple[OptionsPETSc, OptionsPETSc | None] 
-    | OptionsPETSc = (OptionsPETSc('gmres', 'ilu'), None),
+    | OptionsPETSc = (OptionsPETSc('cg', 'hypre'), None),
     c_petsc: OptionsPETSc = OptionsPETSc('gmres', 'ilu'),
     theta_petsc: OptionsPETSc = OptionsPETSc('gmres', 'ilu'),
     s_petsc: OptionsPETSc | None = None,
@@ -113,12 +115,12 @@ def dns_generic(
     namespace: Iterable[Function | Constant | ExprSeries | tuple[str, Expr]] = (),
 ) -> Simulation:    
     """
-    `𝜑∂s/∂t = -ε(R(s,θ)c + J(s, θ))`
+    `𝜑∂s/∂t = -ε(R(θ,s)c + J(θ,s))`
     `ϕ = 𝜑(1 - s)` \\
-    `ϕ∂c/∂t + 𝐮·∇c =  ∇·(D(ϕ,𝐮)·∇c) + R(s, θ)c + J(s,θ)` \\
+    `ϕ∂c/∂t + 𝐮·∇c =  ∇·(D(ϕ,𝐮)·∇c) + R(θ,s)c + J(θ,s)` \\
     `ϕ∂θ/∂t + 𝐮·∇θ = ∇·(G(ϕ,𝐮)·∇θ)`\\
     `∇⋅𝐮 = 0` \\
-    `𝐮 = -(K(ϕ)/μ(c, θ))·(∇p - ρ(c,θ)e₉)` \\
+    `𝐮 = -(K(ϕ)/μ(c,θ))·(∇p - ρ(c,θ)e₉)` \\
     """
     if eg is None:
         if Omega.geometry.dim == 2:
@@ -134,9 +136,14 @@ def dns_generic(
     is_cg = lambda arg: isinstance(arg, (str, type(None)))
     SOLUTAL_CG = is_cg(c_stabilization)
     THERMAL_CG = is_cg(theta_stabilization)
-    SOLUTAL_MECH = arity(dispersion_solutal) == 2
-    THERMAL_MECH = arity(dispersion_thermal) == 2
+    SOLUTAL_DISP = arity(dispersion_solutal) == 2
+    THERMAL_DISP = arity(dispersion_thermal) == 2
     HETEROGENEOUS = callable(rock_porosity)
+    if THERMOSOLUTAL:
+        assert arity(density) == 2  if density else True, "Density should be `ρ(c,θ)`"
+        assert arity(viscosity) == 2  if viscosity else True, "Viscosity should be `μ(c,θ)`"
+        assert arity(reaction) == 2  if reaction else True, "Reaction should be `R(θ,s)`"
+        assert arity(source) == 2  if source else True, "Source should be `J(θ,s)`"
 
     solvers = []
     namespace = list(namespace)
@@ -144,7 +151,7 @@ def dns_generic(
     # time
     order = finite_difference_order(
         D_adv_solutal, D_diff_solutal, D_reac_solutal, D_src_solutal,
-        D_adv_thermal, D_diff_thermal, D_reac_evol,
+        D_adv_thermal, D_diff_thermal, D_evol,
     )
     t = ConstantSeries(Omega, "t", order, ics=0.0)  
     dt = ConstantSeries(Omega, 'dt')
@@ -192,29 +199,40 @@ def dns_generic(
     namespace.extend((varphi, ('phi', phi), ('k', k), ('rho', rho), ('mu', mu)))
     if SOLUTAL:
         d = dispersion_solutal(
-            *(phi, u) if SOLUTAL_MECH
+            *(phi, u) if SOLUTAL_DISP
             else (phi, )
         )
-        reaction_sum = lambda c, *args: (
-            (reaction(*args) * c if reaction else 0) 
-            + (source(*args) if source else 0)
-        )
         r = reaction(
-            *(s, theta) if THERMOSOLUTAL
+            *(theta, s) if THERMOSOLUTAL and arity(reaction) == 2
             else (s, )
         ) if reaction else 0
         j = source(
-            *(s, theta) if THERMOSOLUTAL
+            *(theta, s) if THERMOSOLUTAL and arity(source) == 2
             else (s, )
         ) if source else 0
-        Sigma = reaction_sum(
-            *(c, s, theta) if THERMOSOLUTAL
+        if THERMOSOLUTAL:
+            reaction_plus_source = lambda c, theta, s: (
+                (reaction(theta, s) * c if reaction else 0) 
+                + (source(theta, s) if source else 0)
+            )
+        else:
+            reaction_plus_source = lambda c, s: (
+                (reaction(s) * c if reaction else 0) 
+                + (source(s) if source else 0)
+            )
+        if use_max_value:
+            _reaction_plus_source = lambda *args: (
+                max_value(reaction_plus_source(*args), 0)
+            )
+            reaction_plus_source = _reaction_plus_source
+        Sigma = reaction_plus_source(
+            *(c, theta, s) if THERMOSOLUTAL
             else (c, s)
         )
         namespace.extend([('d', d), ('r', r), ('j', j), ('Sigma', Sigma)])
     if THERMAL:
         g = dispersion_thermal(
-            *(phi, u) if THERMAL_MECH
+            *(phi, u) if THERMAL_DISP
             else (phi, )
         )
         namespace.append(('g', g))
@@ -289,21 +307,24 @@ def dns_generic(
 
     # evolution solver
     if EVOL:
-        reaction_evol = lambda c, *args: -epsilon * reaction_sum(c, *args)
-        rEvol = ExprSeries.from_expr_factory(reaction_evol, name='rEvol')(
-            *(c, s, theta) if THERMOSOLUTAL
+        if THERMOSOLUTAL:
+            evol = lambda c, theta, s: -epsilon * reaction_plus_source(c, theta, s)
+        else:
+            evol = lambda c, s: -epsilon * reaction_plus_source(c, s)
+        SigmaEvol = ExprSeries.from_expr_factory(evol, name='SigmaEvol')(
+            *(c, theta, s) if THERMOSOLUTAL
             else (c, s)
         )
-        namespace.append(rEvol)
+        namespace.append(SigmaEvol)
         s_limits = (np.min(s.ics.x.array), np.max(s.ics.x.array)) if s_limits is True else s_limits
         s_corrector = ('sCorr', limits_corrector(*s_limits)) if s_limits else None
         if s_petsc is None:
             s_solver = interpolation(s, evolution_rhs, corrector=s_corrector, future=True)(
-                s, dt, rEvol, D_reac_evol, phi=varphi, argwise_index=1,
+                s, dt, SigmaEvol, D_evol, phi=varphi, argwise_index=-1,
             )
         else:
             s_solver = ivp(evolution, petsc=s_petsc, corrector=s_corrector)(
-                s, dt, rEvol, D_reac_evol, phi=varphi
+                s, dt, SigmaEvol, D_evol, phi=varphi
             )
         solvers.append(s_solver)
 

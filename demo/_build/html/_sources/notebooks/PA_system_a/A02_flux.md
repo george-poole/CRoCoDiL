@@ -46,9 +46,9 @@ to close the ordinary differential equations, which may be solved numerically fo
 
 $$
 \begin{align*}
-c^+(t=0)=c_r \\
-c^-(t=0)=0 \\
-s^+(t=0) = s_r
+c^+(t=0)&=c_r \\
+c^-(t=0)&=0 \\
+s^+(t=0) &= s_r
 \end{align*}
 $$
 
@@ -56,9 +56,9 @@ or for $t>t_*$ with initial conditions
 
 $$
 \begin{align*}
-c^+(t=t_*)=c^+_* \\
-c^-(t=t_*)=c^-_* \\
-s^+(t=t_*) = s^+_*
+c^+(t=t_*) &=c^+_* \\
+c^-(t=t_*)&=c^-_* \\
+s^+(t=t_*) &= s^+_*
 \end{align*}
 $$
 
@@ -70,6 +70,6 @@ deduced from the direct numerical simulation data at $t=t_*$.
 
 If $\zeta=\zeta_0$ for all times, then instead $c^-$ can be eliminated via total mass conservation.
 
-### Equilibrium concentration constraint
+### Constant concentration constraint
 
 If $c^+=1$ for all times, then $s^+$ is constant and only $c^-$ needs to be solved for.

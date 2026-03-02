@@ -65,7 +65,6 @@ $$
 | $h$ | mesh cell size | 
 | $\mathcal{F}$ | set of cell facets |
 | $\mathcal{V}$ | set of cell vertices |
-| | | 
 | $L^2(\Omega)$ | Lebesgue space |
 | $H^1(\Omega)$ | Sobolev space |
 | $\text{P}_k$ | continuous Lagrange polynomial of degree $k$ |

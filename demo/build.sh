@@ -41,6 +41,7 @@ for i in "${IPYNB[@]}"
     done
 
 jupyter-book build . $BUILD_ARGS
+ln -sf "./_build/html/index.html" alias.html
 
 if $REMOTE; then
     ghp-import -n -p -f ./_build/html

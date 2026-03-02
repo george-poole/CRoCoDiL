@@ -61,7 +61,7 @@
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
     <link rel="next" title="Numerical validation" href="AX0_numerical.html" />
-    <link rel="prev" title="Rayleigh numbers" href="A22_rayleigh.html" />
+    <link rel="prev" title="Damköhler numbers" href="A22_damkohler.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   </head>
@@ -190,8 +190,8 @@
 </details></li>
 <li class="toctree-l1"><a class="reference internal" href="A10_overview.html">Quick overview</a></li>
 <li class="toctree-l1 current active has-children"><a class="reference internal" href="A20_parameters.html">Parameter space</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="A21_damkohler.html">Damköhler numbers</a></li>
-<li class="toctree-l2"><a class="reference internal" href="A22_rayleigh.html">Rayleigh numbers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="A21_rayleigh.html">Rayleigh numbers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="A22_damkohler.html">Damköhler numbers</a></li>
 <li class="toctree-l2 current active"><a class="current reference internal" href="#">Supercritical, subcritical and critical residual saturations</a></li>
 </ul>
 </details></li>
@@ -202,9 +202,19 @@
 <li class="toctree-l2"><a class="reference internal" href="AX4_sensitivity_i.html">Sensitivity to initial perturbations</a></li>
 <li class="toctree-l2"><a class="reference internal" href="AX5_sensitivity_ii.html">Sensitivity to initial residual concentration</a></li>
 <li class="toctree-l2"><a class="reference internal" href="AX6_scaling.html">Choice of scaling</a></li>
-<li class="toctree-l2"><a class="reference internal" href="AX7_profiling.html">Profiling</a></li>
+<li class="toctree-l2"><a class="reference internal" href="AX7_finite_difference.html">Choice of finite difference discretization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="AX8_profiling.html">Profiling</a></li>
 </ul>
 </details></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">System B</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../PB_system_b/B00_introduction.html">Introduction</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">System C</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../PC_system_c/C00_introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../PC_system_c/C10_overview.html">Quick overview</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Benchmarks</span></p>
 <ul class="nav bd-sidenav">
@@ -367,64 +377,53 @@ document.write(`
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">functools</span><span class="w"> </span><span class="kn">import</span> <span class="n">partial</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">lucifex.solver</span><span class="w"> </span><span class="kn">import</span> <span class="n">OptionsPETSc</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">lucifex.fdm</span><span class="w"> </span><span class="kn">import</span> <span class="n">AB</span><span class="p">,</span> <span class="n">CN</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">lucifex.sim</span><span class="w"> </span><span class="kn">import</span> <span class="n">run</span><span class="p">,</span> <span class="n">Simulation</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">lucifex.viz</span><span class="w"> </span><span class="kn">import</span> <span class="n">plot_colormap</span><span class="p">,</span> <span class="n">plot_line</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">crocodil.dns.system_a</span><span class="w"> </span><span class="kn">import</span> <span class="n">dns_system_a</span><span class="p">,</span> <span class="n">SYSTEM_A_REFERENCE</span><span class="p">,</span> <span class="n">critical_sr</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">lucifex.sim</span><span class="w"> </span><span class="kn">import</span> <span class="n">parallel_run</span><span class="p">,</span> <span class="n">as_grid_simulation</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">lucifex.viz</span><span class="w"> </span><span class="kn">import</span> <span class="n">plot_colormap</span><span class="p">,</span> <span class="n">plot_line</span><span class="p">,</span> <span class="n">set_ipynb_variable</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">crocodil.dns.system_a</span><span class="w"> </span><span class="kn">import</span> <span class="n">dns_system_a</span><span class="p">,</span> <span class="n">SYSTEM_A_REFERENCE</span><span class="p">,</span> <span class="n">critical_saturation</span>
 
 <span class="n">STORE</span> <span class="o">=</span> <span class="mi">1</span>
-<span class="n">NX</span> <span class="o">=</span> <span class="mi">80</span>
-<span class="n">NY</span> <span class="o">=</span> <span class="mi">80</span>
+<span class="n">create_sim</span> <span class="o">=</span> <span class="n">dns_system_a</span><span class="p">(</span><span class="n">store_delta</span><span class="o">=</span><span class="n">STORE</span><span class="p">)</span>
 
-<span class="k">def</span><span class="w"> </span><span class="nf">create_simulation</span><span class="p">(</span>
-    <span class="n">sr</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
-<span class="p">):</span>
-    <span class="n">physical</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">SYSTEM_A_REFERENCE</span><span class="p">)</span>
-    <span class="n">physical</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">sr</span><span class="o">=</span><span class="n">sr</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">dns_system_a</span><span class="p">(</span>
-        <span class="n">store_delta</span><span class="o">=</span><span class="n">STORE</span><span class="p">,</span> 
-    <span class="p">)(</span>
-        <span class="n">Nx</span><span class="o">=</span><span class="n">NX</span><span class="p">,</span>
-        <span class="n">Ny</span><span class="o">=</span><span class="n">NY</span><span class="p">,</span>
-        <span class="n">scaling</span><span class="o">=</span><span class="s1">&#39;advective&#39;</span><span class="p">,</span>
-        <span class="o">**</span><span class="n">physical</span><span class="p">,</span>
-        <span class="n">D_adv</span><span class="o">=</span><span class="n">AB</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="nd">@CN</span><span class="p">,</span>
-        <span class="n">D_diff</span><span class="o">=</span><span class="n">AB</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="nd">@CN</span><span class="p">,</span>
-        <span class="n">dt_max</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>
-        <span class="n">courant_adv</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
-        <span class="n">c_stabilization</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">c_limits</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">c_petsc</span><span class="o">=</span><span class="n">OptionsPETSc</span><span class="p">(</span><span class="s1">&#39;gmres&#39;</span><span class="p">,</span> <span class="s1">&#39;ilu&#39;</span><span class="p">),</span>
-        <span class="n">flow_petsc</span><span class="o">=</span><span class="p">(</span><span class="n">OptionsPETSc</span><span class="p">(</span><span class="s1">&#39;cg&#39;</span><span class="p">,</span> <span class="s1">&#39;hypre&#39;</span><span class="p">),</span> <span class="kc">None</span><span class="p">),</span>
-        <span class="n">diagnostic</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-    <span class="p">)</span>
+<span class="n">NX</span> <span class="o">=</span> <span class="n">set_ipynb_variable</span><span class="p">(</span><span class="s1">&#39;NX&#39;</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
+<span class="n">NY</span> <span class="o">=</span> <span class="n">set_ipynb_variable</span><span class="p">(</span><span class="s1">&#39;NY&#39;</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
+<span class="n">COURANT_ADV</span> <span class="o">=</span> <span class="mf">0.75</span>
+<span class="n">COURANT_DIFF</span> <span class="o">=</span> <span class="mf">0.75</span>
+<span class="n">COURANT_REAC</span> <span class="o">=</span> <span class="mf">0.1</span>
 
-
-<span class="n">H0</span> <span class="o">=</span> <span class="n">SYSTEM_A_REFERENCE</span><span class="p">[</span><span class="s1">&#39;h0&#39;</span><span class="p">]</span>
-<span class="n">CR</span> <span class="o">=</span> <span class="n">SYSTEM_A_REFERENCE</span><span class="p">[</span><span class="s1">&#39;cr&#39;</span><span class="p">]</span>
-<span class="n">EPSILON</span> <span class="o">=</span> <span class="n">SYSTEM_A_REFERENCE</span><span class="p">[</span><span class="s1">&#39;epsilon&#39;</span><span class="p">]</span>
-<span class="n">sr_crit</span> <span class="o">=</span> <span class="n">critical_sr</span><span class="p">(</span><span class="n">H0</span><span class="p">,</span> <span class="n">CR</span><span class="p">,</span> <span class="n">EPSILON</span><span class="p">)</span>
+<span class="n">sr_crit</span> <span class="o">=</span> <span class="n">critical_saturation</span><span class="p">(</span><span class="o">*</span><span class="p">(</span><span class="n">SYSTEM_A_REFERENCE</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;zeta0&#39;</span><span class="p">,</span> <span class="s1">&#39;cr&#39;</span><span class="p">,</span> <span class="s1">&#39;epsilon&#39;</span><span class="p">)))</span>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;sr_crit = </span><span class="si">{</span><span class="n">sr_crit</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+<span class="n">sr_opts</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">i</span> <span class="o">*</span> <span class="n">sr_crit</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.01</span><span class="p">))</span>
 
-<span class="n">sr_opts</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.01</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="n">sr_crit</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">)</span>
-<span class="n">simulations</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">Simulation</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
-
-<span class="k">for</span> <span class="n">sr</span> <span class="ow">in</span> <span class="n">sr_opts</span><span class="p">:</span>
-    <span class="n">simulations</span><span class="p">[</span><span class="n">sr</span><span class="p">]</span> <span class="o">=</span> <span class="n">create_simulation</span><span class="p">(</span><span class="n">sr</span><span class="p">)</span>
-
-<span class="n">n_stop</span> <span class="o">=</span> <span class="mi">100</span>
+<span class="n">n_proc</span> <span class="o">=</span> <span class="n">set_ipynb_variable</span><span class="p">(</span><span class="s1">&#39;N_PROC&#39;</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+<span class="n">n_stop</span> <span class="o">=</span> <span class="n">set_ipynb_variable</span><span class="p">(</span><span class="s1">&#39;N_STOP&#39;</span><span class="p">,</span> <span class="mi">600</span><span class="p">)</span>
 <span class="n">t_stop</span> <span class="o">=</span> <span class="mf">20.0</span>
 <span class="n">dt_init</span> <span class="o">=</span> <span class="mf">1e-6</span>
 <span class="n">n_init</span> <span class="o">=</span> <span class="mi">10</span>
-<span class="k">for</span> <span class="n">sr</span> <span class="ow">in</span> <span class="n">sr_opts</span><span class="p">:</span>
-    <span class="n">sim</span> <span class="o">=</span> <span class="n">simulations</span><span class="p">[</span><span class="n">sr</span><span class="p">]</span>
-    <span class="n">run</span><span class="p">(</span><span class="n">sim</span><span class="p">,</span> <span class="n">n_stop</span><span class="p">,</span> <span class="n">t_stop</span><span class="p">,</span> <span class="n">dt_init</span><span class="o">=</span><span class="n">dt_init</span><span class="p">,</span> <span class="n">n_init</span><span class="o">=</span><span class="n">n_init</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>sr_crit = 0.10000000000000002
+
+<span class="n">simulations</span> <span class="o">=</span> <span class="n">parallel_run</span><span class="p">(</span>
+    <span class="n">create_sim</span><span class="p">,</span> <span class="n">n_proc</span><span class="p">,</span> <span class="n">n_stop</span><span class="p">,</span>
+    <span class="n">dt_init</span><span class="o">=</span><span class="n">dt_init</span><span class="p">,</span> <span class="n">n_init</span><span class="o">=</span><span class="n">n_init</span><span class="p">,</span>
+    <span class="n">serialize</span><span class="o">=</span><span class="n">partial</span><span class="p">(</span><span class="n">as_grid_simulation</span><span class="p">,</span> <span class="n">include</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;c&#39;</span><span class="p">,</span> <span class="s1">&#39;s&#39;</span><span class="p">,</span> <span class="s1">&#39;mC&#39;</span><span class="p">,</span> <span class="s1">&#39;mD&#39;</span><span class="p">)),</span>
+<span class="p">)(</span>
+    <span class="n">cell</span><span class="o">=</span><span class="s1">&#39;quadrilateral&#39;</span><span class="p">,</span>
+    <span class="n">scaling</span><span class="o">=</span><span class="s1">&#39;advective&#39;</span><span class="p">,</span>
+    <span class="o">**</span><span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">v</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">SYSTEM_A_REFERENCE</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">k</span> <span class="o">!=</span> <span class="s1">&#39;sr&#39;</span><span class="p">},</span>
+    <span class="n">D_adv</span><span class="o">=</span><span class="n">AB</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="nd">@CN</span><span class="p">,</span>
+    <span class="n">D_diff</span><span class="o">=</span><span class="n">AB</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="nd">@CN</span><span class="p">,</span>
+    <span class="n">courant_adv</span><span class="o">=</span><span class="n">COURANT_ADV</span><span class="p">,</span>
+    <span class="n">courant_diff</span><span class="o">=</span><span class="n">COURANT_DIFF</span><span class="p">,</span>
+    <span class="n">courant_reac</span><span class="o">=</span><span class="n">COURANT_REAC</span><span class="p">,</span>
+    <span class="n">c_stabilization</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">c_limits</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">c_petsc</span><span class="o">=</span><span class="n">OptionsPETSc</span><span class="p">(</span><span class="s1">&#39;gmres&#39;</span><span class="p">,</span> <span class="s1">&#39;ilu&#39;</span><span class="p">),</span>
+    <span class="n">flow_petsc</span><span class="o">=</span><span class="p">(</span><span class="n">OptionsPETSc</span><span class="p">(</span><span class="s1">&#39;cg&#39;</span><span class="p">,</span> <span class="s1">&#39;hypre&#39;</span><span class="p">),</span> <span class="kc">None</span><span class="p">),</span>
+    <span class="n">diagnostic</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<span class="p">)(</span>
+    <span class="n">sr</span><span class="o">=</span><span class="n">sr_opts</span><span class="p">,</span>
+<span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -465,7 +464,7 @@ document.write(`
     <span class="n">f_lines</span><span class="p">,</span>
     <span class="n">cyc</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">,</span>
     <span class="n">x_label</span><span class="o">=</span><span class="s1">&#39;$t$&#39;</span><span class="p">,</span>
-    <span class="n">y_label</span><span class="o">=</span><span class="s1">&#39;$F(y=h_0)$&#39;</span><span class="p">,</span>
+    <span class="n">y_label</span><span class="o">=</span><span class="s1">&#39;$F(y=\zeta_0)$&#39;</span><span class="p">,</span>
     <span class="n">legend_labels</span><span class="o">=</span><span class="n">legend_labels</span><span class="p">,</span>
     <span class="n">legend_title</span><span class="o">=</span><span class="n">legend_title</span><span class="p">,</span>
 <span class="p">)</span>
@@ -541,12 +540,12 @@ document.write(`
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="A22_rayleigh.html"
+       href="A22_damkohler.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">Rayleigh numbers</p>
+        <p class="prev-next-title">Damköhler numbers</p>
       </div>
     </a>
     <a class="right-next"

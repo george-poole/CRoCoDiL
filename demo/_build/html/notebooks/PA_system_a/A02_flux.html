@@ -192,8 +192,8 @@
 </details></li>
 <li class="toctree-l1"><a class="reference internal" href="A10_overview.html">Quick overview</a></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="A20_parameters.html">Parameter space</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l2"><a class="reference internal" href="A21_damkohler.html">Damköhler numbers</a></li>
-<li class="toctree-l2"><a class="reference internal" href="A22_rayleigh.html">Rayleigh numbers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="A21_rayleigh.html">Rayleigh numbers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="A22_damkohler.html">Damköhler numbers</a></li>
 <li class="toctree-l2"><a class="reference internal" href="A23_saturations.html">Supercritical, subcritical and critical residual saturations</a></li>
 </ul>
 </details></li>
@@ -204,9 +204,19 @@
 <li class="toctree-l2"><a class="reference internal" href="AX4_sensitivity_i.html">Sensitivity to initial perturbations</a></li>
 <li class="toctree-l2"><a class="reference internal" href="AX5_sensitivity_ii.html">Sensitivity to initial residual concentration</a></li>
 <li class="toctree-l2"><a class="reference internal" href="AX6_scaling.html">Choice of scaling</a></li>
-<li class="toctree-l2"><a class="reference internal" href="AX7_profiling.html">Profiling</a></li>
+<li class="toctree-l2"><a class="reference internal" href="AX7_finite_difference.html">Choice of finite difference discretization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="AX8_profiling.html">Profiling</a></li>
 </ul>
 </details></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">System B</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../PB_system_b/B00_introduction.html">Introduction</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">System C</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../PC_system_c/C00_introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../PC_system_c/C10_overview.html">Quick overview</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Benchmarks</span></p>
 <ul class="nav bd-sidenav">
@@ -364,7 +374,7 @@ document.write(`
                 <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#constrained-equations">Constrained equations</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#constant-height-constraint">Constant height constraint</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#equilibrium-concentration-constraint">Equilibrium concentration constraint</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#constant-concentration-constraint">Constant concentration constraint</a></li>
 </ul>
 </li>
 </ul>
@@ -419,18 +429,18 @@ document.write(`
 <div class="math notranslate nohighlight">
 \[\begin{split}
 \begin{align*}
-c^+(t=0)=c_r \\
-c^-(t=0)=0 \\
-s^+(t=0) = s_r
+c^+(t=0)&amp;=c_r \\
+c^-(t=0)&amp;=0 \\
+s^+(t=0) &amp;= s_r
 \end{align*}
 \end{split}\]</div>
 <p>or for <span class="math notranslate nohighlight">\(t&gt;t_*\)</span> with initial conditions</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}
 \begin{align*}
-c^+(t=t_*)=c^+_* \\
-c^-(t=t_*)=c^-_* \\
-s^+(t=t_*) = s^+_*
+c^+(t=t_*) &amp;=c^+_* \\
+c^-(t=t_*)&amp;=c^-_* \\
+s^+(t=t_*) &amp;= s^+_*
 \end{align*}
 \end{split}\]</div>
 <p>deduced from the direct numerical simulation data at <span class="math notranslate nohighlight">\(t=t_*\)</span>.</p>
@@ -440,8 +450,8 @@ s^+(t=t_*) = s^+_*
 <h3>Constant height constraint<a class="headerlink" href="#constant-height-constraint" title="Link to this heading">#</a></h3>
 <p>If <span class="math notranslate nohighlight">\(\zeta=\zeta_0\)</span> for all times, then instead <span class="math notranslate nohighlight">\(c^-\)</span> can be eliminated via total mass conservation.</p>
 </section>
-<section id="equilibrium-concentration-constraint">
-<h3>Equilibrium concentration constraint<a class="headerlink" href="#equilibrium-concentration-constraint" title="Link to this heading">#</a></h3>
+<section id="constant-concentration-constraint">
+<h3>Constant concentration constraint<a class="headerlink" href="#constant-concentration-constraint" title="Link to this heading">#</a></h3>
 <p>If <span class="math notranslate nohighlight">\(c^+=1\)</span> for all times, then <span class="math notranslate nohighlight">\(s^+\)</span> is constant and only <span class="math notranslate nohighlight">\(c^-\)</span> needs to be solved for.</p>
 </section>
 </section>
@@ -513,7 +523,7 @@ s^+(t=t_*) = s^+_*
     <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#constrained-equations">Constrained equations</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#constant-height-constraint">Constant height constraint</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#equilibrium-concentration-constraint">Equilibrium concentration constraint</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#constant-concentration-constraint">Constant concentration constraint</a></li>
 </ul>
 </li>
 </ul>

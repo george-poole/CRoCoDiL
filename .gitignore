@@ -1,20 +1,3 @@
-# data
-*PARAMETERS.txt
-*.npy
-*.npz
-*.csv
-*.h5
-*.xdmf
-*.xml
-*.vtk
-*.pickle
-*.pdf
-*.png
-*.mp4
-!demo/**/*.pdf
-!demo/**/*.png
-!demo/**/*.mp4
-
 # interactive
 .ipynb_checkpoints
 profile_default/

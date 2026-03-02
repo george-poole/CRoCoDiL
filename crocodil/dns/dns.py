@@ -137,7 +137,7 @@ def dns_system_a(
         D_diff_solutal=D_diff,
         D_reac_solutal=D_reac,
         D_src_solutal=D_src,
-        D_reac_evol=D_evol,
+        D_evol=D_evol,
         # stabilization
         c_stabilization=c_stabilization,
         c_limits=c_limits,
