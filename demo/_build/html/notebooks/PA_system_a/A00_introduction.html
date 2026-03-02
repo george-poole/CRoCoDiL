@@ -212,11 +212,13 @@
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">System B</span></p>
 <ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="../PB_system_b/B00_introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../PB_system_b/B10_overview.html">Quick overview</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">System C</span></p>
 <ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="../PC_system_c/C00_introduction.html">Introduction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../PC_system_c/C10_overview.html">Quick overview</a></li>
+
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Benchmarks</span></p>
 <ul class="nav bd-sidenav">
@@ -395,11 +397,12 @@ c_0(x,y)=c_r\text{H}(y-\zeta_0X) + \mathcal{N}_c(x,y) &amp; \text{perturbed init
 c_{\text{N}}\vert_{\partial\Omega}=0 &amp; \text{no-flux on entire boundary} \\
 u_{\text{E}}\vert_{\partial\Omega}=0\iff\psi_{\text{D}}\vert_{\partial\Omega}=0 &amp; \text{no-penetration on entire boundary} \\
 \varphi = 1 &amp; \text{constant rock porosity} \\
-\mathsf{K} = \phi\mathsf{I} &amp; \text{isotropic permeability} \\
+\mathsf{K} = \phi^2\mathsf{I} &amp; \text{isotropic permeability} \\
 \mathsf{D} = \phi\mathsf{I} &amp; \text{isotropic dispersion}\\
 \mu = 1 &amp; \text{constant viscosity} \\
 \rho(c)=c &amp; \text{linear density} \\
-\Sigma(c, s)=s(1-c) \iff R(s)=-J(s)=-s &amp; \text{linear reaction} \\
+\Sigma(c, s)=s(1-c) &amp; \text{linear reaction} \\
+\iff R(s)=-s\quad J(s)=s \\
 \textbf{e}_g = -\textbf{e}_y &amp; \text{vertically downward gravity} \\ 
 \end{cases}
 \end{split}\]</div>

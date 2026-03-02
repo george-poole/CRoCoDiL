@@ -104,7 +104,7 @@ def dns_system_a(
     epsilon: float = 1e-2,
     # initial front
     zeta0: float = 0.9,
-    zeta_eps: float | tuple[float, float] | None = None,
+    zeta0_eps: float | tuple[float, float] | None = None,
     # initial saturation
     sr: float = 0.2,
     s_ampl: float = 0,
@@ -165,14 +165,14 @@ def dns_system_a(
     Lx = aspect * X
     Ly = 1.0 * X
     Lzeta0 = zeta0 * X
-    Lzeta_eps = zeta_eps * X if zeta_eps is not None else None
+    Lzeta0_eps = zeta0_eps * X if zeta0_eps is not None else None
     Omega, dOmega = rectangle_mesh_closure(Lx, Ly, Nx, Ny, cell, comm=comm)
     # constants
     Di, Ki, Bu = scaling_map[Omega, 'Di', 'Ki', 'Bu']
     Ra = Constant(Omega, Ra, 'Ra')
     Da = Constant(Omega, Da, 'Da')
     # initial conditions
-    s_ics = heaviside(lambda x: x[1] - Lzeta0, max(0, sr - s_ampl), eps=Lzeta_eps) 
+    s_ics = heaviside(lambda x: x[1] - Lzeta0, max(0, sr - s_ampl), eps=Lzeta0_eps) 
     if s_ampl:
         s_ics = SpatialPerturbation(
             s_ics,
@@ -181,7 +181,7 @@ def dns_system_a(
             s_ampl,
             limits_corrector(0, sr),
         )
-    c_ics = heaviside(lambda x: x[1] - Lzeta0, max(0, cr - c_ampl), eps=Lzeta_eps)
+    c_ics = heaviside(lambda x: x[1] - Lzeta0, max(0, cr - c_ampl), eps=Lzeta0_eps)
     if c_ampl:
         c_ics = SpatialPerturbation(
             c_ics,
@@ -190,7 +190,7 @@ def dns_system_a(
             c_ampl,
             limits_corrector(0, 1),
         )  
-    # constitutive
+    # constitutive relations
     dispersion = lambda phi: Di * phi
     reaction = lambda s: -Ki * s
     source = lambda s: Ki * s
@@ -201,8 +201,8 @@ def dns_system_a(
 
     namespace=[
         Ra, Da, Di, Bu, Ki, 
-        ('X', X), ('Lx', Lx), ('Ly', Ly), ('zeta0', zeta0), 
-        ('sr', sr), ('cr', cr),
+        ('X', X), ('Lx', Lx), ('Ly', Ly), 
+        ('sr', sr), ('cr', cr), ('zeta0', zeta0),
     ]
 
     return dns_generic(

@@ -1,6 +1,6 @@
 <mxfile host="Electron" agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/26.2.15 Chrome/134.0.6998.205 Electron/35.2.1 Safari/537.36" version="26.2.15">
   <diagram name="Page-1" id="ZoYgnsPX22BV_gQzKxPb">
-    <mxGraphModel dx="2089" dy="1780" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1200" pageHeight="2000" math="1" shadow="0">
+    <mxGraphModel dx="1641" dy="1399" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1200" pageHeight="2000" math="1" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -14,7 +14,7 @@
           <mxGeometry x="511" y="245" width="300" height="70" as="geometry" />
         </mxCell>
         <mxCell id="l9wLnr5pDdemg-z20rVX-5" value="$$\Omega^-(t=0)$$" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=35;" parent="1" vertex="1">
-          <mxGeometry x="621" y="400" width="80" height="70" as="geometry" />
+          <mxGeometry x="620" y="423" width="80" height="70" as="geometry" />
         </mxCell>
         <mxCell id="l9wLnr5pDdemg-z20rVX-6" value="$$x=0$$" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=35;" parent="1" vertex="1">
           <mxGeometry x="200" y="590" width="80" height="70" as="geometry" />
@@ -23,10 +23,10 @@
           <mxGeometry x="102" y="516" width="80" height="70" as="geometry" />
         </mxCell>
         <mxCell id="l9wLnr5pDdemg-z20rVX-9" value="$$y=X$$" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=35;" parent="1" vertex="1">
-          <mxGeometry x="102" y="157" width="80" height="70" as="geometry" />
+          <mxGeometry x="104" y="155" width="80" height="70" as="geometry" />
         </mxCell>
         <mxCell id="l9wLnr5pDdemg-z20rVX-10" value="$$y=\zeta_0X$$" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=35;" parent="1" vertex="1">
-          <mxGeometry x="87" y="315" width="80" height="70" as="geometry" />
+          <mxGeometry x="92" y="319" width="80" height="70" as="geometry" />
         </mxCell>
         <mxCell id="l9wLnr5pDdemg-z20rVX-11" value="$$s=s_r$$" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=35;" parent="1" vertex="1">
           <mxGeometry x="326.5" y="199" width="150" height="70" as="geometry" />
@@ -55,8 +55,8 @@
             <mxPoint x="880.5" y="479" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="T_bCxZJKHpQInKvlDJL--1" value="$$(\textbf{n}\cdot(\mathsf{D}\cdot\nabla c))\vert_{\partial\Omega}=(\textbf{n}\cdot(\mathsf{G}\cdot\nabla \theta))\vert_{\partial\Omega}=0$$" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=35;" parent="1" vertex="1">
-          <mxGeometry x="500" y="120" width="200" height="70" as="geometry" />
+        <mxCell id="T_bCxZJKHpQInKvlDJL--1" value="$$(\textbf{n}\cdot\textbf{u})\vert_{\partial\Omega}=(\textbf{n}\cdot(\mathsf{D}\cdot\nabla c))\vert_{\partial\Omega}=0$$" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=35;" parent="1" vertex="1">
+          <mxGeometry x="440" y="130" width="200" height="70" as="geometry" />
         </mxCell>
         <mxCell id="MN_lAOmHHfOJGwaRFr1G-1" value="$$c=c_r$$" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=35;" parent="1" vertex="1">
           <mxGeometry x="326.5" y="240" width="150" height="70" as="geometry" />
@@ -76,14 +76,14 @@
             </Array>
           </mxGeometry>
         </mxCell>
-        <mxCell id="rX1eTnM0zhWwftDJ3Mqu-1" value="$$\theta=\pm1$$" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=35;" vertex="1" parent="1">
+        <mxCell id="rX1eTnM0zhWwftDJ3Mqu-1" value="$$\theta=\pm1$$" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=35;" parent="1" vertex="1">
           <mxGeometry x="335.5" y="287" width="150" height="70" as="geometry" />
         </mxCell>
-        <mxCell id="rX1eTnM0zhWwftDJ3Mqu-2" value="$$\theta=0$$" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=35;" vertex="1" parent="1">
+        <mxCell id="rX1eTnM0zhWwftDJ3Mqu-2" value="$$\theta=0$$" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=35;" parent="1" vertex="1">
           <mxGeometry x="339.5" y="474" width="121" height="70" as="geometry" />
         </mxCell>
-        <mxCell id="rX1eTnM0zhWwftDJ3Mqu-4" value="$$(\textbf{n}\cdot\textbf{u})\vert_{\partial\Omega}=0$$" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=35;" vertex="1" parent="1">
-          <mxGeometry x="445" y="50" width="200" height="70" as="geometry" />
+        <mxCell id="JGx4AG6qd6tLKs_kZSrZ-3" value="$$(\textbf{n}\cdot(\mathsf{G}\cdot\nabla \theta))\vert_{\partial\Omega}=0$$" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=35;" vertex="1" parent="1">
+          <mxGeometry x="450" y="70" width="200" height="70" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>

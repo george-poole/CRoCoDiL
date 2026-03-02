@@ -209,11 +209,13 @@
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">System B</span></p>
 <ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="../PB_system_b/B00_introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../PB_system_b/B10_overview.html">Quick overview</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">System C</span></p>
 <ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="../PC_system_c/C00_introduction.html">Introduction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../PC_system_c/C10_overview.html">Quick overview</a></li>
+
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Benchmarks</span></p>
 <ul class="current nav bd-sidenav">
@@ -393,7 +395,7 @@ document.write(`
     <span class="n">write_delta</span><span class="o">=</span><span class="n">WRITE</span><span class="p">,</span> 
     <span class="n">dir_root</span><span class="o">=</span><span class="n">DIR_ROOT</span><span class="p">,</span> 
     <span class="n">dir_params</span><span class="o">=</span><span class="n">DIR_PARAMS</span><span class="p">,</span>
-    <span class="n">dir_timestamp</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">dir_datetime</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
 <span class="p">)(</span>
     <span class="n">Nx</span><span class="o">=</span><span class="mi">64</span><span class="p">,</span>
     <span class="n">Ny</span><span class="o">=</span><span class="mi">64</span><span class="p">,</span>
@@ -409,20 +411,18 @@ document.write(`
     <span class="n">diagnostic</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
 <span class="p">)</span>
 
-<span class="n">n_stop</span> <span class="o">=</span> <span class="n">set_ipynb_variable</span><span class="p">(</span><span class="s1">&#39;N_STOP&#39;</span><span class="p">,</span> <span class="mi">500</span><span class="p">)</span>
+<span class="n">n_stop</span> <span class="o">=</span> <span class="n">set_ipynb_variable</span><span class="p">(</span><span class="s1">&#39;N_STOP&#39;</span><span class="p">,</span> <span class="mi">600</span><span class="p">)</span>
 <span class="n">dt_init</span> <span class="o">=</span> <span class="mf">1e-3</span>
 <span class="n">n_init</span> <span class="o">=</span> <span class="mi">10</span>
-<span class="n">run</span><span class="p">(</span><span class="n">simulation</span><span class="p">,</span> <span class="n">n_stop</span><span class="o">=</span><span class="n">n_stop</span><span class="p">,</span> <span class="n">dt_init</span><span class="o">=</span><span class="n">dt_init</span><span class="p">,</span> <span class="n">n_init</span><span class="o">=</span><span class="n">n_init</span><span class="p">)</span>
-
-<span class="k">if</span> <span class="n">WRITE</span><span class="p">:</span>
-    <span class="n">xdmf_to_npz</span><span class="p">(</span><span class="n">simulation</span><span class="p">,</span> <span class="n">delete_xdmf</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">run</span><span class="p">(</span><span class="n">simulation</span><span class="p">,</span> <span class="n">n_stop</span><span class="o">=</span><span class="n">n_stop</span><span class="p">,</span> <span class="n">dt_init</span><span class="o">=</span><span class="n">dt_init</span><span class="p">,</span> <span class="n">n_init</span><span class="o">=</span><span class="n">n_init</span><span class="p">,</span> <span class="n">show_progress</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">if</span> <span class="n">WRITE</span><span class="p">:</span> <span class="n">xdmf_to_npz</span><span class="p">(</span><span class="n">simulation</span><span class="p">,</span> <span class="n">delete_xdmf</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
 <span class="n">c</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">psi</span> <span class="o">=</span> <span class="n">simulation</span><span class="p">[</span><span class="s1">&#39;c&#39;</span><span class="p">,</span> <span class="s1">&#39;theta&#39;</span><span class="p">,</span> <span class="s1">&#39;u&#39;</span><span class="p">,</span> <span class="s1">&#39;psi&#39;</span><span class="p">]</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Environment variable `N_STOP=500`
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>100%|██████████| 50/50 [00:26&lt;00:00,  1.87it/s]
 </pre></div>
 </div>
 </div>

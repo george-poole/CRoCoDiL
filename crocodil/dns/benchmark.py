@@ -212,7 +212,7 @@ def dns_darcy_rayleigh_taylor(
     # initial conditions
     cr: float = 1.0,
     zeta0: float = 0.5,
-    zeta_eps: float | None = None,
+    zeta0_eps: float | None = None,
     c_ampl: float = 1e-6,
     c_freq: tuple[int, int] = (8, 8),
     c_seed: tuple[int, int] = (1234, 5678),
@@ -246,7 +246,7 @@ def dns_darcy_rayleigh_taylor(
     Ra = Constant(Omega, Ra, 'Ra')
     # initial conditions
     c_ics = SpatialPerturbation(
-        heaviside(lambda x: x[1] - zeta0 * X, cr, eps=zeta_eps * X if zeta_eps is not None else None),
+        heaviside(lambda x: x[1] - zeta0 * X, cr, eps=zeta0_eps * X if zeta0_eps is not None else None),
         cubic_noise(['neumann', 'neumann'], [Lx, Ly], c_freq, c_seed),
         [Lx, Ly],
         c_ampl,
@@ -377,7 +377,7 @@ def dns_darcy_thermosolutal(
     # constitutive relations
     density = lambda c, theta: Bu * (c - gamma * theta)
     dispersion_solutal = lambda phi: Di * phi
-    dispersion_thermal = lambda phi: (Di / Le) * phi
+    dispersion_thermal = lambda phi: Le * Di * phi
 
     return dns_generic(
         # domain

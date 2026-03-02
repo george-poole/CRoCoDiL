@@ -94,3 +94,4 @@ def threshold_rayleigh(
     `Ra ≤ 90 Ly Nₓ / n Lₓ` to resolve instabilities
     """
     return 90.0 * Ly * Nx / (n_per_cell * Lx)
+

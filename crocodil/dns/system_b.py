@@ -1,16 +1,15 @@
-from typing import Iterable, Callable
+from typing import Iterable
 
-import numpy as np
 from mpi4py import MPI
 from lucifex.fem import Constant, SpatialPerturbation, cubic_noise
 from lucifex.fdm import FiniteDifference, FiniteDifferenceArgwise, CN, AB, AM
 from lucifex.utils.fenicsx_utils import CellType, limits_corrector
-from lucifex.solver import BoundaryConditions, OptionsPETSc, OptionsJIT
+from lucifex.solver import OptionsPETSc, OptionsJIT
 from lucifex.sim import configure_simulation
 from lucifex.utils.py_utils import FrozenDict
 
 from .generic import dns_generic
-from .utils import rectangle_mesh_closure
+from .utils import heaviside, rectangle_mesh_closure
 from .theory import CONVECTION_REACTION_SCALINGS
 
 
@@ -19,11 +18,24 @@ SYSTEM_B_REFERENCE = FrozenDict(
     Da=100.0,
     epsilon=1e-2,
     Le=1.0,
+    zeta0=0.9,
     sr=0.2,
+    cr=0.0,
     gamma=1.0,
-    delta=1e-1,
+    delta=0,
     aspect=2.0,
 )
+
+
+def thermal_rayleigh(
+    Ra: float,
+    Le: float,
+    gamma: float,
+) -> float:
+    """
+    `(Ra)thermal = (γ / Le)·(Ra)solutal` given density `ρ(c,θ) = c - γθ`
+    """
+    return gamma * Ra / Le 
 
 
 @configure_simulation(
@@ -43,22 +55,26 @@ def dns_system_b(
     Da: float = 1e2,
     epsilon: float = 1e-2,
     Le: float = 1.0,
+    # initial front
+    zeta0: float = 0.9,
+    zeta0_eps: float | tuple[float, float] | None = None,
     # initial saturation
     sr: float = 0.2,
     s_ampl: float = 0,
     s_freq: tuple[int, int] = (16, 16),
     s_seed: tuple[int, int] = (1234, 5678),
     # initial concentration
-    c_ics: float | Callable[[np.ndarray], np.ndarray] = 0.0,
-    c_ampl: float = 0,
+    cr: float = 1.0,
+    c_ampl: float = 1e-6,
     c_freq: tuple[int, int] = (16, 16),
     c_seed: tuple[int, int] = (1234, 5678),
     # initial temperature
+    theta_neg: bool = True, 
     theta_ampl: float = 1e-6,
     theta_freq: tuple[int, int] = (16, 16),
     theta_seed: tuple[int, int] = (1234, 5678),
     # constitutive relations
-    delta: float = 0.1,
+    delta: float = 0,
     gamma: float = 1.0,
     # timestep
     dt_min: float = 0.0,
@@ -83,7 +99,7 @@ def dns_system_b(
     | FiniteDifferenceArgwise = (AM(1) @ AM(1) @ AB(1)),
     # stabilization
     c_stabilization: str | tuple[str, float] | tuple[float, float] = None,
-    c_limits: bool | tuple[float, float] = False,
+    c_limits: bool = False,
     theta_stabilization: str | tuple[str, float] | tuple[float, float] = None,
     theta_limits: bool = False,
     s_limits: bool = False,
@@ -100,11 +116,11 @@ def dns_system_b(
 ):
     """
     `Ω = [0, A·X] × [0, X]` \\
-    `𝜑∂s/∂t = -εKi s(1 + δθ - c)` \\
-    `ϕ∂c/∂t + 𝐮·∇c =  Di ∇·(ϕ∇c) + Ki s(1 + δθ - c)` \\
-    `ϕ∂θ/∂t + 𝐮·∇θ =  Di/Le ∇·(ϕ∇θ) \\
+    `𝜑∂s/∂t = -εKi s(1 + δθ)(1 - c)` \\
+    `ϕ∂c/∂t + 𝐮·∇c =  Di ∇·(ϕ∇c) + Ki s(1 + δθ)(1 - c)` \\
+    `ϕ∂θ/∂t + 𝐮·∇θ =  LeDi ∇·(ϕ∇θ) \\
     `∇⋅𝐮 = 0` \\
-    `𝐮 = -(∇p + Bu(c -γθ)𝐞ʸ)` \\
+    `𝐮 = -(∇p + Bu(c - γθ)𝐞ʸ)` \\
 
     `s₀(𝐱) = sᵣ + N(𝐱)` \\
     `c₀(𝐱) = 1 + δ(1 - θ) + (δ / √Λ) · sinh(√Λ · (y − X/2)) / cosh(√Λ X/2) + N(𝐱)` \\
@@ -117,6 +133,8 @@ def dns_system_b(
     X = scaling_map['X']
     Lx = aspect * X
     Ly = 1.0 * X
+    Lzeta0 = zeta0 * X
+    Lzeta0_eps = zeta0_eps * X if zeta0_eps is not None else None
     Omega, dOmega = rectangle_mesh_closure(Lx, Ly, Nx, Ny, cell, comm=comm)
     # constants
     Di, Bu, Ki = scaling_map[Omega, 'Di', 'Bu', 'Ki']
@@ -124,7 +142,7 @@ def dns_system_b(
     Da = Constant(Omega, Da, 'Da')
     Le = Constant(Omega, Le, 'Le')
     # initial conditions
-    s_ics = sr
+    s_ics = heaviside(lambda x: x[1] - Lzeta0, max(0, sr - s_ampl), eps=Lzeta0_eps) 
     if s_ampl:
         s_ics = SpatialPerturbation(
             s_ics,
@@ -133,57 +151,50 @@ def dns_system_b(
             s_ampl,
             limits_corrector(0, sr),
         )
-    # sqrtLmbda = np.sqrt(float(Ki) * sr / (float(Di) * (1 - sr)))
-    # c_ics = lambda x: (
-    #     1 + delta * (1 - x[1]) 
-    #     + (delta / sqrtLmbda) * np.sinh(sqrtLmbda * (x[1] - 0.5 * Ly)) / np.cosh(0.5 * sqrtLmbda * Ly)
-    # )
-    if c_ics is None:
-        c_ics = 1.0
+    c_ics = heaviside(lambda x: x[1] - Lzeta0, max(0, cr - c_ampl), eps=Lzeta0_eps)
     if c_ampl:
         c_ics = SpatialPerturbation(
             c_ics,
             cubic_noise(['neumann', 'neumann'], [Lx, Ly], c_freq, c_seed),
             [Lx, Ly],
             c_ampl,
-            limits_corrector(0, 1 + delta),
-        ) 
-    if c_limits is True:
-        c_limits = (0, 1 + delta)
-    theta_ics = lambda x: 1 - x[1] / Ly,
+            limits_corrector(0, 1),
+        )  
+    if theta_neg:
+        theta_plus = -1.0
+        _theta_limits = (-1, 0)
+    else:
+        theta_plus = 1.0 - theta_ampl
+        _theta_limits = (0, 1)
+    theta_ics = heaviside(lambda x: x[1] - Lzeta0, theta_plus, eps=Lzeta0_eps)
     if theta_ampl:
-        SpatialPerturbation(
+        theta_ics = SpatialPerturbation(
             theta_ics,
-            cubic_noise(['neumann', 'dirichlet'], [Lx, Ly], theta_freq, theta_seed),
+            cubic_noise(['neumann', 'neumann'], [Lx, Ly], theta_freq, theta_seed),
             [Lx, Ly],
             theta_ampl,
-            limits_corrector(0, 1),
-        )   
-    # boundary conditions
-    theta_bcs = BoundaryConditions(
-        ("dirichlet", dOmega['lower'], 1.0),
-        ("dirichlet", dOmega['upper'], 0.0),
-        ('neumann', dOmega['left', 'right'], 0.0)
-    )
+            limits_corrector(*_theta_limits),
+        ) 
+    if theta_limits:
+        theta_limits = _theta_limits
     # constitutive relations
     gamma = Constant(Omega, gamma, 'gamma')
     delta = Constant(Omega, delta, 'delta')
     dispersion_solutal = lambda phi: Di * phi
     dispersion_thermal = lambda phi: (Di/Le) * phi
     density = lambda c, theta: Bu * (c - gamma * theta)
-    # reaction = lambda _, s: -Ki * s
-    # source = lambda theta, s: Ki * s * (1 + delta * theta)
     reaction = lambda theta, s: -Ki * s * (1 + delta * theta)
     source = lambda theta, s: Ki * s * (1 + delta * theta)
 
     if diagnostic:
-        fluxes_thermal = [('q', 0.5 * Ly, Lx), *fluxes_thermal]
-        fluxes_solutal = [('f', 0.5 * Ly, Lx), *fluxes_solutal] 
+        fluxes_thermal = [('q', Lzeta0, Lx), *fluxes_thermal]
+        fluxes_solutal = [('f', Lzeta0, Lx), *fluxes_solutal] 
 
     namespace=[
         Ra, Da, Le, Di, Bu, Ki, 
         ('X', X), ('Lx', Lx), ('Ly', Ly), 
-        ('sr', sr),
+        ('sr', sr), ('cr', cr), ('zeta0', zeta0),
+        gamma, delta,
     ]
 
     return dns_generic(
@@ -196,8 +207,6 @@ def dns_system_b(
         c_ics=c_ics,
         theta_ics=theta_ics,
         s_ics=s_ics, 
-        # boundary conditions
-        theta_bcs=theta_bcs,
         # constitutive relations
         density=density,
         reaction=reaction,

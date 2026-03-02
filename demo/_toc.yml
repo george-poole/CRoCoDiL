@@ -34,7 +34,7 @@ parts:
   - caption: System B
     chapters:
       - file: notebooks/PB_system_b/B00_introduction
-      # - file: notebooks/PB_system_b/B10_overview
+      - file: notebooks/PB_system_b/B10_overview
   - caption: System C
     chapters:
       - file: notebooks/PC_system_c/C00_introduction

@@ -106,7 +106,7 @@ $$
 &\begin{cases}
 \varphi\frac{s^{n+1} -s^n}{\Delta t^n} = -\varepsilon Ki\mathcal{D}_{\Sigma, s}(Rc + J) & \\
 \mathcal{D}_\phi(\phi)\frac{c^{n+1}-c^n}{\Delta t^n} + Ad\,\mathcal{D}_{\textbf{u},c}(\textbf{u}\cdot\nabla c) = Di\nabla\cdot\mathcal{D}_{\mathsf{D},c}(\mathsf{D}\cdot\nabla c) + Ki\left(\mathcal{D}_{R,c}(Rc) + \mathcal{D}_{J}(J)\right) & \\
-\mathcal{D}_\phi(\phi)\frac{\theta^{n+1}-\theta^n}{\Delta t^n} + Ad\,\mathcal{D}_{\textbf{u},\theta}(\textbf{u}\cdot\nabla\theta) = \frac{Di}{Le}\nabla\cdot\mathcal{D}_{\mathsf{G},\theta}(\mathsf{G}\cdot\nabla\theta) & \\
+\mathcal{D}_\phi(\phi)\frac{\theta^{n+1}-\theta^n}{\Delta t^n} + Ad\,\mathcal{D}_{\textbf{u},\theta}(\textbf{u}\cdot\nabla\theta) = Le Di\nabla\cdot\mathcal{D}_{\mathsf{G},\theta}(\mathsf{G}\cdot\nabla\theta) & \\
 \nabla\cdot\textbf{u}^n = 0 & \\
 \textbf{u}^n=-\frac{\mathsf{K}^n}{\mu^n}\cdot(\nabla p^n - Bu\,\rho^n \,\textbf{e}_g) \\
 s^0=s_0 \\

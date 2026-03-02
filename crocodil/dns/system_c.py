@@ -53,6 +53,63 @@ def plot_gravity_arrow(
     ax.add_patch(arrow)
 
 
+def upper_subdomain_dimensions_initial(
+    beta: float,
+    zeta0_min: float,
+    Lx: float,
+    Ly: float,
+) -> tuple[float, float]:
+    vert = (1 - zeta0_min) * Ly
+    horz = vert / np.tan(np.radians(beta))
+    if horz > Lx:
+        raise ValueError('Not a triangle')
+    return horz, vert
+
+
+def upper_subdomain_hypotenuse_initial(
+    beta: float,
+    zeta0_min: float,
+    Lx: float,
+    Ly: float,
+) -> tuple[float, float]:
+    horz, vert = upper_subdomain_dimensions_initial(beta, zeta0_min, Lx, Ly)
+    return np.hypot(horz, vert)
+
+
+def upper_subdomain_area_initial(
+    beta: float,
+    zeta0_min: float,
+    Lx: float,
+    Ly: float,
+) -> tuple[float, float]:
+    horz, vert = upper_subdomain_dimensions_initial(beta, zeta0_min, Lx, Ly)
+    return 0.5 * horz * vert
+
+
+def mass_dissolved_initial(
+    beta: float,
+    zeta0_min: float,
+    sr: float,
+    cr: float,
+    Lx: float,
+    Ly: float,
+)-> float:
+    area = upper_subdomain_area_initial(beta, zeta0_min, Lx, Ly)
+    return area * (1 - sr) * cr
+
+
+def mass_capillary_initial(
+    epsilon: float,
+    beta: float,
+    zeta0_min: float,
+    sr: float,
+    Lx: float,
+    Ly: float,
+)-> float:
+    area = upper_subdomain_area_initial(beta, zeta0_min, Lx, Ly)
+    return area * sr / epsilon
+
+
 @configure_simulation(
     jit=OptionsJIT("./__jit__/"),
 )
@@ -73,8 +130,8 @@ def dns_system_c(
     kappa: float = 1.0,
     vartheta: float = 0.0,
     # initial front
-    zeta_min: float = 0.5,
-    zeta_eps: float | tuple[float, float] | None = None,
+    zeta0_min: float = 0.5,
+    zeta0_eps: float | tuple[float, float] | None = None,
     # initial conditions
     sr: float = 0.2,
     s_ampl: float = 0,
@@ -121,16 +178,16 @@ def dns_system_c(
     X = scaling_map['X']
     Lx = aspect * X
     Ly = 1.0 * X
-    Lzeta_min = zeta_min * X
-    Lzeta_eps = zeta_eps * X if zeta_eps is not None else None
+    Lzeta0_min = zeta0_min * X
+    Lzeta0_eps = zeta0_eps * X if zeta0_eps is not None else None
     Omega, dOmega = rectangle_mesh_closure(Lx, Ly, Nx, Ny, cell, comm=comm)
     # constants
     Di, Ki, Bu = scaling_map[Omega, 'Di', 'Ki', 'Bu']
     Ra = Constant(Omega, Ra, 'Ra')
     Da = Constant(Omega, Da, 'Da')
     # initial conditions
-    zeta0 = lambda x: np.tan(np.radians(beta)) * (Lx - x[0]) + Lzeta_min * Ly
-    s_ics = heaviside(lambda x: x[1] - zeta0(x), max(0, sr - s_ampl), eps=Lzeta_eps) 
+    zeta0 = lambda x: np.tan(np.radians(beta)) * (Lx - x[0]) + Lzeta0_min * Ly
+    s_ics = heaviside(lambda x: x[1] - zeta0(x), max(0, sr - s_ampl), eps=Lzeta0_eps) 
     if s_ampl:
         s_ics = SpatialPerturbation(
             s_ics,
@@ -139,7 +196,7 @@ def dns_system_c(
             s_ampl,
             limits_corrector(0, sr),
             )   
-    c_ics = heaviside(lambda x: x[1] - zeta0(x), max(0, cr - c_ampl), eps=Lzeta_eps)
+    c_ics = heaviside(lambda x: x[1] - zeta0(x), max(0, cr - c_ampl), eps=Lzeta0_eps)
     if c_ampl:
         c_ics = SpatialPerturbation(
             c_ics,
@@ -164,7 +221,7 @@ def dns_system_c(
 
     namespace=[
         Ra, Da, Di, Bu, Ki, vartheta, kappa, ('beta', beta),
-        ('X', X), ('Lx', Lx), ('Ly', Ly), ('zeta_min', zeta_min), 
+        ('X', X), ('Lx', Lx), ('Ly', Ly), ('zeta0_min', zeta0_min), 
         ('sr', sr), ('cr', cr),
     ]
 

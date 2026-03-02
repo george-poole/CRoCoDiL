@@ -1,6 +1,6 @@
 <mxfile host="Electron" agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/26.2.15 Chrome/134.0.6998.205 Electron/35.2.1 Safari/537.36" version="26.2.15">
   <diagram name="Page-1" id="ZoYgnsPX22BV_gQzKxPb">
-    <mxGraphModel dx="1257" dy="1105" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1200" pageHeight="2000" math="1" shadow="0">
+    <mxGraphModel dx="2298" dy="1958" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1200" pageHeight="2000" math="1" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -14,7 +14,7 @@
           <mxGeometry x="511" y="245" width="300" height="70" as="geometry" />
         </mxCell>
         <mxCell id="l9wLnr5pDdemg-z20rVX-5" value="$$\Omega^-(t=0)$$" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=35;" parent="1" vertex="1">
-          <mxGeometry x="621" y="400" width="80" height="70" as="geometry" />
+          <mxGeometry x="621" y="422" width="80" height="70" as="geometry" />
         </mxCell>
         <mxCell id="l9wLnr5pDdemg-z20rVX-6" value="$$x=0$$" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=35;" parent="1" vertex="1">
           <mxGeometry x="200" y="590" width="80" height="70" as="geometry" />

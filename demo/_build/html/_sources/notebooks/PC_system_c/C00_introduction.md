@@ -8,7 +8,7 @@ c_0(x,y)=c_r\text{H}(y-\zeta_0(x)) + \mathcal{N}_c(x,y) & \text{perturbed initia
 c_{\text{N}}\vert_{\partial\Omega}=0 & \text{no-flux on entire boundary} \\
 u_{\text{E}}\vert_{\partial\Omega}=0\iff\psi_{\text{D}}\vert_{\partial\Omega}=0 & \text{no-penetration on entire boundary} \\
 \varphi = 1 & \text{constant rock porosity} \\
-\mathsf{K} = \phi\mathsf{I} & \text{isotropic permeability} \\
+\mathsf{K} = \phi^2\mathsf{I} & \text{isotropic permeability} \\
 \mathsf{D} = \phi\mathsf{I} & \text{isotropic dispersion}\\
 \mu = 1 & \text{constant viscosity} \\
 \rho(c)=c & \text{linear density} \\
