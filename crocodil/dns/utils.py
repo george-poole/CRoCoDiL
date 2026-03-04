@@ -1,3 +1,4 @@
+import os
 from typing import Callable
 
 import numpy as np
@@ -5,6 +6,15 @@ from mpi4py import MPI
 from dolfinx.mesh import Mesh
 
 from lucifex.mesh import MeshBoundary, mesh_boundary, rectangle_mesh
+
+
+DEFAULT_JIT_DIR = os.path.abspath(
+    os.path.join(
+        __file__,
+        '../../..',
+        '__jit__',
+    )
+)
 
 
 def heaviside(

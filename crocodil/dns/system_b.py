@@ -9,7 +9,7 @@ from lucifex.sim import configure_simulation
 from lucifex.utils.py_utils import FrozenDict
 
 from .generic import dns_generic
-from .utils import heaviside, rectangle_mesh_closure
+from .utils import DEFAULT_JIT_DIR, heaviside, rectangle_mesh_closure
 from .theory import CONVECTION_REACTION_SCALINGS
 
 
@@ -39,7 +39,7 @@ def thermal_rayleigh(
 
 
 @configure_simulation(
-    jit=OptionsJIT("./__jit__/"),
+    jit=OptionsJIT(DEFAULT_JIT_DIR),
     dir_root="./data",
 )
 def dns_system_b(

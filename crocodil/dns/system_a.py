@@ -10,7 +10,7 @@ from lucifex.utils.fenicsx_utils import limits_corrector
 from lucifex.utils.py_utils import FrozenDict
 
 from .generic import dns_generic
-from .utils import heaviside, rectangle_mesh_closure
+from .utils import DEFAULT_JIT_DIR, heaviside, rectangle_mesh_closure
 from .theory import CONVECTION_REACTION_SCALINGS
 
 
@@ -89,7 +89,7 @@ def mass_capillary_initial(
 
 
 @configure_simulation(
-    jit=OptionsJIT("./__jit__/"),
+    jit=OptionsJIT(DEFAULT_JIT_DIR),
 )
 def dns_system_a(
     # mesh
