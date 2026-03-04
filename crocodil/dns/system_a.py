@@ -24,9 +24,10 @@ SYSTEM_A_REFERENCE = FrozenDict(
     aspect=2.0,
 )
 """
-Reference parameters `aspect, Ra, Da, epsilon, h0, sr, cr` 
+Reference parameters `Ra, Da, epsilon, zeta0, sr, cr` and `aspect`
 governing the physical (as opposed to numerical) behaviour of system A.
 """
+
 
 def critical_saturation(
     zeta0: float,
@@ -199,7 +200,7 @@ def dns_system_a(
     if diagnostic:
         fluxes = [('f', Lzeta0, Lx), *fluxes]
 
-    namespace=[
+    auxiliary = [
         Ra, Da, Di, Bu, Ki, 
         ('X', X), ('Lx', Lx), ('Ly', Ly), 
         ('sr', sr), ('cr', cr), ('zeta0', zeta0),
@@ -245,7 +246,7 @@ def dns_system_a(
         # optional solvers
         diagnostic=diagnostic,
         fluxes_solutal=fluxes,
-        namespace=namespace,
+        auxiliary=auxiliary,
     )
 
 

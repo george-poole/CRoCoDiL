@@ -100,7 +100,7 @@ def dns_darcy_rayleigh_benard(
         # optional solvers
         diagnostic=diagnostic,
         fluxes_thermal=fluxes,
-        namespace=[Ra, Di, Bu, ('X', X)],
+        auxiliary=[Ra, Di, Bu, ('X', X)],
     )
 
 
@@ -193,7 +193,7 @@ def dns_darcy_evolving(
         # optional solvers
         diagnostic=diagnostic,
         fluxes_thermal=fluxes,
-        namespace=[Ra, Di, Bu, ('X', X)],
+        auxiliary=[Ra, Di, Bu, ('X', X)],
     )
 
 
@@ -288,7 +288,7 @@ def dns_darcy_rayleigh_taylor(
         # optional solvers
         diagnostic=diagnostic,
         fluxes_solutal=fluxes,
-        namespace=[Ra, Di, Bu, ('X', X)],
+        auxiliary=[Ra, Di, Bu, ('X', X)],
     )
 
 
@@ -413,5 +413,5 @@ def dns_darcy_thermosolutal(
         theta_petsc=theta_petsc,
         # optional solvers
         diagnostic=diagnostic,
-        namespace=[Ra, Le, Di, Bu, gamma, ('X', X)],
+        auxiliary=[Ra, Le, Di, Bu, gamma, ('X', X)],
     )

@@ -112,7 +112,7 @@ def dns_generic(
     diagnostic: bool | Iterable[Solver] = False,   
     fluxes_solutal: Iterable[tuple[str, float | int, float]] = (), 
     fluxes_thermal: Iterable[tuple[str, float | int, float]] = (), 
-    namespace: Iterable[Function | Constant | ExprSeries | tuple[str, Expr]] = (),
+    auxiliary: Iterable[Function | Constant | ExprSeries | tuple[str, Expr]] = (),
 ) -> Simulation:    
     """
     `𝜑∂s/∂t = -ε(R(θ,s)c + J(θ,s))`
@@ -146,7 +146,7 @@ def dns_generic(
         assert arity(source) == 2  if source else True, "Source should be `J(θ,s)`"
 
     solvers = []
-    namespace = list(namespace)
+    auxiliary = list(auxiliary)
 
     # time
     order = finite_difference_order(
@@ -175,7 +175,7 @@ def dns_generic(
     if EVOL:
         s = FunctionSeries((Omega, *s_elem), 's', order, ics=s_ics)
         epsilon = Constant(Omega, epsilon, 'epsilon')
-        namespace.append(epsilon)
+        auxiliary.append(epsilon)
     else:
         s = Function((Omega, *s_elem), s_ics, 's')
 
@@ -196,7 +196,7 @@ def dns_generic(
         else (c, ) if SOLUTAL
         else (theta, )
     ) if viscosity else 1
-    namespace.extend((varphi, ('phi', phi), ('k', k), ('rho', rho), ('mu', mu)))
+    auxiliary.extend((varphi, ('phi', phi), ('k', k), ('rho', rho), ('mu', mu)))
     if SOLUTAL:
         d = dispersion_solutal(
             *(phi, u) if SOLUTAL_DISP
@@ -229,13 +229,13 @@ def dns_generic(
             *(c, theta, s) if THERMOSOLUTAL
             else (c, s)
         )
-        namespace.extend([('d', d), ('r', r), ('j', j), ('Sigma', Sigma)])
+        auxiliary.extend([('d', d), ('r', r), ('j', j), ('Sigma', Sigma)])
     if THERMAL:
         g = dispersion_thermal(
             *(phi, u) if THERMAL_DISP
             else (phi, )
         )
-        namespace.append(('g', g))
+        auxiliary.append(('g', g))
 
     # flow solvers
     if STREAMF:
@@ -315,7 +315,7 @@ def dns_generic(
             *(c, theta, s) if THERMOSOLUTAL
             else (c, s)
         )
-        namespace.append(SigmaEvol)
+        auxiliary.append(SigmaEvol)
         s_limits = (np.min(s.ics.x.array), np.max(s.ics.x.array)) if s_limits is True else s_limits
         s_corrector = ('sCorr', limits_corrector(*s_limits)) if s_limits else None
         if s_petsc is None:
@@ -380,4 +380,4 @@ def dns_generic(
         else:
             solvers.append(vertical_flux_solver(theta, g))
     
-    return Simulation(solvers, t, dt, namespace)
+    return Simulation(solvers, t, dt, auxiliary)

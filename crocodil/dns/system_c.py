@@ -219,7 +219,7 @@ def dns_system_c(
     egx = Constant(Omega, -np.sin(np.radians(beta)))
     egy = Constant(Omega, -np.cos(np.radians(beta)))
 
-    namespace=[
+    auxiliary = [
         Ra, Da, Di, Bu, Ki, vartheta, kappa, ('beta', beta),
         ('X', X), ('Lx', Lx), ('Ly', Ly), ('zeta0_min', zeta0_min), 
         ('sr', sr), ('cr', cr),
@@ -266,7 +266,7 @@ def dns_system_c(
         s_petsc=s_petsc,
         # optional solvers
         diagnostic=diagnostic,
-        namespace=namespace,
+        auxiliary=auxiliary,
     )
 
 

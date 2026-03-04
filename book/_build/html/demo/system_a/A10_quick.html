@@ -1,0 +1,1080 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Quick demonstration &#8212; CRoCoDiL</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../../_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="../../_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/sphinx-book-theme.css?v=eba8b062" />
+    <link rel="stylesheet" type="text/css" href="../../_static/togglebutton.css?v=13237357" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css?v=6644e6bb" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-thebe.css?v=4fa983c6" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=95c83b7e" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+    <script src="../../_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="../../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../_static/copybutton.js?v=f281be69"></script>
+    <script src="../../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../../_static/togglebutton.js?v=4a39c7ea"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="../../_static/design-tabs.js?v=f930bc37"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script async="async" src="../../_static/sphinx-thebe.js?v=c100c467"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'demo/system_a/A10_quick';</script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Demonstration simulations" href="A20_demo.html" />
+    <link rel="prev" title="Flux modelling" href="A02_flux.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search this book..."
+         aria-label="Search this book..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../home.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">CRoCoDiL</p>
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="../../home.html">
+                    CRoCoDiL 🐊
+                </a>
+            </li>
+        </ul>
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../user_guide/U00_introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guide/U01_governing_equations.html">Governing equations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guide/U02_diagnostic_equations.html">Diagnostic equations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guide/U03_finite_element_method.html">Finite element method</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guide/U04_best_practices.html">Best practices</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">System A</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="A00_introduction.html">Introduction</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="A01_mass.html">Dissolved and capillary-trapped mass</a></li>
+<li class="toctree-l2"><a class="reference internal" href="A02_flux.html">Flux modelling</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Quick demonstration</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="A20_demo.html">Demonstration simulations</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="A30_parameters.html">Parameter space</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="A31_rayleigh.html">Rayleigh numbers</a></li>
+<li class="toctree-l3"><a class="reference internal" href="A32_damkohler.html">Damköhler numbers</a></li>
+<li class="toctree-l3"><a class="reference internal" href="A33_saturations.html">Supercritical, subcritical and critical residual saturations</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="A40_numerical.html">Numerical validation</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="A41_timestep.html">Timestep constraints</a></li>
+<li class="toctree-l3"><a class="reference internal" href="A42_resolution.html">Mesh resolution</a></li>
+<li class="toctree-l3"><a class="reference internal" href="A43_stabilization.html">Stabilization of the advection-diffusion-reaction equation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="A44_sensitivity_i.html">Sensitivity to initial perturbations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="A45_sensitivity_ii.html">Sensitivity to initial residual concentration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="A46_scaling.html">Choice of scaling</a></li>
+<li class="toctree-l3"><a class="reference internal" href="A47_finite_difference.html">Choice of finite difference discretization</a></li>
+<li class="toctree-l3"><a class="reference internal" href="A48_profiling.html">Profiling</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../../_sources/demo/system_a/A10_quick.ipynb" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.ipynb</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Quick demonstration</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#create-the-simulation">Create the simulation</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#run-the-simulation">Run the simulation</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#visualization">Visualization</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#concentration">Concentration</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#saturation">Saturation</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#physical-diagnostics">Physical diagnostics</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#flux">Flux</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mass">Mass</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#horizontal-averages">Horizontal averages</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#subdomain-averages">Subdomain averages</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#correlation">Correlation</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#modelling">Modelling</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#numerical-diagnostics">Numerical diagnostics</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#timestep-contraints">Timestep contraints</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#velocity-norms">Velocity norms</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#concentration-limits">Concentration limits</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mass-conservation">Mass conservation</a></li>
+</ul>
+</li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="quick-demonstration">
+<h1>Quick demonstration<a class="headerlink" href="#quick-demonstration" title="Link to this heading">#</a></h1>
+<section id="create-the-simulation">
+<h2>Create the simulation<a class="headerlink" href="#create-the-simulation" title="Link to this heading">#</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">lucifex.fem</span><span class="w"> </span><span class="kn">import</span> <span class="n">grid_average</span><span class="p">,</span> <span class="n">grid_cross_section</span><span class="p">,</span> <span class="n">refine_grid_function</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">lucifex.fdm</span><span class="w"> </span><span class="kn">import</span> <span class="n">AB</span><span class="p">,</span> <span class="n">CN</span><span class="p">,</span> <span class="n">GridFunctionSeries</span><span class="p">,</span> <span class="n">NumericSeries</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">lucifex.io</span><span class="w"> </span><span class="kn">import</span> <span class="n">write</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">lucifex.sim</span><span class="w"> </span><span class="kn">import</span> <span class="n">run</span><span class="p">,</span> <span class="n">xdmf_to_npz</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">lucifex.viz</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">plot_colormap</span><span class="p">,</span> <span class="n">create_animation</span><span class="p">,</span> <span class="n">plot_line</span><span class="p">,</span> <span class="n">save_figure</span><span class="p">,</span> <span class="n">plot_twin_lines</span><span class="p">,</span>
+    <span class="n">display_animation</span><span class="p">,</span> <span class="n">get_ipynb_file_name</span><span class="p">,</span> <span class="n">set_ipynb_variable</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">lucifex.utils.fenicsx_utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">mesh_axes</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">lucifex.utils.array_utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">as_index</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">crocodil.dns.theory</span><span class="w"> </span><span class="kn">import</span> <span class="n">threshold_rayleigh</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">crocodil.dns.system_a</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">dns_system_a</span><span class="p">,</span> <span class="n">SYSTEM_A_REFERENCE</span><span class="p">,</span> <span class="n">critical_saturation</span><span class="p">,</span> 
+    <span class="n">mass_dissolved_asymptote</span><span class="p">,</span> <span class="n">mass_capillary_asymptote</span><span class="p">,</span>
+    <span class="n">mass_dissolved_initial</span><span class="p">,</span> <span class="n">mass_capillary_initial</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="n">STORE</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="n">WRITE</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="n">DIR_ROOT</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;./</span><span class="si">{</span><span class="n">get_ipynb_file_name</span><span class="p">()</span><span class="si">}</span><span class="s1">&#39;</span>
+<span class="n">NX</span> <span class="o">=</span> <span class="n">set_ipynb_variable</span><span class="p">(</span><span class="s1">&#39;NX&#39;</span><span class="p">,</span> <span class="mi">60</span><span class="p">)</span>
+<span class="n">NY</span> <span class="o">=</span> <span class="n">set_ipynb_variable</span><span class="p">(</span><span class="s1">&#39;NY&#39;</span><span class="p">,</span> <span class="mi">60</span><span class="p">)</span>
+<span class="n">ANIM</span> <span class="o">=</span> <span class="n">set_ipynb_variable</span><span class="p">(</span><span class="s1">&#39;ANIM&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+
+<span class="n">simulation</span> <span class="o">=</span> <span class="n">dns_system_a</span><span class="p">(</span>
+    <span class="n">store_delta</span><span class="o">=</span><span class="n">STORE</span><span class="p">,</span> 
+    <span class="n">write_delta</span><span class="o">=</span><span class="n">WRITE</span><span class="p">,</span> 
+    <span class="n">dir_root</span><span class="o">=</span><span class="n">DIR_ROOT</span><span class="p">,</span> 
+    <span class="n">dir_datetime</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">dir_uid</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<span class="p">)(</span>
+    <span class="n">Nx</span><span class="o">=</span><span class="n">NX</span><span class="p">,</span>
+    <span class="n">Ny</span><span class="o">=</span><span class="n">NY</span><span class="p">,</span>
+    <span class="n">scaling</span><span class="o">=</span><span class="s1">&#39;advective&#39;</span><span class="p">,</span>
+    <span class="o">**</span><span class="n">SYSTEM_A_REFERENCE</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">Ra</span><span class="o">=</span><span class="mf">800.0</span><span class="p">),</span>
+    <span class="n">D_adv</span><span class="o">=</span><span class="n">AB</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="nd">@CN</span><span class="p">,</span> 
+    <span class="n">D_diff</span><span class="o">=</span><span class="n">AB</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="nd">@CN</span><span class="p">,</span>
+    <span class="n">dt_max</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>
+    <span class="n">courant_adv</span><span class="o">=</span><span class="mf">0.75</span><span class="p">,</span>
+    <span class="n">courant_diff</span><span class="o">=</span><span class="mf">0.75</span><span class="p">,</span>
+    <span class="n">courant_reac</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>
+    <span class="n">c_stabilization</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">c_limits</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">diagnostic</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="n">Lx</span><span class="p">,</span> <span class="n">Ly</span> <span class="o">=</span> <span class="n">simulation</span><span class="p">[</span><span class="s1">&#39;Lx&#39;</span><span class="p">,</span> <span class="s1">&#39;Ly&#39;</span><span class="p">]</span>
+<span class="n">Ra</span><span class="p">,</span> <span class="n">Da</span><span class="p">,</span> <span class="n">epsilon</span><span class="p">,</span> <span class="n">zeta0</span><span class="p">,</span> <span class="n">sr</span><span class="p">,</span> <span class="n">cr</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="nb">float</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">simulation</span><span class="p">[</span><span class="s1">&#39;Ra&#39;</span><span class="p">,</span> <span class="s1">&#39;Da&#39;</span><span class="p">,</span> <span class="s1">&#39;epsilon&#39;</span><span class="p">,</span> <span class="s1">&#39;zeta0&#39;</span><span class="p">,</span> <span class="s1">&#39;sr&#39;</span><span class="p">,</span> <span class="s1">&#39;cr&#39;</span><span class="p">]</span>
+<span class="p">)</span>
+
+<span class="n">Ra_thresh</span> <span class="o">=</span> <span class="n">threshold_rayleigh</span><span class="p">(</span><span class="n">Lx</span><span class="p">,</span> <span class="n">Ly</span><span class="p">,</span> <span class="n">NX</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Ra = </span><span class="si">{</span><span class="n">Ra</span><span class="si">}</span><span class="s2"> , Ra_thresh = </span><span class="si">{</span><span class="n">Ra_thresh</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="n">sr_crit</span> <span class="o">=</span> <span class="n">critical_saturation</span><span class="p">(</span><span class="n">zeta0</span><span class="p">,</span> <span class="n">cr</span><span class="p">,</span> <span class="n">epsilon</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;sr = </span><span class="si">{</span><span class="n">sr</span><span class="si">}</span><span class="s1"> , sr_crit = </span><span class="si">{</span><span class="n">sr_crit</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Ra = 800.0 , Ra_thresh = 1350.0
+sr = 0.2 , sr_crit = 0.10000000000000002
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="run-the-simulation">
+<h2>Run the simulation<a class="headerlink" href="#run-the-simulation" title="Link to this heading">#</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">n_stop</span> <span class="o">=</span> <span class="n">set_ipynb_variable</span><span class="p">(</span><span class="s1">&#39;N_STOP&#39;</span><span class="p">,</span> <span class="mi">20</span><span class="p">)</span>
+<span class="n">t_stop</span> <span class="o">=</span> <span class="mf">100.0</span>
+<span class="n">dt_init</span> <span class="o">=</span> <span class="mf">1e-6</span>
+<span class="n">n_init</span> <span class="o">=</span> <span class="mi">10</span>
+
+<span class="n">write</span><span class="p">(</span><span class="n">simulation</span><span class="o">.</span><span class="n">parameters</span><span class="p">,</span> <span class="n">simulation</span><span class="o">.</span><span class="n">parameter_file</span><span class="p">,</span> <span class="n">simulation</span><span class="o">.</span><span class="n">dir_path</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;w&#39;</span><span class="p">)</span>
+<span class="n">run</span><span class="p">(</span><span class="n">simulation</span><span class="p">,</span> <span class="n">n_stop</span><span class="o">=</span><span class="n">n_stop</span><span class="p">,</span> <span class="n">t_stop</span><span class="o">=</span><span class="n">t_stop</span><span class="p">,</span> <span class="n">dt_init</span><span class="o">=</span><span class="n">dt_init</span><span class="p">,</span> <span class="n">n_init</span><span class="o">=</span><span class="n">n_init</span><span class="p">,</span> <span class="n">show_progress</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">if</span> <span class="n">WRITE</span><span class="p">:</span> <span class="n">xdmf_to_npz</span><span class="p">(</span><span class="n">simulation</span><span class="p">,</span> <span class="n">delete_xdmf</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+<span class="n">s</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">psi</span><span class="p">,</span> <span class="n">u</span> <span class="o">=</span> <span class="n">simulation</span><span class="p">[</span><span class="s1">&#39;s&#39;</span><span class="p">,</span> <span class="s1">&#39;c&#39;</span><span class="p">,</span> <span class="s1">&#39;psi&#39;</span><span class="p">,</span> <span class="s1">&#39;u&#39;</span><span class="p">]</span>
+<span class="n">mC</span><span class="p">,</span> <span class="n">mD</span><span class="p">,</span> <span class="n">f</span> <span class="o">=</span> <span class="n">simulation</span><span class="p">[</span><span class="s1">&#39;mC&#39;</span><span class="p">,</span> <span class="s1">&#39;mD&#39;</span><span class="p">,</span> <span class="s1">&#39;f&#39;</span><span class="p">]</span>
+<span class="n">fZeta0</span><span class="p">,</span> <span class="n">fZetaPlus</span><span class="p">,</span> <span class="n">fZetaMinus</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>100%|██████████| 20/20 [00:07&lt;00:00,  2.55it/s]
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="visualization">
+<h2>Visualization<a class="headerlink" href="#visualization" title="Link to this heading">#</a></h2>
+<section id="concentration">
+<h3>Concentration<a class="headerlink" href="#concentration" title="Link to this heading">#</a></h3>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">_display</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="k">if</span> <span class="ow">not</span> <span class="n">ANIM</span><span class="p">:</span>
+    <span class="n">time_indices</span> <span class="o">=</span> <span class="n">as_index</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">time_series</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="n">fraction</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">time_indices</span><span class="p">:</span>
+        <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plot_colormap</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">series</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">title</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;c(t=</span><span class="si">{</span><span class="n">c</span><span class="o">.</span><span class="n">time_series</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="si">}</span><span class="s1">)$&#39;</span><span class="p">)</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="n">time_slice</span> <span class="o">=</span> <span class="nb">slice</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+    <span class="n">titles</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s1">&#39;$</span><span class="si">{</span><span class="n">c</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s1">(t=</span><span class="si">{</span><span class="n">t</span><span class="si">:</span><span class="s1">.3f</span><span class="si">}</span><span class="s1">)$&#39;</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">c</span><span class="o">.</span><span class="n">time_series</span><span class="p">[</span><span class="n">time_slice</span><span class="p">]]</span>
+    <span class="n">anim</span> <span class="o">=</span> <span class="n">create_animation</span><span class="p">(</span>
+        <span class="n">plot_colormap</span><span class="p">,</span>
+        <span class="n">colorbar</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="p">)(</span><span class="n">c</span><span class="o">.</span><span class="n">series</span><span class="p">[</span><span class="n">time_slice</span><span class="p">],</span> <span class="n">title</span><span class="o">=</span><span class="n">titles</span><span class="p">)</span>
+    <span class="n">anim_path</span> <span class="o">=</span> <span class="n">save_figure</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">c</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s1">(t)&#39;</span><span class="p">,</span> <span class="n">simulation</span><span class="o">.</span><span class="n">dir_path</span><span class="p">,</span> <span class="n">prefix_ipynb</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">return_path</span><span class="o">=</span><span class="kc">True</span><span class="p">)(</span><span class="n">anim</span><span class="p">)</span>
+    <span class="n">_display</span> <span class="o">=</span> <span class="n">display_animation</span><span class="p">(</span><span class="n">anim_path</span><span class="p">)</span>
+<span class="n">_display</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="saturation">
+<h3>Saturation<a class="headerlink" href="#saturation" title="Link to this heading">#</a></h3>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">_display</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="k">if</span> <span class="ow">not</span> <span class="n">ANIM</span><span class="p">:</span>
+    <span class="n">time_indices</span> <span class="o">=</span> <span class="n">as_index</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">time_series</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="n">fraction</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">time_indices</span><span class="p">:</span>
+        <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plot_colormap</span><span class="p">(</span>
+            <span class="n">refine_grid_function</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">series</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">)),</span>
+            <span class="n">title</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;s(t=</span><span class="si">{</span><span class="n">s</span><span class="o">.</span><span class="n">time_series</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="si">}</span><span class="s1">)$&#39;</span><span class="p">,</span>
+        <span class="p">)</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="n">time_slice</span> <span class="o">=</span> <span class="nb">slice</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+    <span class="n">titles</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s1">&#39;$</span><span class="si">{</span><span class="n">s</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s1">(t=</span><span class="si">{</span><span class="n">t</span><span class="si">:</span><span class="s1">.3f</span><span class="si">}</span><span class="s1">)$&#39;</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">s</span><span class="o">.</span><span class="n">time_series</span><span class="p">[</span><span class="n">time_slice</span><span class="p">]]</span>
+    <span class="n">anim</span> <span class="o">=</span> <span class="n">create_animation</span><span class="p">(</span>
+        <span class="n">plot_colormap</span><span class="p">,</span>
+        <span class="n">colorbar</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">sr</span><span class="p">),</span>
+        <span class="n">y_lims</span><span class="o">=</span><span class="p">(</span><span class="n">zeta0</span> <span class="o">*</span> <span class="n">Ly</span><span class="p">,</span> <span class="n">Ly</span><span class="p">),</span>
+        <span class="n">aspect</span><span class="o">=</span><span class="s1">&#39;auto&#39;</span><span class="p">,</span>
+    <span class="p">)(</span><span class="n">s</span><span class="o">.</span><span class="n">series</span><span class="p">[</span><span class="n">time_slice</span><span class="p">],</span> <span class="n">title</span><span class="o">=</span><span class="n">titles</span><span class="p">)</span>
+    <span class="n">anim_path</span> <span class="o">=</span> <span class="n">save_figure</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">s</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s1">(t)&#39;</span><span class="p">,</span> <span class="n">simulation</span><span class="o">.</span><span class="n">dir_path</span><span class="p">,</span> <span class="n">prefix_ipynb</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">return_path</span><span class="o">=</span><span class="kc">True</span><span class="p">)(</span><span class="n">anim</span><span class="p">)</span>
+    <span class="n">_display</span> <span class="o">=</span> <span class="n">display_animation</span><span class="p">(</span><span class="n">anim_path</span><span class="p">)</span>
+<span class="n">_display</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="physical-diagnostics">
+<h2>Physical diagnostics<a class="headerlink" href="#physical-diagnostics" title="Link to this heading">#</a></h2>
+<section id="flux">
+<h3>Flux<a class="headerlink" href="#flux" title="Link to this heading">#</a></h3>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">superscripts</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="s1">&#39;^+&#39;</span><span class="p">,</span> <span class="s1">&#39;^-&#39;</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">flx</span><span class="p">,</span> <span class="n">sup</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">((</span><span class="n">fZeta0</span><span class="p">,</span> <span class="n">fZetaPlus</span><span class="p">,</span> <span class="n">fZetaMinus</span><span class="p">),</span> <span class="n">superscripts</span><span class="p">):</span>
+    <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plot_line</span><span class="p">(</span>
+        <span class="p">[(</span><span class="n">flx</span><span class="o">.</span><span class="n">time_series</span><span class="p">,</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">flx</span><span class="o">.</span><span class="n">value_series</span><span class="p">]),</span> <span class="p">(</span><span class="n">flx</span><span class="o">.</span><span class="n">time_series</span><span class="p">,</span> <span class="n">flx</span><span class="o">.</span><span class="n">value_series</span><span class="p">)],</span>
+        <span class="n">cyc</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">,</span>
+        <span class="n">x_label</span><span class="o">=</span><span class="s1">&#39;$t$&#39;</span><span class="p">,</span>
+        <span class="n">legend_labels</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;$F$&#39;</span><span class="p">,</span> <span class="s1">&#39;$F_{\mathbf</span><span class="si">{u}</span><span class="s1">}$&#39;</span><span class="p">,</span> <span class="s1">&#39;$F_{\mathsf</span><span class="si">{D}</span><span class="s1">}$&#39;</span><span class="p">],</span>
+        <span class="n">legend_title</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;$y=\zeta_0</span><span class="si">{</span><span class="n">sup</span><span class="si">}</span><span class="s1">$&#39;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">save_figure</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;f(y=zeta0</span><span class="si">{</span><span class="n">sup</span><span class="si">}</span><span class="s1">,t)&#39;</span><span class="p">,</span> <span class="n">simulation</span><span class="o">.</span><span class="n">dir_path</span><span class="p">,</span> <span class="n">prefix_ipynb</span><span class="o">=</span><span class="kc">False</span><span class="p">)(</span><span class="n">fig</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">fZeta0</span><span class="o">.</span><span class="n">time_series</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mf">50.0</span><span class="p">:</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">set_xscale</span><span class="p">(</span><span class="s1">&#39;log&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="mass">
+<h3>Mass<a class="headerlink" href="#mass" title="Link to this heading">#</a></h3>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">mC_initial</span> <span class="o">=</span> <span class="n">mass_capillary_initial</span><span class="p">(</span><span class="n">epsilon</span><span class="p">,</span> <span class="n">zeta0</span><span class="p">,</span> <span class="n">sr</span><span class="p">,</span> <span class="n">Lx</span><span class="p">,</span> <span class="n">Ly</span><span class="p">)</span>
+<span class="n">mD_initial</span> <span class="o">=</span> <span class="n">mass_dissolved_initial</span><span class="p">(</span><span class="n">zeta0</span><span class="p">,</span> <span class="n">sr</span><span class="p">,</span> <span class="n">cr</span><span class="p">,</span> <span class="n">Lx</span><span class="p">,</span> <span class="n">Ly</span><span class="p">)</span>
+<span class="n">m_initial</span> <span class="o">=</span> <span class="n">mC_initial</span> <span class="o">+</span> <span class="n">mD_initial</span>
+
+<span class="n">mC_asymp</span> <span class="o">=</span> <span class="n">mass_capillary_asymptote</span><span class="p">(</span><span class="n">m_initial</span><span class="p">,</span> <span class="n">epsilon</span><span class="p">,</span> <span class="n">Lx</span><span class="p">,</span> <span class="n">Ly</span><span class="p">)</span>
+<span class="n">mD_asymp</span> <span class="o">=</span> <span class="n">mass_dissolved_asymptote</span><span class="p">(</span><span class="n">m_initial</span><span class="p">,</span> <span class="n">epsilon</span><span class="p">,</span> <span class="n">Lx</span><span class="p">,</span> <span class="n">Ly</span><span class="p">)</span>
+
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plot_line</span><span class="p">(</span>
+    <span class="p">(</span><span class="n">mC</span><span class="o">.</span><span class="n">time_series</span><span class="p">,</span> <span class="n">mC</span><span class="o">.</span><span class="n">value_series</span><span class="p">),</span>
+    <span class="n">x_label</span><span class="o">=</span><span class="s1">&#39;$t$&#39;</span><span class="p">,</span>
+    <span class="n">y_label</span><span class="o">=</span><span class="s1">&#39;$m_C$&#39;</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">hlines</span><span class="p">(</span>
+    <span class="p">[</span><span class="n">mC_initial</span><span class="p">,</span> <span class="n">mC_asymp</span><span class="p">],</span> 
+    <span class="mi">0</span><span class="p">,</span> <span class="nb">max</span><span class="p">(</span><span class="n">mC</span><span class="o">.</span><span class="n">time_series</span><span class="p">),</span> 
+    <span class="n">linestyles</span><span class="o">=</span><span class="s1">&#39;dotted&#39;</span><span class="p">,</span> <span class="n">colors</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">,</span> <span class="n">linewidths</span><span class="o">=</span><span class="mf">0.75</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">save_figure</span><span class="p">(</span><span class="s1">&#39;mC(t)&#39;</span><span class="p">,</span> <span class="n">simulation</span><span class="o">.</span><span class="n">dir_path</span><span class="p">,</span> <span class="n">prefix_ipynb</span><span class="o">=</span><span class="kc">False</span><span class="p">)(</span><span class="n">fig</span><span class="p">)</span>
+
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plot_line</span><span class="p">(</span>
+    <span class="p">(</span><span class="n">mD</span><span class="o">.</span><span class="n">time_series</span><span class="p">,</span> <span class="n">mD</span><span class="o">.</span><span class="n">value_series</span><span class="p">),</span>
+    <span class="n">x_label</span><span class="o">=</span><span class="s1">&#39;$t$&#39;</span><span class="p">,</span>
+    <span class="n">y_label</span><span class="o">=</span><span class="s1">&#39;$m_D$&#39;</span>
+<span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">hlines</span><span class="p">(</span>
+    <span class="p">[</span><span class="n">mD_initial</span><span class="p">,</span> <span class="n">mD_asymp</span><span class="p">],</span> 
+    <span class="mi">0</span><span class="p">,</span> <span class="nb">max</span><span class="p">(</span><span class="n">mD</span><span class="o">.</span><span class="n">time_series</span><span class="p">),</span> 
+    <span class="n">linestyles</span><span class="o">=</span><span class="s1">&#39;dotted&#39;</span><span class="p">,</span> <span class="n">colors</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">,</span> <span class="n">linewidths</span><span class="o">=</span><span class="mf">0.75</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">save_figure</span><span class="p">(</span><span class="s1">&#39;mD(t)&#39;</span><span class="p">,</span> <span class="n">simulation</span><span class="o">.</span><span class="n">dir_path</span><span class="p">,</span> <span class="n">prefix_ipynb</span><span class="o">=</span><span class="kc">False</span><span class="p">)(</span><span class="n">fig</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="horizontal-averages">
+<h3>Horizontal averages<a class="headerlink" href="#horizontal-averages" title="Link to this heading">#</a></h3>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sAvgX</span> <span class="o">=</span> <span class="n">GridFunctionSeries</span><span class="p">(</span><span class="n">grid_average</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">series</span><span class="p">,</span> <span class="s1">&#39;x&#39;</span><span class="p">),</span> <span class="n">s</span><span class="o">.</span><span class="n">time_series</span><span class="p">,</span> <span class="s1">&#39;sAvgX&#39;</span><span class="p">)</span>
+<span class="n">cAvgX</span> <span class="o">=</span> <span class="n">GridFunctionSeries</span><span class="p">(</span><span class="n">grid_average</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">series</span><span class="p">,</span> <span class="s1">&#39;x&#39;</span><span class="p">),</span> <span class="n">c</span><span class="o">.</span><span class="n">time_series</span><span class="p">,</span> <span class="s1">&#39;cAvgX&#39;</span><span class="p">)</span>
+
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plot_line</span><span class="p">(</span>
+    <span class="n">sAvgX</span><span class="o">.</span><span class="n">series</span><span class="p">,</span> 
+    <span class="n">cyc</span><span class="o">=</span><span class="s1">&#39;jet&#39;</span><span class="p">,</span>
+    <span class="n">legend_title</span><span class="o">=</span><span class="s1">&#39;$t$&#39;</span><span class="p">,</span>
+    <span class="n">legend_labels</span><span class="o">=</span><span class="p">(</span><span class="nb">min</span><span class="p">(</span><span class="n">sAvgX</span><span class="o">.</span><span class="n">time_series</span><span class="p">),</span> <span class="nb">max</span><span class="p">(</span><span class="n">sAvgX</span><span class="o">.</span><span class="n">time_series</span><span class="p">)),</span>
+    <span class="n">x_label</span><span class="o">=</span><span class="s1">&#39;$\langle s</span><span class="se">\\</span><span class="s1">rangle_x$&#39;</span><span class="p">,</span> 
+    <span class="n">y_label</span><span class="o">=</span><span class="s1">&#39;$y$&#39;</span><span class="p">,</span>
+    <span class="n">flip</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">y_lims</span><span class="o">=</span><span class="p">(</span><span class="n">zeta0</span> <span class="o">*</span> <span class="n">Ly</span> <span class="o">-</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">zeta0</span><span class="p">)</span> <span class="o">*</span> <span class="n">Ly</span><span class="p">,</span> <span class="n">Ly</span><span class="p">),</span>
+<span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">hlines</span><span class="p">(</span><span class="n">zeta0</span> <span class="o">*</span> <span class="n">Ly</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">sr</span><span class="p">,</span> <span class="n">linestyles</span><span class="o">=</span><span class="s1">&#39;dotted&#39;</span><span class="p">,</span> <span class="n">colors</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">,</span> <span class="n">linewidths</span><span class="o">=</span><span class="mf">0.75</span><span class="p">)</span>
+<span class="n">save_figure</span><span class="p">(</span><span class="s1">&#39;sAvgX(t)&#39;</span><span class="p">,</span> <span class="n">simulation</span><span class="o">.</span><span class="n">dir_path</span><span class="p">,</span> <span class="n">prefix_ipynb</span><span class="o">=</span><span class="kc">False</span><span class="p">)(</span><span class="n">fig</span><span class="p">)</span>
+
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plot_line</span><span class="p">(</span>
+    <span class="n">cAvgX</span><span class="o">.</span><span class="n">series</span><span class="p">,</span> 
+    <span class="n">cyc</span><span class="o">=</span><span class="s1">&#39;jet&#39;</span><span class="p">,</span>
+    <span class="n">legend_title</span><span class="o">=</span><span class="s1">&#39;$t$&#39;</span><span class="p">,</span>
+    <span class="n">legend_labels</span><span class="o">=</span><span class="p">(</span><span class="nb">min</span><span class="p">(</span><span class="n">cAvgX</span><span class="o">.</span><span class="n">time_series</span><span class="p">),</span> <span class="nb">max</span><span class="p">(</span><span class="n">cAvgX</span><span class="o">.</span><span class="n">time_series</span><span class="p">)),</span>
+    <span class="n">x_label</span><span class="o">=</span><span class="s1">&#39;$\langle c</span><span class="se">\\</span><span class="s1">rangle_x$&#39;</span><span class="p">,</span> 
+    <span class="n">y_label</span><span class="o">=</span><span class="s1">&#39;$y$&#39;</span><span class="p">,</span>
+    <span class="n">flip</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">y_lims</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">Ly</span><span class="p">),</span>
+<span class="p">)</span>
+<span class="n">save_figure</span><span class="p">(</span><span class="s1">&#39;cAvgX(t)&#39;</span><span class="p">,</span> <span class="n">simulation</span><span class="o">.</span><span class="n">dir_path</span><span class="p">,</span> <span class="n">prefix_ipynb</span><span class="o">=</span><span class="kc">False</span><span class="p">)(</span><span class="n">fig</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="subdomain-averages">
+<h3>Subdomain averages<a class="headerlink" href="#subdomain-averages" title="Link to this heading">#</a></h3>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">y_axis</span> <span class="o">=</span> <span class="n">mesh_axes</span><span class="p">(</span><span class="n">use_cache</span><span class="o">=</span><span class="kc">True</span><span class="p">)(</span><span class="n">c</span><span class="o">.</span><span class="n">mesh</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
+<span class="n">zeta0_index</span> <span class="o">=</span> <span class="n">as_index</span><span class="p">(</span><span class="n">y_axis</span><span class="p">,</span> <span class="n">zeta0</span><span class="p">)</span>
+<span class="n">slcPlus</span> <span class="o">=</span> <span class="nb">slice</span><span class="p">(</span><span class="n">zeta0_index</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+<span class="n">slcMinus</span> <span class="o">=</span> <span class="nb">slice</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">zeta0_index</span><span class="p">)</span>
+
+<span class="n">cPlus</span> <span class="o">=</span> <span class="n">NumericSeries</span><span class="p">(</span>
+    <span class="n">grid_average</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">series</span><span class="p">,</span> <span class="p">(</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="s1">&#39;y&#39;</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;:&#39;</span><span class="p">,</span> <span class="n">slcPlus</span><span class="p">)),</span> <span class="n">c</span><span class="o">.</span><span class="n">time_series</span><span class="p">,</span> <span class="s1">&#39;cPlus&#39;</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="n">cMinus</span> <span class="o">=</span> <span class="n">NumericSeries</span><span class="p">(</span>
+    <span class="n">grid_average</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">series</span><span class="p">,</span> <span class="p">(</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="s1">&#39;y&#39;</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;:&#39;</span><span class="p">,</span> <span class="n">slcMinus</span><span class="p">)),</span> <span class="n">c</span><span class="o">.</span><span class="n">time_series</span><span class="p">,</span> <span class="s1">&#39;cMinus&#39;</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="n">sPlus</span> <span class="o">=</span> <span class="n">NumericSeries</span><span class="p">(</span>
+    <span class="n">grid_average</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">series</span><span class="p">,</span> <span class="p">(</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="s1">&#39;y&#39;</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;:&#39;</span><span class="p">,</span> <span class="n">slcPlus</span><span class="p">)),</span> <span class="n">s</span><span class="o">.</span><span class="n">time_series</span><span class="p">,</span> <span class="s1">&#39;sPlus&#39;</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plot_line</span><span class="p">(</span>
+    <span class="p">(</span><span class="n">cPlus</span><span class="o">.</span><span class="n">time_series</span><span class="p">,</span> <span class="n">cPlus</span><span class="o">.</span><span class="n">value_series</span><span class="p">),</span>
+    <span class="n">x_label</span><span class="o">=</span><span class="s1">&#39;$t$&#39;</span><span class="p">,</span>
+    <span class="n">y_label</span><span class="o">=</span><span class="s1">&#39;$c^+$&#39;</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">save_figure</span><span class="p">(</span><span class="s1">&#39;cPlus(t)&#39;</span><span class="p">,</span> <span class="n">simulation</span><span class="o">.</span><span class="n">dir_path</span><span class="p">,</span> <span class="n">prefix_ipynb</span><span class="o">=</span><span class="kc">False</span><span class="p">)(</span><span class="n">fig</span><span class="p">)</span>
+
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plot_line</span><span class="p">(</span>
+    <span class="p">(</span><span class="n">cMinus</span><span class="o">.</span><span class="n">time_series</span><span class="p">,</span> <span class="n">cMinus</span><span class="o">.</span><span class="n">value_series</span><span class="p">),</span>
+    <span class="n">x_label</span><span class="o">=</span><span class="s1">&#39;$t$&#39;</span><span class="p">,</span>
+    <span class="n">y_label</span><span class="o">=</span><span class="s1">&#39;$c^-$&#39;</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">save_figure</span><span class="p">(</span><span class="s1">&#39;cMinus(t)&#39;</span><span class="p">,</span> <span class="n">simulation</span><span class="o">.</span><span class="n">dir_path</span><span class="p">,</span> <span class="n">prefix_ipynb</span><span class="o">=</span><span class="kc">False</span><span class="p">)(</span><span class="n">fig</span><span class="p">)</span>
+
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plot_line</span><span class="p">(</span>
+    <span class="p">(</span><span class="n">sPlus</span><span class="o">.</span><span class="n">time_series</span><span class="p">,</span> <span class="n">sPlus</span><span class="o">.</span><span class="n">value_series</span><span class="p">),</span>
+    <span class="n">x_label</span><span class="o">=</span><span class="s1">&#39;$t$&#39;</span><span class="p">,</span>
+    <span class="n">y_label</span><span class="o">=</span><span class="s1">&#39;$s^+$&#39;</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">save_figure</span><span class="p">(</span><span class="s1">&#39;sPlus(t)&#39;</span><span class="p">,</span> <span class="n">simulation</span><span class="o">.</span><span class="n">dir_path</span><span class="p">,</span> <span class="n">prefix_ipynb</span><span class="o">=</span><span class="kc">False</span><span class="p">)(</span><span class="n">fig</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="correlation">
+<h3>Correlation<a class="headerlink" href="#correlation" title="Link to this heading">#</a></h3>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">time_index</span> <span class="o">=</span> <span class="mi">200</span>
+<span class="n">y_cs_target</span> <span class="o">=</span> <span class="mf">0.95</span>
+<span class="n">cx</span><span class="p">,</span> <span class="n">y_cs</span> <span class="o">=</span> <span class="n">grid_cross_section</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">series</span><span class="p">[</span><span class="n">time_index</span><span class="p">],</span> <span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="n">y_cs_target</span><span class="p">)</span>
+<span class="n">sx</span><span class="p">,</span> <span class="n">y_cs</span> <span class="o">=</span> <span class="n">grid_cross_section</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">series</span><span class="p">[</span><span class="n">time_index</span><span class="p">],</span> <span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="n">y_cs_target</span><span class="p">)</span>
+
+<span class="n">plot_twin_lines</span><span class="p">(</span>
+    <span class="p">(</span><span class="n">cx</span><span class="p">,</span> <span class="n">sx</span><span class="p">),</span>
+    <span class="n">twin_labels</span><span class="o">=</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;$c(y=</span><span class="si">{</span><span class="n">y_cs</span><span class="si">}</span><span class="s1">)$&#39;</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;$s(y=</span><span class="si">{</span><span class="n">y_cs</span><span class="si">}</span><span class="s1">)$&#39;</span><span class="p">)</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="modelling">
+<h2>Modelling<a class="headerlink" href="#modelling" title="Link to this heading">#</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">crocodil.modelling.system_a.flux</span><span class="w"> </span><span class="kn">import</span> <span class="n">FluxModel</span><span class="p">,</span> <span class="n">FluxModelEquations</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">functools</span><span class="w"> </span><span class="kn">import</span> <span class="n">partial</span>
+
+<span class="n">gamma</span> <span class="o">=</span> <span class="mf">1.0</span>
+
+<span class="n">legend_title</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;$\gamma=</span><span class="si">{</span><span class="n">gamma</span><span class="si">}</span><span class="s1">$</span><span class="se">\n</span><span class="s1">$(</span><span class="se">\\</span><span class="s1">alpha, </span><span class="se">\\</span><span class="s1">beta)$&#39;</span>
+<span class="n">legend_labels</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;DNS&#39;</span><span class="p">]</span>
+<span class="n">fDNS</span> <span class="o">=</span> <span class="n">fZeta0</span>
+<span class="n">f_lines</span> <span class="o">=</span> <span class="p">[(</span><span class="n">fDNS</span><span class="o">.</span><span class="n">time_series</span><span class="p">,</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">fDNS</span><span class="o">.</span><span class="n">value_series</span><span class="p">])]</span>
+<span class="n">mC_lines</span> <span class="o">=</span> <span class="p">[(</span><span class="n">mC</span><span class="o">.</span><span class="n">time_series</span><span class="p">,</span> <span class="n">mC</span><span class="o">.</span><span class="n">value_series</span><span class="p">)]</span>
+<span class="n">mD_lines</span> <span class="o">=</span> <span class="p">[(</span><span class="n">mD</span><span class="o">.</span><span class="n">time_series</span><span class="p">,</span> <span class="n">mD</span><span class="o">.</span><span class="n">value_series</span><span class="p">)]</span>
+<span class="n">cPlus_lines</span> <span class="o">=</span> <span class="p">[(</span><span class="n">cPlus</span><span class="o">.</span><span class="n">time_series</span><span class="p">,</span> <span class="n">cPlus</span><span class="o">.</span><span class="n">value_series</span><span class="p">)]</span>
+<span class="n">cMinus_lines</span> <span class="o">=</span> <span class="p">[(</span><span class="n">cMinus</span><span class="o">.</span><span class="n">time_series</span><span class="p">,</span> <span class="n">cMinus</span><span class="o">.</span><span class="n">value_series</span><span class="p">)]</span>
+<span class="n">sPlus_lines</span> <span class="o">=</span> <span class="p">[(</span><span class="n">sPlus</span><span class="o">.</span><span class="n">time_series</span><span class="p">,</span> <span class="n">sPlus</span><span class="o">.</span><span class="n">value_series</span><span class="p">)]</span>
+
+<span class="n">t_ics_model</span> <span class="o">=</span> <span class="mf">7.0</span> <span class="c1"># TODO deduce this programatically</span>
+<span class="n">t_ics_model_index</span> <span class="o">=</span> <span class="n">as_index</span><span class="p">(</span><span class="n">fDNS</span><span class="o">.</span><span class="n">time_series</span><span class="p">,</span> <span class="n">t_ics_model</span><span class="p">)</span>
+<span class="n">t_model</span> <span class="o">=</span> <span class="n">fDNS</span><span class="o">.</span><span class="n">time_series</span><span class="p">[</span><span class="n">t_ics_model_index</span><span class="p">:]</span>
+
+<span class="n">ics_model</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">cPlus</span><span class="o">.</span><span class="n">value_series</span><span class="p">[</span><span class="n">t_ics_model_index</span><span class="p">],</span>
+    <span class="n">cMinus</span><span class="o">.</span><span class="n">value_series</span><span class="p">[</span><span class="n">t_ics_model_index</span><span class="p">],</span>
+    <span class="n">sPlus</span><span class="o">.</span><span class="n">value_series</span><span class="p">[</span><span class="n">t_ics_model_index</span><span class="p">],</span>
+<span class="p">)</span>
+
+<span class="n">flux</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">cp</span><span class="p">,</span> <span class="n">cm</span><span class="p">,</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">beta</span><span class="p">:</span> <span class="p">(</span>
+    <span class="n">alpha</span> <span class="o">*</span> <span class="p">(</span><span class="n">cp</span> <span class="o">-</span> <span class="n">cm</span><span class="p">)</span> <span class="o">+</span> <span class="n">beta</span> <span class="o">*</span> <span class="p">(</span><span class="n">cp</span> <span class="o">-</span> <span class="n">cm</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span>
+<span class="p">)</span>
+<span class="n">alpha_opts</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mf">0.05</span><span class="p">)</span>
+<span class="n">beta_opts</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.1</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">beta</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">alpha_opts</span><span class="p">,</span> <span class="n">beta_opts</span><span class="p">):</span>
+    <span class="n">flux_model</span> <span class="o">=</span> <span class="n">FluxModel</span><span class="p">(</span>
+        <span class="n">t_model</span><span class="p">,</span>
+        <span class="n">Lx</span> <span class="o">*</span> <span class="n">Ly</span><span class="p">,</span>
+        <span class="n">Da</span><span class="p">,</span>
+        <span class="n">epsilon</span><span class="p">,</span>
+        <span class="n">zeta0</span><span class="p">,</span>
+        <span class="n">sr</span><span class="p">,</span>
+        <span class="n">cr</span><span class="p">,</span>
+        <span class="n">gamma</span><span class="p">,</span>
+        <span class="n">partial</span><span class="p">(</span><span class="n">flux</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="n">alpha</span><span class="p">,</span> <span class="n">beta</span><span class="o">=</span><span class="n">beta</span><span class="p">),</span>
+        <span class="n">constraint</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">ics</span><span class="o">=</span><span class="n">ics_model</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">f_lines</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">flux_model</span><span class="o">.</span><span class="n">t</span><span class="p">,</span> <span class="o">-</span><span class="n">flux_model</span><span class="o">.</span><span class="n">f</span><span class="p">))</span>
+    <span class="n">mC_lines</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">flux_model</span><span class="o">.</span><span class="n">t</span><span class="p">,</span> <span class="n">flux_model</span><span class="o">.</span><span class="n">mC</span><span class="p">))</span>
+    <span class="n">mD_lines</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">flux_model</span><span class="o">.</span><span class="n">t</span><span class="p">,</span> <span class="n">flux_model</span><span class="o">.</span><span class="n">mD</span><span class="p">))</span>
+    <span class="n">cPlus_lines</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">flux_model</span><span class="o">.</span><span class="n">t</span><span class="p">,</span> <span class="n">flux_model</span><span class="o">.</span><span class="n">cPlus</span><span class="p">))</span>
+    <span class="n">cMinus_lines</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">flux_model</span><span class="o">.</span><span class="n">t</span><span class="p">,</span> <span class="n">flux_model</span><span class="o">.</span><span class="n">cMinus</span><span class="p">))</span>
+    <span class="n">sPlus_lines</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">flux_model</span><span class="o">.</span><span class="n">t</span><span class="p">,</span> <span class="n">flux_model</span><span class="o">.</span><span class="n">sPlus</span><span class="p">))</span>
+    <span class="n">legend_labels</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;(</span><span class="si">{</span><span class="n">alpha</span><span class="si">}</span><span class="s1">, </span><span class="si">{</span><span class="n">beta</span><span class="si">}</span><span class="s1">)&#39;</span><span class="p">)</span>
+
+
+<span class="n">add_start_line</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">ax</span><span class="p">:(</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">vlines</span><span class="p">(</span><span class="n">t_ics_model</span><span class="p">,</span> <span class="o">*</span><span class="n">ax</span><span class="o">.</span><span class="n">get_ylim</span><span class="p">(),</span> <span class="n">linestyles</span><span class="o">=</span><span class="s1">&#39;dotted&#39;</span><span class="p">,</span> <span class="n">colors</span><span class="o">=</span><span class="s1">&#39;red&#39;</span><span class="p">)</span>
+<span class="p">)</span>
+
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plot_line</span><span class="p">(</span>
+    <span class="n">f_lines</span><span class="p">,</span>
+    <span class="n">y_label</span><span class="o">=</span><span class="s1">&#39;$F$&#39;</span><span class="p">,</span>
+    <span class="n">legend_labels</span><span class="o">=</span><span class="n">legend_labels</span><span class="p">,</span>  <span class="n">legend_title</span><span class="o">=</span><span class="n">legend_title</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">add_start_line</span><span class="p">(</span><span class="n">ax</span><span class="p">)</span>
+
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plot_line</span><span class="p">(</span>
+    <span class="n">mC_lines</span><span class="p">,</span>
+    <span class="n">y_label</span><span class="o">=</span><span class="s1">&#39;$m_C$&#39;</span><span class="p">,</span>
+    <span class="n">legend_labels</span><span class="o">=</span><span class="n">legend_labels</span><span class="p">,</span> <span class="n">legend_title</span><span class="o">=</span><span class="n">legend_title</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">add_start_line</span><span class="p">(</span><span class="n">ax</span><span class="p">)</span>
+
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plot_line</span><span class="p">(</span>
+    <span class="n">mD_lines</span><span class="p">,</span>
+    <span class="n">y_label</span><span class="o">=</span><span class="s1">&#39;$m_D$&#39;</span><span class="p">,</span>
+    <span class="n">legend_labels</span><span class="o">=</span><span class="n">legend_labels</span><span class="p">,</span> <span class="n">legend_title</span><span class="o">=</span><span class="n">legend_title</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">add_start_line</span><span class="p">(</span><span class="n">ax</span><span class="p">)</span>
+
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plot_line</span><span class="p">(</span>
+    <span class="n">cPlus_lines</span><span class="p">,</span>
+    <span class="n">y_label</span><span class="o">=</span><span class="s1">&#39;$c^+$&#39;</span><span class="p">,</span>
+    <span class="n">legend_labels</span><span class="o">=</span><span class="n">legend_labels</span><span class="p">,</span> <span class="n">legend_title</span><span class="o">=</span><span class="n">legend_title</span><span class="p">,</span> <span class="c1">#y_lims=(0.9, 1.0),</span>
+<span class="p">)</span>
+<span class="n">add_start_line</span><span class="p">(</span><span class="n">ax</span><span class="p">)</span>
+
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plot_line</span><span class="p">(</span>
+    <span class="n">cMinus_lines</span><span class="p">,</span>
+    <span class="n">y_label</span><span class="o">=</span><span class="s1">&#39;$c^-$&#39;</span><span class="p">,</span>
+    <span class="n">legend_labels</span><span class="o">=</span><span class="n">legend_labels</span><span class="p">,</span> <span class="n">legend_title</span><span class="o">=</span><span class="n">legend_title</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">add_start_line</span><span class="p">(</span><span class="n">ax</span><span class="p">)</span>
+
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plot_line</span><span class="p">(</span>
+    <span class="n">sPlus_lines</span><span class="p">,</span>
+    <span class="n">y_label</span><span class="o">=</span><span class="s1">&#39;$s^+$&#39;</span><span class="p">,</span>
+    <span class="n">legend_labels</span><span class="o">=</span><span class="n">legend_labels</span><span class="p">,</span> <span class="n">legend_title</span><span class="o">=</span><span class="n">legend_title</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">add_start_line</span><span class="p">(</span><span class="n">ax</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="numerical-diagnostics">
+<h2>Numerical diagnostics<a class="headerlink" href="#numerical-diagnostics" title="Link to this heading">#</a></h2>
+<section id="timestep-contraints">
+<h3>Timestep contraints<a class="headerlink" href="#timestep-contraints" title="Link to this heading">#</a></h3>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">dt</span><span class="p">,</span> <span class="n">dtU</span><span class="p">,</span> <span class="n">dtD</span><span class="p">,</span> <span class="n">dtSigma</span> <span class="o">=</span> <span class="n">simulation</span><span class="p">[</span><span class="s1">&#39;dt&#39;</span><span class="p">,</span> <span class="s1">&#39;dtU&#39;</span><span class="p">,</span> <span class="s1">&#39;dtD&#39;</span><span class="p">,</span> <span class="s1">&#39;dtSigma&#39;</span><span class="p">]</span>
+
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plot_line</span><span class="p">(</span>
+    <span class="p">[</span>
+        <span class="p">(</span><span class="n">dt</span><span class="o">.</span><span class="n">time_series</span><span class="p">,</span> <span class="n">dt</span><span class="o">.</span><span class="n">value_series</span><span class="p">),</span> 
+        <span class="p">(</span><span class="n">dtU</span><span class="o">.</span><span class="n">time_series</span><span class="p">,</span> <span class="n">dtU</span><span class="o">.</span><span class="n">value_series</span><span class="p">),</span> 
+        <span class="p">(</span><span class="n">dtD</span><span class="o">.</span><span class="n">time_series</span><span class="p">,</span> <span class="n">dtD</span><span class="o">.</span><span class="n">value_series</span><span class="p">),</span> 
+        <span class="p">(</span><span class="n">dtSigma</span><span class="o">.</span><span class="n">time_series</span><span class="p">,</span> <span class="n">dtSigma</span><span class="o">.</span><span class="n">value_series</span><span class="p">),</span>
+    <span class="p">],</span>
+    <span class="n">x_label</span><span class="o">=</span><span class="s1">&#39;$t$&#39;</span><span class="p">,</span>
+    <span class="n">legend_labels</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;$\Delta t$&#39;</span><span class="p">,</span> <span class="s1">&#39;$\Delta t_{\mathbf</span><span class="si">{u}</span><span class="s1">}$&#39;</span><span class="p">,</span> <span class="s1">&#39;$\Delta t_{\mathsf</span><span class="si">{D}</span><span class="s1">}$&#39;</span><span class="p">,</span> <span class="s1">&#39;$\Delta t_{\Sigma}$&#39;</span><span class="p">],</span>
+<span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_yscale</span><span class="p">(</span><span class="s1">&#39;log&#39;</span><span class="p">)</span>
+<span class="n">save_figure</span><span class="p">(</span><span class="s1">&#39;dt(t)&#39;</span><span class="p">,</span> <span class="n">simulation</span><span class="o">.</span><span class="n">dir_path</span><span class="p">,</span> <span class="n">prefix_ipynb</span><span class="o">=</span><span class="kc">False</span><span class="p">)(</span><span class="n">fig</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="velocity-norms">
+<h3>Velocity norms<a class="headerlink" href="#velocity-norms" title="Link to this heading">#</a></h3>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">uRMS</span><span class="p">,</span> <span class="n">uMinMax</span><span class="p">,</span> <span class="n">uDiv</span> <span class="o">=</span> <span class="n">simulation</span><span class="p">[</span><span class="s1">&#39;uRMS&#39;</span><span class="p">,</span> <span class="s1">&#39;uMinMax&#39;</span><span class="p">,</span> <span class="s1">&#39;uDiv&#39;</span><span class="p">]</span>
+<span class="n">uMax</span> <span class="o">=</span> <span class="n">uMinMax</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plot_line</span><span class="p">(</span>
+    <span class="p">(</span><span class="n">uRMS</span><span class="o">.</span><span class="n">time_series</span><span class="p">,</span> <span class="n">uRMS</span><span class="o">.</span><span class="n">value_series</span><span class="p">),</span>
+    <span class="n">x_label</span><span class="o">=</span><span class="s1">&#39;$t$&#39;</span><span class="p">,</span>
+    <span class="n">y_label</span><span class="o">=</span><span class="s1">&#39;$\mathrm</span><span class="si">{rms}</span><span class="s1">(\mathbf</span><span class="si">{u}</span><span class="s1">)$&#39;</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_yscale</span><span class="p">(</span><span class="s1">&#39;log&#39;</span><span class="p">)</span>
+<span class="n">save_figure</span><span class="p">(</span><span class="s1">&#39;uRMS(t)&#39;</span><span class="p">,</span> <span class="n">simulation</span><span class="o">.</span><span class="n">dir_path</span><span class="p">,</span> <span class="n">prefix_ipynb</span><span class="o">=</span><span class="kc">False</span><span class="p">)(</span><span class="n">fig</span><span class="p">)</span>
+
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plot_line</span><span class="p">(</span>
+    <span class="p">(</span><span class="n">uMax</span><span class="o">.</span><span class="n">time_series</span><span class="p">,</span> <span class="n">uMax</span><span class="o">.</span><span class="n">value_series</span><span class="p">),</span>
+    <span class="n">x_label</span><span class="o">=</span><span class="s1">&#39;$t$&#39;</span><span class="p">,</span>
+    <span class="n">y_label</span><span class="o">=</span><span class="s1">&#39;$\max_{\mathbf</span><span class="si">{x}</span><span class="s1">}|\mathbf</span><span class="si">{u}</span><span class="s1">|$&#39;</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_yscale</span><span class="p">(</span><span class="s1">&#39;log&#39;</span><span class="p">)</span>
+<span class="n">save_figure</span><span class="p">(</span><span class="s1">&#39;uMax(t)&#39;</span><span class="p">,</span> <span class="n">simulation</span><span class="o">.</span><span class="n">dir_path</span><span class="p">,</span> <span class="n">prefix_ipynb</span><span class="o">=</span><span class="kc">False</span><span class="p">)(</span><span class="n">fig</span><span class="p">)</span>
+
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plot_line</span><span class="p">(</span>
+    <span class="p">(</span><span class="n">uDiv</span><span class="o">.</span><span class="n">time_series</span><span class="p">,</span> <span class="n">uDiv</span><span class="o">.</span><span class="n">value_series</span><span class="p">),</span>
+    <span class="n">x_label</span><span class="o">=</span><span class="s1">&#39;$t$&#39;</span><span class="p">,</span>
+    <span class="n">y_label</span><span class="o">=</span><span class="s1">&#39;$\mathrm</span><span class="si">{divnorm}</span><span class="s1">(\mathbf</span><span class="si">{u}</span><span class="s1">)$&#39;</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">save_figure</span><span class="p">(</span><span class="s1">&#39;uDiv(t)&#39;</span><span class="p">,</span> <span class="n">simulation</span><span class="o">.</span><span class="n">dir_path</span><span class="p">,</span> <span class="n">prefix_ipynb</span><span class="o">=</span><span class="kc">False</span><span class="p">)(</span><span class="n">fig</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="concentration-limits">
+<h3>Concentration limits<a class="headerlink" href="#concentration-limits" title="Link to this heading">#</a></h3>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">cMinMax</span> <span class="o">=</span> <span class="n">simulation</span><span class="p">[</span><span class="s1">&#39;cMinMax&#39;</span><span class="p">]</span>
+<span class="n">cMin</span><span class="p">,</span> <span class="n">cMax</span> <span class="o">=</span> <span class="n">cMinMax</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plot_line</span><span class="p">(</span>
+    <span class="p">(</span><span class="n">cMax</span><span class="o">.</span><span class="n">time_series</span><span class="p">,</span> <span class="n">cMax</span><span class="o">.</span><span class="n">value_series</span><span class="p">),</span>
+    <span class="n">x_label</span><span class="o">=</span><span class="s1">&#39;$t$&#39;</span><span class="p">,</span>
+    <span class="n">y_label</span><span class="o">=</span><span class="s1">&#39;$\max_{\mathbf</span><span class="si">{x}</span><span class="s1">}c$&#39;</span><span class="p">,</span>
+    <span class="n">y_lims</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="mf">0.1</span><span class="p">,</span> <span class="mi">1</span><span class="o">+</span><span class="mf">0.1</span><span class="p">),</span>
+<span class="p">)</span>
+<span class="n">save_figure</span><span class="p">(</span><span class="s1">&#39;cMax(t)&#39;</span><span class="p">,</span> <span class="n">simulation</span><span class="o">.</span><span class="n">dir_path</span><span class="p">,</span> <span class="n">prefix_ipynb</span><span class="o">=</span><span class="kc">False</span><span class="p">)(</span><span class="n">fig</span><span class="p">)</span>
+
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plot_line</span><span class="p">(</span>
+    <span class="p">(</span><span class="n">cMin</span><span class="o">.</span><span class="n">time_series</span><span class="p">,</span> <span class="n">cMin</span><span class="o">.</span><span class="n">value_series</span><span class="p">),</span>
+    <span class="n">x_label</span><span class="o">=</span><span class="s1">&#39;$t$&#39;</span><span class="p">,</span>
+    <span class="n">y_label</span><span class="o">=</span><span class="s1">&#39;$\min_{\mathbf</span><span class="si">{x}</span><span class="s1">}c$&#39;</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">save_figure</span><span class="p">(</span><span class="s1">&#39;cMin(t)&#39;</span><span class="p">,</span> <span class="n">simulation</span><span class="o">.</span><span class="n">dir_path</span><span class="p">,</span> <span class="n">prefix_ipynb</span><span class="o">=</span><span class="kc">False</span><span class="p">)(</span><span class="n">fig</span><span class="p">)</span>
+
+<span class="k">if</span> <span class="s1">&#39;cCorr&#39;</span> <span class="ow">in</span> <span class="n">simulation</span><span class="o">.</span><span class="n">namespace</span><span class="p">:</span>
+    <span class="n">cCorr</span> <span class="o">=</span> <span class="n">simulation</span><span class="p">[</span><span class="s1">&#39;cCorr&#39;</span><span class="p">]</span>
+    <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plot_line</span><span class="p">(</span>
+        <span class="p">[</span>
+            <span class="p">(</span><span class="n">cCorr</span><span class="o">.</span><span class="n">time_series</span><span class="p">,</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">cCorr</span><span class="o">.</span><span class="n">dofs_series</span><span class="p">]),</span>
+            <span class="p">(</span><span class="n">cCorr</span><span class="o">.</span><span class="n">time_series</span><span class="p">,</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">cCorr</span><span class="o">.</span><span class="n">dofs_series</span><span class="p">]),</span>
+        <span class="p">],</span>
+        <span class="n">x_label</span><span class="o">=</span><span class="s1">&#39;$t$&#39;</span><span class="p">,</span>
+        <span class="n">legend_labels</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;$\min_{\mathbf</span><span class="si">{x}</span><span class="s1">}\mathcal</span><span class="si">{C}</span><span class="s1">(c)$&#39;</span><span class="p">,</span> <span class="s1">&#39;$\max_{\mathbf</span><span class="si">{x}</span><span class="s1">}\mathcal</span><span class="si">{C}</span><span class="s1">(c)$&#39;</span><span class="p">],</span>
+    <span class="p">)</span>
+    <span class="n">save_figure</span><span class="p">(</span><span class="s1">&#39;cCorrMinMax(t)&#39;</span><span class="p">,</span> <span class="n">simulation</span><span class="o">.</span><span class="n">dir_path</span><span class="p">,</span> <span class="n">prefix_ipynb</span><span class="o">=</span><span class="kc">False</span><span class="p">)(</span><span class="n">fig</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="mass-conservation">
+<h3>Mass conservation<a class="headerlink" href="#mass-conservation" title="Link to this heading">#</a></h3>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">m_sum</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">i</span> <span class="o">+</span> <span class="n">j</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">mC</span><span class="o">.</span><span class="n">value_series</span><span class="p">,</span> <span class="n">mD</span><span class="o">.</span><span class="n">value_series</span><span class="p">)])</span> <span class="o">-</span> <span class="mi">1</span>
+
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plot_line</span><span class="p">(</span>
+    <span class="p">(</span><span class="n">mC</span><span class="o">.</span><span class="n">time_series</span><span class="p">,</span> <span class="n">m_sum</span> <span class="o">/</span> <span class="n">m_sum</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span>
+    <span class="n">x_label</span><span class="o">=</span><span class="s1">&#39;$t$&#39;</span><span class="p">,</span>
+    <span class="n">y_label</span><span class="o">=</span><span class="s1">&#39;$(m_C + m_D)/m_0 - 1$&#39;</span>
+<span class="p">)</span>
+<span class="n">save_figure</span><span class="p">(</span><span class="s1">&#39;m(t)_normalized&#39;</span><span class="p">,</span> <span class="n">simulation</span><span class="o">.</span><span class="n">dir_path</span><span class="p">,</span> <span class="n">prefix_ipynb</span><span class="o">=</span><span class="kc">False</span><span class="p">)(</span><span class="n">fig</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            name: "python3",
+            path: "./demo/system_a"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="A02_flux.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Flux modelling</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="A20_demo.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Demonstration simulations</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#create-the-simulation">Create the simulation</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#run-the-simulation">Run the simulation</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#visualization">Visualization</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#concentration">Concentration</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#saturation">Saturation</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#physical-diagnostics">Physical diagnostics</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#flux">Flux</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mass">Mass</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#horizontal-averages">Horizontal averages</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#subdomain-averages">Subdomain averages</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#correlation">Correlation</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#modelling">Modelling</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#numerical-diagnostics">Numerical diagnostics</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#timestep-contraints">Timestep contraints</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#velocity-norms">Velocity norms</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#concentration-limits">Concentration limits</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mass-conservation">Mass conservation</a></li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By The Jupyter Book community
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2023.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

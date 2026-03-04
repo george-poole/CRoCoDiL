@@ -148,7 +148,7 @@ def dns_system_a(
         s_petsc=s_petsc,
         # optional solvers
         diagnostic=secondary,
-        namespace=(Ra, Da),
+        auxiliary=(Ra, Da),
     )
 
     if secondary:

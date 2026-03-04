@@ -12,16 +12,18 @@ while [[ "$1" == --* ]]; do
     esac
 done
 
-USER_ENV="/Users/George/miniconda3/envs/lucifex/bin/python"
+PKILL_ARG=${1:-"-m ipykernel_launcher"}
+USER_ENV=${2:-"/Users/George/miniconda3/envs/lucifex/bin/python"}
+
 echo "Python processes before:"
-ps -ef | grep python 
+ps -eo pid,ni,args | grep python 
 
 if $DRY; then
     echo "Exiting dry run"
     exit
-
 fi
+
 echo "Killing python processes..." 
-pkill -f "$USER_ENV -m ipykernel_launcher"
+pkill -f "$USER_ENV $PKILL_ARG"
 echo "Python processes after:"
-ps -ef | grep python  
+ps -eo pid,ni,args | grep python  

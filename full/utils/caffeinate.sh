@@ -1,0 +1,3 @@
+SECONDS=86400
+COMMAND=""
+caffeinate -d -i -s -t $SECONDS $COMMAND

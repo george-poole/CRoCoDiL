@@ -1,0 +1,47 @@
+format: jb-book
+root: home
+
+parts:
+  - caption: User Guide
+    chapters:
+      - file: user_guide/U00_introduction
+      - file: user_guide/U01_governing_equations
+      - file: user_guide/U02_diagnostic_equations
+      - file: user_guide/U03_finite_element_method
+      - file: user_guide/U04_best_practices
+  - caption: System A
+    chapters:
+      - file: demo/system_a/A00_introduction
+        sections: 
+          - file: demo/system_a/A01_mass
+          - file: demo/system_a/A02_flux
+      - file: demo/system_a/A10_demo
+      - file: demo/system_a/A20_exploratory
+        sections:
+          - file: demo/system_a/A30_parameters
+            sections:
+              - file: demo/system_a/A31_rayleigh
+              - file: demo/system_a/A32_damkohler
+              - file: demo/system_a/A33_saturations
+          - file: demo/system_a/A40_numerical
+            sections:
+              - file: demo/system_a/A41_timestep
+              - file: demo/system_a/A42_resolution
+              - file: demo/system_a/A43_stabilization
+              - file: demo/system_a/A44_sensitivity_i
+              - file: demo/system_a/A45_sensitivity_ii
+              - file: demo/system_a/A46_scaling
+              - file: demo/system_a/A47_finite_difference
+              - file: demo/system_a/A48_profiling
+      - file: full/system_a/A00_full
+        sections:
+          - file: full/system_a/A01_rayleigh
+          - file: full/system_a/A02_damkohler
+  - caption: System B
+    chapters:
+      - file: demo/system_b/B00_introduction
+      - file: demo/system_b/B10_demo
+  - caption: System C
+    chapters:
+      - file: demo/system_c/C00_introduction
+      - file: demo/system_c/C10_demo

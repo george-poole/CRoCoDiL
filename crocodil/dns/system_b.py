@@ -190,7 +190,7 @@ def dns_system_b(
         fluxes_thermal = [('q', Lzeta0, Lx), *fluxes_thermal]
         fluxes_solutal = [('f', Lzeta0, Lx), *fluxes_solutal] 
 
-    namespace=[
+    auxiliary = [
         Ra, Da, Le, Di, Bu, Ki, 
         ('X', X), ('Lx', Lx), ('Ly', Ly), 
         ('sr', sr), ('cr', cr), ('zeta0', zeta0),
@@ -243,5 +243,5 @@ def dns_system_b(
         diagnostic=diagnostic,
         fluxes_solutal=fluxes_solutal,
         fluxes_thermal=fluxes_thermal,
-        namespace=namespace,
+        auxiliary=auxiliary,
     )
