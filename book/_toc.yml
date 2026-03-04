@@ -15,6 +15,7 @@ parts:
         sections: 
           - file: demo/system_a/A01_mass
           - file: demo/system_a/A02_flux
+          - file: demo/system_a/A03_reference
       - file: demo/system_a/A10_demo
       - file: demo/system_a/A20_exploratory
         sections:
@@ -47,7 +48,7 @@ parts:
       - file: demo/system_c/C10_demo
   - caption: Classic Systems
     chapters:
-      - file: classic/01_darcy_rayleigh_benard
-      - file: classic/02_darcy_evolving
-      - file: classic/03_darcy_rayleigh_taylor
-      - file: classic/04_darcy_thermosolutal
+      - file: demo/classic/X01_darcy_rayleigh_benard
+      - file: demo/classic/X02_darcy_evolving
+      - file: demo/classic/X03_darcy_rayleigh_taylor
+      - file: demo/classic/X04_darcy_thermosolutal

@@ -111,7 +111,7 @@ def mass_capillary_initial(
 
 
 @configure_simulation(
-    jit=DEFAULT_JIT_DIR,
+    jit=OptionsJIT(DEFAULT_JIT_DIR),
 )
 def dns_system_c(
     # mesh

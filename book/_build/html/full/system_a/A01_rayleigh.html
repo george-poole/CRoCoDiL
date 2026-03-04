@@ -186,6 +186,7 @@
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../demo/system_a/A00_introduction.html">Introduction</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../demo/system_a/A01_mass.html">Dissolved and capillary-trapped mass</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../demo/system_a/A02_flux.html">Flux modelling</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../demo/system_a/A03_reference.html">Canonical reference system</a></li>
 </ul>
 </details></li>
 <li class="toctree-l1"><a class="reference internal" href="../../demo/system_a/A10_demo.html">Demo</a></li>
@@ -228,10 +229,10 @@
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Classic Systems</span></p>
 <ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="../../classic/01_darcy_rayleigh_benard.html">Rayleigh-Bénard convection of a Darcy fluid</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../classic/02_darcy_evolving.html">Evolving convection of a Darcy fluid</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../classic/03_darcy_rayleigh_taylor.html">Rayleigh-Taylor instability of a Darcy fluid</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../classic/04_darcy_thermosolutal.html">Thermosolutal convection of a Darcy fluid</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../demo/classic/X01_darcy_rayleigh_benard.html">Rayleigh-Bénard convection of a Darcy fluid</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../demo/classic/X02_darcy_evolving.html">Evolving convection of a Darcy fluid</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../demo/classic/X03_darcy_rayleigh_taylor.html">Rayleigh-Taylor instability of a Darcy fluid</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../demo/classic/X04_darcy_thermosolutal.html">Thermosolutal convection of a Darcy fluid</a></li>
 </ul>
 
     </div>
@@ -381,8 +382,12 @@ document.write(`
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#load-the-simulations">Load the simulations</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#lines">Lines</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#colormaps">Colormaps</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#physical-diagnostics">Physical diagnostics</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#visualization">Visualization</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#concentration">Concentration</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#saturation">Saturation</a></li>
+</ul>
+</li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#numerical-diagnostics">Numerical diagnostics</a></li>
 </ul>
             </nav>
@@ -408,8 +413,9 @@ document.write(`
 <span class="kn">from</span><span class="w"> </span><span class="nn">lucifex.sim</span><span class="w"> </span><span class="kn">import</span> <span class="n">GridSimulationFromNPZ</span><span class="p">,</span> <span class="n">find_simulation_dir_paths</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">crocodil.dns.system_a</span><span class="w"> </span><span class="kn">import</span> <span class="n">SYSTEM_A_REFERENCE</span>
 
-<span class="n">sim_dir_paths</span> <span class="o">=</span> <span class="n">find_simulation_dir_paths</span><span class="p">(</span><span class="s1">&#39;./data&#39;</span><span class="p">,</span> <span class="n">include</span><span class="o">=</span><span class="s1">&#39;n_stop=9999*&#39;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">sim_dir_paths</span><span class="p">)</span>
+<span class="n">dir_prefix</span> <span class="o">=</span> <span class="s1">&#39;n_stop=9999&#39;</span>
+<span class="n">sim_dir_paths</span> <span class="o">=</span> <span class="n">find_simulation_dir_paths</span><span class="p">(</span><span class="s1">&#39;./data&#39;</span><span class="p">,</span> <span class="n">include</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">dir_prefix</span><span class="si">}</span><span class="s1">*&#39;</span><span class="p">)</span>
+<span class="p">[</span><span class="nb">print</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">sim_dir_paths</span><span class="p">]</span>
 
 <span class="n">parameters</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">v</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">SYSTEM_A_REFERENCE</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">k</span> <span class="o">!=</span> <span class="s1">&#39;Ra&#39;</span><span class="p">}</span>
 
@@ -454,8 +460,8 @@ n_time = 2400 t_min = 0.0  t_max = 119.95383116840524
 </div>
 </div>
 </section>
-<section id="lines">
-<h2>Lines<a class="headerlink" href="#lines" title="Link to this heading">#</a></h2>
+<section id="physical-diagnostics">
+<h2>Physical diagnostics<a class="headerlink" href="#physical-diagnostics" title="Link to this heading">#</a></h2>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">f_lines</span><span class="p">,</span> <span class="n">mC_lines</span><span class="p">,</span> <span class="n">mD_lines</span> <span class="o">=</span> <span class="p">[],</span> <span class="p">[],</span> <span class="p">[]</span>
@@ -491,8 +497,10 @@ n_time = 2400 t_min = 0.0  t_max = 119.95383116840524
 </div>
 </div>
 </section>
-<section id="colormaps">
-<h2>Colormaps<a class="headerlink" href="#colormaps" title="Link to this heading">#</a></h2>
+<section id="visualization">
+<h2>Visualization<a class="headerlink" href="#visualization" title="Link to this heading">#</a></h2>
+<section id="concentration">
+<h3>Concentration<a class="headerlink" href="#concentration" title="Link to this heading">#</a></h3>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">c_t_target</span> <span class="o">=</span> <span class="mf">5.0</span>
@@ -502,19 +510,6 @@ n_time = 2400 t_min = 0.0  t_max = 119.95383116840524
     <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plot_colormap</span><span class="p">(</span>
         <span class="n">c</span><span class="o">.</span><span class="n">series</span><span class="p">[</span><span class="n">time_index</span><span class="p">],</span> 
         <span class="n">title</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;$Ra=</span><span class="si">{</span><span class="n">Ra</span><span class="si">}</span><span class="s1">$</span><span class="se">\n</span><span class="s1">$c(t=</span><span class="si">{</span><span class="n">c</span><span class="o">.</span><span class="n">time_series</span><span class="p">[</span><span class="n">time_index</span><span class="p">]</span><span class="si">}</span><span class="s1">)$&#39;</span><span class="p">,</span>
-    <span class="p">)</span>
-
-<span class="n">Ly</span> <span class="o">=</span> <span class="mf">1.0</span>
-<span class="n">s_t_target</span> <span class="o">=</span> <span class="mf">5.0</span>
-<span class="k">for</span> <span class="n">Ra</span><span class="p">,</span> <span class="n">sim</span> <span class="ow">in</span> <span class="n">simulations</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-    <span class="n">s</span> <span class="o">=</span> <span class="n">sim</span><span class="p">[</span><span class="s1">&#39;s&#39;</span><span class="p">]</span>
-    <span class="n">zeta0</span> <span class="o">=</span> <span class="n">sim</span><span class="p">[</span><span class="s1">&#39;zeta0&#39;</span><span class="p">]</span>
-    <span class="n">time_index</span> <span class="o">=</span> <span class="n">as_index</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">time_series</span><span class="p">,</span> <span class="n">s_t_target</span><span class="p">)</span>
-    <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plot_colormap</span><span class="p">(</span>
-        <span class="n">refine_grid_function</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">series</span><span class="p">[</span><span class="n">time_index</span><span class="p">],</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">20</span><span class="p">)),</span> 
-        <span class="n">title</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;$Ra=</span><span class="si">{</span><span class="n">Ra</span><span class="si">}</span><span class="s1">$</span><span class="se">\n</span><span class="s1">$s(t=</span><span class="si">{</span><span class="n">s</span><span class="o">.</span><span class="n">time_series</span><span class="p">[</span><span class="n">time_index</span><span class="p">]</span><span class="si">}</span><span class="s1">)$&#39;</span><span class="p">,</span>
-        <span class="n">y_lims</span><span class="o">=</span><span class="p">(</span><span class="n">zeta0</span> <span class="o">*</span> <span class="n">Ly</span><span class="p">,</span> <span class="n">Ly</span><span class="p">),</span>
-        <span class="n">aspect</span><span class="o">=</span><span class="s1">&#39;auto&#39;</span><span class="p">,</span>
     <span class="p">)</span>
 </pre></div>
 </div>
@@ -529,13 +524,33 @@ n_time = 2400 t_min = 0.0  t_max = 119.95383116840524
 </div>
 </div>
 </section>
+<section id="saturation">
+<h3>Saturation<a class="headerlink" href="#saturation" title="Link to this heading">#</a></h3>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">Ly</span> <span class="o">=</span> <span class="mf">1.0</span>
+<span class="n">s_t_target</span> <span class="o">=</span> <span class="mf">5.0</span>
+<span class="k">for</span> <span class="n">Ra</span><span class="p">,</span> <span class="n">sim</span> <span class="ow">in</span> <span class="n">simulations</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+    <span class="n">s</span> <span class="o">=</span> <span class="n">sim</span><span class="p">[</span><span class="s1">&#39;s&#39;</span><span class="p">]</span>
+    <span class="n">zeta0</span> <span class="o">=</span> <span class="n">sim</span><span class="p">[</span><span class="s1">&#39;zeta0&#39;</span><span class="p">]</span>
+    <span class="n">time_index</span> <span class="o">=</span> <span class="n">as_index</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">time_series</span><span class="p">,</span> <span class="n">s_t_target</span><span class="p">)</span>
+    <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plot_colormap</span><span class="p">(</span>
+        <span class="n">refine_grid_function</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">series</span><span class="p">[</span><span class="n">time_index</span><span class="p">],</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">20</span><span class="p">)),</span> 
+        <span class="n">title</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;$Ra=</span><span class="si">{</span><span class="n">Ra</span><span class="si">}</span><span class="s1">$</span><span class="se">\n</span><span class="s1">$s(t=</span><span class="si">{</span><span class="n">s</span><span class="o">.</span><span class="n">time_series</span><span class="p">[</span><span class="n">time_index</span><span class="p">]</span><span class="si">}</span><span class="s1">)$&#39;</span><span class="p">,</span>
+        <span class="n">y_lims</span><span class="o">=</span><span class="p">(</span><span class="n">zeta0</span> <span class="o">*</span> <span class="n">Ly</span><span class="p">,</span> <span class="n">Ly</span><span class="p">),</span>
+        <span class="n">aspect</span><span class="o">=</span><span class="s1">&#39;auto&#39;</span><span class="p">,</span>
+    <span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+</section>
 <section id="numerical-diagnostics">
 <h2>Numerical diagnostics<a class="headerlink" href="#numerical-diagnostics" title="Link to this heading">#</a></h2>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">sim</span> <span class="ow">in</span> <span class="n">simulations</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
-    <span class="n">sim</span><span class="o">.</span><span class="n">include_constant_series</span><span class="p">(</span><span class="s1">&#39;dt&#39;</span><span class="p">,</span> <span class="n">lazy</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="n">sim</span><span class="o">.</span><span class="n">include_constant_series</span><span class="p">(</span><span class="s1">&#39;dt&#39;</span><span class="p">,</span> <span class="n">lazy</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="k">for</span> <span class="n">sim</span> <span class="ow">in</span> <span class="n">simulations</span><span class="o">.</span><span class="n">values</span><span class="p">()]</span>
 
 <span class="n">dt_lines</span> <span class="o">=</span> <span class="p">[]</span>
 <span class="n">legend_labels</span> <span class="o">=</span> <span class="p">[]</span>
@@ -628,8 +643,12 @@ n_time = 2400 t_min = 0.0  t_max = 119.95383116840524
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#load-the-simulations">Load the simulations</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#lines">Lines</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#colormaps">Colormaps</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#physical-diagnostics">Physical diagnostics</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#visualization">Visualization</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#concentration">Concentration</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#saturation">Saturation</a></li>
+</ul>
+</li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#numerical-diagnostics">Numerical diagnostics</a></li>
 </ul>
   </nav></div>

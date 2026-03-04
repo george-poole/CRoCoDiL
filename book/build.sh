@@ -17,21 +17,28 @@ while [[ "$1" == --* ]]; do
 done
 
 GLOB=$1
-NBCONVERT_ARGS=${2:-"--allow-errors"}
-BUILD_ARGS=${3:-""}
-DIRS=("demo" "full")
+TARGET_DIR=${2:-""}
+NBCONVERT_ARGS=${3:-"--allow-errors"}
+BUILD_ARGS=${4:-""}
+
+if [ -z "$TARGET_DIR" ]; then
+    DIRS=("demo" "full")
+else
+    DIRS=($TARGET_DIR)
+fi
 
 for dir in "${DIRS[@]}"; do
+    unlink $dir
     ln -s "../$dir" $dir 
-    IPYNB=($(find . -name "$GLOB.ipynb" -path "../$dir/*"))
+    IPYNB=($(find .. -name "$GLOB.ipynb" -path "../$dir/*"))
     for i in "${IPYNB[@]}"; do
         echo Found notebook to execute $i
         if ! $DRY; then
             echo Executing notebook $i 
             export IPYNB_FILE_NAME="${i}"
-            echo Beginning excution "$(date)"
+            echo Beginning execution "$(date)"
             jupyter nbconvert --execute --to notebook --inplace "${i}" $NBCONVERT_ARGS  
-            echo Finished excution "$(date)"
+            echo Finished execution "$(date)"
         fi
     done    
 done
