@@ -6,7 +6,7 @@ $$\Omega\approx\cup_{\mathcal{K}\in\mathscr{T}}\mathcal{K}\subset\mathbb{R}^d$$
 
 ## Function spaces
 
-### Mixed formulation
+### Velocity-pressure formulation
 
 $$
 V_{\textbf{u}} = \{\textbf{v}\ \in H(\text{div},\Omega)~:~(\textbf{n}\cdot\textbf{v})|_{\partial\Omega_{\text{E}}}=u_{\text{E}}~,~\textbf{v}|_{\mathcal{K}}\in\left[\text{BDM}_1(\mathcal{K})\right]^d ~\forall\mathcal{K}\in\mathscr{T}\}
@@ -39,7 +39,7 @@ $$
 
 ## Weak forms
 
-### Mixed formulation
+### Velocity-pressure formulation
 
 $$
 \begin{align*}
@@ -142,16 +142,19 @@ $$
 
 ## Linear algebra 
 
-$$
-\textbf{u}^n=\sum_jU_j^n\boldsymbol{\xi}_j^{\textbf{u}}~,~
-p^n=\sum_jP_j\xi_j^{p} ~,~
-\psi^n=\sum_j\Psi_j^n\xi_j^{\psi} ~,~
-\theta^n =\sum_j\Theta_j^n\xi_j^{\theta} ~,~
-c^n=\sum_jC_j^n\xi_j^{c} ~,~
-s^n =\sum_jS_j^n\xi_j^{s}
-$$
 
 $$\text{span}\{\xi_j^w\}_j\subset V_j\quad\forall w\in\{\textbf{u}, p,\psi,\theta,c,s\}$$
+
+$$
+\begin{align*}
+\textbf{u}^n&=\sum_jU_j^n\boldsymbol{\xi}_j^{\textbf{u}} \\
+p^n&=\sum_jP_j\xi_j^{p} \\
+\psi^n&=\sum_j\Psi_j^n\xi_j^{\psi} \\
+\theta^n &=\sum_j\Theta_j^n\xi_j^{\theta}\\
+c^n&=\sum_jC_j^n\xi_j^{c} \\
+s^n &=\sum_jS_j^n\xi_j^{s}\\
+\end{align*}
+$$
 
 $$
 \begin{align*}

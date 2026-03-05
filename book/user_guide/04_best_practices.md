@@ -79,7 +79,7 @@ Significant computional speedups can be achieved with a suitable choice of Krylo
 
 ### Darcy equations
 
-#### Mixed formulation
+#### Velocity-pressure formulation
 
 If no natural boundary conditions on the pressure are prescibed ($\partial\Omega_{\text{N}}=\varnothing\iff\partial\Omega_{\text{E}}=\partial\Omega$), then the linear algebra options need to be configured to handle the nullspace airising from the invariance of the equations under the addition of a constant to the pressure.
 

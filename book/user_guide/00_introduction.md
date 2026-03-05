@@ -14,9 +14,9 @@ $$
 
 $$
 \begin{align*}
-\frac{\partial\varphi}{\partial t}=0&\implies\frac{\partial\phi}{\partial t}=-\varphi\frac{\partial s}{\partial t} \\
 s=0 &\iff \phi = \varphi \\
 s=1 &\iff \phi = 0 \\
+\frac{\partial\varphi}{\partial t}=0&\implies\frac{\partial\phi}{\partial t}=-\varphi\frac{\partial s}{\partial t} \\
 \end{align*}
 $$
 

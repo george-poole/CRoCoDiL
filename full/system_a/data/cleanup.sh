@@ -10,7 +10,7 @@ while [[ "$1" == --* ]]; do
 done
 
 GLOB=$1
-DIR_NAME=${2:-'data/**'}
+DIR_NAME=${2:-'*'}
 
 EXTS=("xdmf" "h5")
 FILES=()

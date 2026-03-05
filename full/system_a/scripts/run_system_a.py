@@ -14,6 +14,7 @@ def posthook(
     print(f"PID: {os.getpid()} postprocessed")
     os.kill(os.getpid(), signal.SIGTERM)
 
+
 def main():
     run_from_cli(dns_system_a, posthook)
 

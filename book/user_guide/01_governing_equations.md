@@ -98,7 +98,7 @@ $$
 
 ## Non-dimensional time-discretized  equations
 
-### Mixed formulation
+### Velocity-pressure formulation
 
 $$
 \begin{align*}
