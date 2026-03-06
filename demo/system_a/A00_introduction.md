@@ -1,7 +1,7 @@
 # Introduction
 
 $$
-\mathbb{S}\begin{cases}
+\mathbb{S}_{s,c,\psi}\begin{cases}
 \Omega=[0, \mathcal{A}X] \times [0, X] & \text{rectangular domain} \\
 s_0(y)=s_r\text{H}(y-\zeta_0X) + \mathcal{N}_s(x,y) & \text{perturbed initial saturation} \\
 c_0(x,y)=c_r\text{H}(y-\zeta_0X) + \mathcal{N}_c(x,y) & \text{perturbed initial concentration} \\

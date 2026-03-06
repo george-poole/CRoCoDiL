@@ -1,5 +1,6 @@
 from typing import Iterable
 
+import numpy as np
 from mpi4py import MPI
 from lucifex.fem import Constant, SpatialPerturbation, cubic_noise
 from lucifex.fdm import FiniteDifference, FiniteDifferenceArgwise, CN, AB, AM
@@ -118,7 +119,7 @@ def dns_system_a(
     c_seed: tuple[int, int] = (1234, 5678),
     # timestep
     dt_min: float = 0.0,
-    dt_max: float = 0.1,
+    dt_max: float = np.inf,
     dt_h: str | float = "hmin",
     courant_adv: float | None = 0.5,
     courant_diff: float | None = 0.5,

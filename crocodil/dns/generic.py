@@ -78,7 +78,7 @@ def dns_generic(
     | None = None,
     # timestep
     dt_min: float = 0.0,
-    dt_max: float = 0.5,
+    dt_max: float = np.inf,
     dt_h: str | float = "hmin",
     courant_adv: float | None = 1.0,
     courant_diff: float | None = 1.0,

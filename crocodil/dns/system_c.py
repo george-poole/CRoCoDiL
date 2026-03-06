@@ -22,7 +22,7 @@ SYSTEM_C_REFERENCE = FrozenDict(
     beta=10.0,
     kappa=1.0,
     vartheta=0.0,
-    zeta_min=0.8,
+    zeta0_min=0.8,
     sr=0.2,
     cr=0.0,
     aspect=2.0,
@@ -144,7 +144,7 @@ def dns_system_c(
     c_seed: tuple[int, int] = (1234, 5678),
     # timestep
     dt_min: float = 0.0,
-    dt_max: float = 0.1,
+    dt_max: float = np.inf,
     dt_h: str | float = "hmin",
     courant_adv: float | None = 0.5,
     courant_diff: float | None = 0.5,

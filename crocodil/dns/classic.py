@@ -1,3 +1,4 @@
+import numpy as np
 import scipy.special as sp
 
 from lucifex.fem import Constant, SpatialPerturbation, cubic_noise
@@ -28,7 +29,7 @@ def dns_darcy_rayleigh_benard(
     theta_freq: tuple[int, int] = (8, 8),
     theta_seed: tuple[int, int] = (1234, 5678),
     # timestep
-    dt_max: float = 0.5,
+    dt_max: float = np.inf,
     cfl_h: str | float = "hmin",
     courant_adv: float = 0.75,
     # time discretization
@@ -122,7 +123,7 @@ def dns_darcy_evolving(
     theta_seed: tuple[int, int] = (1234, 5678),
     theta_eps: float = 1e-2,
     # timestep
-    dt_max: float = 0.5,
+    dt_max: float = np.inf,
     cfl_h: str | float = "hmin",
     courant_adv: float = 0.75,
     # time discretization
@@ -217,7 +218,7 @@ def dns_darcy_rayleigh_taylor(
     c_freq: tuple[int, int] = (8, 8),
     c_seed: tuple[int, int] = (1234, 5678),
     # timestep
-    dt_max: float = 0.5,
+    dt_max: float = np.inf,
     cfl_h: str | float = "hmin",
     courant_adv: float = 0.75,
     # time discretization
@@ -314,7 +315,7 @@ def dns_darcy_thermosolutal(
     theta_freq: tuple[int, int] = (8, 8),
     theta_seed: tuple[int, int] = (1234, 5678),
     # timestep
-    dt_max: float = 0.5,
+    dt_max: float = np.inf,
     cfl_h: str | float = "hmin",
     courant_adv: float = 0.75,
     # time discretization

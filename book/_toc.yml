@@ -14,8 +14,9 @@ parts:
       - file: demo/system_a/A00_introduction
         sections: 
           - file: demo/system_a/A01_mass
-          - file: demo/system_a/A02_flux
-          - file: demo/system_a/A03_reference
+          - file: demo/system_a/A02_early
+          - file: demo/system_a/A03_late
+          - file: demo/system_a/A04_reference
       - file: demo/system_a/A10_demo
       - file: demo/system_a/A20_exploratory
         sections:
@@ -28,12 +29,13 @@ parts:
             sections:
               - file: demo/system_a/A41_timestep
               - file: demo/system_a/A42_resolution
-              - file: demo/system_a/A43_stabilization
-              - file: demo/system_a/A44_sensitivity_i
-              - file: demo/system_a/A45_sensitivity_ii
-              - file: demo/system_a/A46_scaling
-              - file: demo/system_a/A47_finite_difference
-              - file: demo/system_a/A48_profiling
+              - file: demo/system_a/A43_cell
+              - file: demo/system_a/A44_finite_difference
+              - file: demo/system_a/A45_stabilization
+              - file: demo/system_a/A46_sensitivity_perturbation
+              - file: demo/system_a/A47_sensitivity_residual
+              - file: demo/system_a/A48_scaling
+              - file: demo/system_a/A49_profiling
       - file: full/system_a/A00_full
         sections:
           - file: full/system_a/A01_rayleigh

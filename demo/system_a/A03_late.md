@@ -1,12 +1,12 @@
-# Flux modelling
+# Late-time modelling
 
 Subdomain averaging of the advection-diffusion-reaction and evolution equations obtains
 
 $$
 \begin{align*}
-\frac{\text{d}c^+}{\text{d}t} &= -\frac{F(t)}{1-\zeta(t)} + \gamma_{c} Da\frac{s^+(1-c^+)}{1-s^+} \\
+\frac{\text{d}c^+}{\text{d}t} &= -\frac{F(t)}{1-\zeta(t)} + \alpha{c} Da\frac{s^+(1-c^+)}{1-s^+} \\
 \frac{\text{d}c^-}{\text{d}t} &= \frac{F(t)}{\zeta(t)} \\
-\frac{\text{d}s^+}{\text{d}t} &= -\varepsilon \gamma_{s} Da s^+(1-c^+)
+\frac{\text{d}s^+}{\text{d}t} &= -\varepsilon \alpha_{s} Da s^+(1-c^+)
 \end{align*}
 $$
 
@@ -23,12 +23,12 @@ may be assumed to suppose that
 
 $$
 \begin{align*}
-\int_{\Omega^+}\frac{s(1-c)}{1-s}~\text{d}\Omega &= \gamma_c\frac{s^+(1-c^+)}{1-s^+} \\
-\int_{\Omega^+}s(1-c)~\text{d}\Omega &= \gamma_s s^+(1-c^+) \\
+\int_{\Omega^+}\frac{s(1-c)}{1-s}~\text{d}\Omega &= \alpha_c\frac{s^+(1-c^+)}{1-s^+} \\
+\int_{\Omega^+}s(1-c)~\text{d}\Omega &= \alpha_s s^+(1-c^+) \\
 \end{align*}
 $$
 
-for some $\gamma_c, \gamma_s \leq 1$.
+for some $\alpha_c, \alpha_s \leq 1$.
 
 From total mass conservation, 
 
@@ -40,7 +40,7 @@ $$\zeta=\frac{\frac{m_0}{\text{vol}(\Omega)}-\frac{s^+}{\varepsilon}-(1-s^+)c^+}
 
 Empirically, let
 
-$$F(c^+, c^-)=\alpha(c^+ - c^-) + \beta(c^+ - c^-)^2$$
+$$F(c^+, c^-)=\alpha_1(c^+ - c^-) + \alpha_2(c^+ - c^-)^2$$
 
 to close the ordinary differential equations, which may be solved numerically for $t>0$ with initial conditions  
 

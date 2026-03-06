@@ -8,15 +8,14 @@
 | mass of dissolved CO<sub>2</sub> | $m_D=\int_{\Omega}\phi(\rho-\rho_{\mathrm{ref}})~\text{d}\Omega$ |
 | total mass of CO<sub>2</sub> | $m=m_C + m_D$ |
 | dissolution rate | $-\frac{\text{d}m_C}{\text{d}t}$ |
-| dissolution flux | $-\frac{1}{\mathrm{len}(\Gamma)}\frac{\text{d}m_C}{\text{d}t}$ |
+| dissolution flux | $F_m=-\frac{1}{\mathrm{len}(\Gamma)}\frac{\text{d}m_C}{\text{d}t}$ |
 | solutal flux | $F=\frac{1}{\mathrm{len}(\Gamma)}\int_\Gamma(\textbf{u}c-\nabla\cdot(\mathsf{D}\cdot\nabla c))\cdot\textbf{n}~\text{d}\Gamma = F_{\textbf{u}} + F_{\mathsf{D}}$ |
 | thermal flux | $Q=\frac{1}{\mathrm{len}(\Gamma)}\int_\Gamma(\textbf{u}\theta-\nabla\cdot(\mathsf{G}\cdot\nabla \theta))\cdot\textbf{n}~\text{d}\Gamma = Q_{\textbf{u}} + Q_{\mathsf{G}}$ |
 | maximum speed | $\max_{\textbf{x}}\vert\textbf{u}\vert$ |
 | root-mean-square speed | $\text{rms}(\textbf{u})=\Vert\textbf{u}\cdot\textbf{u}\Vert_{L_2(\Omega)}=\left(\int_\Omega\textbf{u}\cdot\textbf{u}~\text{d}\Omega\right)^{1/2}$ |
 | velocity divergence norm | $\text{divnorm}(\textbf{u})=\Vert\nabla\cdot\textbf{u}\Vert_{L_2(\Omega)}=\left(\int_\Omega(\nabla\cdot\textbf{u})^2~\text{d}\Omega\right)^{1/2}$ |
-| spatial average | $\langle s\rangle_{\Omega^\prime\subseteq\Omega} = \frac{1}{\text{vol}(\Omega^\prime)}\int_{\Omega^\prime} s~\text{d}\Omega$ |
-| solutal correction | $\mathcal{C}(c)=\max(c_{\text{min}}, \min(c, c_{\text{max}})) - c$ |
-| thermal correction | $\mathcal{C}(\theta)=\max(\theta_{\text{min}}, \min(\theta, \theta_{\text{max}})) - \theta$ |
+| spatial average | $\langle c\rangle_{\Omega^\prime\subseteq\Omega} = \frac{1}{\text{vol}(\Omega^\prime)}\int_{\Omega^\prime} c~\text{d}\Omega$ |
+| correction | $\mathcal{C}(c)=\max(c_{\text{min}}, \min(c, c_{\text{max}})) - c$ |
 
 
 ## Non-dimensionalization

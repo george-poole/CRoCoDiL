@@ -6,7 +6,7 @@ import numpy as np
 from scipy.integrate import solve_ivp
 
 
-class FluxModelEquations:
+class LateTimeEquations:
 
     @staticmethod
     def ode_solve(
@@ -17,7 +17,7 @@ class FluxModelEquations:
         sr: float,
         cr: float,
         flux: Callable[[float, float], float],
-        gamma: float | tuple[float, float],
+        alpha_cs: float | tuple[float, float],
         constraint: Literal['zeta', 'cPlus'] | None,
         ics: tuple[float, float, float],
         method: str,
@@ -25,18 +25,18 @@ class FluxModelEquations:
         """
         Solve coupled ODE system for `c⁺(t), c⁻(t), s⁺(t)`
         """
-        if isinstance(gamma, (float, int)):
-            gamma = (gamma, gamma)
-        gamma_c, gamma_s = gamma
+        if isinstance(alpha_cs, (float, int)):
+            alpha_cs = (alpha_cs, alpha_cs)
+        alpha_c, alpha_s = alpha_cs
         if constraint is None:
-            rhs = lambda _, y, *args: FluxModelEquations.ode_rhs(*y, *args)
-            args = (Da, epsilon, zeta0, sr, cr, gamma_c, gamma_s, flux)
+            rhs = lambda _, y, *args: LateTimeEquations.ode_rhs(*y, *args)
+            args = (Da, epsilon, zeta0, sr, cr, alpha_c, alpha_s, flux)
         elif constraint == 'zeta':
-            rhs = lambda _, y, *args: FluxModelEquations.ode_rhs_zeta_constraint(*y, *args)
+            rhs = lambda _, y, *args: LateTimeEquations.ode_rhs_zeta_constraint(*y, *args)
             ics = (ics[0], ics[2])
-            args = (Da, epsilon, zeta0, sr, cr, gamma_c, gamma_s, flux)
+            args = (Da, epsilon, zeta0, sr, cr, alpha_c, alpha_s, flux)
         elif constraint == 'cPlus':
-            rhs = lambda _, y, *args: FluxModelEquations.ode_rhs_cPlus_constraint(*y, *args)
+            rhs = lambda _, y, *args: LateTimeEquations.ode_rhs_cPlus_constraint(*y, *args)
             ics_cPlus, ics_cMinus, ics_sPlus = ics
             ics = (ics_cMinus, )
             args = (ics_cPlus, ics_sPlus, epsilon, zeta0, sr, cr, flux)
@@ -66,8 +66,8 @@ class FluxModelEquations:
         zeta0,
         sr, 
         cr,
-        gamma_c,
-        gamma_s,
+        alpha_c,
+        alpha_s,
         flux,
     ):
         """
@@ -77,12 +77,12 @@ class FluxModelEquations:
         
         `ds⁺(t) / dt = -εDa Σ(s⁺, c⁺)`
         """
-        zeta = FluxModelEquations.zeta(cPlus, cMinus, sPlus, epsilon, zeta0, sr, cr)
-        r = FluxModelEquations.Sigma(cPlus, sPlus)
+        zeta = LateTimeEquations.zeta(cPlus, cMinus, sPlus, epsilon, zeta0, sr, cr)
+        r = LateTimeEquations.Sigma(cPlus, sPlus)
         f = flux(cPlus, cMinus)
-        dcPlus = -f / (1 - zeta) + gamma_c * Da * r / (1 - sPlus)
+        dcPlus = -f / (1 - zeta) + alpha_c * Da * r / (1 - sPlus)
         dcMinus = f / zeta
-        dsPlus = -epsilon * gamma_s * Da * sPlus *(1 - cPlus)
+        dsPlus = -epsilon * alpha_s * Da * sPlus *(1 - cPlus)
         return [dcPlus, dcMinus, dsPlus]
     
     @staticmethod
@@ -94,8 +94,8 @@ class FluxModelEquations:
         zeta0,
         sr, 
         cr,
-        gamma_c,
-        gamma_s,
+        alpha_c,
+        alpha_s,
         flux,
     ):
         """
@@ -103,16 +103,16 @@ class FluxModelEquations:
         
         `ds⁺(t) / dt = -εDa Σ(s⁺, c⁺)`
         """
-        cMinus = FluxModelEquations.cMinus_from_zeta_constaint(cPlus, sPlus, epsilon, zeta0, sr, cr)
-        r = FluxModelEquations.Sigma(cPlus, sPlus)
+        cMinus = LateTimeEquations.cMinus_from_zeta_constaint(cPlus, sPlus, epsilon, zeta0, sr, cr)
+        r = LateTimeEquations.Sigma(cPlus, sPlus)
         f = flux(cPlus, cMinus)
-        dcPlus = -f / (1 - zeta0) + gamma_c * Da * r / (1 - sPlus)
-        dsPlus = -epsilon * gamma_s * Da * sPlus *(1 - cPlus)
+        dcPlus = -f / (1 - zeta0) + alpha_c * Da * r / (1 - sPlus)
+        dsPlus = -epsilon * alpha_s * Da * sPlus *(1 - cPlus)
         return [dcPlus, dsPlus]
     
     @staticmethod
     def cMinus_from_zeta_constaint(cPlus, sPlus, epsilon, zeta0, sr, cr):
-        m0_per_vol = FluxModelEquations.m0(epsilon, zeta0, sr, cr, 1)
+        m0_per_vol = LateTimeEquations.m0(epsilon, zeta0, sr, cr, 1)
         cMinus = m0_per_vol
         cMinus += -(1 - zeta0) * (1 - sPlus) * cPlus 
         cMinus += -(1 - zeta0) * sPlus / epsilon
@@ -130,7 +130,7 @@ class FluxModelEquations:
         cr,
         flux,
     ):
-        zeta = FluxModelEquations.zeta(cPlus, cMinus, sPlus, epsilon, zeta0, sr, cr)
+        zeta = LateTimeEquations.zeta(cPlus, cMinus, sPlus, epsilon, zeta0, sr, cr)
         f = flux(cPlus, cMinus)
         dcMinus = f / zeta
         return [dcMinus]
@@ -158,7 +158,7 @@ class FluxModelEquations:
         """
         `ζ(c⁺, c⁻, s⁺) = ... / ...` horizontally-averaged interface height
         """ 
-        m0_per_vol = FluxModelEquations.m0(epsilon, zeta0, sr, cr, 1)
+        m0_per_vol = LateTimeEquations.m0(epsilon, zeta0, sr, cr, 1)
         numerator = m0_per_vol - sPlus / epsilon - (1 - sPlus) * cPlus
         denom = cMinus - sPlus/epsilon - (1 - sPlus) * cPlus
         return numerator / denom
@@ -177,7 +177,7 @@ class FluxModelEquations:
         """
         `mᴰ(c⁺, c⁻, s⁺) = ...` dissolved mass
         """
-        zeta = FluxModelEquations.zeta(cPlus, cMinus, sPlus, epsilon, zeta0, sr, cr)
+        zeta = LateTimeEquations.zeta(cPlus, cMinus, sPlus, epsilon, zeta0, sr, cr)
         m_per_vol = (1 - zeta) * (1 - sPlus) * cPlus + zeta * cMinus
         return m_per_vol * vol
 
@@ -195,7 +195,7 @@ class FluxModelEquations:
         """
         `mᶜ(c⁺, c⁻, s⁺) = ...` capillary-trapped mass
         """
-        zeta = FluxModelEquations.zeta(cPlus, cMinus, sPlus, epsilon, zeta0, sr, cr)
+        zeta = LateTimeEquations.zeta(cPlus, cMinus, sPlus, epsilon, zeta0, sr, cr)
         m_per_vol = (1 - zeta) * sPlus / epsilon 
         return m_per_vol * vol
     
@@ -214,8 +214,8 @@ class FluxModelEquations:
         `m = mᴰ + mᶜ` total mass
         """
         return sum((
-            FluxModelEquations.mD(cPlus, cMinus, sPlus, epsilon, zeta0, sr, cr, vol),
-            FluxModelEquations.mC(cPlus, cMinus, sPlus, epsilon, zeta0, sr, cr, vol),
+            LateTimeEquations.mD(cPlus, cMinus, sPlus, epsilon, zeta0, sr, cr, vol),
+            LateTimeEquations.mC(cPlus, cMinus, sPlus, epsilon, zeta0, sr, cr, vol),
         ))
 
     @staticmethod
@@ -237,7 +237,7 @@ C_PLUS = TypeVar('C_PLUS')
 C_MINUS = TypeVar('C_MINUS')
 FLUX = TypeVar('FLUX')
 @dataclass
-class FluxModel:
+class LateTimeModel:
     """
     If `ics=None`, then default initial conditions 
     `(c⁺, c⁻, s⁺) = (cᵣ, 0, sᵣ)` are assumed.
@@ -249,7 +249,7 @@ class FluxModel:
     zeta0: float
     sr: float
     cr: float
-    gamma: float | tuple[float, float]
+    alpha_cs: float | tuple[float, float]
     flux: Callable[[C_PLUS, C_MINUS], FLUX]
     constraint: Literal['zeta', 'cPlus'] | None = None
     ics: tuple[float, float, float] | None = None
@@ -259,7 +259,7 @@ class FluxModel:
         if self.ics is None:
             self.ics = (self.cr, 0.0, self.sr)
         self._ode_solution = self._pass_kws(
-            FluxModelEquations.ode_solve,
+            LateTimeEquations.ode_solve,
         )
 
     def _get_kws(
@@ -298,7 +298,7 @@ class FluxModel:
         if self.constraint is None:
             return self._ode_solution.y[1]
         elif self.constraint == 'zeta':
-            return self._pass_kws(FluxModelEquations.cMinus_from_zeta_constaint)
+            return self._pass_kws(LateTimeEquations.cMinus_from_zeta_constaint)
         elif self.constraint == 'cPlus':
             self._ode_solution.y[0]
         else:
@@ -326,21 +326,21 @@ class FluxModel:
         if self.constraint:
             return self.zeta0
         else:
-            return self._pass_kws(FluxModelEquations.zeta)
+            return self._pass_kws(LateTimeEquations.zeta)
     
     @property
     def mC(self) -> np.ndarray:
         """
         `mᶜ(t)` capillary-trapped mass
         """
-        return self._pass_kws(FluxModelEquations.mC)
+        return self._pass_kws(LateTimeEquations.mC)
     
     @property
     def mD(self) -> np.ndarray:
         """
         `mᴰ(t)` dissolved mass 
         """
-        return self._pass_kws(FluxModelEquations.mD)
+        return self._pass_kws(LateTimeEquations.mD)
     
     @property
     def f(self) -> np.ndarray:
@@ -356,7 +356,7 @@ C_MINUS = TypeVar('C_MINUS')
 FLUX = TypeVar('FLUX')
 def flux_model_penalties(
     attr: str,
-    model_factory: Callable[[TIME, Callable[[C_PLUS, C_MINUS], FLUX]], FluxModel],
+    model_factory: Callable[[TIME, Callable[[C_PLUS, C_MINUS], FLUX]], LateTimeModel],
     flux_factory: Callable[..., Callable[[C_PLUS, C_MINUS], FLUX]],
     flux_params: Iterable[tuple[float, ...] | float],
     dns_series: Iterable[float],
@@ -380,7 +380,7 @@ def flux_model_penalties(
 
 def get_optimal_flux_params(
     attr: str,
-    model_factory: Callable[[TIME, Callable[[C_PLUS, C_MINUS], FLUX]], FluxModel],
+    model_factory: Callable[[TIME, Callable[[C_PLUS, C_MINUS], FLUX]], LateTimeModel],
     flux_factory: Callable[..., Callable[[C_PLUS, C_MINUS], FLUX]],
     flux_params: Iterable[tuple[float, ...] | float],
     dns_series: Iterable[float],

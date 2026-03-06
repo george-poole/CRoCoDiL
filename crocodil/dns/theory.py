@@ -50,26 +50,27 @@ and time scale `𝒯` in the non-dimensionalization.
 """
 
 
-# TODO effects of scaling? other versions?
 def threshold_wavelength(
     Ra: float,
     Ly: float,
+    factor: float = 90,
 ) -> float:
     """
     `λ = 90 Ly / Ra`
     """
-    return 90.0 * Ly / Ra
+    return factor * Ly / Ra
 
 
 def threshold_dx(
     Ra: float,
     Ly: float,
     n_per_cell: int,
+    factor: float = 90,
 ):
     """
-    `Δx ≤ λ / N` to resolve instabilities
+    `Δx ≤ λ / n` to resolve instabilities
     """
-    return threshold_wavelength(Ra, Ly) / n_per_cell
+    return threshold_wavelength(Ra, Ly, factor) / n_per_cell
 
 
 def threshold_Nx(
@@ -77,11 +78,12 @@ def threshold_Nx(
     Lx: float,
     Ly: float,
     n_per_cell: int,
+    factor: float = 90,
 ):
     """
-    `Nₓ ≥ n Lₓ / λ` to resolve instabilities
+    `Nx ≥ n Lx / λ` to resolve instabilities
     """
-    return np.ceil(Lx / threshold_dx(Ra, Ly, n_per_cell))
+    return np.ceil(Lx / threshold_dx(Ra, Ly, n_per_cell, factor))
 
 
 def threshold_rayleigh(
@@ -89,9 +91,21 @@ def threshold_rayleigh(
     Ly: float,
     Nx: int,
     n_per_cell: int,
+    factor: float = 90,
 ):
     """
-    `Ra ≤ 90 Ly Nₓ / n Lₓ` to resolve instabilities
+    `Ra ≤ 90 Ly Nx / n Lx` to resolve instabilities
     """
-    return 90.0 * Ly * Nx / (n_per_cell * Lx)
+    return factor * Ly * Nx / (n_per_cell * Lx)
+
+
+def diffusive_Nx(
+    Ra: float,
+    Lx: float,
+    courant: float = 1.0, 
+) -> float:
+    """
+    `Nx ≥ Lx (Ra / 2 cD)` for stability where `cD` is the diffusive Courant number.
+    """
+    return np.ceil(Lx * np.sqrt(0.5 * Ra / courant))
 
