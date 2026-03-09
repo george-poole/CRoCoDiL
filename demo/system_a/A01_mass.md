@@ -20,7 +20,7 @@ m_D^0 &= \mathcal{A}X^2(1-\zeta_0)\left((1-s_r - \mathcal{O}(\mathcal{N}_s))(c_r
 \end{align*}
 $$
 
-If $\mathcal{O}(\mathcal{N}_s), \mathcal{O}(\mathcal{N}_c) \ll 1$, then approximately
+If $\mathcal{O}(\mathcal{N}_s), \mathcal{O}(\mathcal{N}_c) \ll 1$ such that the mass contributions of initial perturbations are negligible, then approximately
 
 $$
 \begin{align*}

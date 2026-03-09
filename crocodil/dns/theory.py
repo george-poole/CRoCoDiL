@@ -1,3 +1,4 @@
+from typing import Iterable
 import numpy as np
 
 from lucifex.utils.py_utils import FloatEnum
@@ -79,11 +80,16 @@ def threshold_Nx(
     Ly: float,
     n_per_cell: int,
     factor: float = 90,
+    ceil: bool = True
 ):
     """
     `Nx ≥ n Lx / λ` to resolve instabilities
     """
-    return np.ceil(Lx / threshold_dx(Ra, Ly, n_per_cell, factor))
+    Nx = Lx / threshold_dx(Ra, Ly, n_per_cell, factor)
+    if ceil:
+        return np.ceil(Nx)
+    else:
+        return Nx
 
 
 def threshold_rayleigh(
@@ -103,9 +109,31 @@ def diffusive_Nx(
     Ra: float,
     Lx: float,
     courant: float = 1.0, 
+    ceil: bool = True
 ) -> float:
     """
     `Nx ≥ Lx (Ra / 2 cD)` for stability where `cD` is the diffusive Courant number.
     """
-    return np.ceil(Lx * np.sqrt(0.5 * Ra / courant))
+    Nx = np.ceil(Lx * np.sqrt(0.5 * Ra / courant))
+    if ceil:
+        return np.ceil(Nx)
+    else:
+        return Nx
 
+
+def create_Nx_selector(
+    Nx_choices: Iterable[float],
+    Ra_uppers: Iterable[float],
+): 
+    n_Ra = len(Ra_uppers)
+    n_Ra_expected = len(Nx_choices) - 1
+    if not n_Ra == n_Ra_expected:
+        raise ValueError(f'Length of `Ra_uppers` should be {n_Ra_expected}, not {n_Ra}.')
+
+    def _(Ra: float) -> float:
+        for Ra_upper, Nx in zip(Ra_uppers, Nx_choices):
+            if Ra < Ra_upper:
+                return Nx
+        return Nx_choices[-1]
+    
+    return _

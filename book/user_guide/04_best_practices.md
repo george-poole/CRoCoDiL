@@ -44,6 +44,8 @@ $$
 \Delta t = \min\{C_{\textbf{u}}\Delta t_{\textbf{u}}, C_{\mathsf{D}}\Delta t_{\mathsf{D}}, C_{\Sigma}\Delta t_{\Sigma}\}
 $$
 
+The precise value of Courant number necessary for stability can depend on the choice of discretization in space and time, as well as the number of spatial dimensions.
+
 
 
 ## Time discretization

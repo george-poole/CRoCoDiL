@@ -17,6 +17,7 @@ parts:
           - file: demo/system_a/A02_early
           - file: demo/system_a/A03_late
           - file: demo/system_a/A04_reference
+          - file: demo/system_a/A05_considerations
       - file: demo/system_a/A10_demo
       - file: demo/system_a/A20_exploratory
         sections:

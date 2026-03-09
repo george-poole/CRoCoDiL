@@ -1,4 +1,4 @@
-# Introduction
+# Theory
 
 $$
 \mathbb{S}_{s,c,\theta,\psi}\begin{cases}
