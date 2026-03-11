@@ -9,7 +9,7 @@
 
 # @postprocess
 # def compute_events_umax(
-#     umax: NumericSeries | ConstantSeries,
+#     umax: NPyConstantSeries | ConstantSeries,
 #     onset: float,
 #     shut: float,
 # ) -> tuple[float | None, float, float | None]:
@@ -21,7 +21,7 @@
 #     `t_onset` < `t_max` < `t_shut`
 #     """
 #     if isinstance(umax, ConstantSeries):
-#         umax = NumericSeries.from_series(umax)
+#         umax = NPyConstantSeries.from_series(umax)
 #     t_onset = when_first_gt(umax.series, umax.time_series, onset)
 #     t_max = when_first_eq(umax.series, umax.time_series, np.max(umax.series))
 #     t_shut = when_last_gt(umax.series, umax.time_series, shut)
@@ -35,7 +35,7 @@
 #     alpha: float,
 #     adaptive: bool = False,
 #     name: str | None = None,
-# ) -> NumericSeries:
+# ) -> NPyConstantSeries:
 #     if isinstance(f, FunctionSeries):
 #         f = GridSeries.from_series(f)
 #     x, y = f.axes
@@ -49,7 +49,7 @@
 #         contour_series.append(np.array(contour_xy))
 #         time_series.append(ti)
 
-#     return NumericSeries(contour_series, time_series, name)
+#     return NPyConstantSeries(contour_series, time_series, name)
 
 
 # def _compute_from_contour_series(
@@ -59,9 +59,9 @@
 #     alpha: float,
 #     adaptive: bool = False,
 #     name: str | None = None,
-# ) -> NumericSeries:
+# ) -> NPyConstantSeries:
 #     contour = compute_contour_series(s, window, alpha, adaptive)
-#     return NumericSeries([func(i) for i in contour.series], contour.time_series, name)
+#     return NPyConstantSeries([func(i) for i in contour.series], contour.time_series, name)
 
 
 # @postprocess
@@ -70,7 +70,7 @@
 #     s_value: float,
 #     window: tuple[float | int, float | int],
 #     name: str | None = None,
-# ) -> NumericSeries:
+# ) -> NPyConstantSeries:
 #     return _compute_from_contour_series(
 #         lambda i: np.mean(i[1]), 
 #         s, 
@@ -86,7 +86,7 @@
 #     window: tuple[float | int, float | int],
 #     s_value: float,
 #     name: str | None = None,
-# ) -> NumericSeries:
+# ) -> NPyConstantSeries:
 #     return _compute_from_contour_series(
 #         lambda i: np.std(i[1]), 
 #         s, 
@@ -120,12 +120,12 @@
 #     adaptive,
 #     negative: bool = True,
 #     name: str | None = None,
-# ) -> NumericSeries:
+# ) -> NPyConstantSeries:
 #     contour = compute_contour_series(c, window, alpha, adaptive)
 #     # peaks = [contour_peaks((i, *c.axes), alpha, adaptive, negative) for i in c.series[ti_min: ti_max + 1]]
 #     peaks = [contour_peaks(i, negative=negative) for i in contour.series]
 #     number = [len(p) for p in peaks]
-#     return NumericSeries(number, contour.time_series, name)
+#     return NPyConstantSeries(number, contour.time_series, name)
 
 
 # @postprocess
@@ -137,7 +137,7 @@
 #     negative: bool = True,
 #     condition: int | None = None,
 #     name: str | None = None,
-# ) -> NumericSeries:
+# ) -> NPyConstantSeries:
     
 #     contour = compute_contour_series(c, window, alpha, adaptive)
 #     trajs, traj_times = contour_peak_trajectories(
@@ -149,7 +149,7 @@
 #     )
 #     trajs, traj_times = filter_trajectories(trajs, traj_times, condition)
 #     _, uy_bar, t = contour_peak_mean_velocity(trajs, traj_times)
-#     return NumericSeries(uy_bar, t, name)
+#     return NPyConstantSeries(uy_bar, t, name)
 
 
 # @postprocess
@@ -162,7 +162,7 @@
 #     fraction: float = 0.5,
 #     negative: bool = True,
 #     name: str | None = None,
-# ) -> tuple[NumericSeries, NumericSeries, NumericSeries, NumericSeries, NumericSeries]:
+# ) -> tuple[NPyConstantSeries, NPyConstantSeries, NPyConstantSeries, NPyConstantSeries, NPyConstantSeries]:
 
 #     contour = compute_contour_series(c, window, alpha, adaptive)
 
@@ -171,7 +171,7 @@
 #         widths, *_ = contour_peak_dimensions(cntr, zeta0, fraction, negative=negative)
 #     wbar_series.append(np.mean(widths))
 
-#     return  NumericSeries(wbar_series, contour.time_series, name)
+#     return  NPyConstantSeries(wbar_series, contour.time_series, name)
 
 
 # @postprocess
@@ -181,10 +181,10 @@
 #     alpha,
 #     adaptive,
 #     name: str | None = None,
-# ) -> NumericSeries:
+# ) -> NPyConstantSeries:
 #     contour = compute_contour_series(c, window, alpha, adaptive)
 #     fourier = lambda x: x
-#     NumericSeries([fourier(i) for i in contour.series], contour.time_series, name)
+#     NPyConstantSeries([fourier(i) for i in contour.series], contour.time_series, name)
 #     raise NotImplementedError
 
 
@@ -208,7 +208,7 @@
 # @postprocess
 # def compute_subdomain_averages(
 #     c: GridSeries,
-#     h: float | NumericSeries,
+#     h: float | NPyConstantSeries,
 # ):
 #     """
 #     `c⁺(t)`, `c⁻(t)` averages in upper and lower subdomains partitioned by either `ζ₀`, `h(t)` or `h(x,t)`
@@ -228,8 +228,8 @@
 #             cplus = [np.mean(i[0]) for i in partitions]
 #             cminus = [np.mean(i[1]) for i in partitions]
 
-#     cplus = NumericSeries([], c.time_series, f'{c.name}plus')
-#     cminus = NumericSeries([], c.time_series, f'{c.name}minus')
+#     cplus = NPyConstantSeries([], c.time_series, f'{c.name}plus')
+#     cminus = NPyConstantSeries([], c.time_series, f'{c.name}minus')
 
 #     return cplus, cminus
 

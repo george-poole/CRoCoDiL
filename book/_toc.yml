@@ -39,8 +39,9 @@ parts:
               - file: demo/system_a/A49_profiling
       - file: full/system_a/A00_full
         sections:
-          - file: full/system_a/A01_rayleigh
-          - file: full/system_a/A02_damkohler
+          - file: full/system_a/A11_rayleigh
+          - file: full/system_a/A12_damkohler
+          - file: full/system_a/A13_saturation
   - caption: System B
     chapters:
       - file: demo/system_b/B00_introduction
