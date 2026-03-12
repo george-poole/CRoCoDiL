@@ -163,7 +163,7 @@ def contour_peaks(
 
 
 @overload
-def contour_peak_dimensions(
+def contour_peak_bboxes(
     contour: tuple[np.ndarray, np.ndarray],
     baseline: float,
     fraction: float,
@@ -174,7 +174,7 @@ def contour_peak_dimensions(
 
 
 @overload
-def contour_peak_dimensions(
+def contour_peak_bboxes(
     peaks: list[tuple[float, float]],
     baseline: float,
     fraction: float,
@@ -183,7 +183,7 @@ def contour_peak_dimensions(
 
 
 @overload
-def contour_peak_dimensions(
+def contour_peak_bboxes(
     fxy: Function | tuple[np.ndarray, np.ndarray, np.ndarray],
     baseline: float,
     fraction: float,
@@ -196,7 +196,7 @@ def contour_peak_dimensions(
     ...
 
 
-def contour_peak_dimensions(
+def contour_peak_bboxes(
     arg,
     baseline,
     fraction,
@@ -207,7 +207,7 @@ def contour_peak_dimensions(
     negative = False,
 ):
     """
-    Returns `widths, lengths, x_lefts, x_rights`
+    Returns `lefts, rights, lowers, uppers`
     """
     if isinstance(arg, Function) or (isinstance(arg, tuple) and len(arg) == 3):
         assert alpha is not None
@@ -220,10 +220,10 @@ def contour_peak_dimensions(
     else:
         peaks = arg
 
-    widths = []
-    lengths = []
     lefts = []
     rights = []
+    lowers = []
+    uppers = []
 
     for (x_peak, y_peak) in peaks:
         if negative:
@@ -257,12 +257,35 @@ def contour_peak_dimensions(
             except IndexError:
                 break
 
-        widths.append(x_r - x_l)
-        lengths.append(0.5 * (y_value_left + y_value_right))
         lefts.append(x_l)
         rights.append(x_r)
-        
-    return widths, lengths, lefts, rights
+        if negative:
+            lowers.append(y_peak)
+            uppers.append(0.5 * (y_value_left + y_value_right))
+        else:
+            uppers.append(y_peak)
+            lowers.append(0.5 * (y_value_left + y_value_right))
+
+    return lefts, rights, lowers, uppers
+
+
+def contour_peak_dimensions(
+    lefts, rights, lowers, uppers,
+) -> tuple[list[float], list[float]]:
+    """
+    Returns `widths, heights`
+    """
+
+    widths = []
+    heights = []
+
+    for x_l, x_r, y_l ,y_u in zip(
+        lefts, rights, lowers, uppers, strict=True,
+    ):
+        widths.append(x_r - x_l)
+        heights.append(y_u - y_l)
+
+    return widths, heights
 
 
 @overload

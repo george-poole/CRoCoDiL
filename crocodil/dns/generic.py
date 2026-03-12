@@ -311,7 +311,11 @@ def dns_generic(
             evol = lambda c, theta, s: -epsilon * reaction_plus_source(c, theta, s)
         else:
             evol = lambda c, s: -epsilon * reaction_plus_source(c, s)
-        SigmaEvol = ExprSeries.from_expr_factory(evol, name='SigmaEvol')(
+        # SigmaEvol = ExprSeries.from_expr_factory(evol, name='SigmaEvol')(
+        #     *(c, theta, s) if THERMOSOLUTAL
+        #     else (c, s)
+        # )
+        SigmaEvol = ExprSeries(evol, name='SigmaEvol')(
             *(c, theta, s) if THERMOSOLUTAL
             else (c, s)
         )

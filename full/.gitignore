@@ -7,5 +7,6 @@
 *.vtk
 *.mp4
 *.pdf
+*.svg
 *.png
 *.pickle
