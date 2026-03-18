@@ -9,7 +9,7 @@ $$\Omega\approx\cup_{\mathcal{K}\in\mathscr{T}}\mathcal{K}\subset\mathbb{R}^d$$
 ### Velocity-pressure formulation
 
 $$
-V_{\textbf{u}} = \{\textbf{v}\ \in H(\text{div},\Omega)~:~(\textbf{n}\cdot\textbf{v})|_{\partial\Omega_{\text{E}}}=u_{\text{E}}~,~\textbf{v}|_{\mathcal{K}}\in\left[\text{BDM}_1(\mathcal{K})\right]^d ~\forall\mathcal{K}\in\mathscr{T}\}
+V_{\textbf{u}} = \{\textbf{v} \in H(\text{div},\Omega)~:~(\textbf{n}\cdot\textbf{v})|_{\partial\Omega_{\text{E}}}=u_{\text{E}}~,~\textbf{v}|_{\mathcal{K}}\in\left[\text{BDM}_1(\mathcal{K})\right]^d ~\forall\mathcal{K}\in\mathscr{T}\}
 $$
 
 $$

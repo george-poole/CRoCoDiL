@@ -2,7 +2,7 @@
 
 ## Capillary-trapped CO<sub>2</sub>
 
-![Figure](./figures/pore_scale.png)
+![Figure](./figures/pore_scale_unreactive.png)
 
 $$
 \phi + \phi_{\text{CO}_2} + \phi_{\text{rock}} = 1 
