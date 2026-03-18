@@ -1,17 +1,16 @@
 import os
 import json
 
-TEMPLATE_FILE_NAME = 'A01_template'
-
 def copy_template(
+    template_file: str,
     param_name: str,
     param_tex: str,
     file_name: str,
     heading: str,
     overwrite: bool,
-    strip: bool,
+    outputs: bool,
 ) -> None:
-    with open(f'{TEMPLATE_FILE_NAME}.ipynb', 'r') as f:
+    with open(f'{template_file}.ipynb', 'r') as f:
         nb = json.load(f)
 
     for cell in nb['cells']:
@@ -29,7 +28,7 @@ def copy_template(
                 line if not line.startswith('PARAM_TEX = ') else f'PARAM_TEX = {repr(param_tex)}'
                 for line in cell['source']
             ]
-            if strip:
+            if not outputs:
                 cell['outputs'] = []
                 cell['execution_count'] = None
 
@@ -42,8 +41,10 @@ def copy_template(
 
 
 if __name__ == '__main__':
-    OVERWRITE = False
-    STRIP = True
+    TEMPLATE_FILE_NAME = 'A01_template'
+    OVERWRITE = True
+    OUTPUTS = False
+    EXECUTE = False
     param_name = ('Ra', 'Da', 'sr')
     param_tex = ('Ra', 'Da', 's_r')
     file_name = ('A11_rayleigh', 'A12_damkohler', 'A13_saturation')
@@ -51,4 +52,8 @@ if __name__ == '__main__':
     for args in zip(
         param_name, param_tex, file_name, heading
     ):
-        copy_template(*args, OVERWRITE, STRIP)
+        copy_template(TEMPLATE_FILE_NAME, *args, OVERWRITE, OUTPUTS)
+
+    if EXECUTE:
+        for fn in file_name:
+            os.system(f"jupyter nbconvert --execute --to notebook --inplace {fn}.ipynb")

@@ -24,7 +24,7 @@ from lucifex.solver import (
 )
 from lucifex.sim import Simulation
 from lucifex.pde.streamfunction_vorticity import velocity_from_streamfunction
-from lucifex.pde.darcy import darcy_streamfunction, darcy_incompressible
+from lucifex.pde.darcy import darcy_streamfunction, darcy
 from lucifex.pde.advection_diffusion import (
     dg_advection_diffusion_reaction, advection_diffusion, 
     dg_advection_diffusion, advection_diffusion_reaction, flux,
@@ -256,8 +256,8 @@ def dns_generic(
         u_bcs = BoundaryConditions(('essential', dOmega.union, (0.0, 0.0), 0)) if flow_bcs is Ellipsis else flow_bcs[0]
         p_bcs = None if flow_bcs is Ellipsis else flow_bcs[1]
         flow_petsc = flow_petsc.replace(pc_factor_mat_solver_type='mumps')
-        u_solver = bvp(darcy_incompressible, u_bcs, petsc=flow_petsc)(
-            up, FE(k), FE(mu), FE(rho) * as_vector(eg), p_bcs)
+        u_solver = bvp(darcy, u_bcs, petsc=flow_petsc)(
+            up, FE(k), FE(mu), FE(rho) * as_vector(eg), bcs=p_bcs)
         solvers.append(u_solver)
 
     # timestep solver

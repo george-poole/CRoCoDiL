@@ -2,7 +2,7 @@ from typing import Iterable
 import numpy as np
 
 from lucifex.utils.py_utils import FloatEnum
-from lucifex.pde.scaling import ScalingChoice
+from lucifex.pde.scaling import ScalingOptions
 
 
 class CONVECTION_CONSTANTS(FloatEnum):
@@ -20,7 +20,7 @@ class CONVECTION_CONSTANTS(FloatEnum):
     """
 
 
-CONVECTION_REACTION_SCALINGS = ScalingChoice(
+CONVECTION_REACTION_SCALINGS = ScalingOptions(
     ('Ad', 'Di', 'Ki', 'Bu', 'X'),
     lambda Ra, Da=0: {
         'advective': (1, 1/Ra, Da, 1, 1),
