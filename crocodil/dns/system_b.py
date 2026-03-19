@@ -10,8 +10,7 @@ from lucifex.sim import configure_simulation
 from lucifex.utils.py_utils import FrozenDict
 
 from .generic import dns_generic
-from .utils import DEFAULT_JIT_DIR, heaviside, rectangle_mesh_closure
-from .theory import SCALINGS
+from .utils import DEFAULT_JIT_DIR, SCALINGS, heaviside, rectangle_mesh_closure
 
 
 SYSTEM_B_REFERENCE = FrozenDict(

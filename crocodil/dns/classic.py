@@ -8,8 +8,7 @@ from lucifex.solver import BoundaryConditions, OptionsPETSc, OptionsJIT
 from lucifex.sim import configure_simulation
 
 from .generic import dns_generic
-from .theory import SCALINGS
-from .utils import DEFAULT_JIT_DIR, rectangle_mesh_closure, heaviside
+from .utils import DEFAULT_JIT_DIR, SCALINGS, rectangle_mesh_closure, heaviside
 
 
 @configure_simulation(

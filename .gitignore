@@ -3,6 +3,7 @@
 profile_default/
 ipython_config.py
 book/_build
+*.bkp
 
 # compiled
 *.com
