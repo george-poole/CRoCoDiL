@@ -11,7 +11,7 @@ from lucifex.utils.py_utils import FrozenDict
 
 from .generic import dns_generic
 from .utils import DEFAULT_JIT_DIR, heaviside, rectangle_mesh_closure
-from .theory import CONVECTION_REACTION_SCALINGS
+from .theory import SCALINGS
 
 
 SYSTEM_B_REFERENCE = FrozenDict(
@@ -130,7 +130,7 @@ def dns_system_b(
     `𝐧⋅𝐮 = 0` on `∂Ω`
     """
     # space
-    scaling_map = CONVECTION_REACTION_SCALINGS[scaling](Ra, Da)
+    scaling_map = SCALINGS[scaling](Ra, Da)
     X = scaling_map['X']
     Lx = aspect * X
     Ly = 1.0 * X

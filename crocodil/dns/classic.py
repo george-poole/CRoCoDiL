@@ -8,7 +8,7 @@ from lucifex.solver import BoundaryConditions, OptionsPETSc, OptionsJIT
 from lucifex.sim import configure_simulation
 
 from .generic import dns_generic
-from .theory import CONVECTION_REACTION_SCALINGS
+from .theory import SCALINGS
 from .utils import DEFAULT_JIT_DIR, rectangle_mesh_closure, heaviside
 
 
@@ -47,7 +47,7 @@ def dns_darcy_rayleigh_benard(
     fluxes = (),
 ):
     # space
-    scaling_map = CONVECTION_REACTION_SCALINGS[scaling](Ra)
+    scaling_map = SCALINGS[scaling](Ra)
     X = scaling_map['X']
     Lx = aspect * X
     Ly = 1.0 * X
@@ -141,7 +141,7 @@ def dns_darcy_evolving(
     fluxes = (),
 ):
     # space
-    scaling_map = CONVECTION_REACTION_SCALINGS[scaling](Ra)
+    scaling_map = SCALINGS[scaling](Ra)
     X = scaling_map['X']
     Lx = aspect * X
     Ly = 1.0 * X
@@ -237,7 +237,7 @@ def dns_darcy_rayleigh_taylor(
     fluxes = (),
 ):
     # space
-    scaling_map = CONVECTION_REACTION_SCALINGS[scaling](Ra)
+    scaling_map = SCALINGS[scaling](Ra)
     X = scaling_map['X']
     Lx = aspect * X
     Ly = 1.0 * X
@@ -341,7 +341,7 @@ def dns_darcy_thermosolutal(
     diagnostic: bool = False,
 ):
     # space
-    scaling_map = CONVECTION_REACTION_SCALINGS[scaling](Ra)
+    scaling_map = SCALINGS[scaling](Ra)
     X = scaling_map['X']
     Lx = aspect * X
     Ly = 1.0 * X

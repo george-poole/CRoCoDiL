@@ -29,8 +29,9 @@ $$
 ### Continuous Galerkin
 
 $$
-V_w^{\text{DG}} = \{v\in C^0(\Omega)~:~v|_{\partial{\Omega}_{\text{D}, w}}=w_{\text{D}}~,~v|_{\mathcal{K}}\in\text{P}_1(\mathcal{K})~\forall\mathcal{K}\in\mathscr{T}\}~,~w\in\{c,\theta\}
+V_w^{\text{CG}} = \{v\in C^0(\Omega)~:~v|_{\partial{\Omega}_{\text{D}, w}}=w_{\text{D}}~,~v|_{\mathcal{K}}\in\text{P}_1(\mathcal{K})~\forall\mathcal{K}\in\mathscr{T}\}~,~w\in\{c,\theta\}
 $$
+
 ### Discontinuous Galerkin
 
 $$

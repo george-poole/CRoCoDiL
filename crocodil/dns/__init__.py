@@ -4,4 +4,4 @@ from .classic import (
     dns_darcy_thermosolutal,
 )
 from .diagnostic import mass_capillary, mass_dissolved, vertical_flux
-from .theory import CONVECTION_REACTION_SCALINGS, CONVECTION_CONSTANTS
+from .utils import SCALINGS

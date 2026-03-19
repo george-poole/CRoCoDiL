@@ -6,6 +6,8 @@ from mpi4py import MPI
 from dolfinx.mesh import Mesh
 
 from lucifex.mesh import MeshBoundary, mesh_boundary, rectangle_mesh
+from lucifex.pde.scaling import ScalingOptions
+from lucifex.utils.py_utils import FloatEnum
 
 
 DEFAULT_JIT_DIR = os.path.abspath(
@@ -15,6 +17,53 @@ DEFAULT_JIT_DIR = os.path.abspath(
         '__jit__',
     )
 )
+
+
+SCALINGS = ScalingOptions(
+    ('Ad', 'Di', 'Ki', 'Bu', 'X'),
+    lambda Ra, Da=0: {
+        'advective': (1, 1/Ra, Da, 1, 1),
+        'diffusive': (1, 1, Ra * Da, Ra, 1),
+        'advective_diffusive': (1, 1, Da/Ra, 1, Ra),
+        'reactive': (1, 1, 1, np.sqrt(Ra / Da) if Da else np.inf, np.sqrt(Ra * Da)),
+    }
+)
+"""
+Choice of length scale `ℒ`, velocity scale `𝒰`
+and time scale `𝒯` in the non-dimensionalization.
+
+`'advective'` \\
+`ℒ` = domain size \\
+`𝒰` = advective speed
+
+`'diffusive'` \\
+`ℒ` = domain size \\
+`𝒰` = diffusive speed
+
+`'advective_diffusive'` \\
+`ℒ` = diffusive length \\
+`𝒰` = advective speed
+
+`'reactive'` \\
+`ℒ` = diffusive length \\
+`𝒯` = reactive time
+"""
+
+
+class CONVECTION_CONSTANTS(FloatEnum):
+    """
+    Constants from the theory of convection in porous media
+    """
+
+    RA_CRITICAL = 4 * np.pi **2
+    """
+    Critical Rayleigh for the onset of Rayleigh-Benard convection
+    """
+    FLUX_FACTOR = 0.008
+    """
+    TODO
+    """
+
 
 
 def heaviside(

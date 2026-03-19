@@ -11,32 +11,32 @@ parts:
       - file: user_guide/04_best_practices
   - caption: System A
     chapters:
-      - file: demo/system_a/A00_introduction
+      - file: expo/system_a/A00_introduction
         sections: 
-          - file: demo/system_a/A01_mass
-          - file: demo/system_a/A02_early
-          - file: demo/system_a/A03_late
-          - file: demo/system_a/A04_reference
-          - file: demo/system_a/A05_considerations
-      - file: demo/system_a/A10_demo
-      - file: demo/system_a/A20_exploratory
+          - file: expo/system_a/A01_mass
+          - file: expo/system_a/A02_early
+          - file: expo/system_a/A03_late
+          - file: expo/system_a/A04_reference
+          - file: expo/system_a/A05_constraints
+      - file: expo/system_a/A10_overview
+      - file: expo/system_a/A20_exploratory
         sections:
-          - file: demo/system_a/A30_parameters
+          - file: expo/system_a/A30_parameters
             sections:
-              - file: demo/system_a/A31_rayleigh
-              - file: demo/system_a/A32_damkohler
-              - file: demo/system_a/A33_saturations
-          - file: demo/system_a/A40_numerical
+              - file: expo/system_a/A31_rayleigh
+              - file: expo/system_a/A32_damkohler
+              - file: expo/system_a/A33_saturations
+          - file: expo/system_a/A40_numerical
             sections:
-              - file: demo/system_a/A41_timestep
-              - file: demo/system_a/A42_resolution
-              - file: demo/system_a/A43_cell
-              - file: demo/system_a/A44_finite_difference
-              - file: demo/system_a/A45_stabilization
-              - file: demo/system_a/A46_sensitivity_perturbation
-              - file: demo/system_a/A47_sensitivity_residual
-              - file: demo/system_a/A48_scaling
-              - file: demo/system_a/A49_profiling
+              - file: expo/system_a/A41_timestep
+              - file: expo/system_a/A42_resolution
+              - file: expo/system_a/A43_cell
+              - file: expo/system_a/A44_finite_difference
+              - file: expo/system_a/A45_stabilization
+              - file: expo/system_a/A46_sensitivity_perturbation
+              - file: expo/system_a/A47_sensitivity_residual
+              - file: expo/system_a/A48_scaling
+              - file: expo/system_a/A49_profiling
       - file: full/system_a/A00_full
         sections:
           - file: full/system_a/A11_rayleigh
@@ -44,15 +44,15 @@ parts:
           - file: full/system_a/A13_saturation
   - caption: System B
     chapters:
-      - file: demo/system_b/B00_introduction
-      - file: demo/system_b/B10_demo
+      - file: expo/system_b/B00_introduction
+      - file: expo/system_b/B10_overview
   - caption: System C
     chapters:
-      - file: demo/system_c/C00_introduction
-      - file: demo/system_c/C10_demo
+      - file: expo/system_c/C00_introduction
+      - file: expo/system_c/C10_overview
   - caption: Classic Systems
     chapters:
-      - file: demo/classic/X01_darcy_rayleigh_benard
-      - file: demo/classic/X02_darcy_evolving
-      - file: demo/classic/X03_darcy_rayleigh_taylor
-      - file: demo/classic/X04_darcy_thermosolutal
+      - file: expo/classic/X01_darcy_rayleigh_benard
+      - file: expo/classic/X02_darcy_evolving
+      - file: expo/classic/X03_darcy_rayleigh_taylor
+      - file: expo/classic/X04_darcy_thermosolutal

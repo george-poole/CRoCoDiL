@@ -1,6 +1,6 @@
 # Classic convection systems in CRoCoDiL
 
-For demonstration and benchmarking purposes, some classic convection systems are implemented in CRoCoDiL.
+For overviewnstration and benchmarking purposes, some classic convection systems are implemented in CRoCoDiL.
 
 ## Rayleigh-Bénard
 
