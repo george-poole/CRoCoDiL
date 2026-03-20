@@ -6,7 +6,7 @@ import numpy as np
 from scipy.integrate import solve_ivp
 
 
-class LateTimeEquations:
+class LateTimeFormulae:
 
     @staticmethod
     def ode_solve(
@@ -29,14 +29,14 @@ class LateTimeEquations:
             alpha_cs = (alpha_cs, alpha_cs)
         alpha_c, alpha_s = alpha_cs
         if constraint is None:
-            rhs = lambda _, y, *args: LateTimeEquations.ode_rhs(*y, *args)
+            rhs = lambda _, y, *args: LateTimeFormulae.ode_rhs(*y, *args)
             args = (Da, epsilon, zeta0, sr, cr, alpha_c, alpha_s, flux)
         elif constraint == 'zeta':
-            rhs = lambda _, y, *args: LateTimeEquations.ode_rhs_zeta_constraint(*y, *args)
+            rhs = lambda _, y, *args: LateTimeFormulae.ode_rhs_zeta_constraint(*y, *args)
             ics = (ics[0], ics[2])
             args = (Da, epsilon, zeta0, sr, cr, alpha_c, alpha_s, flux)
         elif constraint == 'cPlus':
-            rhs = lambda _, y, *args: LateTimeEquations.ode_rhs_cPlus_constraint(*y, *args)
+            rhs = lambda _, y, *args: LateTimeFormulae.ode_rhs_cPlus_constraint(*y, *args)
             ics_cPlus, ics_cMinus, ics_sPlus = ics
             ics = (ics_cMinus, )
             args = (ics_cPlus, ics_sPlus, epsilon, zeta0, sr, cr, flux)
@@ -77,8 +77,8 @@ class LateTimeEquations:
         
         `ds⁺(t) / dt = -εDa Σ(s⁺, c⁺)`
         """
-        zeta = LateTimeEquations.zeta(cPlus, cMinus, sPlus, epsilon, zeta0, sr, cr)
-        r = LateTimeEquations.Sigma(cPlus, sPlus)
+        zeta = LateTimeFormulae.zeta(cPlus, cMinus, sPlus, epsilon, zeta0, sr, cr)
+        r = LateTimeFormulae.Sigma(cPlus, sPlus)
         f = flux(cPlus, cMinus)
         dcPlus = -f / (1 - zeta) + alpha_c * Da * r / (1 - sPlus)
         dcMinus = f / zeta
@@ -103,8 +103,8 @@ class LateTimeEquations:
         
         `ds⁺(t) / dt = -εDa Σ(s⁺, c⁺)`
         """
-        cMinus = LateTimeEquations.cMinus_from_zeta_constaint(cPlus, sPlus, epsilon, zeta0, sr, cr)
-        r = LateTimeEquations.Sigma(cPlus, sPlus)
+        cMinus = LateTimeFormulae.cMinus_from_zeta_constaint(cPlus, sPlus, epsilon, zeta0, sr, cr)
+        r = LateTimeFormulae.Sigma(cPlus, sPlus)
         f = flux(cPlus, cMinus)
         dcPlus = -f / (1 - zeta0) + alpha_c * Da * r / (1 - sPlus)
         dsPlus = -epsilon * alpha_s * Da * sPlus *(1 - cPlus)
@@ -112,7 +112,7 @@ class LateTimeEquations:
     
     @staticmethod
     def cMinus_from_zeta_constaint(cPlus, sPlus, epsilon, zeta0, sr, cr):
-        m0_per_vol = LateTimeEquations.m0(epsilon, zeta0, sr, cr, 1)
+        m0_per_vol = LateTimeFormulae.m0(epsilon, zeta0, sr, cr, 1)
         cMinus = m0_per_vol
         cMinus += -(1 - zeta0) * (1 - sPlus) * cPlus 
         cMinus += -(1 - zeta0) * sPlus / epsilon
@@ -130,7 +130,7 @@ class LateTimeEquations:
         cr,
         flux,
     ):
-        zeta = LateTimeEquations.zeta(cPlus, cMinus, sPlus, epsilon, zeta0, sr, cr)
+        zeta = LateTimeFormulae.zeta(cPlus, cMinus, sPlus, epsilon, zeta0, sr, cr)
         f = flux(cPlus, cMinus)
         dcMinus = f / zeta
         return [dcMinus]
@@ -158,7 +158,7 @@ class LateTimeEquations:
         """
         `ζ(c⁺, c⁻, s⁺) = ... / ...` horizontally-averaged interface height
         """ 
-        m0_per_vol = LateTimeEquations.m0(epsilon, zeta0, sr, cr, 1)
+        m0_per_vol = LateTimeFormulae.m0(epsilon, zeta0, sr, cr, 1)
         numerator = m0_per_vol - sPlus / epsilon - (1 - sPlus) * cPlus
         denom = cMinus - sPlus/epsilon - (1 - sPlus) * cPlus
         return numerator / denom
@@ -177,7 +177,7 @@ class LateTimeEquations:
         """
         `mᴰ(c⁺, c⁻, s⁺) = ...` dissolved mass
         """
-        zeta = LateTimeEquations.zeta(cPlus, cMinus, sPlus, epsilon, zeta0, sr, cr)
+        zeta = LateTimeFormulae.zeta(cPlus, cMinus, sPlus, epsilon, zeta0, sr, cr)
         m_per_vol = (1 - zeta) * (1 - sPlus) * cPlus + zeta * cMinus
         return m_per_vol * vol
 
@@ -195,7 +195,7 @@ class LateTimeEquations:
         """
         `mᶜ(c⁺, c⁻, s⁺) = ...` capillary-trapped mass
         """
-        zeta = LateTimeEquations.zeta(cPlus, cMinus, sPlus, epsilon, zeta0, sr, cr)
+        zeta = LateTimeFormulae.zeta(cPlus, cMinus, sPlus, epsilon, zeta0, sr, cr)
         m_per_vol = (1 - zeta) * sPlus / epsilon 
         return m_per_vol * vol
     
@@ -214,8 +214,8 @@ class LateTimeEquations:
         `m = mᴰ + mᶜ` total mass
         """
         return sum((
-            LateTimeEquations.mD(cPlus, cMinus, sPlus, epsilon, zeta0, sr, cr, vol),
-            LateTimeEquations.mC(cPlus, cMinus, sPlus, epsilon, zeta0, sr, cr, vol),
+            LateTimeFormulae.mD(cPlus, cMinus, sPlus, epsilon, zeta0, sr, cr, vol),
+            LateTimeFormulae.mC(cPlus, cMinus, sPlus, epsilon, zeta0, sr, cr, vol),
         ))
 
     @staticmethod
@@ -259,7 +259,7 @@ class LateTimeModel:
         if self.ics is None:
             self.ics = (self.cr, 0.0, self.sr)
         self._ode_solution = self._pass_kws(
-            LateTimeEquations.ode_solve,
+            LateTimeFormulae.ode_solve,
         )
 
     def _get_kws(
@@ -298,7 +298,7 @@ class LateTimeModel:
         if self.constraint is None:
             return self._ode_solution.y[1]
         elif self.constraint == 'zeta':
-            return self._pass_kws(LateTimeEquations.cMinus_from_zeta_constaint)
+            return self._pass_kws(LateTimeFormulae.cMinus_from_zeta_constaint)
         elif self.constraint == 'cPlus':
             self._ode_solution.y[0]
         else:
@@ -326,21 +326,21 @@ class LateTimeModel:
         if self.constraint:
             return self.zeta0
         else:
-            return self._pass_kws(LateTimeEquations.zeta)
+            return self._pass_kws(LateTimeFormulae.zeta)
     
     @property
     def mC(self) -> np.ndarray:
         """
         `mᶜ(t)` capillary-trapped mass
         """
-        return self._pass_kws(LateTimeEquations.mC)
+        return self._pass_kws(LateTimeFormulae.mC)
     
     @property
     def mD(self) -> np.ndarray:
         """
         `mᴰ(t)` dissolved mass 
         """
-        return self._pass_kws(LateTimeEquations.mD)
+        return self._pass_kws(LateTimeFormulae.mD)
     
     @property
     def f(self) -> np.ndarray:
@@ -354,7 +354,7 @@ TIME = TypeVar('TIME')
 C_PLUS = TypeVar('C_PLUS')
 C_MINUS = TypeVar('C_MINUS')
 FLUX = TypeVar('FLUX')
-def flux_model_penalties(
+def late_model_penalties(
     attr: str,
     model_factory: Callable[[TIME, Callable[[C_PLUS, C_MINUS], FLUX]], LateTimeModel],
     flux_factory: Callable[..., Callable[[C_PLUS, C_MINUS], FLUX]],
@@ -378,7 +378,7 @@ def flux_model_penalties(
     return pens
 
 
-def get_optimal_flux_params(
+def find_optimal_late_model(
     attr: str,
     model_factory: Callable[[TIME, Callable[[C_PLUS, C_MINUS], FLUX]], LateTimeModel],
     flux_factory: Callable[..., Callable[[C_PLUS, C_MINUS], FLUX]],
@@ -387,8 +387,7 @@ def get_optimal_flux_params(
     dns_time_series: Iterable[float],
     penalty_metric: Callable | None = None,
 ) -> tuple[float, ...] | float:
-    
-    penalties = flux_model_penalties(
+    penalties = late_model_penalties(
         attr,
         model_factory, 
         flux_factory, 

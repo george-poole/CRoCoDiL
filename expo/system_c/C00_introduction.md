@@ -21,7 +21,7 @@ u_{\text{E}}\vert_{\partial\Omega}=0\iff\psi_{\text{D}}\vert_{\partial\Omega}=0 
 \end{cases}
 $$ 
 
-![System C at t=0](./figures/system_c_Omega0.png)
+![System C at t=0](./figures/system_c_Omega_0.png)
 
 ## Notation
 

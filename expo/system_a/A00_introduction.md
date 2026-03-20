@@ -18,9 +18,9 @@ u_{\text{E}}\vert_{\partial\Omega}=0\iff\psi_{\text{D}}\vert_{\partial\Omega}=0 
 \end{cases}
 $$
 
-![System A at t=0](./figures/system_a_Omega0.png)
+![System A at t=0](./figures/system_a_Omega_0.png)
 
-![System A at t>0](./figures/system_a_Omega.png)
+![System A at t>0](./figures/system_a_Omega_t.png)
 
 ## Notation
 

@@ -21,7 +21,7 @@ u_{\text{E}}\vert_{\partial\Omega}=0\iff\psi_{\text{D}}\vert_{\partial\Omega}=0 
 \end{cases}
 $$ 
 
-![System B at t=0](./figures/system_b_Omega0.png)
+![System B at t=0](./figures/system_b_Omega_0.png)
 
 ## Notation
 

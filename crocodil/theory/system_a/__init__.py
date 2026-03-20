@@ -1,5 +1,5 @@
-from .early import EarlyTimeModel, EarlyTimeSimilarityModel, EarlyTimeEquations 
-from .late import LateTimeModel, LateTimeEquations
+from .early import EarlyTimeExactModel, EarlyTimeSimilarityModel, EarlyTimeExactFormulae 
+from .late import LateTimeModel, LateTimeFormulae
 from .mass import (
     critical_saturation,
     mass_capillary_asymptote, 

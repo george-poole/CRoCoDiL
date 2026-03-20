@@ -1,6 +1,6 @@
 <mxfile host="Electron" agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/26.2.15 Chrome/134.0.6998.205 Electron/35.2.1 Safari/537.36" version="26.2.15">
   <diagram name="Page-1" id="ZoYgnsPX22BV_gQzKxPb">
-    <mxGraphModel dx="1641" dy="1399" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1200" pageHeight="2000" math="1" shadow="0">
+    <mxGraphModel dx="1203" dy="1097" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1200" pageHeight="2000" math="1" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -42,8 +42,8 @@
         </mxCell>
         <mxCell id="l9wLnr5pDdemg-z20rVX-53" value="" style="endArrow=none;html=1;rounded=0;dashed=1;dashPattern=12 12;" parent="1" edge="1">
           <mxGeometry width="50" height="50" relative="1" as="geometry">
-            <mxPoint x="241.5" y="360" as="sourcePoint" />
-            <mxPoint x="841.5" y="360" as="targetPoint" />
+            <mxPoint x="245.5" y="360" as="sourcePoint" />
+            <mxPoint x="845.5" y="360" as="targetPoint" />
           </mxGeometry>
         </mxCell>
         <mxCell id="l9wLnr5pDdemg-z20rVX-56" value="$$\textbf{e}_g$$" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=35;" parent="1" vertex="1">
@@ -82,7 +82,7 @@
         <mxCell id="rX1eTnM0zhWwftDJ3Mqu-2" value="$$\theta=0$$" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=35;" parent="1" vertex="1">
           <mxGeometry x="339.5" y="474" width="121" height="70" as="geometry" />
         </mxCell>
-        <mxCell id="JGx4AG6qd6tLKs_kZSrZ-3" value="$$(\textbf{n}\cdot(\mathsf{G}\cdot\nabla \theta))\vert_{\partial\Omega}=0$$" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=35;" vertex="1" parent="1">
+        <mxCell id="JGx4AG6qd6tLKs_kZSrZ-3" value="$$(\textbf{n}\cdot(\mathsf{G}\cdot\nabla \theta))\vert_{\partial\Omega}=0$$" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=35;" parent="1" vertex="1">
           <mxGeometry x="450" y="70" width="200" height="70" as="geometry" />
         </mxCell>
       </root>
