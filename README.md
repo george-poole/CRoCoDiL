@@ -9,8 +9,8 @@ For any queries, comments or feedback do not hesitate to email `grp39@cantab.ac.
 ## What does CRoCoDiL do?
 
 + solves the equations of thermosolutal convection coupled to Darcy flow and porosity evolution due to the dissolution of capillary-trapped CO<sub>2</sub>
-+ lets you customise the domain, initial conditions, boundary conditions and constitutive relations
-+ enables easy visualization and postprocessing in iPython notebooks
++ supports abstraction over domain, initial conditions, boundary conditions, constitutive relations and non-dimensionalization
++ provides utilities and iPython notebooks for running, visualizing and postprocessing simulations
 
 ## Installation (macOS)
 

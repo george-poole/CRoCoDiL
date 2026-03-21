@@ -7,6 +7,8 @@ import scipy.special as sp
 from scipy.integrate import quad
 from scipy.optimize import fsolve
 
+from .model import Model
+
 
 class EarlyTimeExactFormulae:
 
@@ -206,7 +208,6 @@ class EarlyTimeExactFormulae:
         return Ki * sr / (1 - sr)
 
 
-
 @dataclass
 class EarlyTimeExactModel:
     """
@@ -345,7 +346,7 @@ class EarlyTimeSimilarityFormulae:
 
     
 @dataclass
-class EarlyTimeSimilarityModel:
+class EarlyTimeSimilarityModel(Model):
     t: Iterable[float]
     y: Iterable[float]
     Di: float
@@ -364,14 +365,8 @@ class EarlyTimeSimilarityModel:
         """
         `c(y,t)`
         """
-        cUpper = partial(
-            EarlyTimeSimilarityFormulae.cUpper, 
-            Di=self.Di, Ki=self.Ki, zeta0=self.zeta0, sr=self.sr, cr=self.cr, infty=self.infty,
-        )
-        cLower = partial(
-            EarlyTimeSimilarityFormulae.cLower, 
-            Di=self.Di, Ki=self.Ki, zeta0=self.zeta0, sr=self.sr, cr=self.cr, infty=self.infty,
-        )
+        cUpper = self.create_partial(EarlyTimeSimilarityFormulae.cUpper)
+        cLower = self.create_partial(EarlyTimeSimilarityFormulae.cLower)
 
         c_series = []
         for ti in self.t:
@@ -384,22 +379,16 @@ class EarlyTimeSimilarityModel:
     
     @cached_property
     def cZeta(self) -> list[float]:
-        return [
-            EarlyTimeSimilarityFormulae.cZeta(
-                ti, self.Di, self.Ki, self.zeta0, self.sr, self.cr, self.infty,
-            )
-            for ti in self.t
-        ]
+        c = self.create_partial(EarlyTimeSimilarityFormulae.cZeta)
+        return [c(ti)for ti in self.t]
     
     @cached_property
     def cPlus(self) -> list[float]:
         """
         `c(y > ζ, t << 1/Π)` 
         """
-        return [
-            EarlyTimeSimilarityFormulae.cPlus(ti, self.Ki, self.sr, self.cr)
-            for ti in self.t
-        ]
+        c = self.create_partial(EarlyTimeSimilarityFormulae.cPlus)
+        return [c(ti)for ti in self.t]
     
     @property
     def Pi(self):

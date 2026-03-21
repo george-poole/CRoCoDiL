@@ -1,3 +1,17 @@
+# data
+*.npy
+*.npz
+*.csv
+*.h5
+*.xdmf
+*.xml
+*.vtk
+*.mp4
+*.pdf
+*.svg
+*.png
+*.pickle
+
 # interactive
 .ipynb_checkpoints
 profile_default/

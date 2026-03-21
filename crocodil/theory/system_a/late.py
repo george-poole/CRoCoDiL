@@ -1,9 +1,10 @@
-from typing import Iterable, Callable, Any, TypeVar, Literal
+from typing import Iterable, Callable, TypeVar, Literal
 from dataclasses import dataclass
-from inspect import signature
 
 import numpy as np
 from scipy.integrate import solve_ivp
+
+from .model import Model
 
 
 class LateTimeFormulae:
@@ -237,7 +238,7 @@ C_PLUS = TypeVar('C_PLUS')
 C_MINUS = TypeVar('C_MINUS')
 FLUX = TypeVar('FLUX')
 @dataclass
-class LateTimeModel:
+class LateTimeModel(Model):
     """
     If `ics=None`, then default initial conditions 
     `(c⁺, c⁻, s⁺) = (cᵣ, 0, sᵣ)` are assumed.
@@ -258,23 +259,7 @@ class LateTimeModel:
     def __post_init__(self):
         if self.ics is None:
             self.ics = (self.cr, 0.0, self.sr)
-        self._ode_solution = self._pass_kws(
-            LateTimeFormulae.ode_solve,
-        )
-
-    def _get_kws(
-        self,
-        clbl: Callable,
-    ) -> dict[str, Any]:
-        return {k: getattr(self, k) for k in signature(clbl).parameters}
-    
-    def _pass_kws(
-        self,
-        clbl: Callable,
-        **kws_extra,
-    ):
-        kws = self._get_kws(clbl)
-        return clbl(**kws, **kws_extra)
+        self._ode_solution = self.call(LateTimeFormulae.ode_solve)
 
     @property
     def cPlus(self) -> np.ndarray:
@@ -298,7 +283,7 @@ class LateTimeModel:
         if self.constraint is None:
             return self._ode_solution.y[1]
         elif self.constraint == 'zeta':
-            return self._pass_kws(LateTimeFormulae.cMinus_from_zeta_constaint)
+            return self.call(LateTimeFormulae.cMinus_from_zeta_constaint)
         elif self.constraint == 'cPlus':
             self._ode_solution.y[0]
         else:
@@ -326,21 +311,21 @@ class LateTimeModel:
         if self.constraint:
             return self.zeta0
         else:
-            return self._pass_kws(LateTimeFormulae.zeta)
+            return self.call(LateTimeFormulae.zeta)
     
     @property
     def mC(self) -> np.ndarray:
         """
         `mᶜ(t)` capillary-trapped mass
         """
-        return self._pass_kws(LateTimeFormulae.mC)
+        return self.call(LateTimeFormulae.mC)
     
     @property
     def mD(self) -> np.ndarray:
         """
         `mᴰ(t)` dissolved mass 
         """
-        return self._pass_kws(LateTimeFormulae.mD)
+        return self.call(LateTimeFormulae.mD)
     
     @property
     def f(self) -> np.ndarray:
