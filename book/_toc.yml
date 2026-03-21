@@ -13,11 +13,8 @@ parts:
     chapters:
       - file: system_a/expo/A00_introduction
         sections: 
-          - file: system_a/expo/A01_mass
-          - file: system_a/expo/A02_early
-          - file: system_a/expo/A03_late
-          - file: system_a/expo/A04_reference
-          - file: system_a/expo/A05_constraints
+          - file: system_a/expo/A01_reference
+          - file: system_a/expo/A02_constraints
       - file: system_a/expo/A10_overview
       - file: system_a/expo/A20_expository_hdr
         sections:

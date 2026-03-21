@@ -1,4 +1,4 @@
-# Theory
+# Definition
 
 $$
 \mathbb{S}_{s,c,\psi}\begin{cases}
