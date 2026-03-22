@@ -4,14 +4,14 @@ root: home
 parts:
   - caption: User Guide
     chapters:
-      - file: user_guide/00_introduction
+      - file: user_guide/00_definition
       - file: user_guide/01_governing_equations
       - file: user_guide/02_diagnostic_equations
       - file: user_guide/03_finite_element_method
       - file: user_guide/04_best_practices
   - caption: System A
     chapters:
-      - file: system_a/expo/A00_introduction
+      - file: system_a/expo/A00_definition
         sections: 
           - file: system_a/expo/A01_reference
           - file: system_a/expo/A02_constraints
@@ -45,12 +45,12 @@ parts:
 
   - caption: System B
     chapters:
-      - file: system_b/expo/B00_introduction
+      - file: system_b/expo/B00_definition
       - file: system_b/expo/B10_overview
 
   - caption: System C
     chapters:
-      - file: system_c/expo/C00_introduction
+      - file: system_c/expo/C00_definition
       - file: system_c/expo/C10_overview
       
   - caption: Classic Systems

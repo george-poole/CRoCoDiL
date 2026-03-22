@@ -4,6 +4,8 @@ from dataclasses import dataclass
 import numpy as np
 from scipy.integrate import solve_ivp
 
+from lucifex.utils.py_utils import arity
+
 from .model import Model
 
 
@@ -17,7 +19,7 @@ class LateTimeFormulae:
         zeta0: float,
         sr: float,
         cr: float,
-        flux: Callable[[float, float], float],
+        flux: Callable[[float, float], float] | Callable[[float, float, float], float],
         alpha_cs: float | tuple[float, float],
         constraint: Literal['zeta', 'cPlus'] | None,
         ics: tuple[float, float, float],
@@ -80,7 +82,10 @@ class LateTimeFormulae:
         """
         zeta = LateTimeFormulae.zeta(cPlus, cMinus, sPlus, epsilon, zeta0, sr, cr)
         r = LateTimeFormulae.Sigma(cPlus, sPlus)
-        f = flux(cPlus, cMinus)
+        if arity(flux) == 2:
+            f = flux(cPlus, cMinus)
+        else:
+            f = flux(cPlus, cMinus, sPlus)
         dcPlus = -f / (1 - zeta) + alpha_c * Da * r / (1 - sPlus)
         dcMinus = f / zeta
         dsPlus = -epsilon * alpha_s * Da * sPlus *(1 - cPlus)
@@ -236,6 +241,7 @@ class LateTimeFormulae:
 
 C_PLUS = TypeVar('C_PLUS')
 C_MINUS = TypeVar('C_MINUS')
+S_PLUS = TypeVar('S_PLUS')
 FLUX = TypeVar('FLUX')
 @dataclass
 class LateTimeModel(Model):
@@ -251,7 +257,7 @@ class LateTimeModel(Model):
     sr: float
     cr: float
     alpha_cs: float | tuple[float, float]
-    flux: Callable[[C_PLUS, C_MINUS], FLUX]
+    flux: Callable[[C_PLUS, C_MINUS], FLUX] | Callable[[C_PLUS, C_MINUS, S_PLUS], FLUX]
     constraint: Literal['zeta', 'cPlus'] | None = None
     ics: tuple[float, float, float] | None = None
     method: str = 'RK45'
@@ -332,7 +338,10 @@ class LateTimeModel(Model):
         """
         `F(t) = F(c⁺(t), c⁻(t))` flux 
         """
-        return self.flux(self.cPlus, self.cMinus)
+        if arity(self.flux) == 2:
+            return self.flux(self.cPlus, self.cMinus)
+        else:
+            return self.flux(self.cPlus, self.cMinus, self.sPlus)
 
 
 TIME = TypeVar('TIME')

@@ -4,9 +4,9 @@ import numpy as np
 from mpi4py import MPI
 from lucifex.fem import Constant, SpatialPerturbation, cubic_noise
 from lucifex.fdm import FiniteDifference, FiniteDifferenceArgwise, CN, AB, AM
-from lucifex.utils.fenicsx_utils import CellType, limits_corrector
 from lucifex.solver import OptionsPETSc, OptionsJIT
 from lucifex.sim import configure_simulation
+from lucifex.utils.fenicsx_utils import CellType, limits_corrector
 from lucifex.utils.py_utils import FrozenDict
 
 from .generic import dns_generic
@@ -133,8 +133,8 @@ def dns_system_b(
     X = scaling_map['X']
     Lx = aspect * X
     Ly = 1.0 * X
-    Lzeta0 = zeta0 * X
-    Lzeta0_eps = zeta0_eps * X if zeta0_eps is not None else None
+    X_zeta0 = zeta0 * X
+    X_zeta0_eps = zeta0_eps * X if zeta0_eps is not None else None
     Omega, dOmega = rectangle_mesh_closure(Lx, Ly, Nx, Ny, cell, comm=comm)
     # constants
     Di, Bu, Ki = scaling_map[Omega, 'Di', 'Bu', 'Ki']
@@ -142,7 +142,7 @@ def dns_system_b(
     Da = Constant(Omega, Da, 'Da')
     Le = Constant(Omega, Le, 'Le')
     # initial conditions
-    s_ics = heaviside(lambda x: x[1] - Lzeta0, max(0, sr - s_ampl), eps=Lzeta0_eps) 
+    s_ics = heaviside(lambda x: x[1] - X_zeta0, max(0, sr - s_ampl), eps=X_zeta0_eps) 
     if s_ampl:
         s_ics = SpatialPerturbation(
             s_ics,
@@ -151,7 +151,7 @@ def dns_system_b(
             s_ampl,
             limits_corrector(0, sr),
         )
-    c_ics = heaviside(lambda x: x[1] - Lzeta0, max(0, cr - c_ampl), eps=Lzeta0_eps)
+    c_ics = heaviside(lambda x: x[1] - X_zeta0, max(0, cr - c_ampl), eps=X_zeta0_eps)
     if c_ampl:
         c_ics = SpatialPerturbation(
             c_ics,
@@ -166,7 +166,7 @@ def dns_system_b(
     else:
         theta_plus = 1.0 - theta_ampl
         _theta_limits = (0, 1)
-    theta_ics = heaviside(lambda x: x[1] - Lzeta0, theta_plus, eps=Lzeta0_eps)
+    theta_ics = heaviside(lambda x: x[1] - X_zeta0, theta_plus, eps=X_zeta0_eps)
     if theta_ampl:
         theta_ics = SpatialPerturbation(
             theta_ics,
@@ -187,8 +187,8 @@ def dns_system_b(
     source = lambda theta, s: Ki * s * (1 + delta * theta)
 
     if diagnostic:
-        fluxes_thermal = [('q', Lzeta0, Lx), *fluxes_thermal]
-        fluxes_solutal = [('f', Lzeta0, Lx), *fluxes_solutal] 
+        fluxes_thermal = [('q', X_zeta0, Lx), *fluxes_thermal]
+        fluxes_solutal = [('f', X_zeta0, Lx), *fluxes_solutal] 
 
     auxiliary = [
         Ra, Da, Le, Di, Bu, Ki, 

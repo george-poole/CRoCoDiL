@@ -54,7 +54,8 @@ def dns_generic(
     theta_ics: Function | SpatialPerturbation | None = None,
     s_ics: Function | SpatialPerturbation | None = None,
     # boundary conditions
-    flow_bcs: BoundaryConditions | EllipsisType | None | tuple[BoundaryConditions | None, BoundaryConditions | None] = ...,
+    flow_bcs: BoundaryConditions | EllipsisType | None 
+    | tuple[BoundaryConditions | None, BoundaryConditions | None] = ...,
     c_bcs: BoundaryConditions | EllipsisType | None = None,
     theta_bcs: BoundaryConditions | EllipsisType | None = None,
     # constitutive relations
