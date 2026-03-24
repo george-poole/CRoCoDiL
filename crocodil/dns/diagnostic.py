@@ -12,7 +12,7 @@ def vertical_flux(
     a: Function,
     d: Function,
     y_target: float | int,
-    Lx: float,
+    Lx: float | tuple[float, float],
     tol: float | None = 1e-6,
 ) -> np.ndarray:
     """
@@ -34,6 +34,8 @@ def vertical_flux(
     y_approx = y_axis[y_index]
     y_approx_plus = y_axis[y_index + 1]
     y_approx_minus = y_axis[y_index - 1]
+    if isinstance(Lx, tuple):
+        Lx = Lx[1] - Lx[0]
     return (1 / Lx) * flux(
         'dS', 
         lambda x: x[1] - y_approx, 

@@ -4,7 +4,7 @@ root: home
 parts:
   - caption: User Guide
     chapters:
-      - file: user_guide/00_definition
+      - file: user_guide/00_introduction
       - file: user_guide/01_governing_equations
       - file: user_guide/02_diagnostic_equations
       - file: user_guide/03_finite_element_method
@@ -52,10 +52,15 @@ parts:
     chapters:
       - file: system_c/expo/C00_definition
       - file: system_c/expo/C10_overview
+
+  - caption: System D
+    chapters:
+      - file: system_d/expo/D00_definition
+      - file: system_d/expo/D10_overview
       
   - caption: Classic Systems
     chapters:
-      - file: classic/X01_darcy_rayleigh_benard
-      - file: classic/X02_darcy_evolving
-      - file: classic/X03_darcy_rayleigh_taylor
-      - file: classic/X04_darcy_thermosolutal
+      - file: system_x/X01_darcy_rayleigh_benard
+      - file: system_x/X02_darcy_evolving
+      - file: system_x/X03_darcy_rayleigh_taylor
+      - file: system_x/X04_darcy_thermosolutal

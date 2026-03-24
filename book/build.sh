@@ -22,7 +22,7 @@ NBCONVERT_ARGS=${3:-"--allow-errors"}
 BUILD_ARGS=${4:-""}
 
 if [ -z "$TARGET_DIR" ]; then
-    DIRS=("system_a" "system_b" "system_c" "system_d")
+    DIRS=("system_a" "system_b" "system_c" "system_d" "system_x")
 else
     DIRS=($TARGET_DIR)
 fi

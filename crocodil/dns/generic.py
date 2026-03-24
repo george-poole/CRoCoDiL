@@ -60,7 +60,8 @@ def dns_generic(
     theta_bcs: BoundaryConditions | EllipsisType | None = None,
     # constitutive relations
     rock_porosity: Callable[[np.ndarray], np.ndarray] | float = 1,
-    permeability: Callable[[Phi], Expr | ExprSeries] = lambda phi: phi**2,
+    permeability: Callable[[Phi], Expr | ExprSeries] 
+    | None = lambda phi: phi**2,
     dispersion_solutal: Callable[[Phi, U], Expr | ExprSeries]
     | Callable[[Phi], Expr | ExprSeries] = lambda phi: phi,
     dispersion_thermal: Callable[[Phi, U], Expr | ExprSeries]
@@ -166,7 +167,8 @@ def dns_generic(
         u_fam = 'BDM' if is_simplicial(Omega) else 'BDMCF'
         u_deg = 1
         up = FunctionSeries((Omega, [(u_fam, u_deg), ('DP', u_deg - 1)]), ('up', ['u', 'p']), order)
-        u = up.sub(0)
+        u, p = up.split()
+        auxiliary.extend((u, p))
 
     # transport
     if SOLUTAL:
@@ -186,7 +188,7 @@ def dns_generic(
     else:
         varphi = Constant(Omega, rock_porosity, 'varphi')
     phi = varphi * (1 - s)
-    k = permeability(phi)   
+    k = permeability(phi) if permeability else  Constant(Omega, 1.0, 'k')
     rho = density(
         *(c, theta) if THERMOSOLUTAL
         else (c, ) if SOLUTAL
@@ -239,12 +241,12 @@ def dns_generic(
         auxiliary.append(('g', g))
 
     # flow solvers
+    flow_cache_matrix = (not viscosity) and ((not permeability) or not EVOL)
     if STREAMF:
         psi_bcs = BoundaryConditions(("dirichlet", dOmega.union, 0.0)) if flow_bcs is Ellipsis else flow_bcs
         psi_petsc, u_petsc = flow_petsc
-        psi_cache_matrix = not(EVOL or viscosity)
         egx, egy = eg
-        psi_solver = bvp(darcy_streamfunction, psi_bcs, petsc=psi_petsc, cache_matrix=psi_cache_matrix)(
+        psi_solver = bvp(darcy_streamfunction, psi_bcs, petsc=psi_petsc, cache_matrix=flow_cache_matrix)(
             psi, FE(k), FE(mu), egx * FE(rho), egy * FE(rho),
         ) 
         if u_petsc is None:
@@ -256,10 +258,15 @@ def dns_generic(
     else:
         u_bcs = BoundaryConditions(('essential', dOmega.union, (0.0, 0.0), 0)) if flow_bcs is Ellipsis else flow_bcs[0]
         p_bcs = None if flow_bcs is Ellipsis else flow_bcs[1]
-        flow_petsc = flow_petsc.replace(pc_factor_mat_solver_type='mumps')
-        u_solver = bvp(darcy, u_bcs, petsc=flow_petsc)(
-            up, FE(k), FE(mu), FE(rho) * as_vector(eg), bcs=p_bcs)
-        solvers.append(u_solver)
+        if 'blocked' in flow_petsc:
+            blocked = flow_petsc['blocked']
+            flow_petsc = flow_petsc.remove('blocked')
+        else:
+            blocked = False
+        add_zero = (False, True) if blocked else (False, False)
+        up_solver = bvp(darcy, u_bcs, petsc=flow_petsc, cache_matrix=flow_cache_matrix)(
+            up, FE(k), FE(mu), FE(rho) * as_vector(eg), bcs=p_bcs, blocked=blocked, add_zero=add_zero)
+        solvers.append(up_solver)
 
     # timestep solver
     if SOLUTAL:

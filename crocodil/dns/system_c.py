@@ -177,16 +177,16 @@ def dns_system_c(
     X = scaling_map['X']
     Lx = aspect * X
     Ly = 1.0 * X
-    X_zeta0_min = zeta0_min * X
-    X_zeta0_eps = zeta0_eps * X if zeta0_eps is not None else None
+    Lzeta0_min = zeta0_min * X
+    Lzeta0_eps = zeta0_eps * X if zeta0_eps is not None else None
     Omega, dOmega = rectangle_mesh_closure(Lx, Ly, Nx, Ny, cell, comm=comm)
     # constants
     Di, Ki, Bu = scaling_map[Omega, 'Di', 'Ki', 'Bu']
     Ra = Constant(Omega, Ra, 'Ra')
     Da = Constant(Omega, Da, 'Da')
     # initial conditions
-    zeta0 = lambda x: np.tan(np.radians(beta)) * (Lx - x[0]) + X_zeta0_min * Ly
-    s_ics = heaviside(lambda x: x[1] - zeta0(x), max(0, sr - s_ampl), eps=X_zeta0_eps) 
+    zeta0 = lambda x: np.tan(np.radians(beta)) * (Lx - x[0]) + Lzeta0_min * Ly
+    s_ics = heaviside(lambda x: x[1] - zeta0(x), max(0, sr - s_ampl), eps=Lzeta0_eps) 
     if s_ampl:
         s_ics = SpatialPerturbation(
             s_ics,
@@ -195,7 +195,7 @@ def dns_system_c(
             s_ampl,
             limits_corrector(0, sr),
             )   
-    c_ics = heaviside(lambda x: x[1] - zeta0(x), max(0, cr - c_ampl), eps=X_zeta0_eps)
+    c_ics = heaviside(lambda x: x[1] - zeta0(x), max(0, cr - c_ampl), eps=Lzeta0_eps)
     if c_ampl:
         c_ics = SpatialPerturbation(
             c_ics,

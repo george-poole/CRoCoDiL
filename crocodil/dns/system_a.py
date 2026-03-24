@@ -106,15 +106,15 @@ def dns_system_a(
     X = scaling_map['X']
     Lx = aspect * X
     Ly = 1.0 * X
-    X_zeta0 = zeta0 * X
-    X_zeta0_eps = zeta0_eps * X if zeta0_eps is not None else None
+    Lzeta0 = zeta0 * X
+    Lzeta0_eps = zeta0_eps * X if zeta0_eps is not None else None
     Omega, dOmega = rectangle_mesh_closure(Lx, Ly, Nx, Ny, cell, comm=comm)
     # constants
     Di, Ki, Bu = scaling_map[Omega, 'Di', 'Ki', 'Bu']
     Ra = Constant(Omega, Ra, 'Ra')
     Da = Constant(Omega, Da, 'Da')
     # initial conditions
-    s_ics = heaviside(lambda x: x[1] - X_zeta0, max(0, sr - s_ampl), eps=X_zeta0_eps) 
+    s_ics = heaviside(lambda x: x[1] - Lzeta0, max(0, sr - s_ampl), eps=Lzeta0_eps) 
     if s_ampl:
         s_ics = SpatialPerturbation(
             s_ics,
@@ -123,7 +123,7 @@ def dns_system_a(
             s_ampl,
             limits_corrector(0, sr),
         )
-    c_ics = heaviside(lambda x: x[1] - X_zeta0, max(0, cr - c_ampl), eps=X_zeta0_eps)
+    c_ics = heaviside(lambda x: x[1] - Lzeta0, max(0, cr - c_ampl), eps=Lzeta0_eps)
     if c_ampl:
         c_ics = SpatialPerturbation(
             c_ics,
@@ -139,12 +139,13 @@ def dns_system_a(
     density = lambda c: Bu * c
 
     if diagnostic:
-        fluxes = [('f', X_zeta0, Lx), *fluxes]
+        fluxes = [('f', Lzeta0, Lx), *fluxes]
 
     auxiliary = [
         Ra, Da, Di, Bu, Ki, 
         ('X', X), ('Lx', Lx), ('Ly', Ly), 
-        ('sr', sr), ('cr', cr), ('zeta0', zeta0),
+        ('zeta0', zeta0), ('Lzeta0', Lzeta0),
+        ('sr', sr), ('cr', cr),
     ]
 
     return dns_generic(

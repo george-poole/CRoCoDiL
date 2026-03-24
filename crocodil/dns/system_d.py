@@ -1,8 +1,12 @@
+from typing import Callable, Iterable, Literal
+
 import numpy as np
+import scipy.special as sp
+from scipy.integrate import quad
 from mpi4py import MPI
 
 from lucifex.mesh import rectangle_mesh, mesh_boundary
-from lucifex.fem import Function, Constant, SpatialPerturbation, cubic_noise
+from lucifex.fem import Constant, SpatialPerturbation, cubic_noise
 from lucifex.fdm import FiniteDifference, FiniteDifferenceArgwise, CN, AB, AM
 from lucifex.sim import configure_simulation
 from lucifex.solver import OptionsPETSc, OptionsJIT, BoundaryConditions
@@ -10,7 +14,7 @@ from lucifex.utils.fenicsx_utils import CellType, limits_corrector
 from lucifex.utils.py_utils import FrozenDict
 
 from .generic import dns_generic
-from .utils import DEFAULT_JIT_DIR, SCALINGS, heaviside, rectangle_mesh_closure
+from .utils import DEFAULT_JIT_DIR, SCALINGS
 
 
 SYSTEM_D_REFERENCE = FrozenDict(
@@ -18,15 +22,16 @@ SYSTEM_D_REFERENCE = FrozenDict(
     Da=100.0,
     epsilon=1e-2,
     Le=1.0,
-    zeta0=0.9,
+    Pe=1000.0,
     sr=0.2,
     cr=0.0,
     gamma=1.0,
     delta=0,
-    lIn=0.1,
-    uI=1.0,
-    thetaIn=1.0,
+    l=0.1,
+    inflow=None,
+    p_dOmega=None,
     aspect=2.0,
+    mirror=0,
 )
 
 
@@ -41,12 +46,14 @@ def dns_system_d(
     Nx: int = 100,
     Ny: int = 100,
     cell: str = CellType.QUADRILATERAL,
+    mirror: Literal[0, 1, -1] = 0,
     # physical
     scaling: str = 'advective',
     Ra: float = 1e3,
     Da: float = 1e2,
     epsilon: float = 1e-2,
     Le: float = 1.0,
+    Pe: float = 1e3,
     # initial saturation
     sr: float = 0.2,
     s_ampl: float = 0,
@@ -54,21 +61,23 @@ def dns_system_d(
     s_seed: tuple[int, int] = (1234, 5678),
     # initial concentration
     cr: float = 1.0,
-    c_ampl: float = 1e-6,
+    c_ampl: float = 0,
     c_freq: tuple[int, int] = (16, 16),
     c_seed: tuple[int, int] = (1234, 5678),
     # initial temperature
+    theta_buoy: bool = True,
     theta_ampl: float = 0,
     theta_freq: tuple[int, int] = (16, 16),
     theta_seed: tuple[int, int] = (1234, 5678),
     # constitutive relations
     delta: float = 0,
     gamma: float = 1.0,
-    # inflow and outflow boundary conditions
-    lIn: float = 0.1,
-    uIn: float = 1.0,
-    thetaIn: float = 1.0,
-    pOut: float | None = None,
+    permeability: Callable | None = lambda phi: phi**2,
+    # inflow profile
+    l: float = 0.1,
+    inflow: tuple[str, float]  | tuple[str, float, float] 
+    | tuple[Callable, float] | None = None,
+    p_dOmega: str | tuple[str, ...] | None = None,
     # timestep
     dt_min: float = 0.0,
     dt_max: float = np.inf,
@@ -104,30 +113,60 @@ def dns_system_d(
     s_petsc: OptionsPETSc | None = None,
     # optional post-processing
     diagnostic: bool = False, 
-    # fluxes_solutal: Iterable[tuple[str, float | int, float]] = (), 
-    # fluxes_thermal: Iterable[tuple[str, float | int, float]] = (), 
+    fluxes_solutal: Iterable[tuple[str, float | int, float]] = (), 
+    fluxes_thermal: Iterable[tuple[str, float | int, float]] = (), 
 ):
-    # space
+    # scaling
     scaling_map = SCALINGS[scaling](Ra, Da)
     X = scaling_map['X']
-    Lx = aspect * X
+    Lx = 0.5 * aspect * X
+    if mirror:
+        Lx = (0, Lx) if mirror == 1 else (-Lx, 0)
+    else:
+        Lx = (-Lx, Lx)
     Ly = 1.0 * X
-    LlIn = lIn * X
-    Omega = rectangle_mesh((-0.5 * Lx, 0.5 * Lx), Ly, Nx, Ny, cell, 'Omega', comm)
+    Ll = l * X
+    # inflow conditions
+    In = (Pe / Ra) * scaling_map['Bu']
+    match inflow:
+        case ('gaussian', n):
+            xInflow = 0.5 * n * Ll
+            uInflow = lambda x: In * np.exp(-(x[0] / (0.5 * Ll))**2)
+            uOutflow = 0.25 * np.sqrt(np.pi) * In * Ll * sp.erf(Lx[1] / Ll) # TODO check
+        case ('sigmoid', eps, n):
+            xInflow = 0.5 * Ll + n / eps
+            uInflow = lambda x: In * (
+                (1 + np.exp(-(0.5 * Ll + x[0]) / eps)) 
+                * (1 + np.exp(-(0.5 * Ll - x[0]) / eps))
+            )
+            uOutflow = quad(uInflow, Lx[0], Lx[1])[0]
+        case None:
+            xInflow = 0.5 * Ll
+            uInflow = lambda x: np.full_like(x[0], In)
+            uOutflow = 0.5 * In * l
+        case other:
+            uInflow, xInflow = other
+            uOutflow = quad(uInflow, Lx[0], Lx[1])[0]
+    if mirror:
+        xInflow = (0, xInflow) if mirror == 1 else (-xInflow, 0)
+    else:
+        xInflow = (-xInflow, xInflow)
+    is_inflow = lambda x: ((x[0] >= xInflow[0]) & (x[0] <= xInflow[1]))
+    uLower = lambda x: 0.0 + (uInflow(x)) * is_inflow(x)    
+    # space
+    Omega = rectangle_mesh(Lx, Ly, Nx, Ny, cell, 'Omega', comm)
     dOmega = mesh_boundary(
         Omega,
         {
+            'left': lambda x: x[0] - Lx[0],
+            'right': lambda x: x[0] - Lx[-1],
             'upper': lambda x: x[1] - Ly,
-            'left': lambda x: x[0] + 0.5 * Lx,
-            'right': lambda x: x[0] - 0.5 * Lx,
-            'inflow': lambda x: (
-                (x[0] < 0.5 * LlIn) &
-                (x[0] > -0.5 * LlIn) &
-                (np.isclose(x[1], 0))
+            'lower': lambda x: x[1],
+            'lower_imperm': lambda x: (
+                np.logical_not(is_inflow(x)) & np.isclose(x[1], 0)
             ),
-            'lower': lambda x: (
-                ((x[0] >= 0.5 * LlIn) | (x[0] <= -0.5 * LlIn)) &
-                (np.isclose(x[1], 0))
+            'lower_inflow': lambda x: (
+                is_inflow(x) & np.isclose(x[1], 0)
             ),
         },
     )
@@ -155,30 +194,32 @@ def dns_system_d(
             c_ampl,
             limits_corrector(0, 1),
         )  
-    theta_ics = 0
-    _theta_limits = (min(0, thetaIn), max(0, thetaIn))
+    if theta_buoy:
+        theta_ics = 0.0
+        theta_dbc = 1.0
+    else:
+        theta_ics = 1.0 - theta_ampl
+        theta_dbc = 0.0
     if theta_ampl:
         theta_ics = SpatialPerturbation(
             theta_ics,
             cubic_noise(['neumann', 'neumann'], [Lx, Ly], theta_freq, theta_seed),
             [Lx, Ly],
             theta_ampl,
-            limits_corrector(*_theta_limits),
+            limits_corrector(0, 1),
         ) 
-    if theta_limits:
-        theta_limits = _theta_limits
     # boundary conditions
     c_bcs = BoundaryConditions(
-        ('neumann', dOmega['left', 'right', 'upper', 'lower'], 0.0),
-        ('dirichlet', dOmega['inflow'], 0.0),
+        # ('neumann', dOmega['left', 'right', 'upper', 'lower'], 0.0),
+        ('dirichlet', dOmega['lower_inflow'], 0.0),
     )
     theta_bcs = BoundaryConditions(
-        ('neumann', dOmega['left', 'right', 'upper', 'lower'], 0.0),
-        ('dirichlet', dOmega['inflow'], thetaIn),
+        # ('neumann', dOmega['left', 'right', 'upper', 'lower'], 0.0),
+        ('dirichlet', dOmega['lower_inflow'], theta_dbc),
 
     )
     if isinstance(flow_petsc, tuple):
-        if pOut is not None:
+        if p_dOmega:
             raise RuntimeError(
                 'Cannot apply pressure boundary condition in streamfunction formulation.'
             )
@@ -189,23 +230,28 @@ def dns_system_d(
         )
         flow_bcs = psi_bcs
     else:
-        if pOut is None:
+        if not p_dOmega:
             u_bcs = BoundaryConditions(
-                ('essential', dOmega['upper', 'lower'], (0.0, 0.0), 0),
-                ('essential', dOmega['left', 'right'], (0.0, 0.5 * uIn * lIn), 0),
-                ('essential', dOmega['inflow'], (0.0, -uIn), 0),
+                ('essential', dOmega['upper'], (0.0, 0.0), 0),
+                ('essential', dOmega['left'], (0.0 if mirror == +1 else -uOutflow, 0.0), 0),
+                ('essential', dOmega['right'], (0.0 if mirror == -1 else uOutflow, 0.0), 0),
+                ('essential', dOmega['lower'], (0.0, uLower), 0),
             )
             p_bcs = None
         else:
-            u_bcs = BoundaryConditions(
-                ('essential', dOmega['upper', 'lower'], (0.0, 0.0), 0),
-                ('essential', dOmega['inflow'], (0.0, -uIn), 0),
-            )
+            if isinstance(p_dOmega, str):
+                p_dOmega = (p_dOmega, )
             p_bcs = BoundaryConditions(
-                ('natural', dOmega['left', 'right'], pOut, 1),
+                ('natural', dOmega[p_dOmega], 0.0, 1),
+            )
+            u_dOmega = tuple(
+                i for i in ('left', 'right', 'upper') if not i in p_dOmega
+            )
+            u_bcs = BoundaryConditions(
+                ('essential', dOmega['lower'], (0.0, uLower), 0),
+                *([('essential', dOmega[u_dOmega], (0.0, 0.0), 0)] if u_dOmega else []),
             )
         flow_bcs = (u_bcs, p_bcs)
-
     # constitutive relations
     gamma = Constant(Omega, gamma, 'gamma')
     delta = Constant(Omega, delta, 'delta')
@@ -214,6 +260,19 @@ def dns_system_d(
     density = lambda c, theta: Bu * (c - gamma * theta)
     reaction = lambda theta, s: -Ki * s * (1 + delta * theta)
     source = lambda theta, s: Ki * s * (1 + delta * theta)
+
+    if diagnostic:
+        fluxes_thermal = [('q', 0.1 * Ly, Lx), *fluxes_thermal]
+        fluxes_solutal = [('f', 0.1 * Ly, Lx), *fluxes_solutal] 
+
+    auxiliary = [
+        Ra, Da, Le, Di, Bu, Ki, 
+        gamma, delta,
+        ('X', X), ('Lx', Lx), ('Ly', Ly), 
+        ('l', l), ('Ll', Ll),
+        ('In', In), ('xInflow', xInflow),
+        ('sr', sr), ('cr', cr), 
+    ]
 
     return dns_generic(
         # domain
@@ -230,6 +289,7 @@ def dns_system_d(
         c_bcs=c_bcs,
         theta_bcs=theta_bcs,
         # constitutive relations
+        permeability=permeability,
         density=density,
         reaction=reaction,
         source=source,
@@ -263,8 +323,8 @@ def dns_system_d(
         s_petsc=s_petsc,
         # optional solvers
         diagnostic=diagnostic,
-        # fluxes_solutal=fluxes_solutal,
-        # fluxes_thermal=fluxes_thermal,
-        # auxiliary=auxiliary,
+        fluxes_solutal=fluxes_solutal,
+        fluxes_thermal=fluxes_thermal,
+        auxiliary=auxiliary,
     )
 
