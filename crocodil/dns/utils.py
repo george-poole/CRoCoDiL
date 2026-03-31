@@ -74,17 +74,17 @@ def heaviside(
 ):
     """
     `H(f(x))` \\
-    `= f₊` if `f(x) > 0` \\
+    `= f₊` if `f(x) >= 0` \\
     `= f₋` otherwise
 
     Optionally to smooth out discontinuities
 
     `H(f(x))` \\
-    `= f₊ tanh(f(x) / ϵ)` if `f(x) > 0` \\
+    `= f₊ tanh(f(x) / ϵ)` if `f(x) >= 0` \\
     `= f₋` otherwise
 
     `H(f(x))` \\
-    `= (f₊ - f₋) tanh(f(x) / ϵ₊) / 2 + (f₊ + f₋) / 2` if `f(x) > 0` \\
+    `= (f₊ - f₋) tanh(f(x) / ϵ₊) / 2 + (f₊ + f₋) / 2` if `f(x) >= 0` \\
     `= (f₊ - f₋) tanh(f(x) / ϵ₋) / 2 + (f₊ + f₋) / 2` otherwise
     """
     ind = lambda x: (fx(x) >= 0)

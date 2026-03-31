@@ -29,9 +29,9 @@ from lucifex.pde.advection_diffusion import (
     dg_advection_diffusion_reaction, advection_diffusion, 
     dg_advection_diffusion, advection_diffusion_reaction, flux,
 )
+from lucifex.pde.evolution import evolution, evolution_rhs
 from lucifex.utils.fenicsx_utils import is_simplicial, limits_corrector
 from lucifex.utils.py_utils import arity
-from lucifex.pde.evolution import evolution, evolution_rhs
 
 from .diagnostic import mass_dissolved, mass_capillary, vertical_flux
 
@@ -290,7 +290,7 @@ def dns_generic(
         theta_corrector = ('thetaCorr', limits_corrector(*theta_limits)) if theta_limits else None
         if THERMAL_CG:
             theta_solver = ibvp(advection_diffusion, bcs=theta_bcs, petsc=theta_petsc, corrector=theta_corrector)(
-                theta, dt, u, g, D_adv_thermal, D_diff_thermal, phi=phi, supg=theta_stabilization,
+                theta, dt, u, g, D_adv_thermal, D_diff_thermal, phi=phi, tau=theta_stabilization,
             )
         else:
             theta_solver = ibvp(dg_advection_diffusion, petsc=theta_petsc, corrector=theta_corrector)(
@@ -305,7 +305,7 @@ def dns_generic(
         c_corrector = ('cCorr', limits_corrector(*c_limits)) if c_limits else None
         if SOLUTAL_CG:
             c_solver = ibvp(advection_diffusion_reaction, bcs=c_bcs, petsc=c_petsc, corrector=c_corrector)(
-                c, dt, u, d, r, j, D_adv_solutal, D_diff_solutal, D_reac_solutal, D_src_solutal, phi=phi, supg=c_stabilization,
+                c, dt, u, d, r, j, D_adv_solutal, D_diff_solutal, D_reac_solutal, D_src_solutal, phi=phi, tau=c_stabilization,
             )
         else:
             c_solver = ibvp(dg_advection_diffusion_reaction, petsc=c_petsc, corrector=c_corrector)(
@@ -319,13 +319,9 @@ def dns_generic(
             evol = lambda c, theta, s: -epsilon * reaction_plus_source(c, theta, s)
         else:
             evol = lambda c, s: -epsilon * reaction_plus_source(c, s)
-        # SigmaEvol = ExprSeries.from_expr_factory(evol, name='SigmaEvol')(
-        #     *(c, theta, s) if THERMOSOLUTAL
-        #     else (c, s)
-        # )
-        SigmaEvol = ExprSeries(evol, name='SigmaEvol')(
-            *(c, theta, s) if THERMOSOLUTAL
-            else (c, s)
+        evol_args = (c, theta, s) if THERMOSOLUTAL else (c, s)
+        SigmaEvol = ExprSeries(
+            evol(*evol_args), name='SigmaEvol', args=evol_args,
         )
         auxiliary.append(SigmaEvol)
         s_limits = (np.min(s.ics.x.array), np.max(s.ics.x.array)) if s_limits is True else s_limits

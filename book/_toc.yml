@@ -36,9 +36,9 @@ parts:
               - file: system_a/expo/A49_profiling
       - file: system_a/full/A00_full_hdr
         sections:
-          - file: system_a/full/A11_rayleigh
-          - file: system_a/full/A12_damkohler
-          - file: system_a/full/A13_saturation
+          - file: system_a/full/A11_parameter_axis
+          - file: system_a/full/A12_parameter_axes
+          - file: system_a/full/A13_onset
           - file: system_a/full/A21_early_exact
           - file: system_a/full/A22_early_similarity
           - file: system_a/full/A23_late

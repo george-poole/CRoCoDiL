@@ -12,7 +12,7 @@ done
 GLOB_FILE=$1
 GLOB_DIR=${2:-'*'}
 
-EXTS=("xdmf" "h5")
+EXTS=("xdmf" "h5" "pickle")
 FILES=()
 
 for ext in "${EXTS[@]}"
