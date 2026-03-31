@@ -371,7 +371,7 @@ class EarlyTimeSimilarityModel(Model):
         c_series = []
         for ti in self.t:
             ci = np.array(
-                [cUpper(ti, yi) if yi > self.zeta0 else cLower(ti, yi) for yi in self.y]
+                [cUpper(t=ti, y=yi) if yi > self.zeta0 else cLower(t=ti, y=yi) for yi in self.y]
             )
             c_series.append(ci)
 
@@ -380,7 +380,7 @@ class EarlyTimeSimilarityModel(Model):
     @cached_property
     def cZeta(self) -> list[float]:
         c = self.create_partial(EarlyTimeSimilarityFormulae.cZeta)
-        return [c(ti)for ti in self.t]
+        return [c(t=ti)for ti in self.t]
     
     @cached_property
     def cPlus(self) -> list[float]:
@@ -388,7 +388,7 @@ class EarlyTimeSimilarityModel(Model):
         `c(y > ζ, t << 1/Π)` 
         """
         c = self.create_partial(EarlyTimeSimilarityFormulae.cPlus)
-        return [c(ti)for ti in self.t]
+        return [c(t=ti)for ti in self.t]
     
     @property
     def Pi(self):

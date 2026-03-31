@@ -4,6 +4,7 @@ import numpy as np
 
 from lucifex.io import create_dir_path, find_dir_paths
 from lucifex.fdm import GridFunctionSeries, NPyConstantSeries
+from lucifex.mesh import GridMesh
 from lucifex.fem import (
     average_grid, 
     resample_grid, 
@@ -11,6 +12,7 @@ from lucifex.fem import (
     mirror_grid, 
     cross_section_grid,
     copy_grid,
+    GridFunction,
 )
 from lucifex.plt import (
     plot_colormap, plot_line, save_figure, create_multifigure,

@@ -1,4 +1,4 @@
-from typing import Callable, Any, ParamSpec, TypeVar
+from typing import Callable, Any, ParamSpec, TypeVar, Iterable
 from inspect import signature
 from functools import partial
 
@@ -26,8 +26,10 @@ class Model:
     def create_partial(
         self,
         clbl: Callable[P, R],
+        exclude: Iterable[str] = (),
         **kws: Any,
     ) -> Callable[..., R]:
         _kws = self._get_kws(clbl)
+        _kws = {k: v for k, v in _kws.items() if not k in exclude}
         _kws.update(kws)
         return partial(clbl, **_kws)
