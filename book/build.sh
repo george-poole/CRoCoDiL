@@ -48,6 +48,10 @@ if $DRY; then
     exit
 fi
 
+echo Making gallery ...
+python make_gallery.py
+echo Gallery made
+
 jupyter-book build . $BUILD_ARGS
 ln -sf "./_build/html/index.html" alias.html
 

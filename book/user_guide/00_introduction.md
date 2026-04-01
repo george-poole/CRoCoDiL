@@ -1,5 +1,10 @@
 # Introduction
 
+## Installation
+
+See [README.md](https://github.com/george-poole/CRoCoDiL/blob/main/README.md)
+
+
 ## Capillary-trapped CO<sub>2</sub>
 
 ![Figure](./figures/pore_scale_unreactive.png)

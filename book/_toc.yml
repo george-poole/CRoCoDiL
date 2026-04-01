@@ -1,5 +1,5 @@
 format: jb-book
-root: home
+root: gallery
 
 parts:
   - caption: User Guide
