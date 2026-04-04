@@ -8,11 +8,11 @@ from lucifex.solver import BoundaryConditions, OptionsPETSc, OptionsJIT
 from lucifex.sim import configure_simulation
 
 from .generic import dns_generic
-from .utils import DEFAULT_JIT_DIR, SCALINGS, rectangle_mesh_closure, heaviside
+from .utils import CROCODIL_JIT_DIR, SCALINGS, rectangle_mesh_closure, heaviside
 
 
 @configure_simulation(
-    jit=OptionsJIT(DEFAULT_JIT_DIR),
+    jit=OptionsJIT(CROCODIL_JIT_DIR),
 )
 def dns_darcy_rayleigh_benard(
     # domain
@@ -105,7 +105,7 @@ def dns_darcy_rayleigh_benard(
 
 
 @configure_simulation(
-    jit=OptionsJIT(DEFAULT_JIT_DIR),
+    jit=OptionsJIT(CROCODIL_JIT_DIR),
 )
 def dns_darcy_evolving(
     # domain
@@ -198,7 +198,7 @@ def dns_darcy_evolving(
 
 
 @configure_simulation(
-    jit=OptionsJIT(DEFAULT_JIT_DIR),
+    jit=OptionsJIT(CROCODIL_JIT_DIR),
 )
 def dns_darcy_rayleigh_taylor(
     # domain
@@ -293,7 +293,7 @@ def dns_darcy_rayleigh_taylor(
 
 
 @configure_simulation(
-    jit=OptionsJIT(DEFAULT_JIT_DIR),
+    jit=OptionsJIT(CROCODIL_JIT_DIR),
 )
 def dns_darcy_thermosolutal(
     # domain

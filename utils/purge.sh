@@ -10,7 +10,7 @@ while [[ "$1" == --* ]]; do
 done
 
 GLOB_FILE=$1
-GLOB_DIR=${2:-'*'}
+GLOB_DIR=${2:-'./system_a/*'}
 
 EXTS=("xdmf" "h5" "pickle")
 FILES=()
@@ -33,6 +33,6 @@ fi
 
 for i in "${FILES[@]}"
     do 
-        echo Cleaning up $i 
+        echo Purging $i 
         rm $i
     done

@@ -10,7 +10,7 @@ from lucifex.pde.scaling import ScalingOptions
 from lucifex.utils.py_utils import FloatEnum
 
 
-DEFAULT_JIT_DIR = os.path.abspath(
+CROCODIL_JIT_DIR = os.path.abspath(
     os.path.join(
         __file__,
         '../../..',

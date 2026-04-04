@@ -11,7 +11,7 @@ from lucifex.sim import configure_simulation
 from lucifex.utils.py_utils import FrozenDict
 
 from .generic import dns_generic
-from .utils import DEFAULT_JIT_DIR, SCALINGS, heaviside, rectangle_mesh_closure
+from .utils import CROCODIL_JIT_DIR, SCALINGS, heaviside, rectangle_mesh_closure
 
 
 SYSTEM_C_REFERENCE = FrozenDict(
@@ -110,7 +110,7 @@ def mass_capillary_initial(
 
 
 @configure_simulation(
-    jit=OptionsJIT(DEFAULT_JIT_DIR),
+    jit=OptionsJIT(CROCODIL_JIT_DIR),
 )
 def dns_system_c(
     # mesh

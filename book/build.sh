@@ -17,9 +17,10 @@ while [[ "$1" == --* ]]; do
 done
 
 GLOB=$1
-TARGET_DIR=${2:-""}
-NBCONVERT_ARGS=${3:-"--allow-errors"}
-BUILD_ARGS=${4:-""}
+N_STOP=${2:-200}
+TARGET_DIR=${3:-""}
+NBCONVERT_ARGS=${4:-"--allow-errors"}
+BUILD_ARGS=${5:-""}
 
 if [ -z "$TARGET_DIR" ]; then
     DIRS=("system_a" "system_b" "system_c" "system_d" "system_x")
@@ -30,17 +31,20 @@ fi
 for dir in "${DIRS[@]}"; do
     unlink $dir
     ln -s "../$dir" $dir 
-    IPYNB=($(find .. -name "$GLOB.ipynb" -path "../$dir/*"))
-    for i in "${IPYNB[@]}"; do
+    ipynb_paths=($(find .. -name "$GLOB.ipynb" -path "../$dir/*"))
+    for i in "${ipynb_paths[@]}"; do
         echo Found notebook to execute $i
-        if ! $DRY; then
-            echo Executing notebook $i 
-            export IPYNB_FILE_NAME="${i}"
+    done
+    if ! $DRY; then
+        for ipynb in "${ipynb_paths[@]}"; do
+            echo Executing notebook $ipynb 
+            export IPYNB_FILE_PATH="$ipynb"
+            export N_STOP="$N_STOP"
             echo Beginning execution "$(date)"
-            jupyter nbconvert --execute --to notebook --inplace "${i}" $NBCONVERT_ARGS  
+            jupyter nbconvert --execute --to notebook --inplace $ipynb $NBCONVERT_ARGS  
             echo Finished execution "$(date)"
-        fi
-    done    
+        done
+    fi    
 done
 
 if $DRY; then
@@ -58,3 +62,13 @@ ln -sf "./_build/html/index.html" alias.html
 if $REMOTE; then
     ghp-import -n -p -f ./_build/html
 fi
+
+ERROR_KEYWORD="Traceback"
+for dir in "${DIRS[@]}"; do
+    ipynb_paths=($(grep -rl $ERROR_KEYWORD ./$dir/* --include="*.ipynb"))
+    for ipynb in "${ipynb_paths[@]}"; do
+        echo ""
+        echo "WARNING! Error found in $ipynb"
+    echo ""
+    done
+done

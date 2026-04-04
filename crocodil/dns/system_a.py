@@ -11,7 +11,7 @@ from lucifex.utils.fenicsx_utils import limits_corrector
 from lucifex.utils.py_utils import FrozenDict
 
 from .generic import dns_generic
-from .utils import DEFAULT_JIT_DIR, heaviside, rectangle_mesh_closure, SCALINGS
+from .utils import CROCODIL_JIT_DIR, heaviside, rectangle_mesh_closure, SCALINGS
 
 
 SYSTEM_A_REFERENCE = FrozenDict(
@@ -30,7 +30,7 @@ governing the physical (as opposed to numerical) behaviour of system A.
 
 
 @configure_simulation(
-    jit=OptionsJIT(DEFAULT_JIT_DIR),
+    jit=OptionsJIT(CROCODIL_JIT_DIR),
 )
 def dns_system_a(
     # mesh

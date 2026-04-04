@@ -12,7 +12,7 @@ For any queries, comments or feedback do not hesitate to email `grp39@cantab.ac.
 + supports abstraction over domain, initial conditions, boundary conditions, constitutive relations and non-dimensionalization
 + provides utilities and iPython notebooks for running, visualizing and postprocessing simulations
 
-## Installation (macOS)
+## Installation (macOS Intel)
 
 Please note that CRoCoDiL is a research code still under active development.
 

@@ -14,7 +14,7 @@ from lucifex.utils.fenicsx_utils import CellType, limits_corrector
 from lucifex.utils.py_utils import FrozenDict
 
 from .generic import dns_generic
-from .utils import DEFAULT_JIT_DIR, SCALINGS
+from .utils import CROCODIL_JIT_DIR, SCALINGS
 
 
 SYSTEM_D_REFERENCE = FrozenDict(
@@ -36,7 +36,7 @@ SYSTEM_D_REFERENCE = FrozenDict(
 
 
 @configure_simulation(
-    jit=OptionsJIT(DEFAULT_JIT_DIR),
+    jit=OptionsJIT(CROCODIL_JIT_DIR),
     dir_root="./data",
 )
 def dns_system_d(
