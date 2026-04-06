@@ -21,7 +21,7 @@ from lucifex.plt import (
     plot_twin_lines, plot_stacked_lines,
     configure_matplotlib,
 )
-from lucifex.utils.array_utils import as_index, derivative, resample
+from lucifex.utils.npy_utils import as_index, derivative, resample
 from lucifex.utils.py_utils import FrozenDict, as_int_if_close
 from lucifex.sim import GridSimulationFromNPZ
 from crocodil.dns.system_a import SYSTEM_A_REFERENCE

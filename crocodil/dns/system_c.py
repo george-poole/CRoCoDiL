@@ -21,92 +21,11 @@ SYSTEM_C_REFERENCE = FrozenDict(
     beta=10.0,
     kappa=1.0,
     vartheta=0.0,
-    zeta0_min=0.8,
+    zeta0=0.9,
     sr=0.2,
     cr=0.0,
     aspect=2.0,
 )
-
-
-def plot_gravity_arrow(
-    ax: Axes,
-    start: tuple[float, float],
-    length: float,    
-    beta: float,
-    **kws,
-) -> None:
-    arrow_start =np.asarray(start)
-    arrow_end = arrow_start - length * np.array((np.sin(np.radians(beta)), np.cos(np.radians(beta))))
-    _kws = dict(
-        arrowstyle='-|>',
-        mutation_scale=15,
-        color='cyan',
-        linewidth=2.0,
-    )
-    _kws.update(kws)
-    arrow = FancyArrowPatch(
-        arrow_start,
-        arrow_end,
-        **_kws,
-    )
-    ax.add_patch(arrow)
-
-
-def upper_subdomain_dimensions_initial(
-    beta: float,
-    zeta0_min: float,
-    Lx: float,
-    Ly: float,
-) -> tuple[float, float]:
-    vert = (1 - zeta0_min) * Ly
-    horz = vert / np.tan(np.radians(beta))
-    if horz > Lx:
-        raise ValueError('Not a triangle')
-    return horz, vert
-
-
-def upper_subdomain_hypotenuse_initial(
-    beta: float,
-    zeta0_min: float,
-    Lx: float,
-    Ly: float,
-) -> tuple[float, float]:
-    horz, vert = upper_subdomain_dimensions_initial(beta, zeta0_min, Lx, Ly)
-    return np.hypot(horz, vert)
-
-
-def upper_subdomain_area_initial(
-    beta: float,
-    zeta0_min: float,
-    Lx: float,
-    Ly: float,
-) -> tuple[float, float]:
-    horz, vert = upper_subdomain_dimensions_initial(beta, zeta0_min, Lx, Ly)
-    return 0.5 * horz * vert
-
-
-def mass_dissolved_initial(
-    beta: float,
-    zeta0_min: float,
-    sr: float,
-    cr: float,
-    Lx: float,
-    Ly: float,
-)-> float:
-    area = upper_subdomain_area_initial(beta, zeta0_min, Lx, Ly)
-    return area * (1 - sr) * cr
-
-
-def mass_capillary_initial(
-    epsilon: float,
-    beta: float,
-    zeta0_min: float,
-    sr: float,
-    Lx: float,
-    Ly: float,
-)-> float:
-    area = upper_subdomain_area_initial(beta, zeta0_min, Lx, Ly)
-    return area * sr / epsilon
 
 
 @configure_simulation(
@@ -129,8 +48,8 @@ def dns_system_c(
     kappa: float = 1.0,
     vartheta: float = 0.0,
     # initial front
-    zeta0_min: float = 0.5,
-    zeta0_eps: float | tuple[float, float] | None = None,
+    eta0: float = 0.9,
+    eta0_eps: float | tuple[float, float] | None = None,
     # initial conditions
     sr: float = 0.2,
     s_ampl: float = 0,
@@ -177,16 +96,15 @@ def dns_system_c(
     X = scaling_map['X']
     Lx = aspect * X
     Ly = 1.0 * X
-    Lzeta0_min = zeta0_min * X
-    Lzeta0_eps = zeta0_eps * X if zeta0_eps is not None else None
+    Leta0 = eta0 * aspect * X
+    Leta0_eps = eta0_eps * X if eta0_eps is not None else None
     Omega, dOmega = rectangle_mesh_closure(Lx, Ly, Nx, Ny, cell, comm=comm)
     # constants
     Di, Ki, Bu = scaling_map[Omega, 'Di', 'Ki', 'Bu']
     Ra = Constant(Omega, Ra, 'Ra')
     Da = Constant(Omega, Da, 'Da')
     # initial conditions
-    zeta0 = lambda x: np.tan(np.radians(beta)) * (Lx - x[0]) + Lzeta0_min * Ly
-    s_ics = heaviside(lambda x: x[1] - zeta0(x), max(0, sr - s_ampl), eps=Lzeta0_eps) 
+    s_ics = heaviside(lambda x: x[0] - Leta0, max(0, sr - s_ampl), eps=Leta0_eps) 
     if s_ampl:
         s_ics = SpatialPerturbation(
             s_ics,
@@ -195,7 +113,7 @@ def dns_system_c(
             s_ampl,
             limits_corrector(0, sr),
             )   
-    c_ics = heaviside(lambda x: x[1] - zeta0(x), max(0, cr - c_ampl), eps=Lzeta0_eps)
+    c_ics = heaviside(lambda x: x[1] - Leta0, max(0, cr - c_ampl), eps=Leta0_eps)
     if c_ampl:
         c_ics = SpatialPerturbation(
             c_ics,
@@ -220,7 +138,7 @@ def dns_system_c(
 
     auxiliary = [
         Ra, Da, Di, Bu, Ki, vartheta, kappa, ('beta', beta),
-        ('X', X), ('Lx', Lx), ('Ly', Ly), ('zeta0_min', zeta0_min), 
+        ('X', X), ('Lx', Lx), ('Ly', Ly), ('eta0', eta0), 
         ('sr', sr), ('cr', cr),
     ]
 
@@ -269,3 +187,25 @@ def dns_system_c(
     )
 
 
+def plot_gravity_arrow(
+    ax: Axes,
+    start: tuple[float, float],
+    length: float,    
+    beta: float,
+    **kws,
+) -> None:
+    arrow_start =np.asarray(start)
+    arrow_end = arrow_start - length * np.array((np.sin(np.radians(beta)), np.cos(np.radians(beta))))
+    _kws = dict(
+        arrowstyle='-|>',
+        mutation_scale=15,
+        color='cyan',
+        linewidth=2.0,
+    )
+    _kws.update(kws)
+    arrow = FancyArrowPatch(
+        arrow_start,
+        arrow_end,
+        **_kws,
+    )
+    ax.add_patch(arrow)

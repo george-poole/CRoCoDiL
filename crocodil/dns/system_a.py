@@ -186,8 +186,8 @@ def dns_system_a(
         c_petsc=c_petsc,
         s_petsc=s_petsc,
         # optional solvers
-        diagnostic=diagnostic,
         fluxes_solutal=fluxes,
+        diagnostic=diagnostic,
         auxiliary=auxiliary,
     )
 

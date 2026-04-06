@@ -3,7 +3,7 @@ from ufl.core.expr import Expr
 
 from lucifex.fem import Function, Constant
 from lucifex.utils.fenicsx_utils import mesh_integral, mesh_axes
-from lucifex.utils.array_utils import as_index
+from lucifex.utils.npy_utils import as_index
 from lucifex.pde.advection_diffusion import flux
 
 

@@ -104,6 +104,10 @@ def dns_generic(
     s_limits: tuple[float, float] | bool = False,
     phi_elem: tuple[str, int] = ('P', 1),
     use_max_value: bool = False,
+    # polynomial degree
+    c_degree: int = 1,
+    theta_degree: int = 1,
+    flow_degree: int | None = None,
     # linear algebra
     flow_petsc: tuple[OptionsPETSc, OptionsPETSc | None] 
     | OptionsPETSc = (OptionsPETSc('cg', 'hypre'), None),
@@ -111,10 +115,14 @@ def dns_generic(
     theta_petsc: OptionsPETSc = OptionsPETSc('gmres', 'ilu'),
     s_petsc: OptionsPETSc | None = None,
     # optional postprocessing
-    diagnostic: bool | Iterable[Solver] = False,   
     fluxes_solutal: Iterable[tuple[str, float | int, float]] = (), 
     fluxes_thermal: Iterable[tuple[str, float | int, float]] = (), 
+    diagnostic: bool = False,    
     auxiliary: Iterable[Function | Constant | ExprSeries | tuple[str, Expr]] = (),
+    prepend_solvers: Iterable[Solver] = (),
+    pre_solvers: Iterable[Solver] = (),
+    post_solvers: Iterable[Solver] = (),
+    append_solvers: Iterable[Solver] = (),
 ) -> Simulation:    
     """
     `𝜑∂s/∂t = -ε(R(θ,s)c + J(θ,s))`
@@ -160,21 +168,27 @@ def dns_generic(
 
     # flow
     if STREAMF: 
-        psi_deg = 2
+        psi_deg = 2 if flow_degree is None else flow_degree
         psi = FunctionSeries((Omega, 'P', psi_deg), 'psi')
         u = FunctionSeries((Omega, "P", psi_deg - 1, 2), "u", order)
     else:
         u_fam = 'BDM' if is_simplicial(Omega) else 'BDMCF'
-        u_deg = 1
+        u_deg = 1 if flow_degree is None else flow_degree
         up = FunctionSeries((Omega, [(u_fam, u_deg), ('DP', u_deg - 1)]), ('up', ['u', 'p']), order)
         u, p = up.split()
         auxiliary.extend((u, p))
 
     # transport
     if SOLUTAL:
-        c = FunctionSeries((Omega, 'P' if SOLUTAL_CG else 'DP', 1), 'c', order, ics=c_ics)
+        c = FunctionSeries(
+            (Omega, 'P' if SOLUTAL_CG else 'DP', c_degree), 'c', order, ics=c_ics,
+        )
     if THERMAL:
-        theta = FunctionSeries((Omega, 'P' if THERMAL_CG else 'DP', 1), 'theta', order, ics=theta_ics)
+        theta = FunctionSeries(
+            (Omega, 'P' if THERMAL_CG else 'DP', theta_degree), 'theta', order, ics=theta_ics,
+        )
+
+    # evolution
     if EVOL:
         s = FunctionSeries((Omega, *s_elem), 's', order, ics=s_ics)
         epsilon = Constant(Omega, epsilon, 'epsilon')
@@ -268,6 +282,7 @@ def dns_generic(
             up, FE(k), FE(mu), FE(rho) * as_vector(eg), bcs=p_bcs, blocked=blocked, add_zero=add_zero)
         solvers.append(up_solver)
 
+    solvers.extend(pre_solvers)
     # timestep solver
     if SOLUTAL:
         if THERMAL:
@@ -282,6 +297,7 @@ def dns_generic(
             u[0], FE(g), dt_h, courant_adv, courant_diff, dt_max, dt_min, 
         )
     solvers.append(dt_solver)
+    solvers.extend(post_solvers)
 
     # thermal solver
     if THERMAL:
@@ -370,8 +386,6 @@ def dns_generic(
             solvers.append(evaluation(sMinMax, extrema)(s[0]))
             dtSigma = ConstantSeries(Omega, "dtSigma")
             solvers.append(evaluation(dtSigma, reactive_timestep)(Sigma[0]))
-        if isinstance(diagnostic, Iterable):
-            solvers.extend(diagnostic)
 
     for i in (*fluxes_solutal, *fluxes_thermal):
         name, y_target, lx = i
@@ -388,4 +402,5 @@ def dns_generic(
         else:
             solvers.append(vertical_flux_solver(theta, g))
     
+    solvers = [*prepend_solvers, *solvers, *append_solvers]
     return Simulation(solvers, t, dt, auxiliary)
