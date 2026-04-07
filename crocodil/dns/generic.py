@@ -3,7 +3,7 @@ from typing import Callable, TypeAlias
 from types import EllipsisType
 
 import numpy as np
-from ufl import as_vector, inner, sqrt, min_value
+from ufl import as_vector, inner, sqrt, min_value, max_value
 from ufl.core.expr import Expr
 from dolfinx.mesh import Mesh
 
@@ -82,9 +82,10 @@ def dns_generic(
     dt_min: float = 0.0,
     dt_max: float = np.inf,
     dt_h: str | float = "hmin",
-    courant_adv: float | None = 1.0,
-    courant_diff: float | None = 1.0,
-    courant_reac: float | None = 1.0,
+    dt_Cu: float | None = 1.0,
+    dt_Cd: float | None = 1.0,
+    dt_Cr: float | None = 1.0,
+    dt_Sigma: bool = True,
     # time discretization
     D_adv_solutal: FiniteDifference | FiniteDifferenceArgwise = FE,
     D_diff_solutal: FiniteDifference = FE,
@@ -103,7 +104,7 @@ def dns_generic(
     s_elem: tuple[str, int] = ('P', 1),
     s_limits: tuple[float, float] | bool = False,
     phi_elem: tuple[str, int] = ('P', 1),
-    use_max_value: bool = False,
+    Sigma_limits: tuple[float, float] | None = None,
     # polynomial degree
     c_degree: int = 1,
     theta_degree: int = 1,
@@ -237,9 +238,13 @@ def dns_generic(
                 (reaction(s) * c if reaction else 0) 
                 + (source(s) if source else 0)
             )
-        if use_max_value:
+        if Sigma_limits:
+            Sigma_min, Sigma_max = Sigma_limits
             _reaction_plus_source = lambda *args: (
-                max_value(reaction_plus_source(*args), 0)
+                min_value(
+                    max_value(reaction_plus_source(*args), Sigma_min),
+                    Sigma_max,
+                )
             )
             reaction_plus_source = _reaction_plus_source
         Sigma = reaction_plus_source(
@@ -290,11 +295,12 @@ def dns_generic(
         else:
             dt_disp = FE(d)
         dt_solver = evaluation(dt, adr_timestep)(
-            u[0], dt_disp, FE(Sigma), dt_h, courant_adv, courant_diff, courant_reac, dt_max, dt_min,
+            u[0], dt_disp,  FE(Sigma) if dt_Sigma else abs(FE(r)), 
+            dt_h, dt_Cu, dt_Cd, dt_Cr, dt_max, dt_min,
         ) 
     else:
         dt_solver = evaluation(dt, advective_diffusive_timestep)(
-            u[0], FE(g), dt_h, courant_adv, courant_diff, dt_max, dt_min, 
+            u[0], FE(g), dt_h, dt_Cu, dt_Cd, dt_max, dt_min, 
         )
     solvers.append(dt_solver)
     solvers.extend(post_solvers)

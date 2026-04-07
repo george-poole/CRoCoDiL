@@ -3,3 +3,11 @@ only_build_toc_files: true
 execute:
   execute_notebooks: off
   allow_errors: true
+
+repository:
+  url: https://github.com/george-poole/CRoCoDiL
+  path_to_book: "book"
+  branch: main
+
+html:
+  use_repository_button: true

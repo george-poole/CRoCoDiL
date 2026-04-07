@@ -1,3 +1,5 @@
+from typing import Iterable
+
 import numpy as np
 import scipy.special as sp
 
@@ -29,8 +31,8 @@ def dns_darcy_rayleigh_benard(
     theta_seed: tuple[int, int] = (1234, 5678),
     # timestep
     dt_max: float = np.inf,
-    cfl_h: str | float = "hmin",
-    courant_adv: float = 0.75,
+    dt_h: str | float = "hmin",
+    dt_Cu: float = 0.75,
     # time discretization
     D_adv: FiniteDifference | FiniteDifferenceArgwise = (AB(2) @ CN),
     D_diff: FiniteDifference | FiniteDifferenceArgwise = CN,
@@ -43,7 +45,7 @@ def dns_darcy_rayleigh_benard(
     theta_petsc: OptionsPETSc = OptionsPETSc('gmres', 'ilu'),
     # optional post-processing
     diagnostic: bool = False,
-    fluxes = (),
+    fluxes = Iterable[tuple[str, float | int, float]],
 ):
     # space
     scaling_map = SCALINGS[scaling](Ra)
@@ -86,8 +88,8 @@ def dns_darcy_rayleigh_benard(
         dispersion_thermal=dispersion,
         # timestep
         dt_max=dt_max,
-        dt_h=cfl_h,
-        courant_adv=courant_adv,
+        dt_h=dt_h,
+        dt_Cu=dt_Cu,
         # time discretization
         D_adv_thermal=D_adv,
         D_diff_thermal=D_diff,
@@ -123,8 +125,8 @@ def dns_darcy_evolving(
     theta_eps: float = 1e-2,
     # timestep
     dt_max: float = np.inf,
-    cfl_h: str | float = "hmin",
-    courant_adv: float = 0.75,
+    dt_h: str | float = "hmin",
+    dt_Cu: float = 0.75,
     # time discretization
     D_adv: FiniteDifference | FiniteDifferenceArgwise = (AB(2) @ CN),
     D_diff: FiniteDifference = CN,
@@ -179,8 +181,8 @@ def dns_darcy_evolving(
         dispersion_thermal=dispersion,
         # timestep
         dt_max=dt_max,
-        dt_h=cfl_h,
-        courant_adv=courant_adv,
+        dt_h=dt_h,
+        dt_Cu=dt_Cu,
         # time discretization
         D_adv_thermal=D_adv,
         D_diff_thermal=D_diff,
@@ -218,8 +220,8 @@ def dns_darcy_rayleigh_taylor(
     c_seed: tuple[int, int] = (1234, 5678),
     # timestep
     dt_max: float = np.inf,
-    cfl_h: str | float = "hmin",
-    courant_adv: float = 0.75,
+    dt_h: str | float = "hmin",
+    dt_Cu: float = 0.75,
     # time discretization
     D_adv: FiniteDifference 
     | FiniteDifferenceArgwise = (AB(2) @ CN),
@@ -274,8 +276,8 @@ def dns_darcy_rayleigh_taylor(
         dispersion_solutal=dispersion,
         # timestep
         dt_max=dt_max,
-        dt_h=cfl_h,
-        courant_adv=courant_adv,
+        dt_h=dt_h,
+        dt_Cu=dt_Cu,
         # time discretization
         D_adv_solutal=D_adv,
         D_diff_solutal=D_diff,
@@ -315,8 +317,8 @@ def dns_darcy_thermosolutal(
     theta_seed: tuple[int, int] = (1234, 5678),
     # timestep
     dt_max: float = np.inf,
-    cfl_h: str | float = "hmin",
-    courant_adv: float = 0.75,
+    dt_h: str | float = "hmin",
+    dt_Cu: float = 0.75,
     # time discretization
     D_adv_solutal: FiniteDifference 
     | FiniteDifferenceArgwise = (AB(2) @ CN),
@@ -338,6 +340,8 @@ def dns_darcy_thermosolutal(
     theta_petsc: OptionsPETSc = OptionsPETSc('gmres', 'ilu'),
     # optional post-processing
     diagnostic: bool = False,
+    fluxes_solutal = Iterable[tuple[str, float | int, float]],
+    fluxes_thermal = Iterable[tuple[str, float | int, float]],
 ):
     # space
     scaling_map = SCALINGS[scaling](Ra)
@@ -379,6 +383,10 @@ def dns_darcy_thermosolutal(
     dispersion_solutal = lambda phi: Di * phi
     dispersion_thermal = lambda phi: Le * Di * phi
 
+    if diagnostic:
+        fluxes_solutal = [('f', 0.5 * Ly, Lx), *fluxes_solutal]
+        fluxes_thermal = [('q', 0.5 * Ly, Lx), *fluxes_thermal]
+
     return dns_generic(
         # domain
         Omega=Omega, 
@@ -395,8 +403,8 @@ def dns_darcy_thermosolutal(
         dispersion_thermal=dispersion_thermal,
         # timestep
         dt_max=dt_max,
-        dt_h=cfl_h,
-        courant_adv=courant_adv,
+        dt_h=dt_h,
+        dt_Cu=dt_Cu,
         # time discretization
         D_adv_solutal=D_adv_solutal,
         D_diff_solutal=D_diff_solutal,
@@ -413,5 +421,7 @@ def dns_darcy_thermosolutal(
         theta_petsc=theta_petsc,
         # optional solvers
         diagnostic=diagnostic,
-        auxiliary=[Ra, Le, Di, Bu, gamma, ('X', X)],
+        fluxes_thermal=fluxes_thermal,
+        fluxes_solutal=fluxes_solutal,
+        auxiliary=(Ra, Le, Di, Bu, gamma, ('X', X)),
     )

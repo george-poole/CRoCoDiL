@@ -1,5 +1,7 @@
 # Kills zombie Python processes left running by IPython notebooks, 
 # without killing any Python processes currently running from a Python script.
+#
+# `pkill -f /Users/George/miniconda3/envs/lucifex/bin/python -m ipykernel_launcher`
 
 CONFIRM=false
 

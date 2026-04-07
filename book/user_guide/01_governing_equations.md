@@ -63,16 +63,16 @@ $$
 | -------- | ------- | ------- | ------- | ------- | ------- |  ------- |  ------- |  ------- | 
 | **Scaling** | $\mathcal{L}$ | $\mathcal{U}$ |$\mathcal{T}$ | $\Delta c$ | $\Delta\theta$ | $g \Delta\rho$ | $\mu_{\text{ref}}\,\mathcal{U}\mathcal{L}/K_{\text{ref}}$ | $\mathcal{U}\mathcal{L}$ |
 
-| $\mu$ | $\phi$ | $K$ | $\vert\mathsf{D}\vert$ | $\vert\mathsf{G}\vert$ | $R$ |
+| $\mu$ | $\phi$ | $K$ | $\vert\mathsf{D}\vert$ | $\vert\mathsf{G}\vert$ | $\Sigma$ |
 | ------- | ------- | ------- | ------- | ------- |  ------- |
-| $\mu_{\text{ref}}$ | $\phi_{\text{ref}}$ |$K_{\text{ref}}$ | $D_{\text{ref}}$ | $G_{\text{ref}}$ | $\Delta R$ | 
+| $\mu_{\text{ref}}$ | $\phi_{\text{ref}}$ |$K_{\text{ref}}$ | $D_{\text{ref}}$ | $G_{\text{ref}}$ | $\Delta\Sigma$ | 
 
-### Abstract dimensionless numbers
+### Generic dimensionless numbers
 
 $$
 Ad=\frac{\mathcal{U}\mathcal{T}}{\phi_{\text{ref}}\mathcal{L}}~,~
 Di=\frac{D_{\text{ref}}\mathcal{T}}{\phi_{\text{ref}}\mathcal{L}^2}~,~
-Ki=\frac{\mathcal{T}\Delta R}{\phi_{\text{ref}}\Delta c}~,~
+Ki=\frac{\mathcal{T}\Delta\Sigma}{\phi_{\text{ref}}\Delta c}~,~
 Bu=\frac{K_{\text{ref}}\,g\Delta\rho}{\mu_{\text{ref}}\,\mathcal{U}}~,~
 X=\frac{\mathcal{L}}{\mathcal{L}_\Omega}
 $$
@@ -82,19 +82,18 @@ $$
 | Definition | Name | Physical interpretation | 
 | -------- | ------- | ------- |
 | $Ra=\frac{\mathcal{L}_\Omega K_{\text{ref}}g\Delta\rho}{\mu_{\text{ref}}D_{\text{ref}}}=\underbrace{\frac{K_{\text{ref}}\,g\Delta\rho}{\mu_{\text{ref}}}}_{\text{convective speed}} \big/ \underbrace{\frac{D_{\text{ref}}}{\mathcal{L}_\Omega}}_{\text{diffusive speed}}$  |  Rayleigh  | Ratio of convective to diffusive speeds, defined with respect to the transport of $c$ and domain length scale. |
-| $Da=\frac{\mathcal{L}_\Omega \mu_{\text{ref}}\,\Delta R}{K_{\text{ref}}\,g\Delta\rho\Delta c} = \underbrace{\frac{\Delta R}{\Delta c}}_{\text{reaction rate}} \big/ \underbrace{\frac{K_{\text{ref}}\,g\Delta\rho}{\mathcal{L}_\Omega \mu_{\text{ref}}}}_{\text{convection rate}}$  |  Damköhler  | Ratio of reaction to convection rates, defined with respect to the transport of $c$ and domain length scale. |
+| $Da=\frac{\mathcal{L}_\Omega \mu_{\text{ref}}\,\Delta\Sigma}{K_{\text{ref}}\,g\Delta\rho\Delta c} = \underbrace{\frac{\Delta\Sigma}{\Delta c}}_{\text{reaction rate}} \big/ \underbrace{\frac{K_{\text{ref}}\,g\Delta\rho}{\mathcal{L}_\Omega \mu_{\text{ref}}}}_{\text{convection rate}}$  |  Damköhler  | Ratio of reaction to convection rates, defined with respect to the transport of $c$ and domain length scale. |
 | $Le=\frac{G_{\text{ref}}}{D_{\text{ref}}}$  |  Lewis  | Ratio of thermal to solutal diffusivities. |
 | $\varepsilon = \frac{\Delta c}{\varrho}\ll1$ | evolution | Ratio of CO<sub>2</sub> concentration scale to single-phase CO2 density |
 
 ### Scaling choice
 
-| Name | $\mathcal{L}$ | $\mathcal{U}$ |$ \mathcal{T}$ | $\{Ad, Di, Ki, Bu, Xl\}$ | Examples |
-| -------- | ------- | ------- | ------- | ------- | ------- |
-| $\text{advective}$ | $\mathcal{L}_\Omega$  |  $K_{\text{ref}}\,g\Delta\rho/\mu_{\text{ref}}$  | $\phi_{\text{ref}}\mathcal{L}/\mathcal{U}$ | $\{1, 1/Ra, Da, 1, 1\}$| [Hewitt et al. (2012)](https://link.aps.org/doi/10.1103/PhysRevLett.108.224503) |
-| $\text{diffusive}$ | $\mathcal{L}_\Omega$  |  $D_{\text{ref}}/\mathcal{L}$  | $\phi_{\text{ref}}\mathcal{L}/\mathcal{U}$ | $\{1, 1, RaDa, Ra, 1\}$| [Ritchie \& Pritchard  (2011)](https://www.cambridge.org/core/journals/journal-of-fluid-mechanics/article/natural-convection-and-the-evolution-of-a-reactive-porous-medium/71E5FB557F61CB9125E5B4E4EE9D828F) |
-| $\text{advective-diffusive}$ | $D_{\text{ref}}/\mathcal{U}$  |  $K_{\text{ref}}\,g\Delta\rho/\mu_{\text{ref}}$  | $\phi_{\text{ref}}\mathcal{L}/\mathcal{U}$ | $\{1, 1, Da/Ra, 1, Ra\}$| [Slim (2014)](https://www.cambridge.org/core/product/identifier/S0022112013006733/type/journal_article) |
-| $\text{reactive}$ | $\sqrt{D_{\text{ref}}\mathcal{T}/\phi_{\text{ref}}}$  |  $\phi_{\text{ref}}\mathcal{L}/\mathcal{T}$  | $\phi_{\text{ref}}\Delta c/\Delta R$  | $\{1, 1, 1, \sqrt{Ra/Da}, \sqrt{RaDa}\}$| [Kabbadj et al. (2025)](https://nlpc.ulb.be/pdf/25.Kabbadj_MATRIX.pdf) |
-
+| Name | $\mathcal{L}$ | $\mathcal{U}$ | $\mathcal{T}$ | $Ad$ | $Di$ | $Ki$ | $Bu$ | $X$ |
+|------|--------------|--------------|--------------|-----|-----|-----|-----|-----|
+| advective | $\mathcal{L}_\Omega$ | $K_{\text{ref}}\,g\Delta\rho/\mu_{\text{ref}}$ | $\phi_{\text{ref}}\mathcal{L}/\mathcal{U}$ | $1$ | $1/Ra$ | $Da$ | $1$ | $1$ |
+| diffusive | $\mathcal{L}_\Omega$ | $D_{\text{ref}}/\mathcal{L}$ | $\phi_{\text{ref}}\mathcal{L}/\mathcal{U}$ | $1$ | $1$ | $RaDa$ | $Ra$ | $1$ |
+| advective-diffusive | $D_{\text{ref}}/\mathcal{U}$ | $K_{\text{ref}}\,g\Delta\rho/\mu_{\text{ref}}$ | $\phi_{\text{ref}}\mathcal{L}/\mathcal{U}$ | $1$ | $1$ | $Da/Ra$ | $1$ | $Ra$ |
+| reactive | $\sqrt{D_{\text{ref}}\mathcal{T}/\phi_{\text{ref}}}$ | $\phi_{\text{ref}}\mathcal{L}/\mathcal{T}$ | $\phi_{\text{ref}}\Delta c/\Delta\Sigma$ | $1$ | $1$ | $1$ | $\sqrt{Ra/Da}$ | $\sqrt{RaDa}$ |
 
 ## Non-dimensional time-discretized  equations
 
@@ -130,7 +129,7 @@ $$
 &\begin{cases}
 \varphi\frac{s^{n+1} -s^n}{\Delta t^n} = -\varepsilon Ki\mathcal{D}_{\Sigma, s}(Rc + J) & \\
 \mathcal{D}_\phi(\phi)\frac{c^{n+1}-c^n}{\Delta t^n} + Ad\,\mathcal{D}_{\textbf{u},c}(\textbf{u}\cdot\nabla c) = Di\nabla\cdot\mathcal{D}_{\mathsf{D},c}(\mathsf{D}\cdot\nabla c) + Ki\left(\mathcal{D}_{R,c}(Rc) + \mathcal{D}_{J}(J)\right) & \\
-\mathcal{D}_\phi(\phi)\frac{\theta^{n+1}-\theta^n}{\Delta t^n} + Ad\,\mathcal{D}_{\textbf{u},\theta}(\textbf{u}\cdot\nabla\theta) = \frac{Di}{Le}\nabla\cdot\mathcal{D}_{\mathsf{G},\theta}(\mathsf{G}\cdot\nabla\theta) & \\
+\mathcal{D}_\phi(\phi)\frac{\theta^{n+1}-\theta^n}{\Delta t^n} + Ad\,\mathcal{D}_{\textbf{u},\theta}(\textbf{u}\cdot\nabla\theta) = Le Di\nabla\cdot\mathcal{D}_{\mathsf{G},\theta}(\mathsf{G}\cdot\nabla\theta) & \\
 \nabla\cdot\bigg(\frac{\mu^n(\mathsf{K}^n)^{\mathsf{T}}\cdot\nabla\psi^n}{\det\mathsf{K}^n}\bigg) = -\frac{\partial(\rho^n\,\textbf{e}_g\cdot\textbf{e}_y)}{\partial x} + \frac{\partial(\rho^n\,\textbf{e}_g\cdot\textbf{e}_x)}{\partial y} \\
 \textbf{u}^n = (-\frac{\partial\psi^n}{\partial y}, \frac{\partial\psi^n}{\partial x}) \\
 s^0=s_0 \\

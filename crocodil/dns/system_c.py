@@ -64,9 +64,9 @@ def dns_system_c(
     dt_min: float = 0.0,
     dt_max: float = np.inf,
     dt_h: str | float = "hmin",
-    courant_adv: float | None = 0.5,
-    courant_diff: float | None = 0.5,
-    courant_reac: float | None = 0.1,
+    dt_Cu: float | None = 0.5,
+    dt_Cd: float | None = 0.5,
+    dt_Cr: float | None = 0.1,
     # time discretization
     D_adv: FiniteDifference
     | FiniteDifferenceArgwise = (AB(2) @ CN),
@@ -162,9 +162,9 @@ def dns_system_c(
         dt_min=dt_min,
         dt_max=dt_max,
         dt_h=dt_h,
-        courant_adv=courant_adv,
-        courant_diff=courant_diff,
-        courant_reac=courant_reac,
+        dt_Cu=dt_Cu,
+        dt_Cd=dt_Cd,
+        dt_Cr=dt_Cr,
         # time discretization
         D_adv_solutal=D_adv,
         D_diff_solutal=D_diff,

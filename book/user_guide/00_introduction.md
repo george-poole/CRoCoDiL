@@ -25,19 +25,16 @@ s=1 &\iff \phi = 0 \\
 \end{align*}
 $$
 
-## Mathematical notation
+## Notation
 
-### Flow & transport
+In addition to the notation defined in the [LUCiFEx notebooks](https://george-poole.github.io/LUCiFEx/notation.html).
 
 | Symbol | Description |
 | -------- | ------- |
-| $\textbf{e}_x, \textbf{e}_y, \textbf{e}_z$ | Cartesian unit vectors | 
-| $\textbf{x}=(x, y, z) = x\textbf{e}_x + y\textbf{e}_y + z\textbf{e}_z$ | spatial coordinates |
-| $t$ | time |
 | $s$ | saturation of capillary-trapped CO<sub>2</sub> | 
 | $c$ | concentration of dissolved CO<sub>2</sub> | 
 | $\theta$ | temperature | 
-| $\textbf{u}=(u_x, u_y, u_z)$ | fluid velocity |
+| $\textbf{u}$ | fluid velocity |
 | $p$| pressure |
 | $\psi$| streamfunction |
 | $\rho$ | fluid density |
@@ -54,35 +51,3 @@ $$
 | $\mathcal{L}$ | length scale |
 | $\mathcal{U}$ | velocity scale |
 | $\mathcal{T}$ | time scale |
-
-### Finite element method
-
-| Symbol | Description |
-| -------- | ------- |
-| $\Omega\subset\mathbb{R}^d$ | domain |
-| $d$ | number of spatial dimensions |
-| $\partial\Omega$ | domain boundary |
-| $\text{d}\Omega$ | integration measure over the cells | 
-| $\text{d}\Gamma$ | integration measure over the cell facets | 
-| $\textbf{n}$ | outward normal unit vector |
-| $\mathscr{T}$ | tesselation of the domain | 
-| $\mathcal{K}$ | mesh cell | 
-| $h$ | mesh cell size | 
-| $\mathcal{F}$ | set of cell facets |
-| $\mathcal{V}$ | set of cell vertices |
-| $L^2(\Omega)$ | Lebesgue space |
-| $H^1(\Omega)$ | Sobolev space |
-| $\text{P}_k$ | continuous Lagrange polynomial of degree $k$ |
-| $\text{BDM}_k$ | Brezzi-Douglas-Marini polynomial of degree $k$ |
-| $\{\cdot\}$ | cell facet jump operator
-| $\left[\!\left[\cdot\right]\!\right]$ | cell facet average operator |
-
-### Finite difference method
-
-| Symbol | Description |
-| -------- | ------- |
-| $\Delta t$ | timestep |
-| $t^n$ | $n^{\text{th}}$ time level |
-| $u^n=u(t^n)$| time-dependent quantity at the $n^{\text{th}}$ time level |
-
-### Operators

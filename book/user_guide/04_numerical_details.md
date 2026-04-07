@@ -1,4 +1,4 @@
-# Best practices
+# Numerical details
 
 ## Mesh resolution
 
@@ -26,26 +26,7 @@ $$
 
 ### Boundary layers
 
-Dirichlet boundary conditions on the concentration or temperature can lead to boundary layers across which the concentration or temperature adjusts from its bulk to its boundary value. Resolving such boundary layers may require a mesher finer that the above constraint, depending on the system.
-
-
-## Adaptive timestep
-
-$$
-\begin{align*}
-\Delta t &\leq \min\{\Delta t_{\textbf{u}}, \Delta t_{\mathsf{D}} ,\Delta t_{\Sigma}\} \\
-\Delta t_{\textbf{u}} &= \min_{\textbf{x}}\left(\frac{h}{|\textbf{u}|}\right)  \\
-\Delta t_{\mathsf{D}} & = \min_{\textbf{x}}\left(\frac{h^2}{2|\mathsf{D}|}\right) \\
-\Delta t_{\Sigma} &= \min_{\textbf{x}}\left(\frac{1}{|\Sigma|}\right) \\
-\end{align*}
-$$
-
-$$
-\Delta t = \min\{C_{\textbf{u}}\Delta t_{\textbf{u}}, C_{\mathsf{D}}\Delta t_{\mathsf{D}}, C_{\Sigma}\Delta t_{\Sigma}\}
-$$
-
-The precise value of Courant number necessary for stability can depend on the choice of discretization in space and time, as well as the number of spatial dimensions.
-
+Dirichlet boundary conditions on the concentration or temperature can lead to boundary layers across which the concentration or temperature adjusts from its bulk to its boundary value. Resolving such boundary layers may require a mesher finer that the above constraint.
 
 
 ## Time discretization
@@ -91,7 +72,7 @@ pc_factor_mat_solver_type = 'mumps'
 
 #### Streamfunction formulation
 
-The matrix is (in theory) symmetric. Interpolation, as opposed to projection, of the streamfunction gradients to obtain the velocity is the recommended method.
+The matrix is (in theory) symmetric. Interpolation, as opposed to projection, of the streamfunction gradients to obtain the velocity has the least computational cost.
 
 ```python
 psi_petsc = OptionsPETSc('cg', 'hypre')
@@ -99,7 +80,7 @@ u_petsc = None
 flow_petsc = (psi_petsc, u_petsc)
 ```
 
-### Advection-diffusion-reaction equation
+#### Advection-diffusion-reaction equation
 
 The matrix is not symmetric
 
