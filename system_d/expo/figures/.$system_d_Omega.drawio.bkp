@@ -1,6 +1,6 @@
 <mxfile host="Electron" agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/26.2.15 Chrome/134.0.6998.205 Electron/35.2.1 Safari/537.36" version="26.2.15">
   <diagram name="Page-1" id="ZoYgnsPX22BV_gQzKxPb">
-    <mxGraphModel dx="2673" dy="2036" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1800" pageHeight="2000" math="1" shadow="0">
+    <mxGraphModel dx="3270" dy="1120" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1800" pageHeight="2000" math="1" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -49,7 +49,7 @@
             </Array>
           </mxGeometry>
         </mxCell>
-        <mxCell id="NVhSVB5CNNRZOzjtrENt-2" value="$$(\textbf{n}\cdot\textbf{u})\vert_{\partial\Omega_I}=-u_I$$" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=35;" parent="1" vertex="1">
+        <mxCell id="NVhSVB5CNNRZOzjtrENt-2" value="$$(\textbf{n}\cdot\textbf{u})\vert_{\partial\Omega_{\mathrm{I}}}=-u_{\mathrm{I}}$$" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=35;" parent="1" vertex="1">
           <mxGeometry x="433" y="839" width="200" height="70" as="geometry" />
         </mxCell>
         <mxCell id="NVhSVB5CNNRZOzjtrENt-3" value="$$x=-\frac{\mathcal{A}X}{2}$$" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=35;" parent="1" vertex="1">
@@ -61,16 +61,16 @@
             <mxPoint x="640" y="559" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="NVhSVB5CNNRZOzjtrENt-5" value="$$u_I\,\textbf{e}_y$$" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=35;" parent="1" vertex="1">
+        <mxCell id="NVhSVB5CNNRZOzjtrENt-5" value="$$u_{\mathrm{I}}\,\textbf{e}_y$$" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=35;" parent="1" vertex="1">
           <mxGeometry x="600" y="470" width="80" height="70" as="geometry" />
         </mxCell>
         <mxCell id="NVhSVB5CNNRZOzjtrENt-7" value="$$(\textbf{n}\cdot\textbf{u})\vert_{\partial\Omega^\prime}=0$$" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=35;" parent="1" vertex="1">
           <mxGeometry x="777" y="145" width="200" height="70" as="geometry" />
         </mxCell>
-        <mxCell id="NVhSVB5CNNRZOzjtrENt-16" value="$$\theta\vert_{\partial\Omega_I}\in\{0,1\}$$" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=35;" parent="1" vertex="1">
+        <mxCell id="NVhSVB5CNNRZOzjtrENt-16" value="$$\theta\vert_{\partial\Omega_{\mathrm{I}}}\in\{0,1\}$$" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=35;" parent="1" vertex="1">
           <mxGeometry x="753" y="873" width="210" height="70" as="geometry" />
         </mxCell>
-        <mxCell id="NVhSVB5CNNRZOzjtrENt-17" value="$$c\vert_{\partial\Omega_I}=0$$" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=35;" parent="1" vertex="1">
+        <mxCell id="NVhSVB5CNNRZOzjtrENt-17" value="$$c\vert_{\partial\Omega_{\mathrm{I}}}=0$$" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=35;" parent="1" vertex="1">
           <mxGeometry x="720" y="809" width="199.5" height="70" as="geometry" />
         </mxCell>
         <mxCell id="NVhSVB5CNNRZOzjtrENt-21" value="" style="endArrow=classic;html=1;rounded=0;strokeWidth=3;" parent="1" edge="1">
@@ -85,22 +85,22 @@
             <mxPoint x="600" y="559" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="NVhSVB5CNNRZOzjtrENt-27" value="$$\partial\Omega_I=\left\{x,y~:~|x|&amp;lt;\frac{\ell X}{2}~,~y=0\right\}$$" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=35;" parent="1" vertex="1">
+        <mxCell id="NVhSVB5CNNRZOzjtrENt-27" value="$$\partial\Omega_{\mathrm{I}}=\left\{x,y~:~|x|&amp;lt;\frac{\ell X}{2}~,~y=0\right\}$$" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=35;" parent="1" vertex="1">
           <mxGeometry x="610" y="697" width="116" height="70" as="geometry" />
         </mxCell>
-        <mxCell id="NVhSVB5CNNRZOzjtrENt-28" value="$$\partial\Omega_O=\left\{x,y~:~x=\pm\frac{\mathcal{A}X}{2}\right\}$$" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=35;" parent="1" vertex="1">
+        <mxCell id="NVhSVB5CNNRZOzjtrENt-28" value="$$\partial\Omega_{\mathrm{O}}=\left\{x,y~:~x=\pm\frac{\mathcal{A}X}{2}\right\}$$" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=35;" parent="1" vertex="1">
           <mxGeometry x="1260" y="259" width="126" height="172" as="geometry" />
         </mxCell>
-        <mxCell id="NVhSVB5CNNRZOzjtrENt-29" value="$$(\textbf{n}\cdot\textbf{u})\vert_{\partial\Omega_O}=u_I\ell/2$$" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=35;" parent="1" vertex="1">
+        <mxCell id="NVhSVB5CNNRZOzjtrENt-29" value="$$(\textbf{n}\cdot\textbf{u})\vert_{\partial\Omega_{\mathrm{O}}}=u_{\mathrm{I}}\ell/2$$" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=35;" parent="1" vertex="1">
           <mxGeometry x="1145" y="400" width="200" height="70" as="geometry" />
         </mxCell>
-        <mxCell id="NVhSVB5CNNRZOzjtrENt-30" value="$$(\textbf{n}\cdot(\mathsf{D}\cdot\nabla c))\vert_{\partial\Omega_O}=0$$" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=35;" parent="1" vertex="1">
+        <mxCell id="NVhSVB5CNNRZOzjtrENt-30" value="$$(\textbf{n}\cdot(\mathsf{D}\cdot\nabla c))\vert_{\partial\Omega_{\mathrm{O}}}=0$$" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=35;" parent="1" vertex="1">
           <mxGeometry x="1166" y="470" width="200" height="70" as="geometry" />
         </mxCell>
-        <mxCell id="NVhSVB5CNNRZOzjtrENt-31" value="$$(\textbf{n}\cdot(\mathsf{G}\cdot\nabla \theta))\vert_{\partial\Omega_O}=0$$" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=35;" parent="1" vertex="1">
+        <mxCell id="NVhSVB5CNNRZOzjtrENt-31" value="$$(\textbf{n}\cdot(\mathsf{G}\cdot\nabla \theta))\vert_{\partial\Omega_{\mathrm{O}}}=0$$" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=35;" parent="1" vertex="1">
           <mxGeometry x="1166" y="540" width="200" height="70" as="geometry" />
         </mxCell>
-        <mxCell id="V9_Y9KRzvM2RHlQwliQO-1" value="$$\partial\Omega^\prime=\partial\Omega\setminus\partial\Omega_I\setminus\partial\Omega_O$$" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=35;" parent="1" vertex="1">
+        <mxCell id="V9_Y9KRzvM2RHlQwliQO-1" value="$$\partial\Omega^\prime=\partial\Omega\setminus\partial\Omega_{\mathrm{I}}\setminus\partial\Omega_{\mathrm{O}}$$" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=35;" parent="1" vertex="1">
           <mxGeometry x="370" y="145" width="222" height="70" as="geometry" />
         </mxCell>
         <mxCell id="emdOPTmxVxc43SZ6A9Vi-1" value="$$\theta\in\{1,0\}$$" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=35;" parent="1" vertex="1">
