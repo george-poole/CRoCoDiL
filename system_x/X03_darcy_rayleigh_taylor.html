@@ -1,0 +1,655 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Rayleigh-Taylor instability of a Darcy fluid &#8212; CRoCoDiL</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="../_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css?v=eba8b062" />
+    <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css?v=13237357" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css?v=6644e6bb" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css?v=4fa983c6" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+    <script src="../_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../_static/copybutton.js?v=f281be69"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../_static/togglebutton.js?v=4a39c7ea"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="../_static/design-tabs.js?v=f930bc37"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script async="async" src="../_static/sphinx-thebe.js?v=c100c467"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'system_x/X03_darcy_rayleigh_taylor';</script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Thermosolutal convection of a Darcy fluid" href="X04_darcy_thermosolutal.html" />
+    <link rel="prev" title="Evolving convection of a Darcy fluid" href="X02_darcy_evolving.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search this book..."
+         aria-label="Search this book..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../gallery.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">CRoCoDiL</p>
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="../gallery.html">
+                    Gallery
+                </a>
+            </li>
+        </ul>
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../user_guide/01_introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guide/02_governing_equations.html">Governing equations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guide/03_diagnostic_equations.html">Diagnostic equations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guide/04_finite_element_method.html">Finite element method</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guide/05_numerical_details.html">Numerical details</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guide/06_getting_started.html">Installation</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">System A</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../system_a/expo/A00_definition.html">Definition</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../system_a/expo/A10_overview.html">Overview</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../system_a/expo/A20_expository_hdr.html">Expository simulations</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../system_a/expo/A210_parameters_hdr.html">Parameter space</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../system_a/expo/A211_rayleigh.html">Rayleigh numbers</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../system_a/expo/A212_damkohler.html">Damköhler numbers</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../system_a/expo/A213_saturations.html">Supercritical, subcritical and critical residual saturations</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../system_a/expo/A220_validation_hdr.html">Numerical validation</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../system_a/expo/A221_timestep.html">Timestep constraints</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../system_a/expo/A222_resolution.html">Mesh resolution</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../system_a/expo/A223_cell.html">Cell type</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../system_a/expo/A224_finite_difference.html">Choice of finite difference discretization</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../system_a/expo/A225_stabilization.html">Stabilization of the advection-diffusion-reaction equation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../system_a/expo/A226_sensitivity_perturbation.html">Sensitivity to initial residual concentration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../system_a/expo/A227_sensitivity_residual.html">Sensitivity to initial residual concentration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../system_a/expo/A228_scaling.html">Choice of scaling</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../system_a/expo/A230_details_hdr.html">Numerical details</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../system_a/expo/A231_constraints.html">Mesh resolution and timestep constraints</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../system_a/expo/A232_profiling.html">Profiling</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../system_a/full/A00_full_hdr.html">Full simulations</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../system_a/full/A11_parameter_axis.html">Parameter axis sweep</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../system_a/full/A12_parameter_axes.html">Parameter axes sweep</a></li>
+
+<li class="toctree-l2"><a class="reference internal" href="../system_a/full/A13_onset.html">Onset of convection</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../system_a/full/A21_early_exact.html">Exact early-time model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../system_a/full/A22_early_similarity.html">Similarity early-time model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../system_a/full/A23_late.html">Late-time modelling</a></li>
+</ul>
+</details></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">System B</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../system_b/expo/B00_definition.html">Definition</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../system_b/expo/B10_overview.html">Overview</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">System C</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../system_c/expo/C00_definition.html">Definition</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../system_c/expo/C10_overview.html">Overview</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">System D</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../system_d/expo/D00_definition.html">Definition</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../system_d/expo/D10_overview.html">Overview</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Classic Systems</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="X01_darcy_rayleigh_benard.html">Rayleigh-Bénard convection of a Darcy fluid</a></li>
+<li class="toctree-l1"><a class="reference internal" href="X02_darcy_evolving.html">Evolving convection of a Darcy fluid</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Rayleigh-Taylor instability of a Darcy fluid</a></li>
+<li class="toctree-l1"><a class="reference internal" href="X04_darcy_thermosolutal.html">Thermosolutal convection of a Darcy fluid</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+<a href="https://github.com/george-poole/CRoCoDiL" target="_blank"
+   class="btn btn-sm btn-source-repository-button"
+   title="Source repository"
+   data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+
+</a>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../_sources/system_x/X03_darcy_rayleigh_taylor.ipynb" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.ipynb</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Rayleigh-Taylor instability of a Darcy fluid</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#create-and-run-the-simulation">Create and run the simulation</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#visualization">Visualization</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#diagnostics">Diagnostics</a></li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="rayleigh-taylor-instability-of-a-darcy-fluid">
+<h1>Rayleigh-Taylor instability of a Darcy fluid<a class="headerlink" href="#rayleigh-taylor-instability-of-a-darcy-fluid" title="Link to this heading">#</a></h1>
+<section id="create-and-run-the-simulation">
+<h2>Create and run the simulation<a class="headerlink" href="#create-and-run-the-simulation" title="Link to this heading">#</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">functools</span><span class="w"> </span><span class="kn">import</span> <span class="n">partial</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">lucifex.fdm</span><span class="w"> </span><span class="kn">import</span> <span class="n">AB2</span><span class="p">,</span> <span class="n">CN</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">lucifex.sim</span><span class="w"> </span><span class="kn">import</span> <span class="n">run</span><span class="p">,</span> <span class="n">xdmf_to_npz</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">lucifex.plt</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">plot_colormap</span><span class="p">,</span> <span class="n">create_animation</span><span class="p">,</span> <span class="n">plot_line</span><span class="p">,</span> <span class="n">save_figure</span><span class="p">,</span> <span class="n">display_animation</span><span class="p">,</span> 
+    <span class="n">get_ipynb_file_name</span><span class="p">,</span> <span class="n">set_ipynb_variable</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">crocodil.dns</span><span class="w"> </span><span class="kn">import</span> <span class="n">dns_darcy_rayleigh_taylor</span>
+
+<span class="n">STORE</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="n">WRITE</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="n">DIR_ROOT</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;./figures/</span><span class="si">{</span><span class="n">get_ipynb_file_name</span><span class="p">()</span><span class="si">}</span><span class="s1">&#39;</span>
+<span class="n">DIR_PARAMS</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;Ra&#39;</span><span class="p">,</span> <span class="s1">&#39;Nx&#39;</span><span class="p">,</span> <span class="s1">&#39;Ny&#39;</span><span class="p">)</span>
+
+<span class="n">simulation</span> <span class="o">=</span> <span class="n">dns_darcy_rayleigh_taylor</span><span class="p">(</span>
+    <span class="n">store_delta</span><span class="o">=</span><span class="n">STORE</span><span class="p">,</span> 
+    <span class="n">write_delta</span><span class="o">=</span><span class="n">WRITE</span><span class="p">,</span> 
+    <span class="n">dir_root</span><span class="o">=</span><span class="n">DIR_ROOT</span><span class="p">,</span> 
+    <span class="n">dir_params</span><span class="o">=</span><span class="n">DIR_PARAMS</span><span class="p">,</span>
+<span class="p">)(</span>
+    <span class="n">aspect</span><span class="o">=</span><span class="mf">2.0</span><span class="p">,</span>
+    <span class="n">Nx</span><span class="o">=</span><span class="mi">64</span><span class="p">,</span>
+    <span class="n">Ny</span><span class="o">=</span><span class="mi">64</span><span class="p">,</span>
+    <span class="n">cell</span><span class="o">=</span><span class="s1">&#39;quadrilateral&#39;</span><span class="p">,</span> 
+    <span class="n">scaling</span><span class="o">=</span><span class="s1">&#39;advective&#39;</span><span class="p">,</span>
+    <span class="n">Ra</span><span class="o">=</span><span class="mf">5e2</span><span class="p">,</span>
+    <span class="n">zeta0</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
+    <span class="n">zeta0_eps</span><span class="o">=</span><span class="mf">5e-2</span><span class="p">,</span>
+    <span class="n">c_ampl</span><span class="o">=</span><span class="mf">1e-6</span><span class="p">,</span>
+    <span class="n">c_freq</span><span class="o">=</span><span class="p">(</span><span class="mi">16</span><span class="p">,</span> <span class="mi">8</span><span class="p">),</span>
+    <span class="n">dt_max</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>
+    <span class="n">dt_Cu</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
+    <span class="n">D_adv</span><span class="o">=</span><span class="n">AB2</span><span class="p">,</span>
+    <span class="n">D_diff</span><span class="o">=</span><span class="n">CN</span><span class="p">,</span>
+    <span class="n">diagnostic</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="n">n_stop</span> <span class="o">=</span> <span class="n">set_ipynb_variable</span><span class="p">(</span><span class="s1">&#39;N_STOP&#39;</span><span class="p">,</span> <span class="mi">500</span><span class="p">)</span>
+<span class="n">dt_init</span> <span class="o">=</span> <span class="mf">0.05</span>
+<span class="n">n_init</span> <span class="o">=</span> <span class="mi">10</span>
+<span class="n">run</span><span class="p">(</span><span class="n">simulation</span><span class="p">,</span> <span class="n">n_stop</span><span class="o">=</span><span class="n">n_stop</span><span class="p">,</span> <span class="n">dt_init</span><span class="o">=</span><span class="n">dt_init</span><span class="p">,</span> <span class="n">n_init</span><span class="o">=</span><span class="n">n_init</span><span class="p">)</span>
+<span class="k">if</span> <span class="n">WRITE</span><span class="p">:</span> <span class="n">xdmf_to_npz</span><span class="p">(</span><span class="n">simulation</span><span class="p">,</span> <span class="n">delete_xdmf</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+<span class="n">c</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">psi</span> <span class="o">=</span> <span class="n">simulation</span><span class="p">[</span><span class="s1">&#39;c&#39;</span><span class="p">,</span> <span class="s1">&#39;u&#39;</span><span class="p">,</span> <span class="s1">&#39;psi&#39;</span><span class="p">]</span>
+<span class="n">save_fig</span> <span class="o">=</span> <span class="n">partial</span><span class="p">(</span><span class="n">save_figure</span><span class="p">,</span> <span class="n">dir_path</span><span class="o">=</span><span class="n">simulation</span><span class="o">.</span><span class="n">dir_path</span><span class="p">,</span> <span class="n">prefix</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Environment variable `N_STOP=12`
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="visualization">
+<h2>Visualization<a class="headerlink" href="#visualization" title="Link to this heading">#</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">time_slice</span> <span class="o">=</span> <span class="nb">slice</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<span class="n">titles</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s1">&#39;$c(t=</span><span class="si">{</span><span class="n">t</span><span class="si">:</span><span class="s1">.3f</span><span class="si">}</span><span class="s1">)$&#39;</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">c</span><span class="o">.</span><span class="n">time_series</span><span class="p">[</span><span class="n">time_slice</span><span class="p">]]</span>
+
+<span class="n">anim</span> <span class="o">=</span> <span class="n">create_animation</span><span class="p">(</span>
+    <span class="n">plot_colormap</span><span class="p">,</span>
+    <span class="n">colorbar</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+<span class="p">)(</span><span class="n">c</span><span class="o">.</span><span class="n">series</span><span class="p">[</span><span class="n">time_slice</span><span class="p">],</span> <span class="n">title</span><span class="o">=</span><span class="n">titles</span><span class="p">)</span>
+<span class="n">anim_path</span> <span class="o">=</span> <span class="n">save_fig</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">c</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s1">(t)&#39;</span><span class="p">,</span> <span class="n">return_path</span><span class="o">=</span><span class="kc">True</span><span class="p">)(</span><span class="n">anim</span><span class="p">)</span>
+
+<span class="n">display_animation</span><span class="p">(</span><span class="n">anim_path</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><video controls loop  width="600" >
+ <source src="data:video/mp4;base64,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" type="video/mp4">
+ Your browser does not support the video tag.
+ </video></div></div>
+</div>
+</section>
+<section id="diagnostics">
+<h2>Diagnostics<a class="headerlink" href="#diagnostics" title="Link to this heading">#</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">f</span> <span class="o">=</span> <span class="n">simulation</span><span class="p">[</span><span class="s1">&#39;f&#39;</span><span class="p">]</span>
+<span class="n">fZeta0</span><span class="p">,</span> <span class="n">fZetaPlus</span><span class="p">,</span> <span class="n">fZetaMinus</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plot_line</span><span class="p">(</span>
+    <span class="p">[(</span><span class="n">fZeta0</span><span class="o">.</span><span class="n">time_series</span><span class="p">,</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">fZeta0</span><span class="o">.</span><span class="n">value_series</span><span class="p">]),</span> <span class="p">(</span><span class="n">fZeta0</span><span class="o">.</span><span class="n">time_series</span><span class="p">,</span> <span class="n">fZeta0</span><span class="o">.</span><span class="n">value_series</span><span class="p">)],</span>
+    <span class="n">cyc</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">,</span>
+    <span class="n">x_label</span><span class="o">=</span><span class="s1">&#39;$t$&#39;</span><span class="p">,</span>
+    <span class="n">legend_labels</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;$F$&#39;</span><span class="p">,</span> <span class="s1">&#39;$F_{\mathbf</span><span class="si">{u}</span><span class="s1">}$&#39;</span><span class="p">,</span> <span class="s1">&#39;$F_{\mathsf</span><span class="si">{D}</span><span class="s1">}$&#39;</span><span class="p">],</span>
+    <span class="n">legend_title</span><span class="o">=</span><span class="s1">&#39;$y=</span><span class="se">\\</span><span class="s1">frac</span><span class="si">{1}{2}</span><span class="s1">$&#39;</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">save_fig</span><span class="p">(</span><span class="s1">&#39;f(t)&#39;</span><span class="p">)(</span><span class="n">fig</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/32d259f6e5706c2f93ab231b70eb13853e7801659c36bc685170f0350529a3e7.png" src="../_images/32d259f6e5706c2f93ab231b70eb13853e7801659c36bc685170f0350529a3e7.png" />
+</div>
+</div>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            name: "python3",
+            path: "./system_x"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="X02_darcy_evolving.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Evolving convection of a Darcy fluid</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="X04_darcy_thermosolutal.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Thermosolutal convection of a Darcy fluid</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#create-and-run-the-simulation">Create and run the simulation</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#visualization">Visualization</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#diagnostics">Diagnostics</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By The Jupyter Book community
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2023.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

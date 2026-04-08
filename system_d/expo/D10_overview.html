@@ -1,0 +1,906 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Overview &#8212; CRoCoDiL</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../../_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="../../_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/sphinx-book-theme.css?v=eba8b062" />
+    <link rel="stylesheet" type="text/css" href="../../_static/togglebutton.css?v=13237357" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css?v=6644e6bb" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-thebe.css?v=4fa983c6" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=95c83b7e" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+    <script src="../../_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="../../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../_static/copybutton.js?v=f281be69"></script>
+    <script src="../../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../../_static/togglebutton.js?v=4a39c7ea"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="../../_static/design-tabs.js?v=f930bc37"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script async="async" src="../../_static/sphinx-thebe.js?v=c100c467"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script type="application/vnd.jupyter.widget-state+json">{"state": {"00d992abe6e84099936240a5da1dd34d": {"model_module": "@jupyter-widgets/controls", "model_module_version": "2.0.0", "model_name": "HTMLModel", "state": {"_dom_classes": [], "_model_module": "@jupyter-widgets/controls", "_model_module_version": "2.0.0", "_model_name": "HTMLModel", "_view_count": null, "_view_module": "@jupyter-widgets/controls", "_view_module_version": "2.0.0", "_view_name": "HTMLView", "description": "", "description_allow_html": false, "layout": "IPY_MODEL_b71ee27f4032419dafeb7334b81425a3", "placeholder": "\u200b", "style": "IPY_MODEL_41301b3c0efe42cc9b2af13501e9dc99", "tabbable": null, "tooltip": null, "value": "\u200712/12\u2007[00:12&lt;00:00,\u2007\u20071.02it/s]"}}, "0a8deec1dbda4dcea75c21f4179958ea": {"model_module": "@jupyter-widgets/controls", "model_module_version": "2.0.0", "model_name": "HTMLModel", "state": {"_dom_classes": [], "_model_module": "@jupyter-widgets/controls", "_model_module_version": "2.0.0", "_model_name": "HTMLModel", "_view_count": null, "_view_module": "@jupyter-widgets/controls", "_view_module_version": "2.0.0", "_view_name": "HTMLView", "description": "", "description_allow_html": false, "layout": "IPY_MODEL_dc10bd2d804b4376b23ace4cf1411cd3", "placeholder": "\u200b", "style": "IPY_MODEL_8cf37effd0bc4d47ab605636df1c93c4", "tabbable": null, "tooltip": null, "value": "\u200712/12\u2007[00:24&lt;00:00,\u2007\u20071.01it/s]"}}, "41301b3c0efe42cc9b2af13501e9dc99": {"model_module": "@jupyter-widgets/controls", "model_module_version": "2.0.0", "model_name": "HTMLStyleModel", "state": {"_model_module": "@jupyter-widgets/controls", "_model_module_version": "2.0.0", "_model_name": "HTMLStyleModel", "_view_count": null, "_view_module": "@jupyter-widgets/base", "_view_module_version": "2.0.0", "_view_name": "StyleView", "background": null, "description_width": "", "font_size": null, "text_color": null}}, "5258394048984089b1945d81d20fdf81": {"model_module": "@jupyter-widgets/base", "model_module_version": "2.0.0", "model_name": "LayoutModel", "state": {"_model_module": "@jupyter-widgets/base", "_model_module_version": "2.0.0", "_model_name": "LayoutModel", "_view_count": null, "_view_module": "@jupyter-widgets/base", "_view_module_version": "2.0.0", "_view_name": "LayoutView", "align_content": null, "align_items": null, "align_self": null, "border_bottom": null, "border_left": null, "border_right": null, "border_top": null, "bottom": null, "display": null, "flex": null, "flex_flow": null, "grid_area": null, "grid_auto_columns": null, "grid_auto_flow": null, "grid_auto_rows": null, "grid_column": null, "grid_gap": null, "grid_row": null, "grid_template_areas": null, "grid_template_columns": null, "grid_template_rows": null, "height": null, "justify_content": null, "justify_items": null, "left": null, "margin": null, "max_height": null, "max_width": null, "min_height": null, "min_width": null, "object_fit": null, "object_position": null, "order": null, "overflow": null, "padding": null, "right": null, "top": null, "visibility": null, "width": null}}, "542f8d5b6fb949928871aebdbaa6c1d2": {"model_module": "@jupyter-widgets/controls", "model_module_version": "2.0.0", "model_name": "HBoxModel", "state": {"_dom_classes": [], "_model_module": "@jupyter-widgets/controls", "_model_module_version": "2.0.0", "_model_name": "HBoxModel", "_view_count": null, "_view_module": "@jupyter-widgets/controls", "_view_module_version": "2.0.0", "_view_name": "HBoxView", "box_style": "", "children": ["IPY_MODEL_cbd4f1188c2240479804b317e4d05baa", "IPY_MODEL_74feb87e97464fc189c75dd4f67ba59c", "IPY_MODEL_00d992abe6e84099936240a5da1dd34d"], "layout": "IPY_MODEL_c09d12e15ad44b909b90fd0379e10011", "tabbable": null, "tooltip": null}}, "74feb87e97464fc189c75dd4f67ba59c": {"model_module": "@jupyter-widgets/controls", "model_module_version": "2.0.0", "model_name": "FloatProgressModel", "state": {"_dom_classes": [], "_model_module": "@jupyter-widgets/controls", "_model_module_version": "2.0.0", "_model_name": "FloatProgressModel", "_view_count": null, "_view_module": "@jupyter-widgets/controls", "_view_module_version": "2.0.0", "_view_name": "ProgressView", "bar_style": "success", "description": "", "description_allow_html": false, "layout": "IPY_MODEL_f7c8034730114a5bb3df48211871398d", "max": 12, "min": 0, "orientation": "horizontal", "style": "IPY_MODEL_d326b4612ece4ff5a144152dc74122e1", "tabbable": null, "tooltip": null, "value": 12}}, "752ca70629fe43d09435e13c9e0563fa": {"model_module": "@jupyter-widgets/base", "model_module_version": "2.0.0", "model_name": "LayoutModel", "state": {"_model_module": "@jupyter-widgets/base", "_model_module_version": "2.0.0", "_model_name": "LayoutModel", "_view_count": null, "_view_module": "@jupyter-widgets/base", "_view_module_version": "2.0.0", "_view_name": "LayoutView", "align_content": null, "align_items": null, "align_self": null, "border_bottom": null, "border_left": null, "border_right": null, "border_top": null, "bottom": null, "display": null, "flex": null, "flex_flow": null, "grid_area": null, "grid_auto_columns": null, "grid_auto_flow": null, "grid_auto_rows": null, "grid_column": null, "grid_gap": null, "grid_row": null, "grid_template_areas": null, "grid_template_columns": null, "grid_template_rows": null, "height": null, "justify_content": null, "justify_items": null, "left": null, "margin": null, "max_height": null, "max_width": null, "min_height": null, "min_width": null, "object_fit": null, "object_position": null, "order": null, "overflow": null, "padding": null, "right": null, "top": null, "visibility": null, "width": null}}, "8cf37effd0bc4d47ab605636df1c93c4": {"model_module": "@jupyter-widgets/controls", "model_module_version": "2.0.0", "model_name": "HTMLStyleModel", "state": {"_model_module": "@jupyter-widgets/controls", "_model_module_version": "2.0.0", "_model_name": "HTMLStyleModel", "_view_count": null, "_view_module": "@jupyter-widgets/base", "_view_module_version": "2.0.0", "_view_name": "StyleView", "background": null, "description_width": "", "font_size": null, "text_color": null}}, "9d1b1380f8c944d996605b3920168dec": {"model_module": "@jupyter-widgets/base", "model_module_version": "2.0.0", "model_name": "LayoutModel", "state": {"_model_module": "@jupyter-widgets/base", "_model_module_version": "2.0.0", "_model_name": "LayoutModel", "_view_count": null, "_view_module": "@jupyter-widgets/base", "_view_module_version": "2.0.0", "_view_name": "LayoutView", "align_content": null, "align_items": null, "align_self": null, "border_bottom": null, "border_left": null, "border_right": null, "border_top": null, "bottom": null, "display": null, "flex": null, "flex_flow": null, "grid_area": null, "grid_auto_columns": null, "grid_auto_flow": null, "grid_auto_rows": null, "grid_column": null, "grid_gap": null, "grid_row": null, "grid_template_areas": null, "grid_template_columns": null, "grid_template_rows": null, "height": null, "justify_content": null, "justify_items": null, "left": null, "margin": null, "max_height": null, "max_width": null, "min_height": null, "min_width": null, "object_fit": null, "object_position": null, "order": null, "overflow": null, "padding": null, "right": null, "top": null, "visibility": null, "width": null}}, "a41979025cee47d6b87185ddf548fe02": {"model_module": "@jupyter-widgets/controls", "model_module_version": "2.0.0", "model_name": "HTMLModel", "state": {"_dom_classes": [], "_model_module": "@jupyter-widgets/controls", "_model_module_version": "2.0.0", "_model_name": "HTMLModel", "_view_count": null, "_view_module": "@jupyter-widgets/controls", "_view_module_version": "2.0.0", "_view_name": "HTMLView", "description": "", "description_allow_html": false, "layout": "IPY_MODEL_9d1b1380f8c944d996605b3920168dec", "placeholder": "\u200b", "style": "IPY_MODEL_bd21c3a4c7794e64b85c9fe05c099367", "tabbable": null, "tooltip": null, "value": "100%"}}, "b71ee27f4032419dafeb7334b81425a3": {"model_module": "@jupyter-widgets/base", "model_module_version": "2.0.0", "model_name": "LayoutModel", "state": {"_model_module": "@jupyter-widgets/base", "_model_module_version": "2.0.0", "_model_name": "LayoutModel", "_view_count": null, "_view_module": "@jupyter-widgets/base", "_view_module_version": "2.0.0", "_view_name": "LayoutView", "align_content": null, "align_items": null, "align_self": null, "border_bottom": null, "border_left": null, "border_right": null, "border_top": null, "bottom": null, "display": null, "flex": null, "flex_flow": null, "grid_area": null, "grid_auto_columns": null, "grid_auto_flow": null, "grid_auto_rows": null, "grid_column": null, "grid_gap": null, "grid_row": null, "grid_template_areas": null, "grid_template_columns": null, "grid_template_rows": null, "height": null, "justify_content": null, "justify_items": null, "left": null, "margin": null, "max_height": null, "max_width": null, "min_height": null, "min_width": null, "object_fit": null, "object_position": null, "order": null, "overflow": null, "padding": null, "right": null, "top": null, "visibility": null, "width": null}}, "bacc1bd38d1c4c1ba542faaa427f555c": {"model_module": "@jupyter-widgets/controls", "model_module_version": "2.0.0", "model_name": "HBoxModel", "state": {"_dom_classes": [], "_model_module": "@jupyter-widgets/controls", "_model_module_version": "2.0.0", "_model_name": "HBoxModel", "_view_count": null, "_view_module": "@jupyter-widgets/controls", "_view_module_version": "2.0.0", "_view_name": "HBoxView", "box_style": "", "children": ["IPY_MODEL_a41979025cee47d6b87185ddf548fe02", "IPY_MODEL_c7872d1d751b43fc80bf7b7b798ebffe", "IPY_MODEL_0a8deec1dbda4dcea75c21f4179958ea"], "layout": "IPY_MODEL_5258394048984089b1945d81d20fdf81", "tabbable": null, "tooltip": null}}, "bd21c3a4c7794e64b85c9fe05c099367": {"model_module": "@jupyter-widgets/controls", "model_module_version": "2.0.0", "model_name": "HTMLStyleModel", "state": {"_model_module": "@jupyter-widgets/controls", "_model_module_version": "2.0.0", "_model_name": "HTMLStyleModel", "_view_count": null, "_view_module": "@jupyter-widgets/base", "_view_module_version": "2.0.0", "_view_name": "StyleView", "background": null, "description_width": "", "font_size": null, "text_color": null}}, "c045cb18d43243eaa8f4d9212003b311": {"model_module": "@jupyter-widgets/base", "model_module_version": "2.0.0", "model_name": "LayoutModel", "state": {"_model_module": "@jupyter-widgets/base", "_model_module_version": "2.0.0", "_model_name": "LayoutModel", "_view_count": null, "_view_module": "@jupyter-widgets/base", "_view_module_version": "2.0.0", "_view_name": "LayoutView", "align_content": null, "align_items": null, "align_self": null, "border_bottom": null, "border_left": null, "border_right": null, "border_top": null, "bottom": null, "display": null, "flex": null, "flex_flow": null, "grid_area": null, "grid_auto_columns": null, "grid_auto_flow": null, "grid_auto_rows": null, "grid_column": null, "grid_gap": null, "grid_row": null, "grid_template_areas": null, "grid_template_columns": null, "grid_template_rows": null, "height": null, "justify_content": null, "justify_items": null, "left": null, "margin": null, "max_height": null, "max_width": null, "min_height": null, "min_width": null, "object_fit": null, "object_position": null, "order": null, "overflow": null, "padding": null, "right": null, "top": null, "visibility": null, "width": null}}, "c09d12e15ad44b909b90fd0379e10011": {"model_module": "@jupyter-widgets/base", "model_module_version": "2.0.0", "model_name": "LayoutModel", "state": {"_model_module": "@jupyter-widgets/base", "_model_module_version": "2.0.0", "_model_name": "LayoutModel", "_view_count": null, "_view_module": "@jupyter-widgets/base", "_view_module_version": "2.0.0", "_view_name": "LayoutView", "align_content": null, "align_items": null, "align_self": null, "border_bottom": null, "border_left": null, "border_right": null, "border_top": null, "bottom": null, "display": null, "flex": null, "flex_flow": null, "grid_area": null, "grid_auto_columns": null, "grid_auto_flow": null, "grid_auto_rows": null, "grid_column": null, "grid_gap": null, "grid_row": null, "grid_template_areas": null, "grid_template_columns": null, "grid_template_rows": null, "height": null, "justify_content": null, "justify_items": null, "left": null, "margin": null, "max_height": null, "max_width": null, "min_height": null, "min_width": null, "object_fit": null, "object_position": null, "order": null, "overflow": null, "padding": null, "right": null, "top": null, "visibility": null, "width": null}}, "c7872d1d751b43fc80bf7b7b798ebffe": {"model_module": "@jupyter-widgets/controls", "model_module_version": "2.0.0", "model_name": "FloatProgressModel", "state": {"_dom_classes": [], "_model_module": "@jupyter-widgets/controls", "_model_module_version": "2.0.0", "_model_name": "FloatProgressModel", "_view_count": null, "_view_module": "@jupyter-widgets/controls", "_view_module_version": "2.0.0", "_view_name": "ProgressView", "bar_style": "success", "description": "", "description_allow_html": false, "layout": "IPY_MODEL_752ca70629fe43d09435e13c9e0563fa", "max": 12, "min": 0, "orientation": "horizontal", "style": "IPY_MODEL_fd784a6dd794470aa9702081e4c70b3e", "tabbable": null, "tooltip": null, "value": 12}}, "cbd4f1188c2240479804b317e4d05baa": {"model_module": "@jupyter-widgets/controls", "model_module_version": "2.0.0", "model_name": "HTMLModel", "state": {"_dom_classes": [], "_model_module": "@jupyter-widgets/controls", "_model_module_version": "2.0.0", "_model_name": "HTMLModel", "_view_count": null, "_view_module": "@jupyter-widgets/controls", "_view_module_version": "2.0.0", "_view_name": "HTMLView", "description": "", "description_allow_html": false, "layout": "IPY_MODEL_c045cb18d43243eaa8f4d9212003b311", "placeholder": "\u200b", "style": "IPY_MODEL_d4d994da5f044480946d0a2fdf479563", "tabbable": null, "tooltip": null, "value": "100%"}}, "d326b4612ece4ff5a144152dc74122e1": {"model_module": "@jupyter-widgets/controls", "model_module_version": "2.0.0", "model_name": "ProgressStyleModel", "state": {"_model_module": "@jupyter-widgets/controls", "_model_module_version": "2.0.0", "_model_name": "ProgressStyleModel", "_view_count": null, "_view_module": "@jupyter-widgets/base", "_view_module_version": "2.0.0", "_view_name": "StyleView", "bar_color": null, "description_width": ""}}, "d4d994da5f044480946d0a2fdf479563": {"model_module": "@jupyter-widgets/controls", "model_module_version": "2.0.0", "model_name": "HTMLStyleModel", "state": {"_model_module": "@jupyter-widgets/controls", "_model_module_version": "2.0.0", "_model_name": "HTMLStyleModel", "_view_count": null, "_view_module": "@jupyter-widgets/base", "_view_module_version": "2.0.0", "_view_name": "StyleView", "background": null, "description_width": "", "font_size": null, "text_color": null}}, "dc10bd2d804b4376b23ace4cf1411cd3": {"model_module": "@jupyter-widgets/base", "model_module_version": "2.0.0", "model_name": "LayoutModel", "state": {"_model_module": "@jupyter-widgets/base", "_model_module_version": "2.0.0", "_model_name": "LayoutModel", "_view_count": null, "_view_module": "@jupyter-widgets/base", "_view_module_version": "2.0.0", "_view_name": "LayoutView", "align_content": null, "align_items": null, "align_self": null, "border_bottom": null, "border_left": null, "border_right": null, "border_top": null, "bottom": null, "display": null, "flex": null, "flex_flow": null, "grid_area": null, "grid_auto_columns": null, "grid_auto_flow": null, "grid_auto_rows": null, "grid_column": null, "grid_gap": null, "grid_row": null, "grid_template_areas": null, "grid_template_columns": null, "grid_template_rows": null, "height": null, "justify_content": null, "justify_items": null, "left": null, "margin": null, "max_height": null, "max_width": null, "min_height": null, "min_width": null, "object_fit": null, "object_position": null, "order": null, "overflow": null, "padding": null, "right": null, "top": null, "visibility": null, "width": null}}, "f7c8034730114a5bb3df48211871398d": {"model_module": "@jupyter-widgets/base", "model_module_version": "2.0.0", "model_name": "LayoutModel", "state": {"_model_module": "@jupyter-widgets/base", "_model_module_version": "2.0.0", "_model_name": "LayoutModel", "_view_count": null, "_view_module": "@jupyter-widgets/base", "_view_module_version": "2.0.0", "_view_name": "LayoutView", "align_content": null, "align_items": null, "align_self": null, "border_bottom": null, "border_left": null, "border_right": null, "border_top": null, "bottom": null, "display": null, "flex": null, "flex_flow": null, "grid_area": null, "grid_auto_columns": null, "grid_auto_flow": null, "grid_auto_rows": null, "grid_column": null, "grid_gap": null, "grid_row": null, "grid_template_areas": null, "grid_template_columns": null, "grid_template_rows": null, "height": null, "justify_content": null, "justify_items": null, "left": null, "margin": null, "max_height": null, "max_width": null, "min_height": null, "min_width": null, "object_fit": null, "object_position": null, "order": null, "overflow": null, "padding": null, "right": null, "top": null, "visibility": null, "width": null}}, "fd784a6dd794470aa9702081e4c70b3e": {"model_module": "@jupyter-widgets/controls", "model_module_version": "2.0.0", "model_name": "ProgressStyleModel", "state": {"_model_module": "@jupyter-widgets/controls", "_model_module_version": "2.0.0", "_model_name": "ProgressStyleModel", "_view_count": null, "_view_module": "@jupyter-widgets/base", "_view_module_version": "2.0.0", "_view_name": "StyleView", "bar_color": null, "description_width": ""}}}, "version_major": 2, "version_minor": 0}</script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script crossorigin="anonymous" data-jupyter-widgets-cdn="https://cdn.jsdelivr.net/npm/" src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@1.0.6/dist/embed-amd.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'system_d/expo/D10_overview';</script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Rayleigh-Bénard convection of a Darcy fluid" href="../../system_x/X01_darcy_rayleigh_benard.html" />
+    <link rel="prev" title="Definition" href="D00_definition.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search this book..."
+         aria-label="Search this book..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../gallery.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">CRoCoDiL</p>
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="../../gallery.html">
+                    Gallery
+                </a>
+            </li>
+        </ul>
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../user_guide/01_introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guide/02_governing_equations.html">Governing equations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guide/03_diagnostic_equations.html">Diagnostic equations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guide/04_finite_element_method.html">Finite element method</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guide/05_numerical_details.html">Numerical details</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guide/06_getting_started.html">Getting started</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">System A</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../system_a/expo/A00_definition.html">Definition</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../system_a/expo/A10_overview.html">Overview</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../system_a/expo/A20_expository_hdr.html">Expository simulations</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../system_a/expo/A210_parameters_hdr.html">Parameter space</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../system_a/expo/A211_rayleigh.html">Rayleigh numbers</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../system_a/expo/A212_damkohler.html">Damköhler numbers</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../system_a/expo/A213_saturations.html">Supercritical, subcritical and critical residual saturations</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../system_a/expo/A220_validation_hdr.html">Numerical validation</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../system_a/expo/A221_timestep.html">Timestep constraints</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../system_a/expo/A222_resolution.html">Mesh resolution</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../system_a/expo/A223_cell.html">Cell type</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../system_a/expo/A224_finite_difference.html">Choice of finite difference discretization</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../system_a/expo/A225_stabilization.html">Stabilization of the advection-diffusion-reaction equation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../system_a/expo/A226_sensitivity_perturbation.html">Sensitivity to initial residual concentration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../system_a/expo/A227_sensitivity_residual.html">Sensitivity to initial residual concentration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../system_a/expo/A228_scaling.html">Choice of scaling</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../system_a/expo/A230_details_hdr.html">Numerical details</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../system_a/expo/A231_constraints.html">Mesh resolution and timestep constraints</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../system_a/expo/A232_profiling.html">Profiling</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../system_a/full/A00_full_hdr.html">Full simulations</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../system_a/full/A11_parameter_axis.html">Parameter axis sweep</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../system_a/full/A12_parameter_axes.html">Parameter axes sweep</a></li>
+
+<li class="toctree-l2"><a class="reference internal" href="../../system_a/full/A13_onset.html">Onset of convection</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../system_a/full/A21_early_exact.html">Exact early-time model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../system_a/full/A22_early_similarity.html">Similarity early-time model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../system_a/full/A23_late.html">Late-time modelling</a></li>
+</ul>
+</details></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">System B</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../system_b/expo/B00_definition.html">Definition</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../system_b/expo/B10_overview.html">Overview</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">System C</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../system_c/expo/C00_definition.html">Definition</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../system_c/expo/C10_overview.html">Overview</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">System D</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="D00_definition.html">Definition</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Overview</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Classic Systems</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../system_x/X01_darcy_rayleigh_benard.html">Rayleigh-Bénard convection of a Darcy fluid</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../system_x/X02_darcy_evolving.html">Evolving convection of a Darcy fluid</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../system_x/X03_darcy_rayleigh_taylor.html">Rayleigh-Taylor instability of a Darcy fluid</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../system_x/X04_darcy_thermosolutal.html">Thermosolutal convection of a Darcy fluid</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+<a href="https://github.com/george-poole/CRoCoDiL" target="_blank"
+   class="btn btn-sm btn-source-repository-button"
+   title="Source repository"
+   data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+
+</a>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../../_sources/system_d/expo/D10_overview.ipynb" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.ipynb</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Overview</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#create-the-simulations">Create the simulations</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#run-the-simulations">Run the simulations</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#physical-diagnostics">Physical diagnostics</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#vertical-velocity-component">Vertical velocity component</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#solutal-and-thermal-flux">Solutal and thermal flux</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#visualization">Visualization</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#concentration-temperature-and-saturation">Concentration, temperature and saturation</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pressure-streamlines-and-velocity-components">Pressure, streamlines and velocity components</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#thumbnail-image">Thumbnail image</a></li>
+</ul>
+</li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="overview">
+<h1>Overview<a class="headerlink" href="#overview" title="Link to this heading">#</a></h1>
+<section id="create-the-simulations">
+<h2>Create the simulations<a class="headerlink" href="#create-the-simulations" title="Link to this heading">#</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">lucifex.fem</span><span class="w"> </span><span class="kn">import</span> <span class="n">cross_section_grid</span><span class="p">,</span> <span class="n">mirror_grid</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">lucifex.io</span><span class="w"> </span><span class="kn">import</span> <span class="n">write</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">lucifex.sim</span><span class="w"> </span><span class="kn">import</span> <span class="n">run</span><span class="p">,</span> <span class="n">xdmf_to_npz</span><span class="p">,</span> <span class="n">Simulation</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">lucifex.plt</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">plot_line</span><span class="p">,</span> <span class="n">save_figure</span><span class="p">,</span> <span class="n">plot_colormap</span><span class="p">,</span>
+    <span class="n">get_ipynb_file_name</span><span class="p">,</span> <span class="n">set_ipynb_variable</span><span class="p">,</span> <span class="n">plot_streamlines</span><span class="p">,</span>
+    <span class="n">plot_colormap_multifigure</span><span class="p">,</span> <span class="n">create_multifigure</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">lucifex.solver</span><span class="w"> </span><span class="kn">import</span> <span class="n">OptionsPETSc</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">lucifex.utils.fenicsx_utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">extract_component_functions</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">crocodil.dns.system_d</span><span class="w"> </span><span class="kn">import</span> <span class="n">dns_system_d</span><span class="p">,</span> <span class="n">SYSTEM_D_REFERENCE</span>
+
+<span class="n">STORE</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="n">WRITE</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="n">DIR_ROOT</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;./figures/</span><span class="si">{</span><span class="n">get_ipynb_file_name</span><span class="p">()</span><span class="si">}</span><span class="s1">&#39;</span>
+<span class="n">NX</span> <span class="o">=</span> <span class="n">set_ipynb_variable</span><span class="p">(</span><span class="s1">&#39;NX&#39;</span><span class="p">,</span> <span class="mi">160</span><span class="p">)</span>
+<span class="n">NY</span> <span class="o">=</span> <span class="n">set_ipynb_variable</span><span class="p">(</span><span class="s1">&#39;NY&#39;</span><span class="p">,</span> <span class="mi">60</span><span class="p">)</span>
+<span class="n">ANIM</span> <span class="o">=</span> <span class="n">set_ipynb_variable</span><span class="p">(</span><span class="s1">&#39;ANIM&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+
+<span class="n">Ra</span> <span class="o">=</span> <span class="mf">600.0</span>
+<span class="n">PARAMS_PHYSICAL</span> <span class="o">=</span> <span class="n">SYSTEM_D_REFERENCE</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span>
+    <span class="n">Ra</span><span class="o">=</span><span class="n">Ra</span><span class="p">,</span> <span class="n">Pe</span><span class="o">=</span><span class="n">Ra</span><span class="p">,</span> <span class="n">Da</span><span class="o">=</span><span class="mf">2.0</span><span class="p">,</span> 
+    <span class="n">l</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span> 
+    <span class="n">inflow</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;gaussian&#39;</span><span class="p">,</span> <span class="mf">3.0</span><span class="p">),</span> 
+    <span class="n">p_dOmega</span><span class="o">=</span><span class="s1">&#39;left&#39;</span><span class="p">,</span> 
+    <span class="n">mirror</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="n">theta_buoy_opts</span> <span class="o">=</span> <span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+<span class="n">simulations</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">bool</span><span class="p">,</span> <span class="n">Simulation</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+
+<span class="k">for</span> <span class="n">theta_buoy</span> <span class="ow">in</span> <span class="n">theta_buoy_opts</span><span class="p">:</span>
+    <span class="n">simulations</span><span class="p">[</span><span class="n">theta_buoy</span><span class="p">]</span> <span class="o">=</span> <span class="n">dns_system_d</span><span class="p">(</span>
+        <span class="n">store_delta</span><span class="o">=</span><span class="n">STORE</span><span class="p">,</span> 
+        <span class="n">write_delta</span><span class="o">=</span><span class="n">WRITE</span><span class="p">,</span> 
+        <span class="n">dir_root</span><span class="o">=</span><span class="n">DIR_ROOT</span><span class="p">,</span> 
+        <span class="n">dir_uid</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="p">)(</span>
+        <span class="n">Nx</span><span class="o">=</span><span class="n">NX</span><span class="p">,</span>
+        <span class="n">Ny</span><span class="o">=</span><span class="n">NY</span><span class="p">,</span>
+        <span class="n">cell</span><span class="o">=</span><span class="s1">&#39;quadrilateral&#39;</span><span class="p">,</span>
+        <span class="n">scaling</span><span class="o">=</span><span class="s1">&#39;advective&#39;</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">PARAMS_PHYSICAL</span><span class="p">,</span>
+        <span class="n">theta_buoy</span><span class="o">=</span><span class="n">theta_buoy</span><span class="p">,</span>
+        <span class="n">dt_max</span><span class="o">=</span><span class="mf">0.025</span><span class="p">,</span>
+        <span class="n">dt_Cu</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">dt_Cd</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">dt_Cr</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">c_stabilization</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">theta_stabilization</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">c_limits</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">theta_limits</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> 
+        <span class="n">flow_petsc</span><span class="o">=</span><span class="n">OptionsPETSc</span><span class="p">(</span>
+            <span class="n">ksp_type</span><span class="o">=</span><span class="s1">&#39;preonly&#39;</span><span class="p">,</span> 
+            <span class="n">pc_type</span><span class="o">=</span><span class="s1">&#39;lu&#39;</span><span class="p">,</span> 
+            <span class="n">pc_factor_mat_solver_type</span><span class="o">=</span><span class="s1">&#39;mumps&#39;</span><span class="p">,</span>
+            <span class="n">blocked</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            
+        <span class="p">),</span>
+        <span class="n">diagnostic</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="run-the-simulations">
+<h2>Run the simulations<a class="headerlink" href="#run-the-simulations" title="Link to this heading">#</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">n_stop</span> <span class="o">=</span> <span class="n">set_ipynb_variable</span><span class="p">(</span><span class="s1">&#39;N_STOP&#39;</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
+<span class="n">t_stop</span> <span class="o">=</span> <span class="mf">100.0</span>
+<span class="n">dt_init</span> <span class="o">=</span> <span class="mf">1e-6</span>
+<span class="n">n_init</span> <span class="o">=</span> <span class="mi">10</span>
+
+<span class="k">for</span> <span class="n">theta_buoy</span><span class="p">,</span> <span class="n">sim</span> <span class="ow">in</span> <span class="n">simulations</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+    <span class="n">sim</span> <span class="o">=</span> <span class="n">simulations</span><span class="p">[</span><span class="n">theta_buoy</span><span class="p">]</span>
+    <span class="n">run</span><span class="p">(</span><span class="n">sim</span><span class="p">,</span> <span class="n">n_stop</span><span class="o">=</span><span class="n">n_stop</span><span class="p">,</span> <span class="n">t_stop</span><span class="o">=</span><span class="n">t_stop</span><span class="p">,</span> <span class="n">dt_init</span><span class="o">=</span><span class="n">dt_init</span><span class="p">,</span> <span class="n">n_init</span><span class="o">=</span><span class="n">n_init</span><span class="p">,</span> <span class="n">show_progress</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">WRITE</span><span class="p">:</span> 
+        <span class="n">xdmf_to_npz</span><span class="p">(</span><span class="n">sim</span><span class="p">,</span> <span class="n">delete_xdmf</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">write</span><span class="p">(</span><span class="n">sim</span><span class="o">.</span><span class="n">parameters</span><span class="p">,</span> <span class="n">sim</span><span class="o">.</span><span class="n">parameter_file</span><span class="p">,</span> <span class="n">sim</span><span class="o">.</span><span class="n">dir_path</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;w&#39;</span><span class="p">)</span>
+
+<span class="n">theta_title</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">buoy</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;$</span><span class="se">\\</span><span class="s2">theta_0^+=</span><span class="si">{</span><span class="s1">&#39;0&#39;</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">buoy</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="s1">&#39;1&#39;</span><span class="si">}</span><span class="s2">$&quot;</span>
+
+<span class="n">mirror</span> <span class="o">=</span> <span class="n">PARAMS_PHYSICAL</span><span class="p">[</span><span class="s1">&#39;mirror&#39;</span><span class="p">]</span>
+<span class="k">if</span> <span class="n">mirror</span><span class="p">:</span>
+    <span class="n">mirrored</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">u</span><span class="p">,</span> <span class="n">rescale</span><span class="o">=</span><span class="mi">1</span><span class="p">:</span> <span class="n">mirror_grid</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="n">rescale</span><span class="p">)</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="n">mirrored</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">u</span><span class="p">,</span> <span class="o">*</span><span class="n">_</span><span class="p">:</span> <span class="n">u</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<script type="application/vnd.jupyter.widget-view+json">{"model_id": "676c19780a4f480f9e59cb5a09805205", "version_major": 2, "version_minor": 0}</script><div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>INFO:root:running build_ext
+INFO:root:building &#39;libffcx_forms_4e7f1440085fbb04831dc8454a81c2820fddbbd3&#39; extension
+INFO:root:clang -Wno-unused-result -Wsign-compare -Wunreachable-code -DNDEBUG -fwrapv -O2 -Wall -fPIC -O2 -isystem /Users/George/miniconda3/envs/lucifex/include -fPIC -O2 -isystem /Users/George/miniconda3/envs/lucifex/include -I/Users/George/miniconda3/envs/lucifex/lib/python3.10/site-packages/ffcx/codegeneration -I/Users/George/miniconda3/envs/lucifex/include/python3.10 -c libffcx_forms_4e7f1440085fbb04831dc8454a81c2820fddbbd3.c -o ./libffcx_forms_4e7f1440085fbb04831dc8454a81c2820fddbbd3.o -O2 -g0
+INFO:root:clang -bundle -undefined dynamic_lookup -Wl,-rpath,/Users/George/miniconda3/envs/lucifex/lib -L/Users/George/miniconda3/envs/lucifex/lib -Wl,-rpath,/Users/George/miniconda3/envs/lucifex/lib -L/Users/George/miniconda3/envs/lucifex/lib ./libffcx_forms_4e7f1440085fbb04831dc8454a81c2820fddbbd3.o -o ./libffcx_forms_4e7f1440085fbb04831dc8454a81c2820fddbbd3.cpython-310-darwin.so
+INFO:root:running build_ext
+INFO:root:building &#39;libffcx_forms_b12090006f1130fe7b76228fefdc254daa5d934c&#39; extension
+INFO:root:clang -Wno-unused-result -Wsign-compare -Wunreachable-code -DNDEBUG -fwrapv -O2 -Wall -fPIC -O2 -isystem /Users/George/miniconda3/envs/lucifex/include -fPIC -O2 -isystem /Users/George/miniconda3/envs/lucifex/include -I/Users/George/miniconda3/envs/lucifex/lib/python3.10/site-packages/ffcx/codegeneration -I/Users/George/miniconda3/envs/lucifex/include/python3.10 -c libffcx_forms_b12090006f1130fe7b76228fefdc254daa5d934c.c -o ./libffcx_forms_b12090006f1130fe7b76228fefdc254daa5d934c.o -O2 -g0
+INFO:root:clang -bundle -undefined dynamic_lookup -Wl,-rpath,/Users/George/miniconda3/envs/lucifex/lib -L/Users/George/miniconda3/envs/lucifex/lib -Wl,-rpath,/Users/George/miniconda3/envs/lucifex/lib -L/Users/George/miniconda3/envs/lucifex/lib ./libffcx_forms_b12090006f1130fe7b76228fefdc254daa5d934c.o -o ./libffcx_forms_b12090006f1130fe7b76228fefdc254daa5d934c.cpython-310-darwin.so
+</pre></div>
+</div>
+<script type="application/vnd.jupyter.widget-view+json">{"model_id": "063751b4007f4949abf9041c79794d22", "version_major": 2, "version_minor": 0}</script></div>
+</div>
+</section>
+<section id="physical-diagnostics">
+<h2>Physical diagnostics<a class="headerlink" href="#physical-diagnostics" title="Link to this heading">#</a></h2>
+<section id="vertical-velocity-component">
+<h3>Vertical velocity component<a class="headerlink" href="#vertical-velocity-component" title="Link to this heading">#</a></h3>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">time_indices</span> <span class="o">=</span> <span class="p">(</span><span class="o">*</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">i</span> <span class="o">*</span> <span class="n">n_stop</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mf">0.25</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.75</span><span class="p">)],</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">y_target</span> <span class="o">=</span> <span class="mf">0.1</span>
+
+<span class="n">vline_kws</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+    <span class="n">linestyles</span><span class="o">=</span><span class="s1">&#39;dashed&#39;</span><span class="p">,</span> <span class="n">linewidths</span><span class="o">=</span><span class="mf">0.75</span><span class="p">,</span> <span class="n">colors</span><span class="o">=</span><span class="s1">&#39;gray&#39;</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">mfig</span><span class="p">,</span> <span class="n">axs</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">create_multifigure</span><span class="p">(</span><span class="n">n_cols</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">n</span><span class="p">,</span> <span class="p">(</span><span class="n">theta_buoy</span><span class="p">,</span> <span class="n">sim</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">simulations</span><span class="o">.</span><span class="n">items</span><span class="p">()):</span>
+    <span class="n">u</span><span class="p">,</span> <span class="n">In</span><span class="p">,</span> <span class="n">Lx</span><span class="p">,</span> <span class="n">Ll</span><span class="p">,</span> <span class="n">xInflow</span> <span class="o">=</span> <span class="n">sim</span><span class="p">[</span><span class="s1">&#39;u&#39;</span><span class="p">,</span> <span class="s1">&#39;In&#39;</span><span class="p">,</span> <span class="s1">&#39;Lx&#39;</span><span class="p">,</span> <span class="s1">&#39;Ll&#39;</span><span class="p">,</span> <span class="s1">&#39;xInflow&#39;</span><span class="p">]</span>
+    <span class="n">uy_lines</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">t_labels</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">time_indices</span><span class="p">:</span>
+        <span class="n">uxi</span><span class="p">,</span> <span class="n">uyi</span> <span class="o">=</span> <span class="n">extract_component_functions</span><span class="p">((</span><span class="s1">&#39;P&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">u</span><span class="o">.</span><span class="n">get_series_item</span><span class="p">(</span><span class="n">i</span><span class="p">))</span>
+        <span class="n">uyi_grid</span><span class="p">,</span> <span class="n">y_cs</span>  <span class="o">=</span> <span class="n">cross_section_grid</span><span class="p">(</span><span class="n">uyi</span><span class="p">,</span> <span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="n">y_target</span><span class="p">)</span>
+        <span class="n">uy_lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">uyi_grid</span><span class="p">)</span>
+        <span class="n">t_labels</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">u</span><span class="o">.</span><span class="n">time_series</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="si">:</span><span class="s1">.3f</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="n">plot_line</span><span class="p">(</span>
+        <span class="n">mfig</span><span class="p">,</span> <span class="n">axs</span><span class="p">[</span><span class="n">n</span><span class="p">],</span>
+        <span class="n">uy_lines</span><span class="p">,</span>
+        <span class="n">cyc</span><span class="o">=</span><span class="s1">&#39;jet&#39;</span><span class="p">,</span>
+        <span class="n">legend_labels</span><span class="o">=</span><span class="n">t_labels</span><span class="p">,</span>
+        <span class="n">legend_title</span><span class="o">=</span><span class="s1">&#39;$t$&#39;</span><span class="p">,</span>
+        <span class="n">y_label</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;$u_y(y=</span><span class="si">{</span><span class="n">y_cs</span><span class="si">:</span><span class="s1">.3f</span><span class="si">}</span><span class="s1">)$&#39;</span><span class="p">,</span>
+        <span class="n">title</span><span class="o">=</span><span class="n">theta_title</span><span class="p">(</span><span class="n">theta_buoy</span><span class="p">),</span>
+    <span class="p">)</span>
+    <span class="n">y_lims</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="n">In</span><span class="p">,</span> <span class="n">In</span><span class="p">)</span>
+    <span class="n">x_lims</span> <span class="o">=</span> <span class="n">Lx</span>
+    <span class="n">axs</span><span class="p">[</span><span class="n">n</span><span class="p">]</span><span class="o">.</span><span class="n">vlines</span><span class="p">(</span><span class="n">xInflow</span><span class="p">,</span> <span class="o">*</span><span class="n">y_lims</span><span class="p">,</span> <span class="o">**</span><span class="n">vline_kws</span><span class="p">)</span>
+    <span class="n">axs</span><span class="p">[</span><span class="n">n</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">(</span><span class="o">*</span><span class="n">x_lims</span><span class="p">)</span>
+    <span class="n">axs</span><span class="p">[</span><span class="n">n</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">(</span><span class="o">*</span><span class="n">y_lims</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../../_images/9796ea3bb6125c993e723883d0206e2cd8126aa5bb068e8869a30105d0cf9052.png" src="../../_images/9796ea3bb6125c993e723883d0206e2cd8126aa5bb068e8869a30105d0cf9052.png" />
+</div>
+</div>
+</section>
+<section id="solutal-and-thermal-flux">
+<h3>Solutal and thermal flux<a class="headerlink" href="#solutal-and-thermal-flux" title="Link to this heading">#</a></h3>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">mfig_f</span><span class="p">,</span> <span class="n">axs_f</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">create_multifigure</span><span class="p">(</span><span class="n">n_cols</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">mfig_q</span><span class="p">,</span> <span class="n">axs_q</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">create_multifigure</span><span class="p">(</span><span class="n">n_cols</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">theta_buoy</span><span class="p">,</span> <span class="n">sim</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">simulations</span><span class="o">.</span><span class="n">items</span><span class="p">()):</span>
+    <span class="n">f</span><span class="p">,</span> <span class="n">q</span> <span class="o">=</span> <span class="n">sim</span><span class="p">[</span><span class="s1">&#39;f&#39;</span><span class="p">,</span> <span class="s1">&#39;q&#39;</span><span class="p">]</span>
+    <span class="n">fZeta0</span><span class="p">,</span> <span class="n">fZetaPlus</span><span class="p">,</span> <span class="n">fZetaMinus</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+    <span class="n">qZeta0</span><span class="p">,</span> <span class="n">qZetaPlus</span><span class="p">,</span> <span class="n">qZetaMinus</span> <span class="o">=</span> <span class="n">q</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+    <span class="n">plot_line</span><span class="p">(</span>
+        <span class="n">mfig_f</span><span class="p">,</span> <span class="n">axs_f</span><span class="p">[</span><span class="n">i</span><span class="p">],</span>
+        <span class="p">[</span>
+            <span class="p">(</span><span class="n">fZeta0</span><span class="o">.</span><span class="n">time_series</span><span class="p">,</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">fZeta0</span><span class="o">.</span><span class="n">value_series</span><span class="p">]),</span> 
+            <span class="p">(</span><span class="n">fZeta0</span><span class="o">.</span><span class="n">time_series</span><span class="p">,</span> <span class="n">fZeta0</span><span class="o">.</span><span class="n">value_series</span><span class="p">)</span>
+        <span class="p">],</span>
+        <span class="n">cyc</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">,</span>
+        <span class="n">x_label</span><span class="o">=</span><span class="s1">&#39;$t$&#39;</span><span class="p">,</span>
+        <span class="n">title</span><span class="o">=</span><span class="n">theta_title</span><span class="p">(</span><span class="n">theta_buoy</span><span class="p">),</span>
+        <span class="n">legend_labels</span><span class="o">=</span><span class="p">[</span>
+            <span class="s1">&#39;$F_{y=\zeta_0}$&#39;</span><span class="p">,</span> 
+            <span class="s1">&#39;$F_{y=\zeta_0}^{\mathbf</span><span class="si">{u}</span><span class="s1">}$&#39;</span><span class="p">,</span> 
+            <span class="s1">&#39;$F_{y=\zeta_0}^{\mathsf</span><span class="si">{D}</span><span class="s1">}$&#39;</span><span class="p">,</span>
+        <span class="p">],</span>
+    <span class="p">)</span>
+    <span class="n">plot_line</span><span class="p">(</span>
+         <span class="n">mfig_q</span><span class="p">,</span> <span class="n">axs_q</span><span class="p">[</span><span class="n">i</span><span class="p">],</span>
+        <span class="p">[</span>
+            <span class="p">(</span><span class="n">qZeta0</span><span class="o">.</span><span class="n">time_series</span><span class="p">,</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">qZeta0</span><span class="o">.</span><span class="n">value_series</span><span class="p">]),</span> 
+            <span class="p">(</span><span class="n">qZeta0</span><span class="o">.</span><span class="n">time_series</span><span class="p">,</span> <span class="n">qZeta0</span><span class="o">.</span><span class="n">value_series</span><span class="p">),</span>
+        <span class="p">],</span>
+        <span class="n">cyc</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">,</span>
+        <span class="n">x_label</span><span class="o">=</span><span class="s1">&#39;$t$&#39;</span><span class="p">,</span>
+        <span class="n">title</span><span class="o">=</span><span class="n">theta_title</span><span class="p">(</span><span class="n">theta_buoy</span><span class="p">),</span>
+        <span class="n">legend_labels</span><span class="o">=</span><span class="p">[</span>
+            <span class="s1">&#39;$Q_{y=\zeta_0}$&#39;</span><span class="p">,</span> 
+            <span class="s1">&#39;$Q_{y=\zeta_0}^{\mathbf</span><span class="si">{u}</span><span class="s1">}$&#39;</span><span class="p">,</span> 
+            <span class="s1">&#39;$Q_{y=\zeta_0}^{\mathsf</span><span class="si">{G}</span><span class="s1">}$&#39;</span><span class="p">,</span>
+        <span class="p">],</span>
+    <span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../../_images/1b3f05307deb3c58d77579eb567579bd76dd2e987553ed29738f0ae2808e4149.png" src="../../_images/1b3f05307deb3c58d77579eb567579bd76dd2e987553ed29738f0ae2808e4149.png" />
+<img alt="../../_images/4976b7688388cc556290a3138a57b7bdd7a6fbf64694579b3382c5cebca25308.png" src="../../_images/4976b7688388cc556290a3138a57b7bdd7a6fbf64694579b3382c5cebca25308.png" />
+</div>
+</div>
+</section>
+</section>
+<section id="visualization">
+<h2>Visualization<a class="headerlink" href="#visualization" title="Link to this heading">#</a></h2>
+<section id="concentration-temperature-and-saturation">
+<h3>Concentration, temperature and saturation<a class="headerlink" href="#concentration-temperature-and-saturation" title="Link to this heading">#</a></h3>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">time_indices</span> <span class="o">=</span> <span class="p">(</span><span class="o">*</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">i</span> <span class="o">*</span> <span class="n">n_stop</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mf">0.25</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">)],</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">theta_buoy</span><span class="p">,</span> <span class="n">sim</span> <span class="ow">in</span> <span class="n">simulations</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+    <span class="n">s</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">theta</span> <span class="o">=</span> <span class="n">sim</span><span class="p">[</span><span class="s1">&#39;s&#39;</span><span class="p">,</span> <span class="s1">&#39;c&#39;</span><span class="p">,</span> <span class="s1">&#39;theta&#39;</span><span class="p">]</span>
+    <span class="n">sim</span> <span class="o">=</span> <span class="n">simulations</span><span class="p">[</span><span class="n">theta_buoy</span><span class="p">]</span>
+    <span class="n">mfig_c</span><span class="p">,</span> <span class="o">*</span><span class="n">_</span> <span class="o">=</span> <span class="n">plot_colormap_multifigure</span><span class="p">(</span>
+        <span class="n">n_cols</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">time_indices</span><span class="p">),</span> 
+        <span class="n">cbars</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+        <span class="n">suptitle</span><span class="o">=</span><span class="n">theta_title</span><span class="p">(</span><span class="n">theta_buoy</span><span class="p">),</span>
+    <span class="p">)(</span>
+        <span class="p">[</span><span class="n">mirrored</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">series</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">time_indices</span><span class="p">],</span>
+        <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;hot&#39;</span><span class="p">,</span>
+        <span class="n">title</span><span class="o">=</span><span class="p">[</span><span class="sa">f</span><span class="s1">&#39;$c(t=</span><span class="si">{</span><span class="n">c</span><span class="o">.</span><span class="n">time_series</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="si">:</span><span class="s1">.3f</span><span class="si">}</span><span class="s1">)$&#39;</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">time_indices</span><span class="p">],</span>
+    <span class="p">)</span>
+    <span class="n">save_figure</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;c(t)_theta_buoy=</span><span class="si">{</span><span class="n">theta_buoy</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">sim</span><span class="o">.</span><span class="n">dir_path</span><span class="p">,</span> <span class="n">prefix</span><span class="o">=</span><span class="kc">False</span><span class="p">)(</span><span class="n">mfig_c</span><span class="p">)</span>
+    <span class="n">mfig_theta</span><span class="p">,</span> <span class="o">*</span><span class="n">_</span> <span class="o">=</span> <span class="n">plot_colormap_multifigure</span><span class="p">(</span>
+        <span class="n">n_cols</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">time_indices</span><span class="p">),</span> 
+        <span class="n">cbars</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+        <span class="n">suptitle</span><span class="o">=</span><span class="n">theta_title</span><span class="p">(</span><span class="n">theta_buoy</span><span class="p">),</span>
+    <span class="p">)(</span>
+        <span class="p">[</span><span class="n">mirrored</span><span class="p">(</span><span class="n">theta</span><span class="o">.</span><span class="n">series</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">time_indices</span><span class="p">],</span>
+        <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;hot&#39;</span><span class="p">,</span>
+        <span class="n">title</span><span class="o">=</span><span class="p">[</span><span class="sa">f</span><span class="s1">&#39;$</span><span class="se">\\</span><span class="s1">theta(t=</span><span class="si">{</span><span class="n">theta</span><span class="o">.</span><span class="n">time_series</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="si">:</span><span class="s1">.3f</span><span class="si">}</span><span class="s1">)$&#39;</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">time_indices</span><span class="p">],</span>
+    <span class="p">)</span>
+    <span class="n">save_figure</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;theta(t)_theta_buoy=</span><span class="si">{</span><span class="n">theta_buoy</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">sim</span><span class="o">.</span><span class="n">dir_path</span><span class="p">,</span> <span class="n">prefix</span><span class="o">=</span><span class="kc">False</span><span class="p">)(</span><span class="n">mfig_theta</span><span class="p">)</span>
+    <span class="n">mfig_s</span><span class="p">,</span> <span class="o">*</span><span class="n">_</span> <span class="o">=</span> <span class="n">plot_colormap_multifigure</span><span class="p">(</span>
+        <span class="n">n_cols</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">time_indices</span><span class="p">),</span> 
+        <span class="n">cbars</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">suptitle</span><span class="o">=</span><span class="n">theta_title</span><span class="p">(</span><span class="n">theta_buoy</span><span class="p">),</span>
+    <span class="p">)(</span>
+        <span class="p">[</span><span class="n">mirrored</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">series</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">time_indices</span><span class="p">],</span>
+        <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;hot&#39;</span><span class="p">,</span>
+        <span class="n">title</span><span class="o">=</span><span class="p">[</span><span class="sa">f</span><span class="s1">&#39;$s(t=</span><span class="si">{</span><span class="n">s</span><span class="o">.</span><span class="n">time_series</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="si">:</span><span class="s1">.3f</span><span class="si">}</span><span class="s1">)$&#39;</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">time_indices</span><span class="p">],</span>
+    <span class="p">)</span>
+    <span class="n">save_figure</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;s(t)_theta_buoy=</span><span class="si">{</span><span class="n">theta_buoy</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">sim</span><span class="o">.</span><span class="n">dir_path</span><span class="p">,</span> <span class="n">prefix</span><span class="o">=</span><span class="kc">False</span><span class="p">)(</span><span class="n">mfig_s</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../../_images/ed5e3edea94d0faa7e3a7cae2adbc1fd4c2733e47e1645e6c49e8fc486a65160.png" src="../../_images/ed5e3edea94d0faa7e3a7cae2adbc1fd4c2733e47e1645e6c49e8fc486a65160.png" />
+<img alt="../../_images/29d878bf2cda248edd0ee847feda47f50d04ad6abf1d61b830263f79eeb83d24.png" src="../../_images/29d878bf2cda248edd0ee847feda47f50d04ad6abf1d61b830263f79eeb83d24.png" />
+<img alt="../../_images/b346de591b5cb4465f88fc4b5e67f768212a74dc465f23d6f66194c780c38144.png" src="../../_images/b346de591b5cb4465f88fc4b5e67f768212a74dc465f23d6f66194c780c38144.png" />
+<img alt="../../_images/3b3bcab61adc0abddad10840e04d847a6dde778e4d75a79de1c82d7ec3b70a2d.png" src="../../_images/3b3bcab61adc0abddad10840e04d847a6dde778e4d75a79de1c82d7ec3b70a2d.png" />
+<img alt="../../_images/dbdd82fad3fd7624e57f6e1c9c7fbb2266fad747266517b2b82456e355cfbb1a.png" src="../../_images/dbdd82fad3fd7624e57f6e1c9c7fbb2266fad747266517b2b82456e355cfbb1a.png" />
+<img alt="../../_images/b689c268a364c7bfe9c2d763b5972610e525def2ea3c26a9c07d2ae1673e2c1a.png" src="../../_images/b689c268a364c7bfe9c2d763b5972610e525def2ea3c26a9c07d2ae1673e2c1a.png" />
+</div>
+</div>
+</section>
+<section id="pressure-streamlines-and-velocity-components">
+<h3>Pressure, streamlines and velocity components<a class="headerlink" href="#pressure-streamlines-and-velocity-components" title="Link to this heading">#</a></h3>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">time_indices</span> <span class="o">=</span> <span class="p">(</span><span class="o">*</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">i</span> <span class="o">*</span> <span class="n">n_stop</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mf">0.25</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">)],</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">theta_buoy</span><span class="p">,</span> <span class="n">sim</span> <span class="ow">in</span> <span class="n">simulations</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+    <span class="n">u</span><span class="p">,</span> <span class="n">p</span> <span class="o">=</span> <span class="n">sim</span><span class="p">[</span><span class="s1">&#39;u&#39;</span><span class="p">,</span> <span class="s1">&#39;p&#39;</span><span class="p">]</span>
+    <span class="n">mfig_p</span><span class="p">,</span> <span class="n">axs_p</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">plot_colormap_multifigure</span><span class="p">(</span>
+        <span class="n">n_cols</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">time_indices</span><span class="p">),</span> 
+        <span class="n">cbars</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">suptitle</span><span class="o">=</span><span class="n">theta_title</span><span class="p">(</span><span class="n">theta_buoy</span><span class="p">),</span>
+    <span class="p">)(</span>
+        <span class="p">[</span><span class="n">mirrored</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">get_series_item</span><span class="p">(</span><span class="n">i</span><span class="p">))</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">time_indices</span><span class="p">],</span>
+        <span class="n">title</span><span class="o">=</span><span class="p">[</span><span class="sa">f</span><span class="s1">&#39;$p(t=</span><span class="si">{</span><span class="n">p</span><span class="o">.</span><span class="n">time_series</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="si">:</span><span class="s1">.3f</span><span class="si">}</span><span class="s1">)$&#39;</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">time_indices</span><span class="p">],</span>
+    <span class="p">)</span>
+    <span class="n">save_figure</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;p(t)_streamlines_theta_buoy=</span><span class="si">{</span><span class="n">theta_buoy</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">sim</span><span class="o">.</span><span class="n">dir_path</span><span class="p">,</span> <span class="n">prefix</span><span class="o">=</span><span class="kc">False</span><span class="p">)(</span><span class="n">mfig_p</span><span class="p">)</span>
+    <span class="n">ux</span><span class="p">,</span> <span class="n">uy</span> <span class="o">=</span> <span class="p">[],</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">ax</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">time_indices</span><span class="p">,</span> <span class="n">axs_p</span><span class="p">):</span>
+        <span class="n">uxi</span><span class="p">,</span> <span class="n">uyi</span> <span class="o">=</span> <span class="n">extract_component_functions</span><span class="p">((</span><span class="s1">&#39;P&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">u</span><span class="o">.</span><span class="n">get_series_item</span><span class="p">(</span><span class="n">i</span><span class="p">))</span>
+        <span class="n">uxi</span><span class="p">,</span> <span class="n">uyi</span> <span class="o">=</span> <span class="n">mirrored</span><span class="p">(</span><span class="n">uxi</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="n">mirrored</span><span class="p">(</span><span class="n">uyi</span><span class="p">)</span>
+        <span class="n">plot_streamlines</span><span class="p">(</span><span class="n">mfig_p</span><span class="p">,</span> <span class="n">ax</span><span class="p">,</span> <span class="p">(</span><span class="n">uxi</span><span class="p">,</span> <span class="n">uyi</span><span class="p">),</span> <span class="n">density</span><span class="o">=</span><span class="mf">0.75</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;cyan&#39;</span><span class="p">)</span>
+        <span class="n">ux</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">uxi</span><span class="p">)</span>
+        <span class="n">uy</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">uyi</span><span class="p">)</span>
+    <span class="n">mfig_ux</span><span class="p">,</span> <span class="o">*</span><span class="n">_</span> <span class="o">=</span> <span class="n">plot_colormap_multifigure</span><span class="p">(</span>
+        <span class="n">n_cols</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">time_indices</span><span class="p">),</span> 
+        <span class="n">cbars</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">suptitle</span><span class="o">=</span><span class="n">theta_title</span><span class="p">(</span><span class="n">theta_buoy</span><span class="p">),</span>
+    <span class="p">)(</span>
+        <span class="n">ux</span><span class="p">,</span>
+        <span class="n">title</span><span class="o">=</span><span class="p">[</span><span class="sa">f</span><span class="s1">&#39;$u_x(t=</span><span class="si">{</span><span class="n">u</span><span class="o">.</span><span class="n">time_series</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="si">:</span><span class="s1">.3f</span><span class="si">}</span><span class="s1">)$&#39;</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">time_indices</span><span class="p">],</span>
+    <span class="p">)</span>
+    <span class="n">mfig_uy</span><span class="p">,</span> <span class="o">*</span><span class="n">_</span> <span class="o">=</span> <span class="n">plot_colormap_multifigure</span><span class="p">(</span>
+        <span class="n">n_cols</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">time_indices</span><span class="p">),</span> 
+        <span class="n">cbars</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">suptitle</span><span class="o">=</span><span class="n">theta_title</span><span class="p">(</span><span class="n">theta_buoy</span><span class="p">),</span>
+    <span class="p">)(</span>
+        <span class="n">uy</span><span class="p">,</span>
+        <span class="n">title</span><span class="o">=</span><span class="p">[</span><span class="sa">f</span><span class="s1">&#39;$u_y(t=</span><span class="si">{</span><span class="n">u</span><span class="o">.</span><span class="n">time_series</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="si">:</span><span class="s1">.3f</span><span class="si">}</span><span class="s1">)$&#39;</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">time_indices</span><span class="p">],</span>
+    <span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../../_images/b8b9539a2675d36437c04f4177c403dc4a621609b5c8dc491050da2ed524d9fc.png" src="../../_images/b8b9539a2675d36437c04f4177c403dc4a621609b5c8dc491050da2ed524d9fc.png" />
+<img alt="../../_images/4a5067eb4518c8e1e33ce06cb94dd73b07eb6e863c498baad95ea0807f023928.png" src="../../_images/4a5067eb4518c8e1e33ce06cb94dd73b07eb6e863c498baad95ea0807f023928.png" />
+<img alt="../../_images/3da4bbe37fe435bc6a59b48b7f940d9499fa9ee104809409cc889e96a374c684.png" src="../../_images/3da4bbe37fe435bc6a59b48b7f940d9499fa9ee104809409cc889e96a374c684.png" />
+<img alt="../../_images/06fbdf8819daac1e93b1816779b4e6f56975c4f36b6944f4794dab8f8c8b7f15.png" src="../../_images/06fbdf8819daac1e93b1816779b4e6f56975c4f36b6944f4794dab8f8c8b7f15.png" />
+<img alt="../../_images/beac5a04097d3d5eaa74ed0994b69e88c1e9bbac37219502f0f51ef245425d8d.png" src="../../_images/beac5a04097d3d5eaa74ed0994b69e88c1e9bbac37219502f0f51ef245425d8d.png" />
+<img alt="../../_images/667e41489948b0084f4e01959f395481b3767a0bc9caa003640d85119c709deb.png" src="../../_images/667e41489948b0084f4e01959f395481b3767a0bc9caa003640d85119c709deb.png" />
+</div>
+</div>
+</section>
+<section id="thumbnail-image">
+<h3>Thumbnail image<a class="headerlink" href="#thumbnail-image" title="Link to this heading">#</a></h3>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">time_index</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+<span class="n">theta</span> <span class="o">=</span> <span class="n">simulations</span><span class="p">[</span><span class="kc">True</span><span class="p">][</span><span class="s1">&#39;theta&#39;</span><span class="p">]</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plot_colormap</span><span class="p">(</span>
+    <span class="n">mirrored</span><span class="p">(</span><span class="n">theta</span><span class="o">.</span><span class="n">series</span><span class="p">[</span><span class="n">time_index</span><span class="p">]),</span> 
+    <span class="n">title</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;$</span><span class="se">\\</span><span class="s1">theta(t=</span><span class="si">{</span><span class="n">theta</span><span class="o">.</span><span class="n">time_series</span><span class="p">[</span><span class="n">time_index</span><span class="p">]</span><span class="si">}</span><span class="s1">)$&#39;</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">save_figure</span><span class="p">(</span><span class="s1">&#39;thumbnail&#39;</span><span class="p">,</span> <span class="n">DIR_ROOT</span><span class="p">,</span> <span class="n">prefix</span><span class="o">=</span><span class="kc">False</span><span class="p">)(</span><span class="n">fig</span><span class="p">,</span> <span class="n">file_ext</span><span class="o">=</span><span class="s1">&#39;png&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../../_images/da326d6d2687bcd8116b49ebce7a5d9656c7fd522bdc33e12039e8661fdc252d.png" src="../../_images/da326d6d2687bcd8116b49ebce7a5d9656c7fd522bdc33e12039e8661fdc252d.png" />
+</div>
+</div>
+</section>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            name: "python3",
+            path: "./system_d/expo"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="D00_definition.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Definition</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="../../system_x/X01_darcy_rayleigh_benard.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Rayleigh-Bénard convection of a Darcy fluid</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#create-the-simulations">Create the simulations</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#run-the-simulations">Run the simulations</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#physical-diagnostics">Physical diagnostics</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#vertical-velocity-component">Vertical velocity component</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#solutal-and-thermal-flux">Solutal and thermal flux</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#visualization">Visualization</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#concentration-temperature-and-saturation">Concentration, temperature and saturation</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pressure-streamlines-and-velocity-components">Pressure, streamlines and velocity components</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#thumbnail-image">Thumbnail image</a></li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By The Jupyter Book community
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2023.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

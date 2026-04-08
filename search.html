@@ -6,7 +6,7 @@
 
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><title>Search - CRoCoDiL Demo</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><title>Search - CRoCoDiL</title>
   
   
   
@@ -143,14 +143,14 @@
     
   
 
-<a class="navbar-brand logo" href="home.html">
+<a class="navbar-brand logo" href="gallery.html">
   
   
   
   
   
   
-    <p class="title logo__title">CRoCoDiL Demo</p>
+    <p class="title logo__title">CRoCoDiL</p>
   
 </a></div>
         <div class="sidebar-primary-item">
@@ -169,38 +169,81 @@
         
         <ul class="nav bd-sidenav bd-sidenav__home-link">
             <li class="toctree-l1">
-                <a class="reference internal" href="home.html">
-                    CRoCoDiL 🐊
+                <a class="reference internal" href="gallery.html">
+                    Gallery
                 </a>
             </li>
         </ul>
         <p aria-level="2" class="caption" role="heading"><span class="caption-text">User Guide</span></p>
 <ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="notebooks/P00_user_guide/U00_introduction.html">Introduction</a></li>
-<li class="toctree-l1"><a class="reference internal" href="notebooks/P00_user_guide/U01_governing_equations.html">Governing equations</a></li>
-<li class="toctree-l1"><a class="reference internal" href="notebooks/P00_user_guide/U02_diagnostic_equations.html">Diagnostic equations</a></li>
-<li class="toctree-l1"><a class="reference internal" href="notebooks/P00_user_guide/U03_finite_element_method.html">Finite element method</a></li>
-<li class="toctree-l1"><a class="reference internal" href="notebooks/P00_user_guide/U04_best_practices.html">Best practices</a></li>
+<li class="toctree-l1"><a class="reference internal" href="user_guide/01_introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="user_guide/02_governing_equations.html">Governing equations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="user_guide/03_diagnostic_equations.html">Diagnostic equations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="user_guide/04_finite_element_method.html">Finite element method</a></li>
+<li class="toctree-l1"><a class="reference internal" href="user_guide/05_numerical_details.html">Numerical details</a></li>
+<li class="toctree-l1"><a class="reference internal" href="user_guide/06_getting_started.html">Getting started</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">System A</span></p>
 <ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="notebooks/P0A_system_a/A00_introduction.html">Introduction</a></li>
-<li class="toctree-l1"><a class="reference internal" href="notebooks/P0A_system_a/A01_demo.html">Demo</a></li>
-<li class="toctree-l1"><a class="reference internal" href="notebooks/P0A_system_a/A02_stabilization.html">Stabilization of the advection-diffusion-reaction equation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="notebooks/P0A_system_a/A03_resolution.html">Mesh resolution</a></li>
-<li class="toctree-l1"><a class="reference internal" href="notebooks/P0A_system_a/A04_sensitivity.html">Sensitivity to initial conditions</a></li>
-<li class="toctree-l1"><a class="reference internal" href="notebooks/P0A_system_a/A05_scaling.html">Scaling choice</a></li>
-<li class="toctree-l1"><a class="reference internal" href="notebooks/P0A_system_a/A06_damkohler.html">Damköhler numbers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="notebooks/P0A_system_a/A07_rayleigh.html">Rayleigh numbers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="notebooks/P0A_system_a/A08_cr.html">Residual concentrations</a></li>
-<li class="toctree-l1"><a class="reference internal" href="notebooks/P0A_system_a/A09_sr.html">Residual saturations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="system_a/expo/A00_definition.html">Definition</a></li>
+<li class="toctree-l1"><a class="reference internal" href="system_a/expo/A10_overview.html">Overview</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="system_a/expo/A20_expository_hdr.html">Expository simulations</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="system_a/expo/A210_parameters_hdr.html">Parameter space</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="system_a/expo/A211_rayleigh.html">Rayleigh numbers</a></li>
+<li class="toctree-l3"><a class="reference internal" href="system_a/expo/A212_damkohler.html">Damköhler numbers</a></li>
+<li class="toctree-l3"><a class="reference internal" href="system_a/expo/A213_saturations.html">Supercritical, subcritical and critical residual saturations</a></li>
 </ul>
-<p aria-level="2" class="caption" role="heading"><span class="caption-text">Benchmarks</span></p>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="system_a/expo/A220_validation_hdr.html">Numerical validation</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="system_a/expo/A221_timestep.html">Timestep constraints</a></li>
+<li class="toctree-l3"><a class="reference internal" href="system_a/expo/A222_resolution.html">Mesh resolution</a></li>
+<li class="toctree-l3"><a class="reference internal" href="system_a/expo/A223_cell.html">Cell type</a></li>
+<li class="toctree-l3"><a class="reference internal" href="system_a/expo/A224_finite_difference.html">Choice of finite difference discretization</a></li>
+<li class="toctree-l3"><a class="reference internal" href="system_a/expo/A225_stabilization.html">Stabilization of the advection-diffusion-reaction equation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="system_a/expo/A226_sensitivity_perturbation.html">Sensitivity to initial residual concentration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="system_a/expo/A227_sensitivity_residual.html">Sensitivity to initial residual concentration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="system_a/expo/A228_scaling.html">Choice of scaling</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="system_a/expo/A230_details_hdr.html">Numerical details</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="system_a/expo/A231_constraints.html">Mesh resolution and timestep constraints</a></li>
+<li class="toctree-l3"><a class="reference internal" href="system_a/expo/A232_profiling.html">Profiling</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="system_a/full/A00_full_hdr.html">Full simulations</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="system_a/full/A11_parameter_axis.html">Parameter axis sweep</a></li>
+<li class="toctree-l2"><a class="reference internal" href="system_a/full/A12_parameter_axes.html">Parameter axes sweep</a></li>
+
+<li class="toctree-l2"><a class="reference internal" href="system_a/full/A13_onset.html">Onset of convection</a></li>
+<li class="toctree-l2"><a class="reference internal" href="system_a/full/A21_early_exact.html">Exact early-time model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="system_a/full/A22_early_similarity.html">Similarity early-time model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="system_a/full/A23_late.html">Late-time modelling</a></li>
+</ul>
+</details></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">System B</span></p>
 <ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="notebooks/P0X_benchmarks/X01_darcy_rayleigh_benard.html">Rayleigh-Bénard convection of a Darcy fluid</a></li>
-<li class="toctree-l1"><a class="reference internal" href="notebooks/P0X_benchmarks/X02_darcy_evolving.html">Evolving convection of a Darcy fluid</a></li>
-<li class="toctree-l1"><a class="reference internal" href="notebooks/P0X_benchmarks/X03_darcy_rayleigh_taylor.html">Rayleigh-Taylor instability of a Darcy fluid</a></li>
-<li class="toctree-l1"><a class="reference internal" href="notebooks/P0X_benchmarks/X04_darcy_thermosolutal.html">Thermosolutal convection of a Darcy fluid</a></li>
+<li class="toctree-l1"><a class="reference internal" href="system_b/expo/B00_definition.html">Definition</a></li>
+<li class="toctree-l1"><a class="reference internal" href="system_b/expo/B10_overview.html">Overview</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">System C</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="system_c/expo/C00_definition.html">Definition</a></li>
+<li class="toctree-l1"><a class="reference internal" href="system_c/expo/C10_overview.html">Overview</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">System D</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="system_d/expo/D00_definition.html">Definition</a></li>
+<li class="toctree-l1"><a class="reference internal" href="system_d/expo/D10_overview.html">Overview</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Classic Systems</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="system_x/X01_darcy_rayleigh_benard.html">Rayleigh-Bénard convection of a Darcy fluid</a></li>
+<li class="toctree-l1"><a class="reference internal" href="system_x/X02_darcy_evolving.html">Evolving convection of a Darcy fluid</a></li>
+<li class="toctree-l1"><a class="reference internal" href="system_x/X03_darcy_rayleigh_taylor.html">Rayleigh-Taylor instability of a Darcy fluid</a></li>
+<li class="toctree-l1"><a class="reference internal" href="system_x/X04_darcy_thermosolutal.html">Thermosolutal convection of a Darcy fluid</a></li>
 </ul>
 
     </div>
@@ -242,6 +285,21 @@
         <div class="header-article-item">
 
 <div class="article-header-buttons">
+
+
+<a href="https://github.com/george-poole/CRoCoDiL" target="_blank"
+   class="btn btn-sm btn-source-repository-button"
+   title="Source repository"
+   data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+
+</a>
+
 
 
 

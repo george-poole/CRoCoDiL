@@ -1,0 +1,723 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Rayleigh-Bénard convection of a Darcy fluid &#8212; CRoCoDiL</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="../_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css?v=eba8b062" />
+    <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css?v=13237357" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css?v=6644e6bb" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css?v=4fa983c6" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+    <script src="../_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../_static/copybutton.js?v=f281be69"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../_static/togglebutton.js?v=4a39c7ea"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="../_static/design-tabs.js?v=f930bc37"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script async="async" src="../_static/sphinx-thebe.js?v=c100c467"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'system_x/X01_darcy_rayleigh_benard';</script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Evolving convection of a Darcy fluid" href="X02_darcy_evolving.html" />
+    <link rel="prev" title="Overview" href="../system_d/expo/D10_overview.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search this book..."
+         aria-label="Search this book..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../gallery.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">CRoCoDiL</p>
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="../gallery.html">
+                    Gallery
+                </a>
+            </li>
+        </ul>
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../user_guide/01_introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guide/02_governing_equations.html">Governing equations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guide/03_diagnostic_equations.html">Diagnostic equations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guide/04_finite_element_method.html">Finite element method</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guide/05_numerical_details.html">Numerical details</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guide/06_getting_started.html">Installation</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">System A</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../system_a/expo/A00_definition.html">Definition</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../system_a/expo/A10_overview.html">Overview</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../system_a/expo/A20_expository_hdr.html">Expository simulations</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../system_a/expo/A210_parameters_hdr.html">Parameter space</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../system_a/expo/A211_rayleigh.html">Rayleigh numbers</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../system_a/expo/A212_damkohler.html">Damköhler numbers</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../system_a/expo/A213_saturations.html">Supercritical, subcritical and critical residual saturations</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../system_a/expo/A220_validation_hdr.html">Numerical validation</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../system_a/expo/A221_timestep.html">Timestep constraints</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../system_a/expo/A222_resolution.html">Mesh resolution</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../system_a/expo/A223_cell.html">Cell type</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../system_a/expo/A224_finite_difference.html">Choice of finite difference discretization</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../system_a/expo/A225_stabilization.html">Stabilization of the advection-diffusion-reaction equation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../system_a/expo/A226_sensitivity_perturbation.html">Sensitivity to initial residual concentration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../system_a/expo/A227_sensitivity_residual.html">Sensitivity to initial residual concentration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../system_a/expo/A228_scaling.html">Choice of scaling</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../system_a/expo/A230_details_hdr.html">Numerical details</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../system_a/expo/A231_constraints.html">Mesh resolution and timestep constraints</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../system_a/expo/A232_profiling.html">Profiling</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../system_a/full/A00_full_hdr.html">Full simulations</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../system_a/full/A11_parameter_axis.html">Parameter axis sweep</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../system_a/full/A12_parameter_axes.html">Parameter axes sweep</a></li>
+
+<li class="toctree-l2"><a class="reference internal" href="../system_a/full/A13_onset.html">Onset of convection</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../system_a/full/A21_early_exact.html">Exact early-time model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../system_a/full/A22_early_similarity.html">Similarity early-time model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../system_a/full/A23_late.html">Late-time modelling</a></li>
+</ul>
+</details></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">System B</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../system_b/expo/B00_definition.html">Definition</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../system_b/expo/B10_overview.html">Overview</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">System C</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../system_c/expo/C00_definition.html">Definition</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../system_c/expo/C10_overview.html">Overview</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">System D</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../system_d/expo/D00_definition.html">Definition</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../system_d/expo/D10_overview.html">Overview</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Classic Systems</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Rayleigh-Bénard convection of a Darcy fluid</a></li>
+<li class="toctree-l1"><a class="reference internal" href="X02_darcy_evolving.html">Evolving convection of a Darcy fluid</a></li>
+<li class="toctree-l1"><a class="reference internal" href="X03_darcy_rayleigh_taylor.html">Rayleigh-Taylor instability of a Darcy fluid</a></li>
+<li class="toctree-l1"><a class="reference internal" href="X04_darcy_thermosolutal.html">Thermosolutal convection of a Darcy fluid</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+<a href="https://github.com/george-poole/CRoCoDiL" target="_blank"
+   class="btn btn-sm btn-source-repository-button"
+   title="Source repository"
+   data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+
+</a>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../_sources/system_x/X01_darcy_rayleigh_benard.ipynb" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.ipynb</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Rayleigh-Bénard convection of a Darcy fluid</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#create-and-run-the-simulation">Create and run the simulation</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#visualization">Visualization</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#diagnostics">Diagnostics</a></li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="rayleigh-benard-convection-of-a-darcy-fluid">
+<h1>Rayleigh-Bénard convection of a Darcy fluid<a class="headerlink" href="#rayleigh-benard-convection-of-a-darcy-fluid" title="Link to this heading">#</a></h1>
+<section id="create-and-run-the-simulation">
+<h2>Create and run the simulation<a class="headerlink" href="#create-and-run-the-simulation" title="Link to this heading">#</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">functools</span><span class="w"> </span><span class="kn">import</span> <span class="n">partial</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">lucifex.fdm</span><span class="w"> </span><span class="kn">import</span> <span class="n">AB2</span><span class="p">,</span> <span class="n">CN</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">lucifex.sim</span><span class="w"> </span><span class="kn">import</span> <span class="n">run</span><span class="p">,</span> <span class="n">xdmf_to_npz</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">lucifex.plt</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">plot_colormap</span><span class="p">,</span> <span class="n">create_animation</span><span class="p">,</span> <span class="n">plot_line</span><span class="p">,</span> <span class="n">save_figure</span><span class="p">,</span> 
+    <span class="n">display_animation</span><span class="p">,</span> <span class="n">get_ipynb_file_name</span><span class="p">,</span> <span class="n">set_ipynb_variable</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">crocodil.dns</span><span class="w"> </span><span class="kn">import</span> <span class="n">dns_darcy_rayleigh_benard</span>
+
+<span class="n">STORE</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="n">WRITE</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="n">DIR_ROOT</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;./figures/</span><span class="si">{</span><span class="n">get_ipynb_file_name</span><span class="p">()</span><span class="si">}</span><span class="s1">&#39;</span>
+<span class="n">DIR_PARAMS</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;Ra&#39;</span><span class="p">,</span> <span class="s1">&#39;Nx&#39;</span><span class="p">,</span> <span class="s1">&#39;Ny&#39;</span><span class="p">)</span>
+
+<span class="n">simulation</span> <span class="o">=</span> <span class="n">dns_darcy_rayleigh_benard</span><span class="p">(</span>
+    <span class="n">store_delta</span><span class="o">=</span><span class="n">STORE</span><span class="p">,</span> 
+    <span class="n">write_delta</span><span class="o">=</span><span class="n">WRITE</span><span class="p">,</span> 
+    <span class="n">dir_root</span><span class="o">=</span><span class="n">DIR_ROOT</span><span class="p">,</span> 
+    <span class="n">dir_params</span><span class="o">=</span><span class="n">DIR_PARAMS</span><span class="p">,</span>
+<span class="p">)(</span>
+    <span class="n">aspect</span><span class="o">=</span><span class="mf">2.0</span><span class="p">,</span>
+    <span class="n">Nx</span><span class="o">=</span><span class="mi">64</span><span class="p">,</span>
+    <span class="n">Ny</span><span class="o">=</span><span class="mi">64</span><span class="p">,</span>
+    <span class="n">scaling</span><span class="o">=</span><span class="s1">&#39;advective&#39;</span><span class="p">,</span>
+    <span class="n">Ra</span><span class="o">=</span><span class="mf">500.0</span><span class="p">,</span>
+    <span class="n">theta_ampl</span><span class="o">=</span><span class="mf">1e-3</span><span class="p">,</span>
+    <span class="n">theta_freq</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mi">8</span><span class="p">),</span> 
+    <span class="n">theta_seed</span><span class="o">=</span><span class="p">(</span><span class="mi">123</span><span class="p">,</span> <span class="mi">456</span><span class="p">),</span> 
+    <span class="n">D_adv</span><span class="o">=</span><span class="n">AB2</span><span class="p">,</span> 
+    <span class="n">D_diff</span><span class="o">=</span><span class="n">CN</span><span class="p">,</span>
+    <span class="n">theta_limits</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">theta_stabilization</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">diagnostic</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="n">n_stop</span> <span class="o">=</span> <span class="n">set_ipynb_variable</span><span class="p">(</span><span class="s1">&#39;N_STOP&#39;</span><span class="p">,</span> <span class="mi">500</span><span class="p">)</span>
+<span class="n">dt_init</span> <span class="o">=</span> <span class="mf">1e-6</span>
+<span class="n">n_init</span> <span class="o">=</span> <span class="mi">5</span>
+<span class="n">run</span><span class="p">(</span><span class="n">simulation</span><span class="p">,</span> <span class="n">n_stop</span><span class="o">=</span><span class="n">n_stop</span><span class="p">,</span> <span class="n">dt_init</span><span class="o">=</span><span class="n">dt_init</span><span class="p">,</span> <span class="n">n_init</span><span class="o">=</span><span class="n">n_init</span><span class="p">)</span>
+<span class="k">if</span> <span class="n">WRITE</span><span class="p">:</span> <span class="n">xdmf_to_npz</span><span class="p">(</span><span class="n">simulation</span><span class="p">,</span> <span class="n">delete_xdmf</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+<span class="n">theta</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">psi</span> <span class="o">=</span> <span class="n">simulation</span><span class="p">[</span><span class="s1">&#39;theta&#39;</span><span class="p">,</span> <span class="s1">&#39;u&#39;</span><span class="p">,</span> <span class="s1">&#39;psi&#39;</span><span class="p">]</span>
+<span class="n">save_fig</span> <span class="o">=</span> <span class="n">partial</span><span class="p">(</span><span class="n">save_figure</span><span class="p">,</span> <span class="n">dir_path</span><span class="o">=</span><span class="n">simulation</span><span class="o">.</span><span class="n">dir_path</span><span class="p">,</span> <span class="n">prefix</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Environment variable `N_STOP=12`
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="visualization">
+<h2>Visualization<a class="headerlink" href="#visualization" title="Link to this heading">#</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">time_slice</span> <span class="o">=</span> <span class="nb">slice</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<span class="n">titles</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s1">&#39;$</span><span class="se">\\</span><span class="s1">theta(t=</span><span class="si">{</span><span class="n">t</span><span class="si">:</span><span class="s1">.3f</span><span class="si">}</span><span class="s1">)$&#39;</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">theta</span><span class="o">.</span><span class="n">time_series</span><span class="p">[</span><span class="n">time_slice</span><span class="p">]]</span>
+
+<span class="n">anim</span> <span class="o">=</span> <span class="n">create_animation</span><span class="p">(</span>
+    <span class="n">plot_colormap</span><span class="p">,</span>
+    <span class="n">colorbar</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+<span class="p">)(</span><span class="n">theta</span><span class="o">.</span><span class="n">series</span><span class="p">[</span><span class="n">time_slice</span><span class="p">],</span> <span class="n">title</span><span class="o">=</span><span class="n">titles</span><span class="p">)</span>
+<span class="n">anim_path</span> <span class="o">=</span> <span class="n">save_fig</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">theta</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s1">(t)&#39;</span><span class="p">,</span> <span class="n">return_path</span><span class="o">=</span><span class="kc">True</span><span class="p">)(</span><span class="n">anim</span><span class="p">)</span>
+
+<span class="n">display_animation</span><span class="p">(</span><span class="n">anim_path</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><video controls loop  width="600" >
+ <source src="data:video/mp4;base64,AAAAIGZ0eXBpc29tAAACAGlzb21pc28yYXZjMW1wNDEAAAAIZnJlZQAAJLptZGF0AAACrgYF//+q3EXpvebZSLeWLNgg2SPu73gyNjQgLSBjb3JlIDE2NCByMzA5NSBiYWVlNDAwIC0gSC4yNjQvTVBFRy00IEFWQyBjb2RlYyAtIENvcHlsZWZ0IDIwMDMtMjAyMiAtIGh0dHA6Ly93d3cudmlkZW9sYW4ub3JnL3gyNjQuaHRtbCAtIG9wdGlvbnM6IGNhYmFjPTEgcmVmPTMgZGVibG9jaz0xOjA6MCBhbmFseXNlPTB4MzoweDExMyBtZT1oZXggc3VibWU9NyBwc3k9MSBwc3lfcmQ9MS4wMDowLjAwIG1peGVkX3JlZj0xIG1lX3JhbmdlPTE2IGNocm9tYV9tZT0xIHRyZWxsaXM9MSA4eDhkY3Q9MSBjcW09MCBkZWFkem9uZT0yMSwxMSBmYXN0X3Bza2lwPTEgY2hyb21hX3FwX29mZnNldD0tMiB0aHJlYWRzPTYgbG9va2FoZWFkX3RocmVhZHM9MSBzbGljZWRfdGhyZWFkcz0wIG5yPTAgZGVjaW1hdGU9MSBpbnRlcmxhY2VkPTAgYmx1cmF5X2NvbXBhdD0wIGNvbnN0cmFpbmVkX2ludHJhPTAgYmZyYW1lcz0zIGJfcHlyYW1pZD0yIGJfYWRhcHQ9MSBiX2JpYXM9MCBkaXJlY3Q9MSB3ZWlnaHRiPTEgb3Blbl9nb3A9MCB3ZWlnaHRwPTIga2V5aW50PTI1MCBrZXlpbnRfbWluPTEwIHNjZW5lY3V0PTQwIGludHJhX3JlZnJlc2g9MCByY19sb29rYWhlYWQ9NDAgcmM9Y3JmIG1idHJlZT0xIGNyZj0yMy4wIHFjb21wPTAuNjAgcXBtaW49MCBxcG1heD02OSBxcHN0ZXA9NCBpcF9yYXRpbz0xLjQwIGFxPTE6MS4wMACAAAAbXmWIhAAQ//73gb8yy18iuslx+ed9LKzPPOQ8cl2JrrjQAAADAAADAAADAADRUMO0ehmtH4RcAAADAAF6ABnABQwBaQB8ADHAHE3Ffgs1cQBySTlYNqJbzCMn7jfuUXRYTtepGma/xdJDXoALM4Xxblv7bTs8qGa5kHIYdotrp/X53sDXqKLkn6l0ZeDO9h+qLc5WmgYLKftc83OSVf8/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" type="video/mp4">
+ Your browser does not support the video tag.
+ </video></div></div>
+</div>
+</section>
+<section id="diagnostics">
+<h2>Diagnostics<a class="headerlink" href="#diagnostics" title="Link to this heading">#</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">q</span> <span class="o">=</span> <span class="n">simulation</span><span class="p">[</span><span class="s1">&#39;q&#39;</span><span class="p">]</span>
+<span class="n">q</span><span class="p">,</span> <span class="n">qPlus</span><span class="p">,</span> <span class="n">qMinus</span> <span class="o">=</span> <span class="n">q</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plot_line</span><span class="p">(</span>
+    <span class="p">[(</span><span class="n">q</span><span class="o">.</span><span class="n">time_series</span><span class="p">,</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">q</span><span class="o">.</span><span class="n">value_series</span><span class="p">]),</span> <span class="p">(</span><span class="n">q</span><span class="o">.</span><span class="n">time_series</span><span class="p">,</span> <span class="n">q</span><span class="o">.</span><span class="n">value_series</span><span class="p">)],</span>
+    <span class="n">cyc</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">,</span>
+    <span class="n">x_label</span><span class="o">=</span><span class="s1">&#39;$t$&#39;</span><span class="p">,</span>
+    <span class="n">legend_labels</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;$Q$&#39;</span><span class="p">,</span> <span class="s1">&#39;$Q_{</span><span class="se">\\</span><span class="s1">mathbf</span><span class="si">{u}</span><span class="s1">}$&#39;</span><span class="p">,</span> <span class="s1">&#39;$Q_{\mathsf</span><span class="si">{G}</span><span class="s1">}$&#39;</span><span class="p">],</span>
+    <span class="n">legend_title</span><span class="o">=</span><span class="s1">&#39;$y=</span><span class="se">\\</span><span class="s1">frac</span><span class="si">{1}{2}</span><span class="s1">$&#39;</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">save_fig</span><span class="p">(</span><span class="s1">&#39;q(t)&#39;</span><span class="p">)(</span><span class="n">fig</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/f27a7f68c9c23df533b36f5a528087833afb16673826b6530f2c5933cede51e0.png" src="../_images/f27a7f68c9c23df533b36f5a528087833afb16673826b6530f2c5933cede51e0.png" />
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">uRMS</span><span class="p">,</span> <span class="n">uMinMax</span> <span class="o">=</span> <span class="n">simulation</span><span class="p">[</span><span class="s1">&#39;uRMS&#39;</span><span class="p">,</span> <span class="s1">&#39;uMinMax&#39;</span><span class="p">]</span>
+<span class="n">uMax</span> <span class="o">=</span> <span class="n">uMinMax</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plot_line</span><span class="p">(</span>
+    <span class="p">(</span><span class="n">uRMS</span><span class="o">.</span><span class="n">time_series</span><span class="p">,</span> <span class="n">uRMS</span><span class="o">.</span><span class="n">value_series</span><span class="p">),</span>
+    <span class="n">x_label</span><span class="o">=</span><span class="s1">&#39;$t$&#39;</span><span class="p">,</span>
+    <span class="n">y_label</span><span class="o">=</span><span class="s1">&#39;$\mathrm</span><span class="si">{rms}</span><span class="s1">(\mathbf</span><span class="si">{u}</span><span class="s1">)$&#39;</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">save_fig</span><span class="p">(</span><span class="s1">&#39;uRMS(t)&#39;</span><span class="p">)(</span><span class="n">fig</span><span class="p">)</span>
+
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plot_line</span><span class="p">(</span>
+    <span class="p">(</span><span class="n">uMax</span><span class="o">.</span><span class="n">time_series</span><span class="p">,</span> <span class="n">uMax</span><span class="o">.</span><span class="n">value_series</span><span class="p">),</span>
+    <span class="n">x_label</span><span class="o">=</span><span class="s1">&#39;$t$&#39;</span><span class="p">,</span>
+    <span class="n">y_label</span><span class="o">=</span><span class="s1">&#39;$\max_{\mathbf</span><span class="si">{x}</span><span class="s1">}|\mathbf</span><span class="si">{u}</span><span class="s1">|$&#39;</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">save_fig</span><span class="p">(</span><span class="s1">&#39;uMax(t)&#39;</span><span class="p">)(</span><span class="n">fig</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/71b02499f89af9b2811550a16ea5d6e58b6a40b33480e5017431379134e113c8.png" src="../_images/71b02499f89af9b2811550a16ea5d6e58b6a40b33480e5017431379134e113c8.png" />
+<img alt="../_images/23c29d786b577240fb4aa7b91e57aaa6b63fe4bb11545b53824d69c9e19d317f.png" src="../_images/23c29d786b577240fb4aa7b91e57aaa6b63fe4bb11545b53824d69c9e19d317f.png" />
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">dt</span><span class="p">,</span> <span class="n">dtCFL</span> <span class="o">=</span> <span class="n">simulation</span><span class="p">[</span><span class="s1">&#39;dt&#39;</span><span class="p">,</span> <span class="s1">&#39;dtU&#39;</span><span class="p">]</span>
+
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plot_line</span><span class="p">(</span>
+    <span class="p">[(</span><span class="n">dt</span><span class="o">.</span><span class="n">time_series</span><span class="p">,</span> <span class="n">dt</span><span class="o">.</span><span class="n">value_series</span><span class="p">),</span> <span class="p">(</span><span class="n">dtCFL</span><span class="o">.</span><span class="n">time_series</span><span class="p">,</span> <span class="n">dtCFL</span><span class="o">.</span><span class="n">value_series</span><span class="p">)],</span>
+    <span class="n">x_label</span><span class="o">=</span><span class="s1">&#39;$t$&#39;</span><span class="p">,</span>
+    <span class="n">legend_labels</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;$\Delta t$&#39;</span><span class="p">,</span> <span class="s1">&#39;$\Delta t_{\mathbf</span><span class="si">{u}</span><span class="s1">}$&#39;</span><span class="p">],</span>
+<span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_yscale</span><span class="p">(</span><span class="s1">&#39;log&#39;</span><span class="p">)</span>
+<span class="n">save_fig</span><span class="p">(</span><span class="s1">&#39;dt(t)&#39;</span><span class="p">)(</span><span class="n">fig</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/50ada7821a9854fa7da8fbac77b9def55c875934dc47377cb800aeb3a73ca765.png" src="../_images/50ada7821a9854fa7da8fbac77b9def55c875934dc47377cb800aeb3a73ca765.png" />
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">thetaMinMax</span> <span class="o">=</span> <span class="n">simulation</span><span class="p">[</span><span class="s1">&#39;thetaMinMax&#39;</span><span class="p">]</span>
+<span class="n">thetaMin</span><span class="p">,</span> <span class="n">thetaMax</span> <span class="o">=</span> <span class="n">thetaMinMax</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plot_line</span><span class="p">(</span>
+    <span class="p">(</span><span class="n">thetaMax</span><span class="o">.</span><span class="n">time_series</span><span class="p">,</span> <span class="n">thetaMax</span><span class="o">.</span><span class="n">value_series</span><span class="p">),</span>
+    <span class="n">x_label</span><span class="o">=</span><span class="s1">&#39;$t$&#39;</span><span class="p">,</span>
+    <span class="n">y_label</span><span class="o">=</span><span class="s1">&#39;$\max_{\mathbf</span><span class="si">{x}</span><span class="s1">}</span><span class="se">\\</span><span class="s1">theta$&#39;</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">save_fig</span><span class="p">(</span><span class="s1">&#39;thetaMax(t)&#39;</span><span class="p">)(</span><span class="n">fig</span><span class="p">)</span>
+
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plot_line</span><span class="p">(</span>
+    <span class="p">(</span><span class="n">thetaMin</span><span class="o">.</span><span class="n">time_series</span><span class="p">,</span> <span class="n">thetaMin</span><span class="o">.</span><span class="n">value_series</span><span class="p">),</span>
+    <span class="n">x_label</span><span class="o">=</span><span class="s1">&#39;$t$&#39;</span><span class="p">,</span>
+    <span class="n">y_label</span><span class="o">=</span><span class="s1">&#39;$\min_{\mathbf</span><span class="si">{x}</span><span class="s1">}</span><span class="se">\\</span><span class="s1">theta$&#39;</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">save_fig</span><span class="p">(</span><span class="s1">&#39;thetaMin(t)&#39;</span><span class="p">)(</span><span class="n">fig</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/d3c7f8d64a8894ef32e1fe910dd486d892c721c4c0916c09989bc2a48dc42f49.png" src="../_images/d3c7f8d64a8894ef32e1fe910dd486d892c721c4c0916c09989bc2a48dc42f49.png" />
+<img alt="../_images/91af4affa858887a61bd851fd32b41f55a4ba40b7f58be6d2658f18d1c4e9437.png" src="../_images/91af4affa858887a61bd851fd32b41f55a4ba40b7f58be6d2658f18d1c4e9437.png" />
+</div>
+</div>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            name: "python3",
+            path: "./system_x"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="../system_d/expo/D10_overview.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Overview</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="X02_darcy_evolving.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Evolving convection of a Darcy fluid</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#create-and-run-the-simulation">Create and run the simulation</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#visualization">Visualization</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#diagnostics">Diagnostics</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By The Jupyter Book community
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2023.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>
