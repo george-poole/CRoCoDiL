@@ -81,10 +81,11 @@ $$
 
 | Definition | Name | Physical interpretation | 
 | -------- | ------- | ------- |
-| $Ra=\frac{\mathcal{L}_\Omega K_{\text{ref}}g\Delta\rho}{\mu_{\text{ref}}D_{\text{ref}}}=\underbrace{\frac{K_{\text{ref}}\,g\Delta\rho}{\mu_{\text{ref}}}}_{\text{convective speed}} \big/ \underbrace{\frac{D_{\text{ref}}}{\mathcal{L}_\Omega}}_{\text{diffusive speed}}$  |  Rayleigh  | Ratio of convective to diffusive speeds, defined with respect to the transport of $c$ and domain length scale. |
-| $Da=\frac{\mathcal{L}_\Omega \mu_{\text{ref}}\,\Delta\Sigma}{K_{\text{ref}}\,g\Delta\rho\Delta c} = \underbrace{\frac{\Delta\Sigma}{\Delta c}}_{\text{reaction rate}} \big/ \underbrace{\frac{K_{\text{ref}}\,g\Delta\rho}{\mathcal{L}_\Omega \mu_{\text{ref}}}}_{\text{convection rate}}$  |  Damköhler  | Ratio of reaction to convection rates, defined with respect to the transport of $c$ and domain length scale. |
+| $Ra=\frac{\mathcal{L}_\Omega K_{\text{ref}}g\Delta\rho}{\mu_{\text{ref}}D_{\text{ref}}}=\underbrace{\frac{K_{\text{ref}}\,g\Delta\rho}{\mu_{\text{ref}}}}_{\text{buoyancy speed}} \big/ \underbrace{\frac{D_{\text{ref}}}{\mathcal{L}_\Omega}}_{\text{diffusive speed}}$  |  Rayleigh  | Ratio of buoyancy to diffusive speeds, defined with respect to solutal transport and domain length scale. |
+| $Da=\frac{\mathcal{L}_\Omega \mu_{\text{ref}}\,\Delta\Sigma}{K_{\text{ref}}\,g\Delta\rho\Delta c} = \underbrace{\frac{\Delta\Sigma}{\Delta c}}_{\text{reaction rate}} \big/ \underbrace{\frac{K_{\text{ref}}\,g\Delta\rho}{\mathcal{L}_\Omega \mu_{\text{ref}}}}_{\text{convection rate}}$  |  Damköhler  | Ratio of reaction to convection rates, defined with respect to solutal transport and domain length scale. |
+| $\varepsilon = \frac{\Delta c}{\varrho}\ll1$ | evolution | Ratio of CO<sub>2</sub> concentration scale to single-phase CO<sub>2</sub> density |
 | $Le=\frac{G_{\text{ref}}}{D_{\text{ref}}}$  |  Lewis  | Ratio of thermal to solutal diffusivities. |
-| $\varepsilon = \frac{\Delta c}{\varrho}\ll1$ | evolution | Ratio of CO<sub>2</sub> concentration scale to single-phase CO2 density |
+| $Pe=\mathcal{L}_\Omega\mathcal{U}_I/D_{\text{ref}}=\underbrace{\mathcal{U}_I}_{\text{injection speed}} \big/ \underbrace{\frac{D_{\text{ref}}}{\mathcal{L}_\Omega}}_{\text{diffusive speed}}$ | Peclet | Ratio of injection to diffusive speeds, defined with respect to solutal transport and domain length scale. | 
 
 ### Scaling choice
 
@@ -94,6 +95,7 @@ $$
 | diffusive | $\mathcal{L}_\Omega$ | $D_{\text{ref}}/\mathcal{L}$ | $\phi_{\text{ref}}\mathcal{L}/\mathcal{U}$ | $1$ | $1$ | $RaDa$ | $Ra$ | $1$ |
 | advective-diffusive | $D_{\text{ref}}/\mathcal{U}$ | $K_{\text{ref}}\,g\Delta\rho/\mu_{\text{ref}}$ | $\phi_{\text{ref}}\mathcal{L}/\mathcal{U}$ | $1$ | $1$ | $Da/Ra$ | $1$ | $Ra$ |
 | reactive | $\sqrt{D_{\text{ref}}\mathcal{T}/\phi_{\text{ref}}}$ | $\phi_{\text{ref}}\mathcal{L}/\mathcal{T}$ | $\phi_{\text{ref}}\Delta c/\Delta\Sigma$ | $1$ | $1$ | $1$ | $\sqrt{Ra/Da}$ | $\sqrt{RaDa}$ |
+| injection | $\mathcal{L}_\Omega$ | $\mathcal{U}_I$ | $\varphi_{\text{ref}}\mathcal{L}/\mathcal{U}$ | $1$ | $1/Pe$ | $DaRa/Pe$ | $Ra/Pe$ | $1$ |
 
 ## Non-dimensional time-discretized  equations
 

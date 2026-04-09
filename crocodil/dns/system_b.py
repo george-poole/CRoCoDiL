@@ -1,24 +1,23 @@
-from typing import Iterable
-
 import numpy as np
 from mpi4py import MPI
-from lucifex.fem import Constant, SpatialPerturbation, cubic_noise
+from lucifex.mesh import annulus_sector_mesh, mesh_boundary
+from lucifex.fem import Constant, SpatialPerturbation
 from lucifex.fdm import FiniteDifference, FiniteDifferenceArgwise, CN, AB, AM
 from lucifex.utils.fenicsx_utils import CellType
-from lucifex.solver import OptionsPETSc, OptionsJIT
+from lucifex.solver import OptionsPETSc, OptionsJIT, BoundaryConditions
 from lucifex.sim import configure_simulation
 from lucifex.utils.fenicsx_utils import limits_corrector
 from lucifex.utils.py_utils import FrozenDict
 
 from .generic import dns_generic
-from .utils import CROCODIL_JIT_DIR, heaviside, rectangle_mesh_closure, SCALINGS
+from .utils import CROCODIL_JIT_DIR, heaviside, SCALINGS
 
 
-SYSTEM_A_REFERENCE = FrozenDict(
+SYSTEM_B_REFERENCE = FrozenDict(
     Ra=1000.0,
     Da=100.0,
     epsilon=1e-2,
-    zeta0=0.9,
+    zeta0=0.8,
     sr=0.2,
     cr=0.0,
     aspect=2.0,
@@ -32,31 +31,29 @@ governing the physical (as opposed to numerical) behaviour of system A.
 @configure_simulation(
     jit=OptionsJIT(CROCODIL_JIT_DIR),
 )
-def dns_system_a(
+def dns_system_b(
     # mesh
     comm: MPI.Comm | str = 'COMM_WORLD',
-    aspect: float = 2.0,
-    Nx: int = 100,
-    Ny: int = 100,
+    aspect: float = 0.5,
+    Nr: int = 100,
     cell: str = CellType.QUADRILATERAL,
     # physical
     scaling: str = 'advective',
     Ra: float = 1e3,
     Da: float = 1e2,
     epsilon: float = 1e-2,
+    Pe: float = 1e3,
     # initial front
-    zeta0: float = 0.9,
+    zeta0: float = 0.8,
     zeta0_eps: float | tuple[float, float] | None = None,
     # initial saturation
     sr: float = 0.2,
     s_ampl: float = 0,
-    s_freq: tuple[int, int] = (16, 16),
-    s_seed: tuple[int, int] = (1234, 5678),
+    s_freq: int = 8,
     # initial concentration
     cr: float = 1.0,
     c_ampl: float = 1e-6,
-    c_freq: tuple[int, int] = (16, 16),
-    c_seed: tuple[int, int] = (1234, 5678),
+    c_freq: int = 8,
     # timestep
     dt_min: float = 0.0,
     dt_max: float = np.inf,
@@ -87,63 +84,85 @@ def dns_system_a(
     s_petsc: OptionsPETSc | None = None,
     # optional postprocessing
     diagnostic: bool = True,
-    fluxes: Iterable[tuple[str, float | int, float]] = (),
 ):
-    """
-    `Ω = [0, A·X] × [0, X]` \\
-    `𝜑∂s/∂t = -εKi s(1 - c)` \\
-    `ϕ∂c/∂t + 𝐮·∇c =  Di ∇·(ϕ∇c) + Ki s(1 - c)` \\
-    `∇⋅𝐮 = 0` \\
-    `𝐮 = -(∇p + Bu c 𝐞ʸ)` \\
-
-    `s₀(𝐱) = sᵣH(y - ζ₀) + N(𝐱)` \\
-    `c₀(𝐱) = cᵣH(y - ζ₀) + N(𝐱)`\\
-    `𝐧⋅∇c = 0` on `∂Ω` \\
-    `𝐧⋅𝐮 = 0` on `∂Ω`
-    """
     # space
     scaling_map = SCALINGS[scaling](Ra, Da)
     X = scaling_map['X']
-    Lx = aspect * X
-    Ly = 1.0 * X
+    Router = X
+    Rinner = aspect * Router
     Lzeta0 = zeta0 * X
     Lzeta0_eps = zeta0_eps * X if zeta0_eps is not None else None
-    Omega, dOmega = rectangle_mesh_closure(Lx, Ly, Nx, Ny, cell, comm=comm)
+    dr = (Router - Rinner) / Nr
+    Omega = annulus_sector_mesh(dr, cell, 'Omega', comm)(Rinner, Router, 180)
+    r2 = lambda x: x[0]**2 + x[1]**2
+    dOmega = mesh_boundary(
+        Omega, 
+        {
+            "inner": lambda x: r2(x) - Rinner**2,
+            "outer": lambda x: r2(x) - Router**2,
+            "left": lambda x: np.logical_and(np.isclose(x[1], 0.0), x[0] < 0),
+            "right": lambda x: np.logical_and(np.isclose(x[1], 0.0), x[0] > 0),
+        },
+    )
     # constants
+    uIn = (Pe / Ra) * scaling_map['Bu'] # TODO check this
     Di, Ki, Bu = scaling_map(Omega)['Di', 'Ki', 'Bu']
     Ra = Constant(Omega, Ra, 'Ra')
     Da = Constant(Omega, Da, 'Da')
     # initial conditions
     s_ics = heaviside(lambda x: x[1] - Lzeta0, max(0, sr - s_ampl), eps=Lzeta0_eps) 
     if s_ampl:
+        radial_noise = lambda x: (s_ampl 
+            * np.cos(s_freq * np.pi * (np.sqrt(r2(x) - Rinner) / Router))
+        )
         s_ics = SpatialPerturbation(
             s_ics,
-            cubic_noise(['neumann', 'neumann'], [Lx, Ly], s_freq, s_seed),
-            [Lx, Ly],
+            radial_noise,
+            Omega.geometry.x,
             s_ampl,
             limits_corrector(0, sr),
         )
     c_ics = heaviside(lambda x: x[1] - Lzeta0, max(0, cr - c_ampl), eps=Lzeta0_eps)
     if c_ampl:
+        radial_noise = lambda x: (c_ampl 
+            * np.cos(c_freq * np.pi * (np.sqrt(r2(x) - Rinner) / Router))
+        )
         c_ics = SpatialPerturbation(
             c_ics,
-            cubic_noise(['neumann', 'neumann'], [Lx, Ly], c_freq, c_seed),
-            [Lx, Ly],
+            radial_noise,
+            Omega.geometry.x,
             c_ampl,
             limits_corrector(0, 1),
         )  
+    # boundary conditions
+    if isinstance(flow_petsc, tuple):
+        psi_bcs = BoundaryConditions(
+            ('dirichlet', dOmega['outer'], 0.0),
+            ('dirichlet', dOmega['left'], lambda x: -uIn * (x[0] + Router)),
+            ('dirichlet', dOmega['inner'], -uIn * (Router - Rinner)),
+            ('dirichlet', dOmega['right'], lambda x: uIn * (x[0] - Router)),
+        )
+        flow_bcs = psi_bcs
+    else:
+        u_bcs = BoundaryConditions(
+            ('dirichlet', dOmega['outer', 'inner'], (0.0, 0.0), 0),
+            ('dirichlet', dOmega['left'], (0.0, uIn), 0),
+            ('dirichlet', dOmega['left'], (0.0, -uIn), 0),
+        )
+        p_bcs = None
+        flow_bcs = (u_bcs, p_bcs)
+    c_bcs = BoundaryConditions(
+        ('dirichlet', dOmega.union, 0.0),
+    )
     # constitutive relations
     dispersion = lambda phi: Di * phi
     reaction = lambda s: -Ki * s
     source = lambda s: Ki * s
     density = lambda c: Bu * c
 
-    if diagnostic:
-        fluxes = [('f', Lzeta0, Lx), *fluxes]
-
     auxiliary = [
         Ra, Da, Di, Bu, Ki, 
-        ('X', X), ('Lx', Lx), ('Ly', Ly), 
+        ('X', X), ('Rinner', Rinner), ('Router', Router), 
         ('zeta0', zeta0), ('Lzeta0', Lzeta0),
         ('sr', sr), ('cr', cr),
     ]
@@ -157,6 +176,9 @@ def dns_system_a(
         # initial conditions
         s_ics=s_ics, 
         c_ics=c_ics,
+        # boundary conditions
+        c_bcs=c_bcs,
+        flow_bcs=flow_bcs,
         # constitutive relations
         density=density,
         reaction=reaction,
@@ -186,9 +208,6 @@ def dns_system_a(
         c_petsc=c_petsc,
         s_petsc=s_petsc,
         # optional solvers
-        fluxes_solutal=fluxes,
         diagnostic=diagnostic,
         auxiliary=auxiliary,
     )
-
-

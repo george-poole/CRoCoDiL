@@ -2,7 +2,7 @@
 
 Welcome to the *&nbsp;**C**onvection-**R**eaction **o**f **C**arb**o**n **D**iodixe **i**n **L**UCiFEx&nbsp;* package!
 
-CRoCoDiL provides a framework to model the geological sequestration of CO<sub>2</sub> in a porous medium. It is based on the core package [LUCiFEx](https://github.com/george-poole/LUCiFEx), which itself is based on [FEniCSx](https://github.com/FEniCS/dolfinx). To get started with LUCiFEx, refer to the [user guide](https://george-poole.github.io/LUCiFEx/notebooks/P00_user_guide/U00_introduction.html).
+CRoCoDiL provides a framework to model the geological sequestration of CO<sub>2</sub> in a porous medium. It is based on the core package [LUCiFEx](https://github.com/george-poole/LUCiFEx), which itself is based on [FEniCSx](https://github.com/FEniCS/dolfinx). To get started with LUCiFEx, refer to the tutorial.
 
 For any queries, comments or feedback do not hesitate to email `grp39@cantab.ac.uk`.
 

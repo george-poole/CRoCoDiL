@@ -129,7 +129,7 @@ def dns_system_aTheta(
     Lzeta0_eps = zeta0_eps * X if zeta0_eps is not None else None
     Omega, dOmega = rectangle_mesh_closure(Lx, Ly, Nx, Ny, cell, comm=comm)
     # constants
-    Di, Bu, Ki = scaling_map[Omega, 'Di', 'Bu', 'Ki']
+    Di, Bu, Ki = scaling_map(Omega)['Di', 'Bu', 'Ki']
     Ra = Constant(Omega, Ra, 'Ra')
     Da = Constant(Omega, Da, 'Da')
     Le = Constant(Omega, Le, 'Le')

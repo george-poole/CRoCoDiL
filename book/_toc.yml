@@ -2,14 +2,14 @@ format: jb-book
 root: gallery
 
 parts:
-  - caption: User Guide
+  - caption: Tutorial
     chapters:
-      - file: user_guide/01_introduction
-      - file: user_guide/02_governing_equations
-      - file: user_guide/03_diagnostic_equations
-      - file: user_guide/04_finite_element_method
-      - file: user_guide/05_numerical_details
-      - file: user_guide/06_getting_started
+      - file: tutorial/01_introduction
+      - file: tutorial/02_governing_equations
+      - file: tutorial/03_diagnostic_equations
+      - file: tutorial/04_finite_element_method
+      - file: tutorial/05_numerical_details
+      - file: tutorial/06_getting_started
       
   - caption: System A
     chapters:

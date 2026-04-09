@@ -127,32 +127,34 @@ def dns_system_d(
     Ly = 1.0 * X
     Ll = l * X
     # inflow conditions
-    In = (Pe / Ra) * scaling_map['Bu']
+    uInMax = (Pe / Ra) * scaling_map['Bu']
     match inflow:
         case ('gaussian', n):
-            xInflow = 0.5 * n * Ll
-            uInflow = lambda x: In * np.exp(-(x[0] / (0.5 * Ll))**2)
-            uOutflow = 0.25 * np.sqrt(np.pi) * In * Ll * sp.erf(Lx[1] / Ll) # TODO check
+            xIn = 0.5 * n * Ll
+            uIn = lambda x: uInMax * np.exp(-(x[0] / (0.5 * Ll))**2)
+            uOut = 0.25 * np.sqrt(np.pi) * uInMax * Ll * sp.erf(Lx[1] / Ll) # TODO check
         case ('sigmoid', eps, n):
-            xInflow = 0.5 * Ll + n / eps
-            uInflow = lambda x: In * (
+            xIn = 0.5 * Ll + n / eps
+            uIn = lambda x: uInMax * (
                 (1 + np.exp(-(0.5 * Ll + x[0]) / eps)) 
                 * (1 + np.exp(-(0.5 * Ll - x[0]) / eps))
             )
-            uOutflow = quad(uInflow, Lx[0], Lx[1])[0]
+            uOut = quad(uIn, Lx[0], Lx[1])[0]
         case None:
-            xInflow = 0.5 * Ll
-            uInflow = lambda x: np.full_like(x[0], In)
-            uOutflow = 0.5 * In * l
-        case other:
-            uInflow, xInflow = other
-            uOutflow = quad(uInflow, Lx[0], Lx[1])[0]
+            xIn = 0.5 * Ll
+            uIn = lambda x: np.full_like(x[0], uInMax)
+            uOut = 0.5 * uInMax * l
+        case clbl, number:
+            uIn, xIn = clbl, number
+            uOut = quad(uIn, Lx[0], Lx[1])[0]
+        case _:
+            raise ValueError(inflow)
     if mirror:
-        xInflow = (0, xInflow) if mirror == 1 else (-xInflow, 0)
+        xIn = (0, xIn) if mirror == 1 else (-xIn, 0)
     else:
-        xInflow = (-xInflow, xInflow)
-    is_inflow = lambda x: ((x[0] >= xInflow[0]) & (x[0] <= xInflow[1]))
-    uLower = lambda x: 0.0 + (uInflow(x)) * is_inflow(x)    
+        xIn = (-xIn, xIn)
+    is_inflow = lambda x: ((x[0] >= xIn[0]) & (x[0] <= xIn[1]))
+    uLower = lambda x: 0.0 + (uIn(x)) * is_inflow(x)    
     # space
     Omega = rectangle_mesh(Lx, Ly, Nx, Ny, cell, 'Omega', comm)
     dOmega = mesh_boundary(
@@ -171,7 +173,7 @@ def dns_system_d(
         },
     )
     # constants
-    Di, Bu, Ki = scaling_map[Omega, 'Di', 'Bu', 'Ki']
+    Di, Bu, Ki = scaling_map(Omega)['Di', 'Bu', 'Ki']
     Ra = Constant(Omega, Ra, 'Ra')
     Da = Constant(Omega, Da, 'Da')
     Le = Constant(Omega, Le, 'Le')
@@ -233,8 +235,8 @@ def dns_system_d(
         if not p_dOmega:
             u_bcs = BoundaryConditions(
                 ('essential', dOmega['upper'], (0.0, 0.0), 0),
-                ('essential', dOmega['left'], (0.0 if mirror == +1 else -uOutflow, 0.0), 0),
-                ('essential', dOmega['right'], (0.0 if mirror == -1 else uOutflow, 0.0), 0),
+                ('essential', dOmega['left'], (0.0 if mirror == +1 else -uOut, 0.0), 0),
+                ('essential', dOmega['right'], (0.0 if mirror == -1 else uOut, 0.0), 0),
                 ('essential', dOmega['lower'], (0.0, uLower), 0),
             )
             p_bcs = None
@@ -270,7 +272,7 @@ def dns_system_d(
         gamma, delta,
         ('X', X), ('Lx', Lx), ('Ly', Ly), 
         ('l', l), ('Ll', Ll),
-        ('In', In), ('xInflow', xInflow),
+        ('uInMax', uInMax), ('xIn', xIn),
         ('sr', sr), ('cr', cr), 
     ]
 

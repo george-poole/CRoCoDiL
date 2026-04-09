@@ -100,7 +100,7 @@ def dns_system_c(
     Leta0_eps = eta0_eps * X if eta0_eps is not None else None
     Omega, dOmega = rectangle_mesh_closure(Lx, Ly, Nx, Ny, cell, comm=comm)
     # constants
-    Di, Ki, Bu = scaling_map[Omega, 'Di', 'Ki', 'Bu']
+    Di, Ki, Bu = scaling_map(Omega)['Di', 'Ki', 'Bu']
     Ra = Constant(Omega, Ra, 'Ra')
     Da = Constant(Omega, Da, 'Da')
     # initial conditions

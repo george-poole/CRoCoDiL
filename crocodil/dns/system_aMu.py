@@ -4,6 +4,7 @@ import numpy as np
 from mpi4py import MPI
 from lucifex.fem import Constant, SpatialPerturbation, cubic_noise
 from lucifex.fdm import FiniteDifference, FiniteDifferenceArgwise, CN, AB, AM
+from lucifex.fdm.ufl_operators import exp
 from lucifex.utils.fenicsx_utils import CellType
 from lucifex.solver import OptionsPETSc, OptionsJIT
 from lucifex.sim import configure_simulation
@@ -12,21 +13,13 @@ from lucifex.utils.py_utils import FrozenDict
 
 from .generic import dns_generic
 from .utils import CROCODIL_JIT_DIR, heaviside, rectangle_mesh_closure, SCALINGS
+from .system_a import SYSTEM_A_REFERENCE
 
 
 SYSTEM_A_MU_REFERENCE = FrozenDict(
-    Ra=1000.0,
-    Da=100.0,
-    epsilon=1e-2,
-    zeta0=0.9,
-    sr=0.2,
-    cr=0.0,
-    aspect=2.0,
+    **SYSTEM_A_REFERENCE,
+    gamma=0.5,
 )
-"""
-Reference parameters `Ra, Da, epsilon, zeta0, sr, cr` and `aspect`
-governing the physical (as opposed to numerical) behaviour of system A.
-"""
 
 
 @configure_simulation(
@@ -59,7 +52,7 @@ def dns_system_aMu(
     c_seed: tuple[int, int] = (1234, 5678),
     # constitutive relations
     viscosity_type: str = 'exponential',
-    delta: float = 1.0,
+    gamma: float = 0.5,
     # timestep
     dt_min: float = 0.0,
     dt_max: float = np.inf,
@@ -101,9 +94,10 @@ def dns_system_aMu(
     Lzeta0_eps = zeta0_eps * X if zeta0_eps is not None else None
     Omega, dOmega = rectangle_mesh_closure(Lx, Ly, Nx, Ny, cell, comm=comm)
     # constants
-    Di, Ki, Bu = scaling_map[Omega, 'Di', 'Ki', 'Bu']
+    Di, Ki, Bu = scaling_map(Omega)['Di', 'Ki', 'Bu']
     Ra = Constant(Omega, Ra, 'Ra')
     Da = Constant(Omega, Da, 'Da')
+    gamma = Constant(Omega, gamma, 'gamma')
     # initial conditions
     s_ics = heaviside(lambda x: x[1] - Lzeta0, max(0, sr - s_ampl), eps=Lzeta0_eps) 
     if s_ampl:
@@ -128,7 +122,14 @@ def dns_system_aMu(
     reaction = lambda s: -Ki * s
     source = lambda s: Ki * s
     density = lambda c: Bu * c
-
+    match viscosity_type:
+        case 'linear':
+            viscosity = lambda c: 1 + gamma * c
+        case 'exponential':
+            viscosity = lambda c: exp(gamma * c)
+        case _:
+            raise ValueError(viscosity_type)
+        
     if diagnostic:
         fluxes = [('f', Lzeta0, Lx), *fluxes]
 
@@ -150,6 +151,7 @@ def dns_system_aMu(
         c_ics=c_ics,
         # constitutive relations
         density=density,
+        viscosity=viscosity,
         reaction=reaction,
         source=source,
         dispersion_solutal=dispersion,

@@ -54,7 +54,7 @@ def dns_darcy_rayleigh_benard(
     Ly = 1.0 * X
     Omega, dOmega = rectangle_mesh_closure(Lx, Ly, Nx, Ny, cell)
     # constants
-    Di, Bu = scaling_map[Omega, 'Di', 'Bu']
+    Di, Bu = scaling_map(Omega)['Di', 'Bu']
     Ra = Constant(Omega, Ra, 'Ra')
     # initial and boundary conditions
     theta_ics = SpatialPerturbation(
@@ -148,7 +148,7 @@ def dns_darcy_evolving(
     Ly = 1.0 * X
     Omega, dOmega = rectangle_mesh_closure(Lx, Ly, Nx, Ny, cell)
     # constants
-    Di, Bu = scaling_map[Omega, 'Di', 'Bu']
+    Di, Bu = scaling_map(Omega)['Di', 'Bu']
     Ra = Constant(Omega, Ra, 'Ra')
     # initial and boundary conditions
     theta_ics = SpatialPerturbation(
@@ -244,7 +244,7 @@ def dns_darcy_rayleigh_taylor(
     Ly = 1.0 * X
     Omega, dOmega = rectangle_mesh_closure(Lx, Ly, Nx, Ny, cell)
     # constants
-    Di, Bu = scaling_map[Omega, 'Di', 'Bu']
+    Di, Bu = scaling_map(Omega)['Di', 'Bu']
     Ra = Constant(Omega, Ra, 'Ra')
     # initial conditions
     c_ics = SpatialPerturbation(
@@ -350,7 +350,7 @@ def dns_darcy_thermosolutal(
     Ly = 1.0 * X
     Omega, dOmega = rectangle_mesh_closure(Lx, Ly, Nx, Ny, cell)
     # constants
-    Di, Bu = scaling_map[Omega, 'Di', 'Bu']
+    Di, Bu = scaling_map(Omega)['Di', 'Bu']
     Ra = Constant(Omega, Ra, 'Ra')
     Le = Constant(Omega, Le, 'Le')
     gamma = Constant(Omega, gamma, 'gamma')
