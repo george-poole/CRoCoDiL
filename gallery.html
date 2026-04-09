@@ -62,7 +62,7 @@
     <script>DOCUMENTATION_OPTIONS.pagename = 'gallery';</script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Introduction" href="user_guide/01_introduction.html" />
+    <link rel="next" title="Introduction" href="tutorial/01_introduction.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   </head>
@@ -176,14 +176,14 @@
                 </a>
             </li>
         </ul>
-        <p aria-level="2" class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Tutorial</span></p>
 <ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="user_guide/01_introduction.html">Introduction</a></li>
-<li class="toctree-l1"><a class="reference internal" href="user_guide/02_governing_equations.html">Governing equations</a></li>
-<li class="toctree-l1"><a class="reference internal" href="user_guide/03_diagnostic_equations.html">Diagnostic equations</a></li>
-<li class="toctree-l1"><a class="reference internal" href="user_guide/04_finite_element_method.html">Finite element method</a></li>
-<li class="toctree-l1"><a class="reference internal" href="user_guide/05_numerical_details.html">Numerical details</a></li>
-<li class="toctree-l1"><a class="reference internal" href="user_guide/06_getting_started.html">Getting started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial/01_introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial/02_governing_equations.html">Governing equations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial/03_diagnostic_equations.html">Diagnostic equations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial/04_finite_element_method.html">Finite element method</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial/05_numerical_details.html">Numerical details</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial/06_getting_started.html">Getting started</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">System A</span></p>
 <ul class="nav bd-sidenav">
@@ -224,6 +224,16 @@
 <li class="toctree-l2"><a class="reference internal" href="system_a/full/A23_late.html">Late-time modelling</a></li>
 </ul>
 </details></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">System Aθ</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="system_aTheta/expo/ATheta00_definition.html">Definition</a></li>
+<li class="toctree-l1"><a class="reference internal" href="system_aTheta/expo/ATheta10_overview.html">Overview</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">System Aμ</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="system_aMu/expo/AMu00_definition.html">Definition</a></li>
+<li class="toctree-l1"><a class="reference internal" href="system_aMu/expo/AMu10_overview.html">Overview</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">System B</span></p>
 <ul class="nav bd-sidenav">
@@ -410,6 +420,8 @@ document.write(`
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#system-a">System A</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">System Aμ</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">System Aθ</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#system-b">System B</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#system-c">System C</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#system-d">System D</a></li>
@@ -428,6 +440,7 @@ document.write(`
 <h1>Gallery<a class="headerlink" href="#gallery" title="Link to this heading">#</a></h1>
 <section id="system-a">
 <h2>System A<a class="headerlink" href="#system-a" title="Link to this heading">#</a></h2>
+<p>Solutal convective dissolution in a rectangle</p>
 <table>
     <tr>
     <td>
@@ -441,8 +454,41 @@ document.write(`
     </tr>
     </table>
 </section>
+<section id="id1">
+<h2>System Aμ<a class="headerlink" href="#id1" title="Link to this heading">#</a></h2>
+<p>Viscous fingering effects on convective dissolution in a rectangle</p>
+<table>
+    <tr>
+    <td>
+    <img src="./system_aMu/expo/figures/system_aMu_Omega_0.png" width="400"/>
+    <a href="./system_aMu/expo/AMu00_definition.html">Definition</a> 
+    </td>
+<td>
+    <img src="./system_aMu/expo/figures/AMu10_overview/thumbnail.png" width="400"/>
+    <a href="./system_aMu/expo/AMu10_overview.html">Overview</a> 
+    </td>
+    </tr>
+    </table>
+</section>
+<section id="id2">
+<h2>System Aθ<a class="headerlink" href="#id2" title="Link to this heading">#</a></h2>
+<p>Thermal buoyancy effects on convective dissolution in a rectangle</p>
+<table>
+    <tr>
+    <td>
+    <img src="./system_aTheta/expo/figures/system_aTheta_Omega_0.png" width="400"/>
+    <a href="./system_aTheta/expo/ATheta00_definition.html">Definition</a> 
+    </td>
+<td>
+    <img src="./system_aTheta/expo/figures/ATheta10_overview/thumbnail.png" width="400"/>
+    <a href="./system_aTheta/expo/ATheta10_overview.html">Overview</a> 
+    </td>
+    </tr>
+    </table>
+</section>
 <section id="system-b">
 <h2>System B<a class="headerlink" href="#system-b" title="Link to this heading">#</a></h2>
+<p>Solutal convective dissolution in an anticline with a background flow</p>
 <table>
     <tr>
     <td>
@@ -458,6 +504,7 @@ document.write(`
 </section>
 <section id="system-c">
 <h2>System C<a class="headerlink" href="#system-c" title="Link to this heading">#</a></h2>
+<p>Exchange flow dissolution in an inclined rectangle</p>
 <table>
     <tr>
     <td>
@@ -473,6 +520,7 @@ document.write(`
 </section>
 <section id="system-d">
 <h2>System D<a class="headerlink" href="#system-d" title="Link to this heading">#</a></h2>
+<p>Buoyant plumes in thermosolutal convective dissolution</p>
 <table>
     <tr>
     <td>
@@ -486,6 +534,10 @@ document.write(`
     </tr>
     </table>
 </section>
+<div class="toctree-wrapper compound">
+</div>
+<div class="toctree-wrapper compound">
+</div>
 <div class="toctree-wrapper compound">
 </div>
 <div class="toctree-wrapper compound">
@@ -531,7 +583,7 @@ document.write(`
                   
 <div class="prev-next-area">
     <a class="right-next"
-       href="user_guide/01_introduction.html"
+       href="tutorial/01_introduction.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
@@ -556,6 +608,8 @@ document.write(`
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#system-a">System A</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">System Aμ</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">System Aθ</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#system-b">System B</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#system-c">System C</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#system-d">System D</a></li>

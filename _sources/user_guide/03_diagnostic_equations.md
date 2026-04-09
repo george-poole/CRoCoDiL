@@ -5,7 +5,7 @@
 | Name | Definition |
 | -------- | ------- | 
 | mass of capillary-trapped CO<sub>2</sub> | $m_C=\int_{\Omega}\varphi\varrho s~\text{d}\Omega$ | $\mathcal{L}$ | $\varphi_{\text{ref}}\mathcal{L}^d\Delta c$ |
-| mass of dissolved CO<sub>2</sub> | $m_D=\int_{\Omega}\phi(\rho-\rho_{\mathrm{ref}})~\text{d}\Omega$ |
+| mass of dissolved CO<sub>2</sub> | $m_D=\int_{\Omega}\phi c~\text{d}\Omega$ |
 | total mass of CO<sub>2</sub> | $m=m_C + m_D$ |
 | dissolution rate | $-\frac{\text{d}m_C}{\text{d}t}$ |
 | dissolution flux | $F_{\Gamma}^m=-\frac{1}{\mathrm{len}(\Gamma)}\frac{\text{d}m_C}{\text{d}t}$ |
@@ -30,6 +30,6 @@
 | Name | Definition |
 | -------- | ------- | 
 | mass of capillary-trapped CO<sub>2</sub> | $m_C=\frac{1}{\varepsilon}\int_{\Omega} \varphi s~\text{d}\Omega$ |
-| mass of dissolved CO<sub>2</sub> | $m_D=\int_{\Omega}\phi\rho~\text{d}\Omega$ |
+| mass of dissolved CO<sub>2</sub> | $m_D=\int_{\Omega}\phi c~\text{d}\Omega$ |
 | solutal flux | $F=...$ |
 | thermal flux | $Q=...$ |

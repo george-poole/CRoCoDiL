@@ -2,6 +2,7 @@
 
 ## System A
 
+Solutal convective dissolution in a rectangle
 <table>
     <tr>
     <td>
@@ -15,8 +16,41 @@
     </tr>
     </table>
 
+## System Aμ
+
+Viscous fingering effects on convective dissolution in a rectangle
+<table>
+    <tr>
+    <td>
+    <img src="./system_aMu/expo/figures/system_aMu_Omega_0.png" width="400"/>
+    <a href="./system_aMu/expo/AMu00_definition.html">Definition</a> 
+    </td>
+<td>
+    <img src="./system_aMu/expo/figures/AMu10_overview/thumbnail.png" width="400"/>
+    <a href="./system_aMu/expo/AMu10_overview.html">Overview</a> 
+    </td>
+    </tr>
+    </table>
+
+## System Aθ
+
+Thermal buoyancy effects on convective dissolution in a rectangle
+<table>
+    <tr>
+    <td>
+    <img src="./system_aTheta/expo/figures/system_aTheta_Omega_0.png" width="400"/>
+    <a href="./system_aTheta/expo/ATheta00_definition.html">Definition</a> 
+    </td>
+<td>
+    <img src="./system_aTheta/expo/figures/ATheta10_overview/thumbnail.png" width="400"/>
+    <a href="./system_aTheta/expo/ATheta10_overview.html">Overview</a> 
+    </td>
+    </tr>
+    </table>
+
 ## System B
 
+Solutal convective dissolution in an anticline with a background flow
 <table>
     <tr>
     <td>
@@ -32,6 +66,7 @@
 
 ## System C
 
+Exchange flow dissolution in an inclined rectangle
 <table>
     <tr>
     <td>
@@ -47,6 +82,7 @@
 
 ## System D
 
+Buoyant plumes in thermosolutal convective dissolution
 <table>
     <tr>
     <td>

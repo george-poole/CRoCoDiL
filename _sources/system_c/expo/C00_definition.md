@@ -16,7 +16,7 @@ u_{\text{E}}\vert_{\partial\Omega}=0\iff\psi_{\text{D}}\vert_{\partial\Omega}=0 
 \mu = 1 & \text{constant viscosity} \\
 \rho(c)=c & \text{linear density} \\
 \Sigma(c, s)=s(1-c) & \text{linear reaction}  \\
-\iff R(s)=-J(s)=-s \\
+\implies R(s)=-J(s)=-s \\
 \textbf{e}_g = -\sin\beta\textbf{e}_x -\cos\beta\textbf{e}_y & \text{inclined plane} \\ 
 \end{cases}
 $$ 

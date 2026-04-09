@@ -182,7 +182,7 @@
 <li class="toctree-l1"><a class="reference internal" href="03_diagnostic_equations.html">Diagnostic equations</a></li>
 <li class="toctree-l1"><a class="reference internal" href="04_finite_element_method.html">Finite element method</a></li>
 <li class="toctree-l1"><a class="reference internal" href="05_numerical_details.html">Numerical details</a></li>
-<li class="toctree-l1"><a class="reference internal" href="06_getting_started.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="06_getting_started.html">Getting started</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">System A</span></p>
 <ul class="nav bd-sidenav">
@@ -223,6 +223,16 @@
 <li class="toctree-l2"><a class="reference internal" href="../system_a/full/A23_late.html">Late-time modelling</a></li>
 </ul>
 </details></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">System Aθ</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../system_aTheta/expo/ATheta00_definition.html">Definition</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../system_aTheta/expo/ATheta10_overview.html">Overview</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">System Aμ</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../system_aMu/expo/AMu00_definition.html">Definition</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../system_aMu/expo/AMu10_overview.html">Overview</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">System B</span></p>
 <ul class="nav bd-sidenav">
@@ -563,21 +573,25 @@ X=\frac{\mathcal{L}}{\mathcal{L}_\Omega}
 </tr>
 </thead>
 <tbody>
-<tr class="row-even"><td><p><span class="math notranslate nohighlight">\(Ra=\frac{\mathcal{L}_\Omega K_{\text{ref}}g\Delta\rho}{\mu_{\text{ref}}D_{\text{ref}}}=\underbrace{\frac{K_{\text{ref}}\,g\Delta\rho}{\mu_{\text{ref}}}}_{\text{convective speed}} \big/ \underbrace{\frac{D_{\text{ref}}}{\mathcal{L}_\Omega}}_{\text{diffusive speed}}\)</span></p></td>
+<tr class="row-even"><td><p><span class="math notranslate nohighlight">\(Ra=\frac{\mathcal{L}_\Omega K_{\text{ref}}g\Delta\rho}{\mu_{\text{ref}}D_{\text{ref}}}=\underbrace{\frac{K_{\text{ref}}\,g\Delta\rho}{\mu_{\text{ref}}}}_{\text{buoyancy speed}} \big/ \underbrace{\frac{D_{\text{ref}}}{\mathcal{L}_\Omega}}_{\text{diffusive speed}}\)</span></p></td>
 <td><p>Rayleigh</p></td>
-<td><p>Ratio of convective to diffusive speeds, defined with respect to the transport of <span class="math notranslate nohighlight">\(c\)</span> and domain length scale.</p></td>
+<td><p>Ratio of buoyancy to diffusive speeds, defined with respect to solutal transport and domain length scale.</p></td>
 </tr>
 <tr class="row-odd"><td><p><span class="math notranslate nohighlight">\(Da=\frac{\mathcal{L}_\Omega \mu_{\text{ref}}\,\Delta\Sigma}{K_{\text{ref}}\,g\Delta\rho\Delta c} = \underbrace{\frac{\Delta\Sigma}{\Delta c}}_{\text{reaction rate}} \big/ \underbrace{\frac{K_{\text{ref}}\,g\Delta\rho}{\mathcal{L}_\Omega \mu_{\text{ref}}}}_{\text{convection rate}}\)</span></p></td>
 <td><p>Damköhler</p></td>
-<td><p>Ratio of reaction to convection rates, defined with respect to the transport of <span class="math notranslate nohighlight">\(c\)</span> and domain length scale.</p></td>
+<td><p>Ratio of reaction to convection rates, defined with respect to solutal transport and domain length scale.</p></td>
 </tr>
-<tr class="row-even"><td><p><span class="math notranslate nohighlight">\(Le=\frac{G_{\text{ref}}}{D_{\text{ref}}}\)</span></p></td>
+<tr class="row-even"><td><p><span class="math notranslate nohighlight">\(\varepsilon = \frac{\Delta c}{\varrho}\ll1\)</span></p></td>
+<td><p>evolution</p></td>
+<td><p>Ratio of CO<sub>2</sub> concentration scale to single-phase CO<sub>2</sub> density</p></td>
+</tr>
+<tr class="row-odd"><td><p><span class="math notranslate nohighlight">\(Le=\frac{G_{\text{ref}}}{D_{\text{ref}}}\)</span></p></td>
 <td><p>Lewis</p></td>
 <td><p>Ratio of thermal to solutal diffusivities.</p></td>
 </tr>
-<tr class="row-odd"><td><p><span class="math notranslate nohighlight">\(\varepsilon = \frac{\Delta c}{\varrho}\ll1\)</span></p></td>
-<td><p>evolution</p></td>
-<td><p>Ratio of CO<sub>2</sub> concentration scale to single-phase CO2 density</p></td>
+<tr class="row-even"><td><p><span class="math notranslate nohighlight">\(Pe=\mathcal{L}_\Omega\mathcal{U}_I/D_{\text{ref}}=\underbrace{\mathcal{U}_I}_{\text{injection speed}} \big/ \underbrace{\frac{D_{\text{ref}}}{\mathcal{L}_\Omega}}_{\text{diffusive speed}}\)</span></p></td>
+<td><p>Peclet</p></td>
+<td><p>Ratio of injection to diffusive speeds, defined with respect to solutal transport and domain length scale.</p></td>
 </tr>
 </tbody>
 </table>
@@ -638,6 +652,16 @@ X=\frac{\mathcal{L}}{\mathcal{L}_\Omega}
 <td><p><span class="math notranslate nohighlight">\(1\)</span></p></td>
 <td><p><span class="math notranslate nohighlight">\(\sqrt{Ra/Da}\)</span></p></td>
 <td><p><span class="math notranslate nohighlight">\(\sqrt{RaDa}\)</span></p></td>
+</tr>
+<tr class="row-even"><td><p>injection</p></td>
+<td><p><span class="math notranslate nohighlight">\(\mathcal{L}_\Omega\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(\mathcal{U}_I\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(\varphi_{\text{ref}}\mathcal{L}/\mathcal{U}\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(1\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(1/Pe\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(DaRa/Pe\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(Ra/Pe\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(1\)</span></p></td>
 </tr>
 </tbody>
 </table>

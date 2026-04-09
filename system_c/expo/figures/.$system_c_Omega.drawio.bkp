@@ -76,7 +76,7 @@
         <mxCell id="p7p2qpgb7QsVk_bLrA8U-11" value="$$\Omega^-(t=0)$$" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=35;" parent="CirSnRZLdYSxVw_dpNlR-1" vertex="1">
           <mxGeometry x="470" y="-3646.8" width="80" height="70" as="geometry" />
         </mxCell>
-        <mxCell id="9zwvN3LhRDmeyOvR6WS7-2" value="$$x=\zeta_0X$$" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=35;connectable=0;rotation=-15;" parent="CirSnRZLdYSxVw_dpNlR-1" vertex="1">
+        <mxCell id="9zwvN3LhRDmeyOvR6WS7-2" value="$$x=\eta_0\mathcal{A}X$$" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=35;connectable=0;rotation=-15;" parent="CirSnRZLdYSxVw_dpNlR-1" vertex="1">
           <mxGeometry x="724" y="-3424" width="135" height="70" as="geometry" />
         </mxCell>
         <mxCell id="9zwvN3LhRDmeyOvR6WS7-3" value="" style="endArrow=none;html=1;rounded=0;dashed=1;dashPattern=12 12;" parent="CirSnRZLdYSxVw_dpNlR-1" edge="1">

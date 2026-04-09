@@ -1,0 +1,1 @@
+ln -sf "../../../system_a/expo/figures/system_a_Omega_0.png" system_aMu_Omega_0.png
