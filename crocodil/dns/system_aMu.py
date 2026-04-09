@@ -134,7 +134,7 @@ def dns_system_aMu(
         fluxes = [('f', Lzeta0, Lx), *fluxes]
 
     auxiliary = [
-        Ra, Da, Di, Bu, Ki, 
+        Ra, Da, Di, Bu, Ki, gamma,
         ('X', X), ('Lx', Lx), ('Ly', Ly), 
         ('zeta0', zeta0), ('Lzeta0', Lzeta0),
         ('sr', sr), ('cr', cr),

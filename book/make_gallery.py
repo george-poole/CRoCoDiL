@@ -98,16 +98,16 @@ if __name__ == "__main__":
     HEADING = 'Gallery'
     SUBHEADINGS = (
         'System A', 
-        'System Aθ', 
-        'System Aμ', 
+        'System Aμ',
+        'System Aθ',  
         'System B', 
         'System C', 
         'System D',
     )
     CAPTIONS = (
         'Solutal convective dissolution in a rectangle',
-        'Thermal buoyancy effects on convective dissolution in a rectangle',
         'Viscous fingering effects on convective dissolution in a rectangle',
+        'Thermal buoyancy effects on convective dissolution in a rectangle',
         'Solutal convective dissolution in an anticline with a background flow',
         'Exchange flow dissolution in an inclined rectangle',
         'Buoyant plumes in thermosolutal convective dissolution',

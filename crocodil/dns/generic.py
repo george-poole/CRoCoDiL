@@ -34,6 +34,7 @@ from lucifex.utils.fenicsx_utils import is_simplicial, limits_corrector
 from lucifex.utils.py_utils import arity
 
 from .diagnostic import mass_dissolved, mass_capillary, vertical_flux
+from .utils import use_streamfunction, use_continuous_galerkin
 
 
 Phi: TypeAlias = Expr | ExprSeries
@@ -139,14 +140,13 @@ def dns_generic(
         if Omega.geometry.dim == 3:
             eg = (0, 0, -1)
 
-    STREAMF = isinstance(flow_petsc, tuple)
+    STREAMF = use_streamfunction(flow_petsc)
     SOLUTAL = c_ics is not None
     THERMAL = theta_ics is not None
     THERMOSOLUTAL = SOLUTAL and THERMAL
     EVOL = epsilon is not None
-    is_cg = lambda arg: isinstance(arg, (str, type(None)))
-    SOLUTAL_CG = is_cg(c_stabilization)
-    THERMAL_CG = is_cg(theta_stabilization)
+    SOLUTAL_CG = use_continuous_galerkin(c_stabilization)
+    THERMAL_CG = use_continuous_galerkin(theta_stabilization)
     SOLUTAL_DISP = arity(dispersion_solutal) == 2
     THERMAL_DISP = arity(dispersion_thermal) == 2
     HETEROGENEOUS = callable(rock_porosity)

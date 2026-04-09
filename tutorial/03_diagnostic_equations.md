@@ -13,7 +13,7 @@
 | thermal flux | $Q_{\Gamma}=\frac{1}{\mathrm{len}(\Gamma)}\int_\Gamma(\textbf{u}\theta-\mathsf{G}\cdot\nabla\theta)\cdot\textbf{n}~\text{d}\Gamma = Q_{\Gamma}^{\textbf{u}} + Q_{\Gamma}^{\mathsf{G}}$ |
 | maximum speed | $\max_{\textbf{x}}\vert\textbf{u}\vert$ |
 | root-mean-square speed | $\text{rms}(\textbf{u})=\Vert\textbf{u}\cdot\textbf{u}\Vert_{L_2(\Omega)}=\left(\int_\Omega\textbf{u}\cdot\textbf{u}~\text{d}\Omega\right)^{1/2}$ |
-| velocity divergence norm | $\text{divnorm}(\textbf{u})=\Vert\nabla\cdot\textbf{u}\Vert_{L_2(\Omega)}=\left(\int_\Omega(\nabla\cdot\textbf{u})^2~\text{d}\Omega\right)^{1/2}$ |
+| velocity divergence norm | $\text{divn}(\textbf{u})=\Vert\nabla\cdot\textbf{u}\Vert_{L_2(\Omega)}=\left(\int_\Omega(\nabla\cdot\textbf{u})^2~\text{d}\Omega\right)^{1/2}$ |
 | spatial average | $\langle c\rangle_{\Omega^\prime\subseteq\Omega} = \frac{1}{\text{vol}(\Omega^\prime)}\int_{\Omega^\prime} c~\text{d}\Omega$ |
 | correction | $\mathcal{C}(c)=\max(c_{\text{min}}, \min(c, c_{\text{max}})) - c$ |
 

@@ -14,7 +14,7 @@ from lucifex.utils.fenicsx_utils import CellType, limits_corrector
 from lucifex.utils.py_utils import FrozenDict
 
 from .generic import dns_generic
-from .utils import CROCODIL_JIT_DIR, SCALINGS
+from .utils import CROCODIL_JIT_DIR, SCALINGS, use_streamfunction
 
 
 SYSTEM_D_REFERENCE = FrozenDict(
@@ -220,7 +220,7 @@ def dns_system_d(
         ('dirichlet', dOmega['lower_inflow'], theta_dbc),
 
     )
-    if isinstance(flow_petsc, tuple):
+    if use_streamfunction(flow_petsc, tuple):
         if p_dOmega:
             raise RuntimeError(
                 'Cannot apply pressure boundary condition in streamfunction formulation.'

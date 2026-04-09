@@ -181,8 +181,7 @@ def dns_system_aTheta(
         fluxes_solutal = [('f', Lzeta0, Lx), *fluxes_solutal] 
 
     auxiliary = [
-        Ra, Da, Le, Di, Bu, Ki,
-        gamma, delta,
+        Ra, Da, Le, Di, Bu, Ki, gamma, delta,
         ('X', X), ('Lx', Lx), ('Ly', Ly), 
         ('sr', sr), ('cr', cr), ('zeta0', zeta0),
     ]

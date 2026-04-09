@@ -29,6 +29,58 @@ $$
 Dirichlet boundary conditions on the concentration or temperature can lead to boundary layers across which the concentration or temperature adjusts from its bulk to its boundary value. Resolving such boundary layers may require a mesher finer that the above constraint.
 
 
+## Velocity-pressure vs. streamfunction formulations
+
+| Formulation | Pros | Cons |
+| -------- | ------- | ------- | 
+| velocity-pressure | applicable in any dimension, can handle any boundary conditions, neglible incompressibility error | more computational cost, streamfunction computed separately | 
+| streamfunction | less computational cost, mathematically simple, streamfunction contours readily available for visualization | only applicable in 2D, larger incompressibility error, cannot handle many boundary conditions |
+
+
+## Stabilization of the advection-diffusion-reaction equation
+
+| Method | Pros | Cons |
+| -------- | ------- | ------- | 
+| unstabilized continuous Galerkin | mathematically simplest, least computational cost  | unstable to small diffusivities and large velocities | 
+| SUPG-stabilized continuous Galerkin | mathematically simple formulation, low computational cost | can introduce artificial and crosswind diffusivities, ambiguous choice of stabilization parameter | 
+| discontinuous Galerkin | stable to sharp gradients and discontinuities  |  mathematically intricate, higher computational cost |
+
+## Linear algebra options
+
+Significant computional speedups can be achieved with a suitable choice of Krylov subspace  (`ksp_type`) and preconditioner (`pc_type`), informed by the properties of matrix resulting from the finite element discretization.
+
+
+### Darcy equations in the velocity-pressure formulation
+
+If no natural boundary conditions on the pressure are prescibed ($\partial\Omega_{\text{N}}=\varnothing\iff\partial\Omega_{\text{E}}=\partial\Omega$), then the linear algebra options need to be configured to handle the nullspace airising from the invariance of the equations under the addition of a constant to the pressure.
+
+``` python
+up_petsc = OptionsPETSc(
+    ksp_type='preonly', 
+    pc_type='lu', 
+    pc_factor_mat_solver_type='mumps',
+)
+```
+
+### Darcy equations in the streamfunction formulation
+
+The matrix is (in theory) symmetric. Interpolation, as opposed to projection, of the streamfunction gradients to obtain the velocity has the least computational cost.
+
+```python
+psi_petsc = OptionsPETSc('cg', 'hypre')
+u_petsc = None
+flow_petsc = (psi_petsc, u_petsc)
+```
+
+### Advection-diffusion-reaction equation
+
+The matrix is not symmetric because of the advection term.
+
+```python
+c_petsc = OptionsPETSc('gmres', 'ilu')
+theta_petsc = OptionsPETSc('gmres', 'ilu')
+```
+
 ## Time discretization
 
 
@@ -41,50 +93,4 @@ Dirichlet boundary conditions on the concentration or temperature can lead to bo
 | $\mathcal{D}_{\mathsf{D}, c}$ | $\text{AB}_1\circ\text{CN}$ | forward Euler on $\mathsf{D}$ and Crank-Nicolson on $c$ |
 | $\mathcal{D}_{R,c}$ | $\text{AB}_1\circ\text{AM}_1$ | forward Euler on $R(s)$ and backward Euler on $c$|  
 | $\mathcal{D}_{J}$ | $\text{AB}_1$ | forward Euler on $J(s)$ |  
-| $\mathcal{D}_{\Sigma, s}$ | $\text{AB}_1\circ\text{AM}_1$ | forward Euler on $s$ and backward Euler on $c$ | 
-
-For mass conservation, ideally choose finite difference operators such that
-
-$$\mathcal{D}_{R,c}(Rc) + \mathcal{D}_J(J) = \mathcal{D}_{\Sigma, s}(\Sigma)$$
-
-
-## Stabilization of the advection-diffusion-reaction equation
-
-| Finite element method | Pros | Cons |
-| -------- | ------- | ------- | 
-| unstabilized continuous Galerkin | simplest formulation, least computational cost  | unstable to small diffusivities and large velocities | 
-| SUPG-stabilized continuous Galerkin | simple formulation, low computational cost | can introduce artificial and crosswind diffusivities, ambiguous choice of parameter | 
-| discontinuous Galerkin | stable to sharp gradients and discontinuities  |  intricate formulation, higher computational cost |
-
-## Linear algebra options
-
-Significant computional speedups can be achieved with a suitable choice of Krylov subspace  (`ksp_type`) and preconditioner (`pc_type`), informed by the properties of matrix resulting from the finite element discretization.
-
-### Darcy equations
-
-#### Velocity-pressure formulation
-
-If no natural boundary conditions on the pressure are prescibed ($\partial\Omega_{\text{N}}=\varnothing\iff\partial\Omega_{\text{E}}=\partial\Omega$), then the linear algebra options need to be configured to handle the nullspace airising from the invariance of the equations under the addition of a constant to the pressure.
-
-``` python
-pc_factor_mat_solver_type = 'mumps'
-```
-
-#### Streamfunction formulation
-
-The matrix is (in theory) symmetric. Interpolation, as opposed to projection, of the streamfunction gradients to obtain the velocity has the least computational cost.
-
-```python
-psi_petsc = OptionsPETSc('cg', 'hypre')
-u_petsc = None
-flow_petsc = (psi_petsc, u_petsc)
-```
-
-#### Advection-diffusion-reaction equation
-
-The matrix is not symmetric because of the advection term.
-
-```python
-c_petsc = OptionsPETSc('gmres', 'ilu')
-theta_petsc = OptionsPETSc('gmres', 'ilu')
-```
+| $\mathcal{D}_{\Sigma, s}$ | $\text{AB}_1\circ\text{AM}_1$ | Forward Euler on $s$ and backward Euler on $c$. For solutal mass conservation, ideally $\mathcal{D}_{\Sigma, s}(\Sigma) = \mathcal{D}_{R,c}(Rc) + \mathcal{D}_J(J)$. | 

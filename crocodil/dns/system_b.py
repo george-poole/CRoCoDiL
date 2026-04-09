@@ -1,4 +1,5 @@
 import numpy as np
+from matplotlib.axes import Axes
 from mpi4py import MPI
 from lucifex.mesh import annulus_sector_mesh, mesh_boundary
 from lucifex.fem import Constant, SpatialPerturbation
@@ -10,22 +11,19 @@ from lucifex.utils.fenicsx_utils import limits_corrector
 from lucifex.utils.py_utils import FrozenDict
 
 from .generic import dns_generic
-from .utils import CROCODIL_JIT_DIR, heaviside, SCALINGS
+from .utils import CROCODIL_JIT_DIR, SCALINGS, heaviside, use_streamfunction
 
 
 SYSTEM_B_REFERENCE = FrozenDict(
     Ra=1000.0,
     Da=100.0,
     epsilon=1e-2,
-    zeta0=0.8,
+    Pe=100.0,
+    zeta0=0.9,
     sr=0.2,
     cr=0.0,
-    aspect=2.0,
+    aspect=0.5,
 )
-"""
-Reference parameters `Ra, Da, epsilon, zeta0, sr, cr` and `aspect`
-governing the physical (as opposed to numerical) behaviour of system A.
-"""
 
 
 @configure_simulation(
@@ -36,7 +34,7 @@ def dns_system_b(
     comm: MPI.Comm | str = 'COMM_WORLD',
     aspect: float = 0.5,
     Nr: int = 100,
-    cell: str = CellType.QUADRILATERAL,
+    cell: str = CellType.TRIANGLE,
     # physical
     scaling: str = 'advective',
     Ra: float = 1e3,
@@ -98,10 +96,10 @@ def dns_system_b(
     dOmega = mesh_boundary(
         Omega, 
         {
-            "inner": lambda x: r2(x) - Rinner**2,
             "outer": lambda x: r2(x) - Router**2,
-            "left": lambda x: np.logical_and(np.isclose(x[1], 0.0), x[0] < 0),
             "right": lambda x: np.logical_and(np.isclose(x[1], 0.0), x[0] > 0),
+            "inner": lambda x: r2(x) - Rinner**2,
+            "left": lambda x: np.logical_and(np.isclose(x[1], 0.0), x[0] < 0),
         },
     )
     # constants
@@ -125,7 +123,7 @@ def dns_system_b(
     c_ics = heaviside(lambda x: x[1] - Lzeta0, max(0, cr - c_ampl), eps=Lzeta0_eps)
     if c_ampl:
         radial_noise = lambda x: (c_ampl 
-            * np.cos(c_freq * np.pi * (np.sqrt(r2(x) - Rinner) / Router))
+            * np.cos(c_freq * np.pi * (np.sqrt(r2(x)) - Rinner) / Router)
         )
         c_ics = SpatialPerturbation(
             c_ics,
@@ -135,7 +133,7 @@ def dns_system_b(
             limits_corrector(0, 1),
         )  
     # boundary conditions
-    if isinstance(flow_petsc, tuple):
+    if use_streamfunction(flow_petsc):
         psi_bcs = BoundaryConditions(
             ('dirichlet', dOmega['outer'], 0.0),
             ('dirichlet', dOmega['left'], lambda x: -uIn * (x[0] + Router)),
@@ -147,12 +145,12 @@ def dns_system_b(
         u_bcs = BoundaryConditions(
             ('dirichlet', dOmega['outer', 'inner'], (0.0, 0.0), 0),
             ('dirichlet', dOmega['left'], (0.0, uIn), 0),
-            ('dirichlet', dOmega['left'], (0.0, -uIn), 0),
+            ('dirichlet', dOmega['right'], (0.0, -uIn), 0),
         )
         p_bcs = None
         flow_bcs = (u_bcs, p_bcs)
     c_bcs = BoundaryConditions(
-        ('dirichlet', dOmega.union, 0.0),
+        ('neumann', dOmega.union, 0.0),
     )
     # constitutive relations
     dispersion = lambda phi: Di * phi
@@ -211,3 +209,21 @@ def dns_system_b(
         diagnostic=diagnostic,
         auxiliary=auxiliary,
     )
+
+
+def plot_arc_lines(
+    ax: Axes,
+    Rinner: float,
+    Router: float,
+    num: int = 200,
+    **kwargs,
+) -> None:  
+    _kwargs = dict(linewidth=0.75, color='black', linestyle="-")
+    _kwargs.update(kwargs)
+    arc = lambda x, r: np.sqrt(r**2 - x**2)
+    x_inner = np.linspace(-Rinner, Rinner, num=num)
+    y_inner = arc(x_inner, Rinner)
+    x_outer = np.linspace(-Router, Router, num=num)
+    y_outer = arc(x_outer, Router)
+    ax.plot(x_inner, y_inner, **_kwargs)
+    ax.plot(x_outer, y_outer, **_kwargs)

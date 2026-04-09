@@ -7,11 +7,3 @@ from .mass import (
     mass_capillary_initial, 
     mass_dissolved_initial,
 )
-from .resolution import (
-    threshold_dx, 
-    threshold_Nx, 
-    threshold_rayleigh, 
-    threshold_wavelength, 
-    diffusive_Nx,
-    create_Nx_selector,
-)

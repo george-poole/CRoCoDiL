@@ -6,6 +6,7 @@ from mpi4py import MPI
 from dolfinx.mesh import Mesh
 
 from lucifex.mesh import MeshBoundary, mesh_boundary, rectangle_mesh
+from lucifex.solver import OptionsPETSc
 from lucifex.pde.scaling import ScalingOptions
 from lucifex.utils.py_utils import FloatEnum
 
@@ -127,3 +128,22 @@ def rectangle_mesh_closure(
         },
     )
     return mesh, boundary
+
+
+def use_streamfunction(
+    flow_petsc: OptionsPETSc
+    | tuple[OptionsPETSc, OptionsPETSc | None],   
+) -> bool:
+    """
+    `flow_petsc = (psi_petsc, u_petsc)` to use the streamfunction formulation.
+    If `u_petsc=None` then velocity is obtained by interpolation rather than projection.
+    
+    `flow_petsc = up_petsc` to use the velocity-pressure formulation.
+    """
+    return isinstance(flow_petsc, tuple)
+
+
+def use_continuous_galerkin(
+    stabilization: str | float | tuple[float, float] | None,
+) -> bool:
+    return isinstance(stabilization, (str, type(None)))
