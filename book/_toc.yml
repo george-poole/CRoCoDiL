@@ -4,37 +4,38 @@ root: gallery
 parts:
   - caption: User Guide
     chapters:
-      - file: user_guide/00_introduction
-      - file: user_guide/01_governing_equations
-      - file: user_guide/02_diagnostic_equations
-      - file: user_guide/03_finite_element_method
-      - file: user_guide/04_numerical_details
+      - file: user_guide/01_introduction
+      - file: user_guide/02_governing_equations
+      - file: user_guide/03_diagnostic_equations
+      - file: user_guide/04_finite_element_method
+      - file: user_guide/05_numerical_details
+      - file: user_guide/06_getting_started
       
   - caption: System A
     chapters:
       - file: system_a/expo/A00_definition
-        sections: 
-          - file: system_a/expo/A01_reference
-          - file: system_a/expo/A02_constraints
       - file: system_a/expo/A10_overview
       - file: system_a/expo/A20_expository_hdr
         sections:
-          - file: system_a/expo/A30_parameters
+          - file: system_a/expo/A210_parameters_hdr
             sections:
-              - file: system_a/expo/A31_rayleigh
-              - file: system_a/expo/A32_damkohler
-              - file: system_a/expo/A33_saturations
-          - file: system_a/expo/A40_numerical_hdr
+              - file: system_a/expo/A211_rayleigh
+              - file: system_a/expo/A212_damkohler
+              - file: system_a/expo/A213_saturations
+          - file: system_a/expo/A220_validation_hdr
             sections:
-              - file: system_a/expo/A41_timestep
-              - file: system_a/expo/A42_resolution
-              - file: system_a/expo/A43_cell
-              - file: system_a/expo/A44_finite_difference
-              - file: system_a/expo/A45_stabilization
-              - file: system_a/expo/A46_sensitivity_perturbation
-              - file: system_a/expo/A47_sensitivity_residual
-              - file: system_a/expo/A48_scaling
-              - file: system_a/expo/A49_profiling
+              - file: system_a/expo/A221_timestep
+              - file: system_a/expo/A222_resolution
+              - file: system_a/expo/A223_cell
+              - file: system_a/expo/A224_finite_difference
+              - file: system_a/expo/A225_stabilization
+              - file: system_a/expo/A226_sensitivity_perturbation
+              - file: system_a/expo/A227_sensitivity_residual
+              - file: system_a/expo/A228_scaling
+          - file: system_a/expo/A230_details_hdr
+            sections:
+            - file: system_a/expo/A231_constraints
+            - file: system_a/expo/A232_profiling
       - file: system_a/full/A00_full_hdr
         sections:
           - file: system_a/full/A11_parameter_axis
@@ -44,6 +45,16 @@ parts:
           - file: system_a/full/A22_early_similarity
           - file: system_a/full/A23_late
 
+  - caption: System Aθ
+    chapters:
+      - file: system_aTheta/expo/ATheta00_definition
+      - file: system_aTheta/expo/ATheta10_overview
+
+  - caption: System Aμ
+    chapters:
+      - file: system_aMu/expo/AMu00_definition
+      - file: system_aMu/expo/AMu10_overview
+  
   - caption: System B
     chapters:
       - file: system_b/expo/B00_definition

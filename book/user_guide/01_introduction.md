@@ -1,9 +1,5 @@
 # Introduction
 
-## Installation
-
-See [README.md](https://github.com/george-poole/CRoCoDiL/blob/main/README.md)
-
 
 ## Capillary-trapped CO<sub>2</sub>
 
@@ -46,7 +42,7 @@ In addition to the notation defined in the [LUCiFEx notebooks](https://george-po
 | $\mathsf{K}$ | permeability |
 | $\mathsf{D}$ | solutal dispersion |
 | $\mathsf{G}$ | thermal dispersion |
-| $\varepsilon$ | ratio of CO<sub>2</sub> concentration scale to single-phase CO2 density |
+| $\varepsilon$ | ratio of CO<sub>2</sub> concentration scale to single-phase CO<sub>2</sub> density |
 | $\varrho$ | density of single-phase CO<sub>2</sub> |
 | $\mathcal{L}$ | length scale |
 | $\mathcal{U}$ | velocity scale |

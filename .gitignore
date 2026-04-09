@@ -16,6 +16,7 @@ _private
 *.png
 *.pickle
 *.log
+*.bkp
 
 # interactive
 .ipynb_checkpoints

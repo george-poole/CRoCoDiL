@@ -70,14 +70,16 @@ def make_gallery(
     html: bool,
     topheading: str,
     subheadings: Iterable[str],
-    schematics: Iterable[tuple[str, str]],
+    captions: Iterable[str],
+    definitions: Iterable[tuple[str, str]],
     overviews: Iterable[tuple[str, str]],
 ):
     markdown_string = heading(topheading, 1)
 
-    for n, schm, ovvw in zip(subheadings, schematics, overviews, strict=True):
+    for n, cpt, defn, ovvw in zip(subheadings, captions, definitions, overviews, strict=True):
         markdown_string = '\n'.join((markdown_string, heading(n, 2)))
-        td_schematic = table_data(*schm, html=html)
+        markdown_string = '\n'.join((markdown_string, cpt))
+        td_schematic = table_data(*defn, html=html)
         td_overview = table_data(*ovvw, html=html)
         tds = (td_schematic, td_overview)
         Ntr = len(tds)
@@ -90,23 +92,39 @@ def make_gallery(
 
 
 if __name__ == "__main__":
+    degreek = lambda s: s.replace('θ', 'Theta').replace('μ', 'Mu')
+    get_dir = lambda s: degreek(s.lower().replace(' ', '_'))
+    get_letter = lambda s: degreek(s.split(' ')[1])
     HEADING = 'Gallery'
     SUBHEADINGS = (
-        'System A', 'System B', 'System C', 'System D',
+        'System A', 
+        'System Aθ', 
+        'System Aμ', 
+        'System B', 
+        'System C', 
+        'System D',
     )
-    get_dir = lambda s: s.lower().replace(' ', '_')
-    get_letter = lambda s: s.split(' ')[1]
+    CAPTIONS = (
+        'Solutal convective dissolution in a rectangle',
+        'Thermal buoyancy effects on convective dissolution in a rectangle',
+        'Viscous fingering effects on convective dissolution in a rectangle',
+        'Solutal convective dissolution in an anticline with a background flow',
+        'Exchange flow dissolution in an inclined rectangle',
+        'Buoyant plumes in thermosolutal convective dissolution',
+    )
     SCHEMATICS = tuple(
         (
-            f'./{get_dir(s)}/expo/{get_letter(s)}00_definition.md', 
+            f'./{get_dir(s)}/expo/{get_letter(s)}00_definition.html', 
             f'./{get_dir(s)}/expo/figures/{get_dir(s)}_Omega_0.png',
+            'Definition',
         )
         for s in SUBHEADINGS
     )
     OVERVIEWS = tuple(
         (
-            f'./{get_dir(s)}/expo/{get_letter(s)}10_overview.ipynb', 
+            f'./{get_dir(s)}/expo/{get_letter(s)}10_overview.html', 
             f'./{get_dir(s)}/expo/figures/{get_letter(s)}10_overview/thumbnail.png',
+            'Overview',
         )
         for s in SUBHEADINGS
     )
@@ -120,6 +138,7 @@ if __name__ == "__main__":
             html,
             HEADING, 
             SUBHEADINGS, 
+            CAPTIONS,
             SCHEMATICS, 
             OVERVIEWS, 
         )

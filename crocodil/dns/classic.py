@@ -45,7 +45,7 @@ def dns_darcy_rayleigh_benard(
     theta_petsc: OptionsPETSc = OptionsPETSc('gmres', 'ilu'),
     # optional post-processing
     diagnostic: bool = False,
-    fluxes = Iterable[tuple[str, float | int, float]],
+    fluxes: Iterable[tuple[str, float | int, float]] = (),
 ):
     # space
     scaling_map = SCALINGS[scaling](Ra)
@@ -340,8 +340,8 @@ def dns_darcy_thermosolutal(
     theta_petsc: OptionsPETSc = OptionsPETSc('gmres', 'ilu'),
     # optional post-processing
     diagnostic: bool = False,
-    fluxes_solutal = Iterable[tuple[str, float | int, float]],
-    fluxes_thermal = Iterable[tuple[str, float | int, float]],
+    fluxes_solutal: Iterable[tuple[str, float | int, float]] = (),
+    fluxes_thermal: Iterable[tuple[str, float | int, float]] = (),
 ):
     # space
     scaling_map = SCALINGS[scaling](Ra)

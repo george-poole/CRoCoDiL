@@ -1,14 +1,17 @@
 comm = 'COMM_WORLD'
 aspect = 2.0
-Nx = 60
-Ny = 60
-cell = CellType.QUADRILATERAL
+Nx = 100
+Ny = 100
+cell = 'quadrilateral'
 scaling = 'advective'
 Ra = 800.0
 Da = 100.0
 epsilon = 0.01
-zeta0 = 0.9
-zeta0_eps = None
+beta = 10.0
+kappa = 1.0
+vartheta = 0.0
+eta0 = 0.9
+eta0_eps = None
 sr = 0.2
 s_ampl = 0
 s_freq = (16, 16)
@@ -18,7 +21,7 @@ c_ampl = 1e-06
 c_freq = (16, 16)
 c_seed = (1234, 5678)
 dt_min = 0.0
-dt_max = 0.1
+dt_max = inf
 dt_h = 'hmin'
 dt_Cu = 0.75
 dt_Cd = 0.75
@@ -37,4 +40,3 @@ flow_petsc = (OptionsPETSc(ksp_type=cg, pc_type=hypre, ksp_rtol=1e-06, ksp_atol=
 c_petsc = OptionsPETSc(ksp_type=gmres, pc_type=ilu, ksp_rtol=1e-06, ksp_atol=1e-10, ksp_divtol=10000.0, ksp_max_it=10000)
 s_petsc = None
 diagnostic = True
-fluxes = ()

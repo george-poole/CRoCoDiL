@@ -5,6 +5,8 @@ DEST_DIR = './_build/html/'
 
 SOURCE_DIRS = (
     './system_a/',
+    './system_aMu/',
+    './system_aTheta/',
     './system_b/',
     './system_c/',
     './system_d/',

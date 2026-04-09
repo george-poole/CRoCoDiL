@@ -4,15 +4,15 @@
 
 The threshold wavelength to resolve is 
 
-$$\lambda_{\text{thresh}} = \frac{90 L_y}{Ra}$$
+$$\lambda_{\text{thresh}} = \frac{90\mathcal{L}}{Ra}$$
 
-so to have $n_{\text{cell}}$ cells per threshold wavelength
+given a length scale $\mathcal{L}$ so to have $n_{\text{cell}}$ mesh cells per threshold wavelength
 
 $$\max_{\textbf{x}}h(\textbf{x}) \leq \frac{\lambda_{\text{thresh}}}{n_{\text{cell}}}$$
 
-For a uniform Cartesian rectangular mesh, 
+For a uniform Cartesian rectangular mesh with $\mathcal{L}=L_y$, 
 
-$$h=\max(\Delta x, \Delta y)=\max\left(\frac{L_x}{N_x}, \frac{L_y}{N_y}\right)$$
+$$\max_{\textbf{x}}h(\textbf{x}) = \max(\Delta x, \Delta y)=\max\left(\frac{L_x}{N_x}, \frac{L_y}{N_y}\right)$$
 
 and $\mathcal{A}=\frac{L_x}{L_y}$ is the aspect ratio. If $\Delta x>\Delta y$, then
 
@@ -58,7 +58,7 @@ $$\mathcal{D}_{R,c}(Rc) + \mathcal{D}_J(J) = \mathcal{D}_{\Sigma, s}(\Sigma)$$
 
 ## Linear algebra options
 
-Significant computional speedups can be achieved with a suitable choice of Krylov subspace  (`ksp_type`) and preconditioner (`pc_type`), informed by the properties of matrix operator resulting from the finite element discretization.
+Significant computional speedups can be achieved with a suitable choice of Krylov subspace  (`ksp_type`) and preconditioner (`pc_type`), informed by the properties of matrix resulting from the finite element discretization.
 
 ### Darcy equations
 
@@ -82,7 +82,7 @@ flow_petsc = (psi_petsc, u_petsc)
 
 #### Advection-diffusion-reaction equation
 
-The matrix is not symmetric
+The matrix is not symmetric because of the advection term.
 
 ```python
 c_petsc = OptionsPETSc('gmres', 'ilu')

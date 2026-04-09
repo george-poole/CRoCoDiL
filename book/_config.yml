@@ -11,3 +11,7 @@ repository:
 
 html:
   use_repository_button: true
+
+# sphinx:
+#   config:
+#     nb_hide_code: true

@@ -11,19 +11,14 @@ from lucifex.utils.py_utils import FrozenDict
 
 from .generic import dns_generic
 from .utils import CROCODIL_JIT_DIR, SCALINGS, heaviside, rectangle_mesh_closure
+from .system_a import SYSTEM_A_REFERENCE
 
 
-SYSTEM_B_REFERENCE = FrozenDict(
-    Ra=1000.0,
-    Da=100.0,
-    epsilon=1e-2,
+SYSTEM_A_THETA_REFERENCE = FrozenDict(
+    **SYSTEM_A_REFERENCE,
     Le=1.0,
-    zeta0=0.9,
-    sr=0.2,
-    cr=0.0,
     gamma=1.0,
     delta=0,
-    aspect=2.0,
 )
 
 
@@ -42,7 +37,7 @@ def thermal_rayleigh(
     jit=OptionsJIT(CROCODIL_JIT_DIR),
     dir_root="./data",
 )
-def dns_system_b(
+def dns_system_aTheta(
     # mesh
     comm: MPI.Comm | str = 'COMM_WORLD',
     aspect: float = 2.0,
@@ -122,9 +117,6 @@ def dns_system_b(
     `∇⋅𝐮 = 0` \\
     `𝐮 = -(∇p + Bu(c - γθ)𝐞ʸ)` \\
 
-    `s₀(𝐱) = sᵣ + N(𝐱)` \\
-    `c₀(𝐱) = 1 + δ(1 - θ) + (δ / √Λ) · sinh(√Λ · (y − X/2)) / cosh(√Λ X/2) + N(𝐱)` \\
-    `θ₀(𝐱) = 1 - y + N(𝐱)` \\
     `𝐧⋅∇c = 0` on `∂Ω` \\
     `𝐧⋅𝐮 = 0` on `∂Ω`
     """
@@ -173,7 +165,7 @@ def dns_system_b(
             cubic_noise(['neumann', 'neumann'], [Lx, Ly], theta_freq, theta_seed),
             [Lx, Ly],
             theta_ampl,
-            limits_corrector((0, 1)),
+            limits_corrector(0, 1),
         )
     # constitutive relations
     gamma = Constant(Omega, gamma, 'gamma')

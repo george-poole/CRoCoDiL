@@ -79,14 +79,11 @@
         <mxCell id="rX1eTnM0zhWwftDJ3Mqu-1" value="$$\theta\in\{1,0\}$$" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=35;" parent="1" vertex="1">
           <mxGeometry x="406.5" y="289" width="150" height="70" as="geometry" />
         </mxCell>
-        <mxCell id="rX1eTnM0zhWwftDJ3Mqu-2" value="$$\theta=0$$" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=35;" parent="1" vertex="1">
-          <mxGeometry x="384.5" y="474" width="121" height="70" as="geometry" />
-        </mxCell>
         <mxCell id="UgcnvAFkiHPLEIYP0nK0-1" value="$$(\textbf{n}\cdot\textbf{u})\vert_{\partial\Omega}=0$$" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=35;" parent="1" vertex="1">
           <mxGeometry x="550" y="60" width="200" height="70" as="geometry" />
         </mxCell>
-        <mxCell id="TQq11imSGNBfVd8-aZ6j-1" value="$$\theta\in\{1,0\}$$" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=35;" vertex="1" parent="1">
-          <mxGeometry x="420" y="690" width="150" height="70" as="geometry" />
+        <mxCell id="TQq11imSGNBfVd8-aZ6j-1" value="$$\theta\in\{0,1\}$$" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=35;" vertex="1" parent="1">
+          <mxGeometry x="406.5" y="473" width="150" height="70" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>
