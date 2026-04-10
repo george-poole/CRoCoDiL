@@ -4,7 +4,7 @@ import numpy as np
 from mpi4py import MPI
 from lucifex.fem import Constant, SpatialPerturbation, cubic_noise
 from lucifex.fdm import FiniteDifference, FiniteDifferenceArgwise, CN, AB, AM
-from lucifex.fdm.ufl_operators import exp
+from lucifex.fdm.ufl_overloads import exp
 from lucifex.utils.fenicsx_utils import CellType
 from lucifex.solver import OptionsPETSc, OptionsJIT
 from lucifex.sim import configure_simulation

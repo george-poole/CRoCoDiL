@@ -1,62 +1,31 @@
-def critical_saturation(
-    zeta0: float,
-    cr: float,
-    epsilon: float,
-) -> float:
-    raise NotImplementedError
-    # """
-    # `sᵣ = ε ( 1 / (1 - ζ₀) - cᵣ) / (1 - εcᵣ)`
-    # """
-    # return epsilon * (-cr + 1 / (1 - zeta0)) / (1 - epsilon * cr)
-
-
-def mass_dissolved_asymptote(
-    mass_initial: float,
-    epsilon: float,
-    Lx: float,
-    Ly: float,
-) -> float:
-    raise NotImplementedError
-    # """
-    # `mᴰ -> ... ` as `t -> ∞`
-    
-    # with `vol(Ω) = LxLy`.
-    # """
-    # return min(mass_initial, (mass_initial - Lx * Ly / epsilon) / (1 - 1 / epsilon))
-
-
-def mass_capillary_asymptote(
-    mass_initial: float,
-    epsilon: float,
-    Lx: float,
-    Ly: float,
-) -> float:
-    raise NotImplementedError
-    # """
-    # `mᶜ -> ...` as `t -> ∞`
-
-    # with `vol(Ω) = LxLy`.
-    # """
-    # return max(0, (mass_initial - Lx * Ly ) / (1 - epsilon))
+import numpy as np
 
 
 def mass_dissolved_initial(
     zeta0: float,
     sr: float,
     cr: float,
-    Lx: float,
-    Ly: float,
+    Router: float,
 )-> float:
-    raise NotImplementedError
-    # return Lx * Ly * (1 - zeta0) * (1 - sr) * cr
+    return upper_area(zeta0, Router) * (1 - sr) * cr
 
 
 def mass_capillary_initial(
     epsilon: float,
     zeta0: float,
     sr: float,
-    Lx: float,
-    Ly: float,
+    Router: float,
 ) -> float:
-    raise NotImplementedError
-    # return Lx * Ly * (1 - zeta0) * sr / epsilon
+    return upper_area(zeta0, Router) * sr / epsilon
+
+
+def upper_area(
+    zeta0: float,
+    Router: float,
+):
+    return (
+        (Router ** 2) * (
+            np.arccos(zeta0) 
+            - zeta0 * np.sqrt(1 - zeta0 ** 2)
+        )
+    )

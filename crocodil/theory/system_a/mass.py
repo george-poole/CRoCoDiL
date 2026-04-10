@@ -44,7 +44,7 @@ def mass_dissolved_initial(
     Lx: float,
     Ly: float,
 )-> float:
-    return Lx * Ly * (1 - zeta0) * (1 - sr) * cr
+    return upper_area(zeta0, Lx, Ly) * (1 - sr) * cr
 
 
 def mass_capillary_initial(
@@ -54,5 +54,13 @@ def mass_capillary_initial(
     Lx: float,
     Ly: float,
 ) -> float:
-    return Lx * Ly * (1 - zeta0) * sr / epsilon
+    return upper_area(zeta0, Lx, Ly) * sr / epsilon
+
+
+def upper_area(
+    zeta0: float,
+    Lx: float,
+    Ly: float,
+) -> float:
+    return Lx * Ly * (1 - zeta0)
 

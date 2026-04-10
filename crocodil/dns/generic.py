@@ -15,7 +15,7 @@ from lucifex.fdm import (
     adr_timestep, advective_timestep, advective_diffusive_timestep, 
     diffusive_timestep, reactive_timestep,
 )
-from lucifex.fdm.ufl_operators import max_value
+from lucifex.fdm.ufl_overloads import max_value
 from lucifex.solver import (
     BoundaryConditions, OptionsPETSc, Solver,
     bvp, ibvp, ivp, 
@@ -23,7 +23,9 @@ from lucifex.solver import (
     extrema, div_norm, L_norm,
 )
 from lucifex.sim import Simulation
-from lucifex.pde.streamfunction_vorticity import velocity_from_streamfunction
+from lucifex.pde.streamfunction_vorticity import (
+    velocity_from_streamfunction, streamfunction_from_velocity,
+)
 from lucifex.pde.darcy import darcy_streamfunction, darcy
 from lucifex.pde.advection_diffusion import (
     dg_advection_diffusion_reaction, advection_diffusion, 
@@ -117,6 +119,7 @@ def dns_generic(
     theta_petsc: OptionsPETSc = OptionsPETSc('gmres', 'ilu'),
     s_petsc: OptionsPETSc | None = None,
     # optional postprocessing
+    psi_conversion: bool | BoundaryConditions | None = None,
     fluxes_solutal: Iterable[tuple[str, float | int, float]] = (), 
     fluxes_thermal: Iterable[tuple[str, float | int, float]] = (), 
     diagnostic: bool = False,    
@@ -155,6 +158,8 @@ def dns_generic(
         assert arity(viscosity) == 2  if viscosity else True, "Viscosity should be `μ(c,θ)`"
         assert arity(reaction) == 2  if reaction else True, "Reaction should be `R(θ,s)`"
         assert arity(source) == 2  if source else True, "Source should be `J(θ,s)`"
+    if psi_conversion is None:
+        psi_conversion = STREAMF
 
     solvers = []
     auxiliary = list(auxiliary)
@@ -171,13 +176,18 @@ def dns_generic(
     if STREAMF: 
         psi_deg = 2 if flow_degree is None else flow_degree
         psi = FunctionSeries((Omega, 'P', psi_deg), 'psi')
-        u = FunctionSeries((Omega, "P", psi_deg - 1, 2), "u", order)
+        if psi_conversion:
+            u = FunctionSeries((Omega, "P", psi_deg - 1, 2), "u", order)
+        else:
+            u = velocity_from_streamfunction(psi)
     else:
         u_fam = 'BDM' if is_simplicial(Omega) else 'BDMCF'
         u_deg = 1 if flow_degree is None else flow_degree
         up = FunctionSeries((Omega, [(u_fam, u_deg), ('DP', u_deg - 1)]), ('up', ['u', 'p']), order)
         u, p = up.split()
         auxiliary.extend((u, p))
+        if psi_conversion:
+            psi = FunctionSeries((Omega, "P", 1), "psi", order)
 
     # transport
     if SOLUTAL:
@@ -268,12 +278,13 @@ def dns_generic(
         psi_solver = bvp(darcy_streamfunction, psi_bcs, petsc=psi_petsc, cache_matrix=flow_cache_matrix)(
             psi, FE(k), FE(mu), egx * FE(rho), egy * FE(rho),
         ) 
-        if u_petsc is None:
-            u_solver = interpolation(u, velocity_from_streamfunction)(psi[0])
-        else:
-            u_solver = projection(u, velocity_from_streamfunction, petsc=u_petsc)(psi[0])
-        
-        solvers.extend((psi_solver, u_solver))
+        solvers.append(psi_solver)
+        if psi_conversion:
+            if u_petsc is None:
+                u_solver = interpolation(u, velocity_from_streamfunction)(psi[0])
+            else:
+                u_solver = projection(u, velocity_from_streamfunction, petsc=u_petsc)(psi[0])
+            solvers.append(u_solver)
     else:
         u_bcs = BoundaryConditions(('essential', dOmega.union, (0.0, 0.0), 0)) if flow_bcs is Ellipsis else flow_bcs[0]
         p_bcs = None if flow_bcs is Ellipsis else flow_bcs[1]
@@ -286,6 +297,11 @@ def dns_generic(
         up_solver = bvp(darcy, u_bcs, petsc=flow_petsc, cache_matrix=flow_cache_matrix)(
             up, FE(k), FE(mu), FE(rho) * as_vector(eg), bcs=p_bcs, blocked=blocked, add_zero=add_zero)
         solvers.append(up_solver)
+        if isinstance(psi_conversion, BoundaryConditions):
+            psi_solver = bvp(streamfunction_from_velocity, psi_conversion, cache_matrix=True)(
+                psi, FE(u),
+            )
+            solvers.append(psi_solver)
 
     solvers.extend(pre_solvers)
     # timestep solver
