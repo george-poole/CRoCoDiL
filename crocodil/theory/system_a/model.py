@@ -11,7 +11,7 @@ class Model:
         self,
         clbl: Callable,
     ) -> dict[str, Any]:
-        return {k: getattr(self, k) for k in signature(clbl).parameters}
+        return {k: getattr(self, k) for k in signature(clbl).parameters} #TODO strict vs non-strict?
     
     def call(
         self,
@@ -28,7 +28,7 @@ class Model:
         clbl: Callable[P, R],
         exclude: Iterable[str] = (),
         **kws: Any,
-    ) -> Callable[..., R]:
+    ) -> Callable[P, R]:
         _kws = self._get_kws(clbl)
         _kws = {k: v for k, v in _kws.items() if not k in exclude}
         _kws.update(kws)

@@ -22,10 +22,17 @@ def mass_capillary_initial(
 def upper_area(
     zeta0: float,
     Router: float,
-):
+) -> float:
     return (
         (Router ** 2) * (
             np.arccos(zeta0) 
             - zeta0 * np.sqrt(1 - zeta0 ** 2)
         )
     )
+
+
+def chord_length(
+    zeta0: float,
+    Router: float,
+) -> float:
+    return 2 * Router * np.sqrt(1 - zeta0 ** 2)

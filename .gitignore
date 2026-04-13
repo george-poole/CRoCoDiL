@@ -24,6 +24,7 @@ profile_default/
 ipython_config.py
 
 # compiled
+*.mod
 *.com
 *.class
 *.dll

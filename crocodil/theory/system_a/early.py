@@ -23,7 +23,7 @@ class EarlyTimeExactFormulae:
         coefficients,
     ) -> float:
         """
-        `c(y, t)
+        `c(y, t) = 1 - Σ ...`
         """
         # eigenvalues = EarlyTimeExactFormulae.eigenvalues(
         #     Lmbda, zeta0, eigen_guesses, **kwargs
@@ -134,8 +134,8 @@ class EarlyTimeExactFormulae:
         zeta0: float,
         guesses: Iterable[float],
         **kwargs: Any,
-    ) -> np.ndarray:
-        return EarlyTimeExactFormulae._eigenvalues(Lmbda, zeta0, guesses, **kwargs)
+    ) -> list[float]:
+        return list(EarlyTimeExactFormulae._eigenvalues(Lmbda, zeta0, guesses, **kwargs))
         
     @staticmethod
     @lru_cache
@@ -209,7 +209,7 @@ class EarlyTimeExactFormulae:
 
 
 @dataclass
-class EarlyTimeExactModel:
+class EarlyTimeExactModel(Model):
     """
     `ε = 0` \\
     `s₀(y) = sr·H(y - ζ₀)` \\
@@ -258,9 +258,14 @@ class EarlyTimeExactModel:
                 coefficients=self.coefficients,
                 **self.kwargs,
             )
+            # c_formula = self.create_partial(EarlyTimeExactFormulae.c)
             c_arr = np.array([c_formula(yi, t)for yi in self.y])
             self._c[t] = c_arr
             return c_arr
+        
+    def eigenfunction(self, n: int) -> np.ndarray:
+        Ln = self.eigenvalues[n]
+        return [EarlyTimeExactFormulae.Yn(i, Ln, self.Lmbda, self.zeta0) for i in self.y]
     
     @cached_property
     def eigenvalues(self) -> np.ndarray:
@@ -269,13 +274,11 @@ class EarlyTimeExactModel:
         )
     
     @cached_property
-    def coefficients(self) -> np.ndarray:
+    def coefficients(self) -> list[float]:
         s0 = lambda y: self.sr if y > self.zeta0 else 0
         c0 = lambda y: self.cr if y > self.zeta0 else 0
-        return [
-            EarlyTimeExactFormulae.Cn(i, self.Lmbda, self.zeta0, s0, c0, self.Ly)
-            for i in self.eigenvalues
-        ]
+        # Cn = self.create_partial(EarlyTimeExactFormulae.Cn, s0=s0, c0=c0)
+        return [EarlyTimeExactFormulae.Cn(i, self.Lmbda, self.zeta0, s0=s0, c0=c0, Ly=self.Ly) for i in self.eigenvalues]
 
 
 class EarlyTimeSimilarityFormulae:
